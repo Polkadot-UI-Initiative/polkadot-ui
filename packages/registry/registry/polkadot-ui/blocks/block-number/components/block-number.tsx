@@ -47,7 +47,7 @@ export function BlockNumber() {
   return (
     <div className="w-full max-w-md rounded-md">
       <div className="space-y-4">
-        <div className="text-3xl font-bold text-blue-600">
+        <div className="text-3xl font-bold text-polkadot-pink">
           {blockNumber?.toLocaleString() || "Loading..."}
         </div>
 

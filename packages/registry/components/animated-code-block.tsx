@@ -142,7 +142,7 @@ export function AnimatedCodeBlock() {
                     {tab.command}{" "}
                     <span
                       className={cn(
-                        "inline-block transition-all duration-400 ease-in-out text-pink-500",
+                        "inline-block transition-all duration-400 ease-in-out text-polkadot-pink",
                         isAnimating
                           ? "opacity-0 translate-y-1"
                           : "opacity-100 translate-y-0"

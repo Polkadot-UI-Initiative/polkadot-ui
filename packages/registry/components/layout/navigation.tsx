@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { GitHubStars } from "@/components/github-stars";
 
 export function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -81,14 +82,14 @@ export function Navigation() {
               <span className="font-bold">dot-ui</span>
             </Link>
           </div>
-          <nav className="flex items-center space-x-2">
+          <nav className="flex items-center space-x-2 gap-0">
             <ThemeToggle />
             <Link
               href="https://github.com/Polkadot-UI-Initiative/dot-ui"
               target="_blank"
               rel="noreferrer"
             >
-              <div className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 py-2 w-9 px-0">
+              <Button variant="ghost" size="sm">
                 <svg viewBox="0 0 438.549 438.549" className="h-4 w-4">
                   <path
                     fill="currentColor"
@@ -96,7 +97,8 @@ export function Navigation() {
                   />
                 </svg>
                 <span className="sr-only">GitHub</span>
-              </div>
+                <GitHubStars repo="Polkadot-UI-Initiative/dot-ui" />
+              </Button>
             </Link>
           </nav>
         </div>
