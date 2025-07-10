@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "polkadot-components",
+  "homepage": "https://polkadot-components.com",
+  "items": [
+    {
+      "name": "block-number",
+      "type": "registry:component",
+      "title": "Block Number",
+      "description": "A simple block number component that displays the current block number from Polkadot Asset Hub. Requires polkadot-api setup.",
+      "dependencies": ["polkadot-api"],
+      "requiresPolkadotApi": true,
+      "registryDependencies": ["button"],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/block-number/components/block-number.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/block-number/hooks/use-block-number.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/providers/polkadot-provider.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/utils.polkadot-ui.ts",
+          "type": "registry:lib"
+        },
+
+        {
+          "path": "registry/polkadot-ui/lib/types.polkadot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/config.polkadot-ui.ts",
+          "type": "registry:lib"
+        }
+      ]
+    }
+  ]
+}

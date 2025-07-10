@@ -1,48 +1,41 @@
 {
-  "name": "registry",
-  "version": "0.1.0",
+  "name": "dot-ui-monorepo",
+  "version": "1.0.0",
   "private": true,
+  "description": "Polkadot UI components with CLI and registry server",
   "scripts": {
-    "dev": "next dev --turbopack",
-    "postinstall": "pnpm papi && pnpm registry:build",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "registry:build": "shadcn build"
+    "dev": "pnpm --filter app dev",
+    "build": "pnpm -r build",
+    "build:cli": "pnpm --filter cli build",
+    "build:app": "pnpm --filter app build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "clean": "pnpm -r clean",
+    "cli": "pnpm --filter cli dev"
   },
-  "dependencies": {
-    "@polkadot-api/descriptors": "file:.papi/descriptors",
-    "@radix-ui/react-label": "^2.1.4",
-    "@radix-ui/react-slot": "^1.2.0",
-    "@tanstack/react-query": "^5.81.5",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "lucide-react": "^0.487.0",
-    "next": "15.3.1",
-    "polkadot-api": "^1.14.1",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "shadcn": "2.9.0-canary.0",
-    "tailwind-merge": "^3.2.0",
-    "tw-animate-css": "^1.2.5",
-    "zod": "^3.24.3"
+  "keywords": [
+    "polkadot",
+    "web3",
+    "ui",
+    "components",
+    "cli",
+    "registry"
+  ],
+  "author": "Polkadot UI Initiative",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Polkadot-UI-Initiative/dot-ui.git"
   },
-  "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "19.1.2",
-    "@types/react-dom": "19.1.2",
-    "eslint": "^9",
-    "eslint-config-next": "15.3.1",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+  "engines": {
+    "node": ">=16.0.0",
+    "pnpm": ">=8.0.0"
   },
+  "packageManager": "pnpm@9.15.3",
   "pnpm": {
     "overrides": {
       "@types/react": "19.1.2",
       "@types/react-dom": "19.1.2"
     }
-  },
-  "packageManager": "pnpm@9.15.3+sha512.1f79bc245a66eb0b07c5d4d83131240774642caaa86ef7d0434ab47c0d16f66b04e21e0c086eb61e62c77efc4d7f7ec071afad3796af64892fae66509173893a"
+  }
 }
