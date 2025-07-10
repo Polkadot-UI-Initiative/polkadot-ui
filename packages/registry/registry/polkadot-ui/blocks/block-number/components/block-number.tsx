@@ -17,7 +17,7 @@ export function BlockNumber() {
 
   if (isLoading(currentChain)) {
     return (
-      <div className="w-full max-w-md p-4 border border-gray-200 rounded-md bg-white">
+      <div className="w-full max-w-md p-4 borderrounded-md">
         <div className="mb-4">
           <h3 className="text-lg font-semibold">Block Number</h3>
           <p className="text-sm text-gray-600">Loading...</p>
@@ -34,22 +34,18 @@ export function BlockNumber() {
 
   if (error) {
     return (
-      <div className="w-full max-w-md p-4 border border-red-200 rounded-md bg-red-50">
+      <div className="w-full max-w-md p-4 border border-error rounded-md bg-error">
         <div className="mb-4">
-          <h3 className="text-lg font-semibold text-red-600">Block Number</h3>
-          <p className="text-sm text-red-500">Error loading block number</p>
+          <h3 className="text-lg font-semibold text-error">Block Number</h3>
+          <p className="text-sm text-error">Error loading block number</p>
         </div>
-        <div className="text-red-600 text-sm">{error}</div>
+        <div className="text-error text-sm">{error}</div>
       </div>
     );
   }
 
   return (
-    <div className="w-full max-w-md p-4 border border-gray-200 rounded-md bg-white">
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">Block Number</h3>
-        <p className="text-sm text-gray-600">Current block on {chainName}</p>
-      </div>
+    <div className="w-full max-w-md rounded-md">
       <div className="space-y-4">
         <div className="text-3xl font-bold text-blue-600">
           {blockNumber?.toLocaleString() || "Loading..."}
