@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { PolkadotProvider } from "@/registry/polkadot-ui/providers/polkadot-provider";
@@ -29,6 +30,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <PolkadotProvider>{children}</PolkadotProvider>
+        <Analytics />
       </body>
     </html>
   );
