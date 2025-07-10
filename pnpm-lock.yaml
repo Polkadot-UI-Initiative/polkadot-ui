@@ -12,11 +12,29 @@ importers:
 
   .: {}
 
-  packages/app:
+  packages/cli:
+    dependencies:
+      chalk:
+        specifier: ^4.1.2
+        version: 4.1.2
+      commander:
+        specifier: ^11.1.0
+        version: 11.1.0
+      execa:
+        specifier: ^5.1.1
+        version: 5.1.1
+      inquirer:
+        specifier: ^8.2.6
+        version: 8.2.6
+      ora:
+        specifier: ^5.4.1
+        version: 5.4.1
+
+  packages/registry:
     dependencies:
       '@polkadot-api/descriptors':
         specifier: file:.papi/descriptors
-        version: file:packages/app/.papi/descriptors(polkadot-api@1.14.1(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2))
+        version: file:packages/registry/.papi/descriptors(polkadot-api@1.14.1(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2))
       '@radix-ui/react-label':
         specifier: ^2.1.4
         version: 2.1.7(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -87,24 +105,6 @@ importers:
       typescript:
         specifier: ^5
         version: 5.8.3
-
-  packages/cli:
-    dependencies:
-      chalk:
-        specifier: ^4.1.2
-        version: 4.1.2
-      commander:
-        specifier: ^11.1.0
-        version: 11.1.0
-      execa:
-        specifier: ^5.1.1
-        version: 5.1.1
-      inquirer:
-        specifier: ^8.2.6
-        version: 8.2.6
-      ora:
-        specifier: ^5.4.1
-        version: 5.4.1
 
 packages:
 
@@ -751,8 +751,8 @@ packages:
   '@polkadot-api/codegen@0.16.4':
     resolution: {integrity: sha512-lHNTJ3rG0tBRoKzjAhQRs7qYRdrBtvpKIWDo7fgun2A1DEsWxZAvugDs+Qp1m4UcXP5YgjI8bv//a9Qu8SD1XA==}
 
-  '@polkadot-api/descriptors@file:packages/app/.papi/descriptors':
-    resolution: {directory: packages/app/.papi/descriptors, type: directory}
+  '@polkadot-api/descriptors@file:packages/registry/.papi/descriptors':
+    resolution: {directory: packages/registry/.papi/descriptors, type: directory}
     peerDependencies:
       polkadot-api: '>=1.11.2'
 
@@ -4283,7 +4283,7 @@ snapshots:
       '@polkadot-api/substrate-bindings': 0.14.0
       '@polkadot-api/utils': 0.2.0
 
-  '@polkadot-api/descriptors@file:packages/app/.papi/descriptors(polkadot-api@1.14.1(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2))':
+  '@polkadot-api/descriptors@file:packages/registry/.papi/descriptors(polkadot-api@1.14.1(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2))':
     dependencies:
       polkadot-api: 1.14.1(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)
 

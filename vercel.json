@@ -2,15 +2,5 @@
   "buildCommand": "cd packages/registry && pnpm build",
   "outputDirectory": "packages/registry/.next",
   "installCommand": "pnpm install",
-  "framework": "nextjs",
-  "rewrites": [
-    {
-      "source": "/registry.json",
-      "destination": "/registry.json"
-    },
-    {
-      "source": "/r/:component.json",
-      "destination": "/r/:component.json"
-    }
-  ]
+  "framework": "nextjs"
 }
