@@ -3,11 +3,6 @@
   "outputDirectory": "packages/registry/.next",
   "installCommand": "pnpm install",
   "framework": "nextjs",
-  "functions": {
-    "packages/registry/app/**": {
-      "maxDuration": 30
-    }
-  },
   "rewrites": [
     {
       "source": "/registry.json",
