@@ -1,6 +1,6 @@
 {
-  "buildCommand": "cd packages/registry && pnpm build",
-  "outputDirectory": "packages/registry/.next",
+  "buildCommand": "pnpm build",
+  "outputDirectory": ".next",
   "installCommand": "pnpm install",
   "framework": "nextjs"
 }
