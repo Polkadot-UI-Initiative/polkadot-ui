@@ -4,10 +4,10 @@
   "private": true,
   "description": "Polkadot UI components with CLI and registry server",
   "scripts": {
-    "dev": "pnpm --filter app dev",
+    "dev": "pnpm --filter registry dev",
     "build": "pnpm -r build",
     "build:cli": "pnpm --filter cli build",
-    "build:app": "pnpm --filter app build",
+    "build:registry": "pnpm --filter registry build",
     "test": "pnpm -r test",
     "lint": "pnpm -r lint",
     "clean": "pnpm -r clean",
