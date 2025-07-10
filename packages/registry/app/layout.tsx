@@ -5,6 +5,7 @@ import "./globals.css";
 import { PolkadotProvider } from "@/registry/polkadot-ui/providers/polkadot-provider";
 import { Navigation } from "@/components/layout/navigation";
 import { ThemeProvider } from "@/components/theme/theme-provider";
+import { MouseFollower } from "@/components/mouse-follower";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,6 +37,7 @@ export default function RootLayout({
           <div className="relative flex min-h-screen flex-col">
             <Navigation />
             <PolkadotProvider>
+              <MouseFollower />
               <main className="flex-1">{children}</main>
             </PolkadotProvider>
           </div>

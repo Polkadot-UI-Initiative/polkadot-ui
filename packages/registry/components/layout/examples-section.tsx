@@ -1,5 +1,13 @@
 import Link from "next/link";
 import { BlockNumber } from "@/registry/polkadot-ui/blocks/block-number/components/block-number";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const examples = [
   {
@@ -54,22 +62,15 @@ export function ExamplesSection() {
       {/* Examples grid */}
       <div className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3">
         {examples.map((example) => (
-          <div
-            key={example.name}
-            className="relative overflow-hidden rounded-lg border bg-background p-2"
-          >
-            <div className="flex  flex-col justify-between rounded-md p-6">
-              <div className="space-y-2">
-                <h3 className="font-bold">{example.name}</h3>
-                <p className="text-sm text-muted-foreground">
-                  {example.description}
-                </p>
-              </div>
-              <div className="flex items-center justify-center">
-                {example.component}
-              </div>
-            </div>
-            <div className="flex items-center justify-between p-6">
+          <Card key={example.name} className="relative overflow-hidden">
+            <CardHeader>
+              <CardTitle className="text-lg">{example.name}</CardTitle>
+              <CardDescription>{example.description}</CardDescription>
+            </CardHeader>
+            <CardContent className="flex items-center justify-center">
+              {example.component}
+            </CardContent>
+            <CardFooter className="flex items-center justify-between pt-0">
               <div className="text-xs text-muted-foreground font-mono">
                 {example.code}
               </div>
@@ -79,25 +80,22 @@ export function ExamplesSection() {
               >
                 View →
               </Link>
-            </div>
-          </div>
+            </CardFooter>
+          </Card>
         ))}
-        <div className="relative overflow-hidden rounded-lg border bg-background p-2 flex flex-col justify-center items-center">
-          <div className="flex flex-col justify-between rounded-md">
-            <div className="space-y-2">
-              <h3 className="font-bold">More Coming Soon</h3>
-            </div>
-          </div>
-          <div className="flex items-center justify-between pt-4">
-            <div className="text-xs text-muted-foreground font-mono"></div>
+        <Card className="relative overflow-hidden flex flex-col justify-center items-center">
+          <CardHeader className="text-center">
+            <CardTitle className="text-lg">More Coming Soon</CardTitle>
+          </CardHeader>
+          <CardFooter className="flex items-center justify-center pt-0">
             <Link
               href="https://github.com/Polkadot-UI-Initiative/dot-ui"
               className="text-xs text-primary hover:underline"
             >
               View on GitHub →
             </Link>
-          </div>
-        </div>
+          </CardFooter>
+        </Card>
       </div>
     </section>
   );

@@ -114,7 +114,7 @@ export function AnimatedCodeBlock() {
         onValueChange={setActiveTab}
         className="w-full"
       >
-        <div className="bg-card border rounded-lg overflow-hidden shadow-lg">
+        <div className="bg-card border rounded-lg overflow-hidden shadow-lg backdrop-blur-sm">
           <TabsList className="w-full h-auto p-1 bg-muted/30 rounded-none border-b">
             {packageManagers.map((tab) => (
               <TabsTrigger
