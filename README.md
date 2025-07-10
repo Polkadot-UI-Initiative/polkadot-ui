@@ -13,3 +13,8 @@ This repository contains UI components, blocks, and utilities specifically
 designed for building applications in the Polkadot ecosystem.
 
 For development and implementation details, please check the `papi+cli` branch.
+
+## Component Discussion / Priorization
+
+Can be found in
+[this thread](https://github.com/Polkadot-UI-Initiative/components/discussions)
