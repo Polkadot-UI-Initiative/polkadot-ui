@@ -1,0 +1,21 @@
+{
+  "buildCommand": "cd packages/registry && pnpm build",
+  "outputDirectory": "packages/registry/.next",
+  "installCommand": "pnpm install",
+  "framework": "nextjs",
+  "functions": {
+    "packages/registry/app/**": {
+      "maxDuration": 30
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/registry.json",
+      "destination": "/registry.json"
+    },
+    {
+      "source": "/r/:component.json",
+      "destination": "/r/:component.json"
+    }
+  ]
+}
