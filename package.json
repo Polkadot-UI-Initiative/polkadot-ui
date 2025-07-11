@@ -1,0 +1,41 @@
+{
+    "name": "dot-ui-monorepo",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Polkadot UI components with CLI and registry server",
+    "scripts": {
+      "dev": "pnpm --filter registry dev",
+      "build": "pnpm -r build",
+      "build:cli": "pnpm --filter cli build",
+      "build:registry": "pnpm --filter registry build",
+      "test": "pnpm -r test",
+      "lint": "pnpm -r lint",
+      "clean": "pnpm -r clean",
+      "cli": "pnpm --filter cli dev"
+    },
+    "keywords": [
+      "polkadot",
+      "web3",
+      "ui",
+      "components",
+      "cli",
+      "registry"
+    ],
+    "author": "Polkadot UI Initiative",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/Polkadot-UI-Initiative/dot-ui.git"
+    },
+    "engines": {
+      "node": ">=16.0.0",
+      "pnpm": ">=8.0.0"
+    },
+    "packageManager": "pnpm@9.15.3",
+    "pnpm": {
+      "overrides": {
+        "@types/react": "19.1.2",
+        "@types/react-dom": "19.1.2"
+      }
+    }
+  }

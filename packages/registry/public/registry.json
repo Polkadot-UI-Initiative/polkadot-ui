@@ -1,0 +1,63 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "polkadot-components",
+  "homepage": "https://polkadot-components.com",
+  "items": [
+    {
+      "name": "block-number",
+      "type": "registry:component",
+      "title": "Block Number",
+      "description": "A simple block number component that displays the current block number from Polkadot Asset Hub. Need to setup dedot.",
+      "dependencies": ["dedot"],
+      "requiresDedot": true,
+      "registryDependencies": ["button"],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/block-number/components/block-number.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/block-number/hooks/use-block-number.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/block-number/hooks/use-api.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/block-number/hooks/use-wallets.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/providers/api-provider.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/providers/wallet-provider.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/utils.polkadot-ui.ts",
+          "type": "registry:lib"
+        },
+
+        {
+          "path": "registry/polkadot-ui/lib/types.polkadot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/config.polkadot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/extension-wallet.polkadot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/wallet.polkadot-ui.ts",
+          "type": "registry:lib"
+        }
+      ]
+    }
+  ]
+}

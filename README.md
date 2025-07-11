@@ -6,6 +6,7 @@ A collection of reusable UI components for Polkadot ecosystem applications.
 
 - `main` - Main branch with basic documentation
 - `papi+cli` - Development branch with PAPI integration and CLI tooling
+- `dedot` - Development branch with Dedot integration, Shadcn CLI with v0 feature
 
 ## Documentation
 
