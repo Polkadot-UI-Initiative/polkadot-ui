@@ -121,6 +121,10 @@ export class PolkadotDetector {
             const config = await this.getPapiConfig();
             existingChains = config?.chains || [];
         }
+        console.log("hasPapi", hasPapi);
+        console.log("hasDedot", hasDedot);
+        console.log("hasConfig", hasConfig);
+        console.log("existingChains", existingChains);
         return {
             hasExistingConfig: hasConfig,
             existingChains,

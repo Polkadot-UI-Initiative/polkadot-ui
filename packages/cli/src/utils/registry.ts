@@ -4,9 +4,7 @@ export class Registry {
   private baseUrl: string;
 
   constructor(isDev: boolean = false) {
-    this.baseUrl = isDev
-      ? "http://localhost:3000"
-      : "https://polkadot-ui-registry.vercel.app";
+    this.baseUrl = isDev ? "http://localhost:3000" : "https://dot-ui.com";
   }
 
   /**
