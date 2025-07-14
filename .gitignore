@@ -20,6 +20,9 @@ packages/cli/node_modules
 /out/
 packages/registry/.next/
 
+#fumadocs
+packages/registry/.source
+
 
 # production
 /build
