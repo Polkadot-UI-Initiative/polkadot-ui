@@ -5,19 +5,22 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { GitHubStars } from "@/components/github-stars";
+import { Search } from "lucide-react";
+import { useSearchContext } from "fumadocs-ui/provider";
 
 export function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { setOpenSearch } = useSearchContext();
 
   const navItems = [
     { name: "Docs", href: "/docs" },
-    { name: "Components", href: "/components" },
+    { name: "Components", href: "/docs/components" },
     { name: "CLI", href: "/docs/cli" },
   ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center">
+      <div className="flex h-14 items-center px-4">
         <div className="mr-4 hidden md:flex">
           <Link className="mr-6 flex items-center space-x-2" href="/">
             <div className="h-6 w-6 rounded bg-primary" />
@@ -83,6 +86,18 @@ export function Navigation() {
             </Link>
           </div>
           <nav className="flex items-center space-x-2 gap-0">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setOpenSearch(true)}
+              className="group flex items-center gap-2 text-sm text-muted-foreground"
+            >
+              <Search className="h-4 w-4" />
+              <span className="hidden sm:inline">Search...</span>
+              <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted group-hover:bg-muted-foreground/10 px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+                <span className="text-xs">⌘</span>K
+              </kbd>
+            </Button>
             <ThemeToggle />
             <Link
               href="https://github.com/Polkadot-UI-Initiative/dot-ui"

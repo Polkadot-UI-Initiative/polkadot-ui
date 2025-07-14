@@ -6,6 +6,7 @@ import { PolkadotProvider } from "@/registry/polkadot-ui/providers/polkadot-prov
 import { Navigation } from "@/components/layout/navigation";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { MouseFollower } from "@/components/mouse-follower";
+import { RootProvider as FumadocsRootProvider } from "fumadocs-ui/provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,15 +34,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider>
-          <div className="relative flex min-h-screen flex-col">
-            <Navigation />
-            <PolkadotProvider>
-              <main className="flex-1">{children}</main>
-            </PolkadotProvider>
-            <MouseFollower />
-          </div>
-        </ThemeProvider>
+        <FumadocsRootProvider>
+          <ThemeProvider>
+            <div className="relative flex min-h-screen flex-col">
+              <Navigation />
+              <PolkadotProvider>
+                <main className="flex-1">{children}</main>
+              </PolkadotProvider>
+              <MouseFollower />
+            </div>
+          </ThemeProvider>
+        </FumadocsRootProvider>
         <Analytics />
       </body>
     </html>

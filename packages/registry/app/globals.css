@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -142,5 +144,33 @@
 @layer components {
   .container {
     @apply w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+/* Fix sidebar positioning for fixed header */
+[data-docs-layout] aside[data-sidebar] {
+  top: 3.5rem !important; /* 56px / 14 * 0.25rem = 3.5rem */
+  height: calc(100vh - 3.5rem) !important;
+}
+
+/* Fix collapsed sidebar z-index and positioning */
+[data-docs-layout] [data-sidebar-trigger] {
+  z-index: 60 !important; /* Above the navigation (z-50) */
+}
+
+[data-docs-layout] [data-sidebar-overlay] {
+  z-index: 55 !important; /* Above the navigation (z-50) */
+}
+
+[data-docs-layout] aside[data-sidebar][data-state="open"] {
+  z-index: 60 !important; /* Above the navigation (z-50) */
+}
+
+/* Ensure mobile sidebar appears above navigation */
+@media (max-width: 768px) {
+  [data-docs-layout] aside[data-sidebar] {
+    z-index: 60 !important;
+    top: 0 !important; /* Full height on mobile */
+    height: 100vh !important;
   }
 }
