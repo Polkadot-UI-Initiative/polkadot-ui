@@ -95,13 +95,11 @@ export class ListCommand {
   /**
    * Show registry information
    */
-  private showRegistryInfo(): void {
-    const registryUrl = this.options.dev
-      ? "http://localhost:3000"
-      : "https://polkadot-ui-registry.vercel.app";
+  private async showRegistryInfo(): Promise<void> {
+    const registryInfo = await this.registry.getRegistryInfo();
 
     logger.section("Registry Information:");
-    logger.detail(`Source: ${registryUrl}`, true);
+    logger.detail(`Source: ${registryInfo.url}`, true);
 
     if (this.options.dev) {
       logger.detail("Environment: Development", true);
