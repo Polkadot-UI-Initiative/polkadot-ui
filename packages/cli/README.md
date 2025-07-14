@@ -38,10 +38,10 @@ polkadot-ui list --dev
 ### Install Components
 
 ```bash
-# Production - uses mainnet Polkadot
+# Production - uses mainnet Polkadot and official shadcn registry
 polkadot-ui add block-number
 
-# Development - uses testnet Paseo Asset Hub
+# Development - uses localhost registry for custom components, official shadcn registry for base components
 polkadot-ui add block-number --dev
 ```
 
@@ -81,21 +81,44 @@ pnpm install
 polkadot-ui add block-number
 ```
 
+## Development vs Production Mode
+
+### Development Mode (`--dev`)
+
+When using the `--dev` flag:
+
+- **Custom components**: Uses `http://localhost:3000` registry
+- **shadcn components**: Downloads from official shadcn registry (button, card,
+  etc.)
+- **Polkadot API**: Configures with Paseo Asset Hub testnet
+- **Perfect for**: Testing custom registry setups, developing new components
+
+### Production Mode (default)
+
+When using without `--dev`:
+
+- **Custom components**: Uses production registry URL
+- **shadcn components**: Downloads from official shadcn registry (button, card,
+  etc.)
+- **Polkadot API**: Configures with Polkadot mainnet
+- **Perfect for**: Production applications, using stable components
+
 ## What the CLI Does
 
 1. **Validates project structure** - Ensures React/TypeScript setup
 2. **Detects Tailwind version** - Uses `shadcn@canary` for v4, `shadcn@latest`
    for v3
-3. **Shows interactive prompts** - Users can select shadcn preferences (colors,
-   etc.)
-4. **Installs component** - Uses shadcn CLI with user input
-5. **Detects Polkadot components** - Checks for `polkadot-api` dependency or
-   `requiresPolkadotApi` flag
-6. **Sets up Polkadot API** - Only for components that need it:
+3. **Installs component with shadcn** - Uses `npx shadcn add {componentUrl}`
+   directly
+   - shadcn automatically handles component files and `registryDependencies`
+     (button, card, etc.)
+   - Shows interactive prompts for user preferences (colors, etc.)
+4. **Installs Polkadot dependencies** - Only for components that need it:
+   - Adds `polkadot-api` and `@polkadot-api/descriptors` packages
+5. **Sets up Polkadot API** - Only for components that need it:
    - Adds chain metadata (`papi add paseo_asset_hub` or `papi add polkadot`)
    - Generates TypeScript types (`papi`)
-   - Adapts provider to prefer the configured chain
-7. **Shows detailed next steps** - Complete integration instructions with code
+6. **Shows detailed next steps** - Complete integration instructions with code
    examples
 
 ## Troubleshooting

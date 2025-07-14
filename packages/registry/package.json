@@ -18,6 +18,7 @@
     "@radix-ui/react-label": "^2.1.4",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-tabs": "^1.1.12",
+    "@styleglide/theme-editor": "^0.0.15",
     "@tanstack/react-query": "^5.81.5",
     "@vercel/analytics": "^1.5.0",
     "class-variance-authority": "^0.7.1",

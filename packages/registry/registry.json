@@ -28,7 +28,6 @@
           "path": "registry/polkadot-ui/lib/utils.polkadot-ui.ts",
           "type": "registry:lib"
         },
-
         {
           "path": "registry/polkadot-ui/lib/types.polkadot-ui.ts",
           "type": "registry:lib"

@@ -2,19 +2,21 @@
   "name": "dot-ui",
   "version": "0.1.0",
   "description": "CLI for installing Polkadot UI components with automatic API setup",
-  "main": "bin/dot-ui.js",
+  "type": "module",
+  "main": "dist/index.js",
   "bin": {
-    "dot-ui": "./bin/dot-ui.js"
+    "dot-ui": "./bin/dot-ui.mjs"
   },
   "files": [
     "bin/**/*",
-    "lib/**/*",
+    "dist/**/*",
     "README.md"
   ],
   "scripts": {
-    "dev": "node bin/dot-ui.js",
-    "build": "echo 'No build step needed'",
-    "prepublishOnly": "echo 'Ready to publish'"
+    "dev": "tsx src/index.ts",
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build"
   },
   "keywords": [
     "polkadot",
@@ -39,6 +41,11 @@
     "ora": "^5.4.1",
     "inquirer": "^8.2.6",
     "execa": "^5.1.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "tsx": "^4.0.0",
+    "@types/node": "^20.0.0"
   },
   "engines": {
     "node": ">=16.0.0"
