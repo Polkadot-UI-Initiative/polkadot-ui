@@ -6,6 +6,42 @@ import type { ComponentInfo, PackageJson } from "../types/index";
 jest.mock("fs/promises");
 const mockFs = fs as jest.Mocked<typeof fs>;
 
+// Helper functions for common mock patterns
+function mockPackageJsonRead(
+  packageJson: PackageJson | null,
+  additionalFiles?: Record<string, any>
+) {
+  mockFs.readFile.mockImplementation((filePath: any) => {
+    const pathStr = filePath.toString();
+    if (pathStr.includes("package.json")) {
+      if (packageJson === null) {
+        return Promise.reject(new Error("ENOENT: no such file"));
+      }
+      return Promise.resolve(JSON.stringify(packageJson));
+    }
+
+    // Handle additional files (like polkadot-api.json)
+    if (additionalFiles) {
+      for (const [fileName, content] of Object.entries(additionalFiles)) {
+        if (pathStr.includes(fileName)) {
+          return Promise.resolve(JSON.stringify(content));
+        }
+      }
+    }
+
+    return Promise.reject(new Error("File not found"));
+  });
+}
+
+function mockDirectoryExists(exists: boolean = true) {
+  if (exists) {
+    const mockStat = { isDirectory: () => true };
+    mockFs.stat.mockResolvedValue(mockStat as any);
+  } else {
+    mockFs.stat.mockRejectedValue(new Error("ENOENT"));
+  }
+}
+
 describe("Component Detection Tests", () => {
   let detector: PolkadotDetector;
   const mockCwd = "/test/project";
@@ -13,6 +49,7 @@ describe("Component Detection Tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     detector = new PolkadotDetector(mockCwd);
+    detector.clearCache(); // Explicitly clear any cached data
   });
 
   describe("Component Requirements Detection", () => {
@@ -241,20 +278,26 @@ describe("Component Detection Tests", () => {
 
   describe("Integration with Setup Detection", () => {
     it("should properly integrate component detection with setup requirements", async () => {
-      // Test scenario: component requires polkadot but user has dedot installed
       const componentInfo: Partial<ComponentInfo> = {
-        name: "papi-requiring-component",
+        name: "polkadot-component",
         requiresPolkadotApi: true,
         dependencies: ["polkadot-api"],
       };
 
+      // Mock dedot installation
       const mockPackageJson: PackageJson = {
         dependencies: { dedot: "^1.0.0" },
       };
 
-      // Mock package.json reads for needsPolkadotSetup() -> detectPolkadotLibrary()
-      mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasPapi()
-      mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasDedot()
+      // Create fresh detector for this test and ensure complete isolation
+      const freshDetector = new PolkadotDetector(mockCwd);
+
+      // Reset all mocks and set up fresh
+      jest.resetAllMocks();
+      mockFs.readFile.mockResolvedValue(JSON.stringify(mockPackageJson));
+
+      // Clear detector cache to ensure fresh state
+      freshDetector.clearCache();
 
       const hasPolkadotDependency =
         componentInfo.dependencies?.includes("polkadot-api") || false;
@@ -267,7 +310,9 @@ describe("Component Detection Tests", () => {
       expect(requiresPolkadot).toBe(true);
 
       // Check if setup is needed - should return false for dedot
-      const needsSetup = await detector.needsPolkadotSetup(requiresPolkadot);
+      const needsSetup = await freshDetector.needsPolkadotSetup(
+        requiresPolkadot
+      );
       expect(needsSetup).toBe(false); // dedot satisfies polkadot requirement
     });
 
@@ -282,7 +327,10 @@ describe("Component Detection Tests", () => {
       const mockPackageJson: PackageJson = {
         dependencies: { react: "^18.0.0", tailwind: "^3.0.0" },
       };
-      mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
+
+      // Create fresh detector for this test
+      const freshDetector = new PolkadotDetector(mockCwd);
+      mockPackageJsonRead(mockPackageJson);
 
       const hasPolkadotDependency =
         componentInfo.dependencies?.includes("polkadot-api") || false;
@@ -294,7 +342,9 @@ describe("Component Detection Tests", () => {
 
       expect(requiresPolkadot).toBe(true);
 
-      const needsSetup = await detector.needsPolkadotSetup(requiresPolkadot);
+      const needsSetup = await freshDetector.needsPolkadotSetup(
+        requiresPolkadot
+      );
       expect(needsSetup).toBe(true);
     });
 

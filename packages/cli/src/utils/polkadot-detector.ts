@@ -8,20 +8,34 @@ import {
 
 export class PolkadotDetector {
   private cwd: string;
+  private _packageJsonCache: PackageJson | null | undefined = undefined;
 
   constructor(cwd: string = process.cwd()) {
     this.cwd = cwd;
   }
 
   /**
-   * Read and parse package.json
+   * Clear the package.json cache (useful for testing)
+   */
+  clearCache(): void {
+    this._packageJsonCache = undefined;
+  }
+
+  /**
+   * Read and parse package.json (cached)
    */
   private async getPackageJson(): Promise<PackageJson | null> {
+    if (this._packageJsonCache !== undefined) {
+      return this._packageJsonCache;
+    }
+
     try {
       const packageJsonPath = path.join(this.cwd, "package.json");
       const content = await fs.readFile(packageJsonPath, "utf-8");
-      return JSON.parse(content);
+      this._packageJsonCache = JSON.parse(content);
+      return this._packageJsonCache!; // We know it's not undefined here
     } catch {
+      this._packageJsonCache = null;
       return null;
     }
   }

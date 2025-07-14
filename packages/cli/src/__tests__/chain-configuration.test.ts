@@ -13,6 +13,7 @@ describe("Chain Configuration Tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     detector = new PolkadotDetector(mockCwd);
+    detector.clearCache(); // Explicitly clear any cached data
   });
 
   describe("Development Mode Chains", () => {
@@ -319,9 +320,8 @@ describe("Chain Configuration Tests", () => {
         dependencies: { "polkadot-api": "^1.0.0" },
       };
 
-      // Mock package.json reads (hasPapi and hasDedot both read it)
-      mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasPapi()
-      mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasDedot()
+      // Mock single package.json read (now cached)
+      mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
 
       // Mock .papi directory check
       const mockStat = { isDirectory: () => true };
@@ -359,9 +359,8 @@ describe("Chain Configuration Tests", () => {
         dependencies: { "polkadot-api": "^1.0.0" },
       };
 
-      // Mock package.json reads (hasPapi and hasDedot both read it)
-      mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasPapi()
-      mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasDedot()
+      // Mock single package.json read (now cached)
+      mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
 
       // Mock .papi directory check
       const mockStat = { isDirectory: () => true };
@@ -395,9 +394,8 @@ describe("Chain Configuration Tests", () => {
         dependencies: { "polkadot-api": "^1.0.0" },
       };
 
-      // Mock package.json reads (hasPapi and hasDedot both read it)
-      mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasPapi()
-      mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasDedot()
+      // Mock single package.json read (now cached)
+      mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
 
       // Mock .papi directory check
       const mockStat = { isDirectory: () => true };
@@ -431,16 +429,12 @@ describe("Chain Configuration Tests", () => {
         },
       };
 
-      // Mock package.json reads for detectPolkadotLibrary() which calls hasPapi() and hasDedot()
-      mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasPapi()
-      mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasDedot()
+      // Mock single package.json read (now cached)
+      mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
 
       // Mock .papi directory check for hasPapiConfig()
       const mockStat = { isDirectory: () => true };
       mockFs.stat.mockResolvedValueOnce(mockStat as any);
-
-      // Mock package.json read for hasDescriptors()
-      mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
 
       const result = await detector.needsPolkadotSetup(true);
 
@@ -452,9 +446,8 @@ describe("Chain Configuration Tests", () => {
         dependencies: { "polkadot-api": "^1.0.0" },
       };
 
-      // Mock package.json reads for detectPolkadotLibrary() which calls hasPapi() and hasDedot()
-      mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasPapi()
-      mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasDedot()
+      // Mock single package.json read (now cached)
+      mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
 
       // Mock no .papi directory for hasPapiConfig()
       mockFs.stat.mockRejectedValueOnce(new Error("ENOENT"));

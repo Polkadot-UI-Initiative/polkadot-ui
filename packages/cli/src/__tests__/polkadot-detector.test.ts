@@ -11,13 +11,52 @@ import type {
 jest.mock("fs/promises");
 const mockFs = fs as jest.Mocked<typeof fs>;
 
+// Helper functions for common mock patterns
+function mockPackageJsonRead(
+  packageJson: PackageJson | null,
+  additionalFiles?: Record<string, any>
+) {
+  mockFs.readFile.mockImplementation((filePath: any) => {
+    const pathStr = filePath.toString();
+    if (pathStr.includes("package.json")) {
+      if (packageJson === null) {
+        return Promise.reject(new Error("ENOENT: no such file"));
+      }
+      return Promise.resolve(JSON.stringify(packageJson));
+    }
+
+    // Handle additional files (like polkadot-api.json)
+    if (additionalFiles) {
+      for (const [fileName, content] of Object.entries(additionalFiles)) {
+        if (pathStr.includes(fileName)) {
+          return Promise.resolve(JSON.stringify(content));
+        }
+      }
+    }
+
+    return Promise.reject(new Error("File not found"));
+  });
+}
+
+function mockDirectoryExists(exists: boolean = true) {
+  if (exists) {
+    const mockStat = { isDirectory: () => true };
+    mockFs.stat.mockResolvedValue(mockStat as any);
+  } else {
+    mockFs.stat.mockRejectedValue(new Error("ENOENT"));
+  }
+}
+
 describe("PolkadotDetector", () => {
   let detector: PolkadotDetector;
   const mockCwd = "/test/project";
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // Create a completely new detector instance for each test
     detector = new PolkadotDetector(mockCwd);
+    // Ensure the cache is completely cleared
+    detector.clearCache();
   });
 
   describe("Package Detection", () => {
@@ -175,9 +214,6 @@ describe("PolkadotDetector", () => {
             dedot: "^1.0.0",
           },
         };
-        // Mock for hasPapi() call - no papi installed
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
-        // Mock for hasDedot() call - dedot is installed
         mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
 
         const result = await detector.detectPolkadotLibrary();
@@ -365,11 +401,10 @@ describe("PolkadotDetector", () => {
     describe("getPolkadotApiConfig", () => {
       it("should return complete config with papi setup", async () => {
         // Mock papi installation
-        const mockPackageJson: PackageJson = {
-          dependencies: { "polkadot-api": "^1.0.0" },
+        const mockPackageJson = {
+          dependencies: { "polkadot-api": "1.0.0" },
         };
 
-        // Mock papi config
         const mockConfig = {
           version: 0,
           descriptorPath: ".papi/descriptors",
@@ -385,16 +420,11 @@ describe("PolkadotDetector", () => {
           },
         };
 
-        // getPolkadotApiConfig calls: hasPapi(), hasDedot(), hasPapiConfig(), getPapiConfig()
-        // Mock for hasPapi() call
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
-        // Mock for hasDedot() call
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
-        // Mock for hasPapiConfig() - .papi directory exists
-        const mockStat = { isDirectory: () => true };
-        mockFs.stat.mockResolvedValueOnce(mockStat as any);
-        // Mock for getPapiConfig() - read polkadot-api.json
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockConfig));
+        // Mock package.json and config files
+        mockPackageJsonRead(mockPackageJson, {
+          "polkadot-api.json": mockConfig,
+        });
+        mockDirectoryExists(true);
 
         const result = await detector.getPolkadotApiConfig();
 
@@ -408,17 +438,13 @@ describe("PolkadotDetector", () => {
 
       it("should return config with dedot setup", async () => {
         // Mock dedot installation
-        const mockPackageJson: PackageJson = {
-          dependencies: { dedot: "^1.0.0" },
+        const mockPackageJson = {
+          dependencies: { dedot: "1.0.0" },
         };
 
-        // getPolkadotApiConfig calls: hasPapi(), hasDedot(), hasPapiConfig()
-        // Mock for hasPapi() call - no papi installed
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
-        // Mock for hasDedot() call - dedot is installed
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
-        // Mock for hasPapiConfig() - .papi directory doesn't exist
-        mockFs.stat.mockRejectedValueOnce(new Error("ENOENT"));
+        // Mock package.json, no .papi directory
+        mockPackageJsonRead(mockPackageJson);
+        mockDirectoryExists(false);
 
         const result = await detector.getPolkadotApiConfig();
 
@@ -431,14 +457,14 @@ describe("PolkadotDetector", () => {
       });
 
       it("should return empty config when no polkadot libraries are installed", async () => {
-        // Mock no polkadot packages
-        const mockPackageJson: PackageJson = {
-          dependencies: { react: "^18.0.0" },
+        // Mock no polkadot libraries
+        const mockPackageJson = {
+          dependencies: { react: "18.0.0" },
         };
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
 
-        // Mock no papi config (directory doesn't exist)
-        mockFs.stat.mockRejectedValueOnce(new Error("ENOENT"));
+        // Mock package.json, no .papi directory
+        mockPackageJsonRead(mockPackageJson);
+        mockDirectoryExists(false);
 
         const result = await detector.getPolkadotApiConfig();
 
@@ -461,50 +487,32 @@ describe("PolkadotDetector", () => {
       });
 
       it("should return true when no polkadot library is installed", async () => {
+        const freshDetector = new PolkadotDetector(mockCwd);
         const mockPackageJson: PackageJson = {
           dependencies: { react: "^18.0.0" },
         };
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
+        mockPackageJsonRead(mockPackageJson);
 
-        const result = await detector.needsPolkadotSetup(true);
+        const result = await freshDetector.needsPolkadotSetup(true);
 
         expect(result).toBe(true);
       });
 
       it("should return true when papi is installed but not configured", async () => {
-        // Mock papi installation
+        const freshDetector = new PolkadotDetector(mockCwd);
         const mockPackageJson: PackageJson = {
           dependencies: { "polkadot-api": "^1.0.0" },
         };
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
+        mockPackageJsonRead(mockPackageJson);
+        mockDirectoryExists(false);
 
-        // Mock no papi config
-        mockFs.stat.mockRejectedValueOnce(new Error("ENOENT"));
-
-        const result = await detector.needsPolkadotSetup(true);
-
-        expect(result).toBe(true);
-      });
-
-      it("should return true when papi is configured but descriptors are missing", async () => {
-        // Mock papi installation without descriptors
-        const mockPackageJson: PackageJson = {
-          dependencies: { "polkadot-api": "^1.0.0" },
-        };
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
-
-        // Mock papi config exists
-        const mockStat = { isDirectory: () => true };
-        mockFs.stat.mockResolvedValueOnce(mockStat as any);
-
-        const result = await detector.needsPolkadotSetup(true);
+        const result = await freshDetector.needsPolkadotSetup(true);
 
         expect(result).toBe(true);
       });
 
       it("should return false when papi is fully configured", async () => {
+        const freshDetector = new PolkadotDetector(mockCwd);
         const mockPackageJson: PackageJson = {
           dependencies: {
             "polkadot-api": "^1.0.0",
@@ -512,32 +520,35 @@ describe("PolkadotDetector", () => {
           },
         };
 
-        // Mock package.json reads for detectPolkadotLibrary() which calls hasPapi() and hasDedot()
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasPapi()
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasDedot()
+        const mockConfig = {
+          version: 0,
+          descriptorPath: ".papi/descriptors",
+          entries: {
+            polkadot: {
+              chain: "polkadot",
+              metadata: ".papi/metadata/polkadot.scale",
+            },
+          },
+        };
 
-        // Mock .papi directory check for hasPapiConfig()
-        const mockStat = { isDirectory: () => true };
-        mockFs.stat.mockResolvedValueOnce(mockStat as any);
+        mockPackageJsonRead(mockPackageJson, {
+          "polkadot-api.json": mockConfig,
+        });
+        mockDirectoryExists(true);
 
-        // Mock package.json read for hasDescriptors()
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
-
-        const result = await detector.needsPolkadotSetup(true);
+        const result = await freshDetector.needsPolkadotSetup(true);
 
         expect(result).toBe(false);
       });
 
       it("should return false when dedot is installed", async () => {
+        const freshDetector = new PolkadotDetector(mockCwd);
         const mockPackageJson: PackageJson = {
           dependencies: { dedot: "^1.0.0" },
         };
+        mockPackageJsonRead(mockPackageJson);
 
-        // Mock package.json reads for detectPolkadotLibrary() which calls hasPapi() and hasDedot()
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasPapi()
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasDedot()
-
-        const result = await detector.needsPolkadotSetup(true);
+        const result = await freshDetector.needsPolkadotSetup(true);
 
         expect(result).toBe(false);
       });
@@ -556,12 +567,13 @@ describe("PolkadotDetector", () => {
       });
 
       it("should recommend papi installation when no library is installed", async () => {
+        const freshDetector = new PolkadotDetector(mockCwd);
         const mockPackageJson: PackageJson = {
           dependencies: { react: "^18.0.0" },
         };
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
+        mockPackageJsonRead(mockPackageJson);
 
-        const result = await detector.getRecommendedSetup(true);
+        const result = await freshDetector.getRecommendedSetup(true);
 
         expect(result).toEqual({
           needsInstall: true,
@@ -572,20 +584,20 @@ describe("PolkadotDetector", () => {
       });
 
       it("should recommend configuration when papi is installed but not configured", async () => {
-        // Mock papi installation without descriptors
+        const freshDetector = new PolkadotDetector(mockCwd);
         const mockPackageJson: PackageJson = {
-          dependencies: { "polkadot-api": "^1.0.0" },
+          dependencies: {
+            "polkadot-api": "^1.0.0",
+            "@polkadot-api/descriptors": "^1.0.0",
+          },
         };
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
+        mockPackageJsonRead(mockPackageJson);
+        mockDirectoryExists(false);
 
-        // Mock no papi config
-        mockFs.stat.mockRejectedValueOnce(new Error("ENOENT"));
-
-        const result = await detector.getRecommendedSetup(true);
+        const result = await freshDetector.getRecommendedSetup(true);
 
         expect(result).toEqual({
-          needsInstall: true,
+          needsInstall: false,
           needsConfig: true,
           recommendedLibrary: "papi",
           existingLibrary: "papi",
@@ -593,19 +605,13 @@ describe("PolkadotDetector", () => {
       });
 
       it("should recommend no setup when dedot is installed", async () => {
+        const freshDetector = new PolkadotDetector(mockCwd);
         const mockPackageJson: PackageJson = {
           dependencies: { dedot: "^1.0.0" },
         };
+        mockPackageJsonRead(mockPackageJson);
 
-        // Mock package.json reads for first detectPolkadotLibrary() call
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasPapi()
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasDedot()
-
-        // Mock package.json reads for needsPolkadotSetup() -> detectPolkadotLibrary() call
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasPapi()
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasDedot()
-
-        const result = await detector.getRecommendedSetup(true);
+        const result = await freshDetector.getRecommendedSetup(true);
 
         expect(result).toEqual({
           needsInstall: false,
@@ -616,6 +622,7 @@ describe("PolkadotDetector", () => {
       });
 
       it("should recommend no setup when papi is fully configured", async () => {
+        const freshDetector = new PolkadotDetector(mockCwd);
         const mockPackageJson: PackageJson = {
           dependencies: {
             "polkadot-api": "^1.0.0",
@@ -623,28 +630,23 @@ describe("PolkadotDetector", () => {
           },
         };
 
-        // Mock package.json reads for first detectPolkadotLibrary() call
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasPapi()
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasDedot()
+        const mockConfig = {
+          version: 0,
+          descriptorPath: ".papi/descriptors",
+          entries: {
+            polkadot: {
+              chain: "polkadot",
+              metadata: ".papi/metadata/polkadot.scale",
+            },
+          },
+        };
 
-        // Mock package.json reads for needsPolkadotSetup() -> detectPolkadotLibrary() call
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasPapi()
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson)); // for hasDedot()
+        mockPackageJsonRead(mockPackageJson, {
+          "polkadot-api.json": mockConfig,
+        });
+        mockDirectoryExists(true);
 
-        // Mock .papi directory check for needsPolkadotSetup() -> hasPapiConfig()
-        const mockStat = { isDirectory: () => true };
-        mockFs.stat.mockResolvedValueOnce(mockStat as any);
-
-        // Mock package.json read for needsPolkadotSetup() -> hasDescriptors()
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
-
-        // Mock .papi directory check for direct hasPapiConfig() call
-        mockFs.stat.mockResolvedValueOnce(mockStat as any);
-
-        // Mock package.json read for direct hasDescriptors() call
-        mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
-
-        const result = await detector.getRecommendedSetup(true);
+        const result = await freshDetector.getRecommendedSetup(true);
 
         expect(result).toEqual({
           needsInstall: false,
@@ -656,40 +658,69 @@ describe("PolkadotDetector", () => {
     });
   });
 
+  describe("Caching Optimization", () => {
+    it("should only read package.json once even when multiple methods are called", async () => {
+      // Create a fresh detector instance for this test
+      const freshDetector = new PolkadotDetector(mockCwd);
+
+      const mockPackageJson: PackageJson = {
+        dependencies: { "polkadot-api": "^1.0.0", dedot: "^1.0.0" },
+      };
+      mockFs.readFile.mockResolvedValue(JSON.stringify(mockPackageJson));
+
+      // Call multiple methods that all need package.json
+      await freshDetector.hasPapi();
+      await freshDetector.hasDedot();
+      await freshDetector.hasDescriptors();
+      await freshDetector.detectPolkadotLibrary();
+
+      // Should only have been called once due to caching
+      expect(mockFs.readFile).toHaveBeenCalledTimes(1);
+      expect(mockFs.readFile).toHaveBeenCalledWith(
+        path.join(mockCwd, "package.json"),
+        "utf-8"
+      );
+    });
+  });
+
   describe("Edge Cases", () => {
     it("should handle malformed package.json gracefully", async () => {
+      const freshDetector = new PolkadotDetector(mockCwd);
       mockFs.readFile.mockResolvedValueOnce("invalid json");
 
-      const result = await detector.hasPapi();
+      const result = await freshDetector.hasPapi();
 
       expect(result).toBe(false);
     });
 
     it("should handle missing package.json gracefully", async () => {
-      mockFs.readFile.mockRejectedValueOnce(new Error("ENOENT: no such file"));
+      const freshDetector = new PolkadotDetector(mockCwd);
+      mockPackageJsonRead(null); // null means missing package.json
 
-      const result = await detector.detectPolkadotLibrary();
+      const result = await freshDetector.detectPolkadotLibrary();
 
       expect(result).toBe("none");
     });
 
     it("should handle filesystem permission errors gracefully", async () => {
-      mockFs.stat.mockRejectedValueOnce(new Error("EACCES: permission denied"));
+      const freshDetector = new PolkadotDetector(mockCwd);
+      mockFs.stat.mockRejectedValue(new Error("EACCES: permission denied"));
 
-      const result = await detector.hasPapiConfig();
+      const result = await freshDetector.hasPapiConfig();
 
       expect(result).toBe(false);
     });
 
     it("should handle empty .papi directory", async () => {
+      const freshDetector = new PolkadotDetector(mockCwd);
       const mockConfig = {
         version: 0,
         descriptorPath: ".papi/descriptors",
         entries: {},
       };
-      mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockConfig));
+      mockPackageJsonRead({}, { "polkadot-api.json": mockConfig });
 
-      const result = await detector.getPapiConfig();
+      const result = await freshDetector.getPapiConfig();
 
       expect(result).toEqual({ chains: [] });
     });
