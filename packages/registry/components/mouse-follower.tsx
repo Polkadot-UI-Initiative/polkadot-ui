@@ -87,7 +87,7 @@ export function MouseFollower() {
   }, [mousePosition]);
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-0">
+    <div className="fixed inset-0 pointer-events-none -z-10">
       {dotPositions.map((position, index) => (
         <div
           key={index}
