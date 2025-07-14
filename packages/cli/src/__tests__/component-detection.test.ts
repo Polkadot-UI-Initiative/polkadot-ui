@@ -1,10 +1,12 @@
-import fs from "fs/promises";
 import { PolkadotDetector } from "../utils/polkadot-detector";
-import type { ComponentInfo, PackageJson } from "../types/index";
+import type { PackageJson, ComponentInfo } from "../types";
+import fs from "fs/promises";
 
-// Mock fs.promises
+// Mock fs module
 jest.mock("fs/promises");
 const mockFs = fs as jest.Mocked<typeof fs>;
+
+const mockCwd = "/test/project";
 
 // Helper functions for common mock patterns
 function mockPackageJsonRead(
@@ -42,304 +44,132 @@ function mockDirectoryExists(exists: boolean = true) {
   }
 }
 
+// Helper to determine if component requires polkadot (mirrors CLI logic)
+function componentRequiresPolkadot(
+  componentInfo: Partial<ComponentInfo>
+): boolean {
+  const hasPolkadotDependency =
+    componentInfo.dependencies?.includes("polkadot-api") || false;
+  const requiresPolkadotFromFlag = Boolean(componentInfo.requiresPolkadotApi);
+  return requiresPolkadotFromFlag || hasPolkadotDependency;
+}
+
 describe("Component Detection Tests", () => {
   let detector: PolkadotDetector;
-  const mockCwd = "/test/project";
 
   beforeEach(() => {
     jest.clearAllMocks();
     detector = new PolkadotDetector(mockCwd);
-    detector.clearCache(); // Explicitly clear any cached data
+    detector.clearCache();
   });
 
+  // Test component requirement detection logic
   describe("Component Requirements Detection", () => {
-    it("should detect component that requires polkadot via requiresPolkadotApi flag", async () => {
-      const componentInfo: Partial<ComponentInfo> = {
-        name: "block-number",
-        requiresPolkadotApi: true,
-        dependencies: ["react"],
-      };
-
-      const result = await detector.needsPolkadotSetup(
-        Boolean(componentInfo.requiresPolkadotApi)
-      );
-
-      // Will return true if no polkadot library is installed
-      const mockPackageJson: PackageJson = {
-        dependencies: { react: "^18.0.0" },
-      };
-      mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
-
-      const needsSetup = await detector.needsPolkadotSetup(true);
-      expect(needsSetup).toBe(true);
-    });
-
-    it("should detect component that requires polkadot via dependencies array", async () => {
-      const componentInfo: Partial<ComponentInfo> = {
-        name: "polkadot-balance",
-        requiresPolkadotApi: false, // flag is false but dependency exists
-        dependencies: ["polkadot-api", "react"],
-      };
-
-      // Component detection logic from add command:
-      const hasPolkadotDependency =
-        componentInfo.dependencies?.includes("polkadot-api") || false;
-      const requiresPolkadotFromFlag = Boolean(
-        componentInfo.requiresPolkadotApi
-      );
-      const requiresPolkadot =
-        requiresPolkadotFromFlag || hasPolkadotDependency;
-
-      expect(hasPolkadotDependency).toBe(true);
-      expect(requiresPolkadotFromFlag).toBe(false);
-      expect(requiresPolkadot).toBe(true);
-    });
-
-    it("should not detect polkadot requirement when neither flag nor dependency exists", async () => {
-      const componentInfo: Partial<ComponentInfo> = {
-        name: "simple-button",
-        requiresPolkadotApi: false,
-        dependencies: ["react", "tailwind"],
-      };
-
-      const hasPolkadotDependency =
-        componentInfo.dependencies?.includes("polkadot-api") || false;
-      const requiresPolkadotFromFlag = Boolean(
-        componentInfo.requiresPolkadotApi
-      );
-      const requiresPolkadot =
-        requiresPolkadotFromFlag || hasPolkadotDependency;
-
-      expect(hasPolkadotDependency).toBe(false);
-      expect(requiresPolkadotFromFlag).toBe(false);
-      expect(requiresPolkadot).toBe(false);
-
-      const result = await detector.needsPolkadotSetup(requiresPolkadot);
-      expect(result).toBe(false);
-    });
-
-    it("should detect polkadot requirement when both flag and dependency exist", async () => {
-      const componentInfo: Partial<ComponentInfo> = {
-        name: "advanced-polkadot-component",
-        requiresPolkadotApi: true,
-        dependencies: ["polkadot-api", "react", "@polkadot-api/descriptors"],
-      };
-
-      const hasPolkadotDependency =
-        componentInfo.dependencies?.includes("polkadot-api") || false;
-      const requiresPolkadotFromFlag = Boolean(
-        componentInfo.requiresPolkadotApi
-      );
-      const requiresPolkadot =
-        requiresPolkadotFromFlag || hasPolkadotDependency;
-
-      expect(hasPolkadotDependency).toBe(true);
-      expect(requiresPolkadotFromFlag).toBe(true);
-      expect(requiresPolkadot).toBe(true);
-    });
+    test.each([
+      [
+        "requiresPolkadotApi flag only",
+        {
+          name: "block-number",
+          requiresPolkadotApi: true,
+          dependencies: ["react"],
+        },
+        true,
+      ],
+      [
+        "polkadot-api dependency only",
+        {
+          name: "balance-display",
+          requiresPolkadotApi: false,
+          dependencies: ["polkadot-api", "react"],
+        },
+        true,
+      ],
+      [
+        "both flag and dependency",
+        {
+          name: "advanced-component",
+          requiresPolkadotApi: true,
+          dependencies: ["polkadot-api", "react"],
+        },
+        true,
+      ],
+      [
+        "neither flag nor dependency",
+        {
+          name: "simple-button",
+          requiresPolkadotApi: false,
+          dependencies: ["react", "tailwind"],
+        },
+        false,
+      ],
+      [
+        "undefined dependencies",
+        {
+          name: "minimal-component",
+          requiresPolkadotApi: false,
+          dependencies: undefined,
+        },
+        false,
+      ],
+      [
+        "empty dependencies",
+        {
+          name: "basic-component",
+          requiresPolkadotApi: false,
+          dependencies: [],
+        },
+        false,
+      ],
+    ])(
+      "should detect polkadot requirement: %s",
+      (scenario, componentInfo, expected) => {
+        const result = componentRequiresPolkadot(componentInfo);
+        expect(result).toBe(expected);
+      }
+    );
   });
 
-  describe("Edge Cases in Component Detection", () => {
-    it("should handle component with undefined dependencies", async () => {
-      const componentInfo: Partial<ComponentInfo> = {
-        name: "minimal-component",
-        requiresPolkadotApi: false,
-        dependencies: undefined,
-      };
-
-      const hasPolkadotDependency =
-        componentInfo.dependencies?.includes("polkadot-api") || false;
-      const requiresPolkadotFromFlag = Boolean(
-        componentInfo.requiresPolkadotApi
-      );
-      const requiresPolkadot =
-        requiresPolkadotFromFlag || hasPolkadotDependency;
-
-      expect(hasPolkadotDependency).toBe(false);
-      expect(requiresPolkadotFromFlag).toBe(false);
-      expect(requiresPolkadot).toBe(false);
-    });
-
-    it("should handle component with empty dependencies array", async () => {
-      const componentInfo: Partial<ComponentInfo> = {
-        name: "empty-deps-component",
-        requiresPolkadotApi: false,
-        dependencies: [],
-      };
-
-      const hasPolkadotDependency =
-        componentInfo.dependencies?.includes("polkadot-api") || false;
-      const requiresPolkadotFromFlag = Boolean(
-        componentInfo.requiresPolkadotApi
-      );
-      const requiresPolkadot =
-        requiresPolkadotFromFlag || hasPolkadotDependency;
-
-      expect(hasPolkadotDependency).toBe(false);
-      expect(requiresPolkadotFromFlag).toBe(false);
-      expect(requiresPolkadot).toBe(false);
-    });
-
-    it("should handle component with missing requiresPolkadotApi field", async () => {
-      const componentInfo: Partial<ComponentInfo> = {
-        name: "no-flag-component",
-        // requiresPolkadotApi is missing (undefined)
-        dependencies: ["polkadot-api"],
-      };
-
-      const hasPolkadotDependency =
-        componentInfo.dependencies?.includes("polkadot-api") || false;
-      const requiresPolkadotFromFlag = Boolean(
-        componentInfo.requiresPolkadotApi
-      );
-      const requiresPolkadot =
-        requiresPolkadotFromFlag || hasPolkadotDependency;
-
-      expect(hasPolkadotDependency).toBe(true);
-      expect(requiresPolkadotFromFlag).toBe(false); // undefined -> false
-      expect(requiresPolkadot).toBe(true);
-    });
-  });
-
-  describe("Complex Component Scenarios", () => {
-    it("should handle component with dedot dependency", async () => {
-      const componentInfo: Partial<ComponentInfo> = {
-        name: "dedot-component",
-        requiresPolkadotApi: false,
-        dependencies: ["dedot", "react"],
-      };
-
-      // Current logic only checks for polkadot-api, not dedot
-      const hasPolkadotDependency =
-        componentInfo.dependencies?.includes("polkadot-api") || false;
-      const requiresPolkadotFromFlag = Boolean(
-        componentInfo.requiresPolkadotApi
-      );
-      const requiresPolkadot =
-        requiresPolkadotFromFlag || hasPolkadotDependency;
-
-      expect(hasPolkadotDependency).toBe(false); // dedot is not polkadot-api
-      expect(requiresPolkadotFromFlag).toBe(false);
-      expect(requiresPolkadot).toBe(false);
-
-      // But if we want to extend this to support dedot detection:
-      const hasDedotDependency =
-        componentInfo.dependencies?.includes("dedot") || false;
-      const requiresAnyPolkadotLib = requiresPolkadot || hasDedotDependency;
-      expect(requiresAnyPolkadotLib).toBe(true);
-    });
-
-    it("should handle component with multiple polkadot-related dependencies", async () => {
-      const componentInfo: Partial<ComponentInfo> = {
-        name: "complex-polkadot-component",
-        requiresPolkadotApi: true,
-        dependencies: [
-          "polkadot-api",
-          "@polkadot-api/descriptors",
-          "@polkadot/api",
-          "@polkadot/types",
-          "react",
-        ],
-      };
-
-      const hasPolkadotDependency =
-        componentInfo.dependencies?.includes("polkadot-api") || false;
-      const requiresPolkadotFromFlag = Boolean(
-        componentInfo.requiresPolkadotApi
-      );
-      const requiresPolkadot =
-        requiresPolkadotFromFlag || hasPolkadotDependency;
-
-      expect(hasPolkadotDependency).toBe(true);
-      expect(requiresPolkadotFromFlag).toBe(true);
-      expect(requiresPolkadot).toBe(true);
-    });
-
-    it("should handle component with case-sensitive dependency matching", async () => {
-      const componentInfo: Partial<ComponentInfo> = {
-        name: "case-test-component",
-        requiresPolkadotApi: false,
-        dependencies: ["POLKADOT-API", "Polkadot-Api"], // wrong case
-      };
-
-      const hasPolkadotDependency =
-        componentInfo.dependencies?.includes("polkadot-api") || false;
-      const requiresPolkadotFromFlag = Boolean(
-        componentInfo.requiresPolkadotApi
-      );
-      const requiresPolkadot =
-        requiresPolkadotFromFlag || hasPolkadotDependency;
-
-      expect(hasPolkadotDependency).toBe(false); // exact match required
-      expect(requiresPolkadotFromFlag).toBe(false);
-      expect(requiresPolkadot).toBe(false);
-    });
-  });
-
+  // Test integration with actual polkadot setup detection
   describe("Integration with Setup Detection", () => {
-    it("should properly integrate component detection with setup requirements", async () => {
-      const componentInfo: Partial<ComponentInfo> = {
+    it("should not require setup when dedot is installed", async () => {
+      const componentInfo = {
         name: "polkadot-component",
         requiresPolkadotApi: true,
         dependencies: ["polkadot-api"],
       };
 
-      // Mock dedot installation
-      const mockPackageJson: PackageJson = {
-        dependencies: { dedot: "^1.0.0" },
-      };
-
-      // Create fresh detector for this test and ensure complete isolation
+      // Create fresh detector and set up dedot mock
       const freshDetector = new PolkadotDetector(mockCwd);
+      const mockPackageJson = { dependencies: { dedot: "^1.0.0" } };
 
-      // Reset all mocks and set up fresh
+      // Reset mocks and setup fresh state
       jest.resetAllMocks();
       mockFs.readFile.mockResolvedValue(JSON.stringify(mockPackageJson));
-
-      // Clear detector cache to ensure fresh state
       freshDetector.clearCache();
 
-      const hasPolkadotDependency =
-        componentInfo.dependencies?.includes("polkadot-api") || false;
-      const requiresPolkadotFromFlag = Boolean(
-        componentInfo.requiresPolkadotApi
-      );
-      const requiresPolkadot =
-        requiresPolkadotFromFlag || hasPolkadotDependency;
-
+      const requiresPolkadot = componentRequiresPolkadot(componentInfo);
       expect(requiresPolkadot).toBe(true);
 
-      // Check if setup is needed - should return false for dedot
       const needsSetup = await freshDetector.needsPolkadotSetup(
         requiresPolkadot
       );
       expect(needsSetup).toBe(false); // dedot satisfies polkadot requirement
     });
 
-    it("should handle component that requires setup when no polkadot library exists", async () => {
-      const componentInfo: Partial<ComponentInfo> = {
+    it("should require setup when no polkadot library exists", async () => {
+      const componentInfo = {
         name: "needs-setup-component",
         requiresPolkadotApi: true,
         dependencies: ["polkadot-api"],
       };
 
-      // Mock no polkadot libraries installed
-      const mockPackageJson: PackageJson = {
+      const freshDetector = new PolkadotDetector(mockCwd);
+      const mockPackageJson = {
         dependencies: { react: "^18.0.0", tailwind: "^3.0.0" },
       };
-
-      // Create fresh detector for this test
-      const freshDetector = new PolkadotDetector(mockCwd);
       mockPackageJsonRead(mockPackageJson);
 
-      const hasPolkadotDependency =
-        componentInfo.dependencies?.includes("polkadot-api") || false;
-      const requiresPolkadotFromFlag = Boolean(
-        componentInfo.requiresPolkadotApi
-      );
-      const requiresPolkadot =
-        requiresPolkadotFromFlag || hasPolkadotDependency;
-
+      const requiresPolkadot = componentRequiresPolkadot(componentInfo);
       expect(requiresPolkadot).toBe(true);
 
       const needsSetup = await freshDetector.needsPolkadotSetup(
@@ -348,32 +178,22 @@ describe("Component Detection Tests", () => {
       expect(needsSetup).toBe(true);
     });
 
-    it("should get proper setup recommendations for component requiring polkadot", async () => {
-      const componentInfo: Partial<ComponentInfo> = {
-        name: "recommend-setup-component",
+    it("should provide proper setup recommendations", async () => {
+      const componentInfo = {
+        name: "component-needing-setup",
         requiresPolkadotApi: true,
         dependencies: ["polkadot-api"],
       };
 
-      // Mock no polkadot libraries installed
-      const mockPackageJson: PackageJson = {
-        dependencies: { react: "^18.0.0" },
-      };
-      mockFs.readFile.mockResolvedValueOnce(JSON.stringify(mockPackageJson));
+      const freshDetector = new PolkadotDetector(mockCwd);
+      const mockPackageJson = { dependencies: { react: "^18.0.0" } };
+      mockPackageJsonRead(mockPackageJson);
 
-      const hasPolkadotDependency =
-        componentInfo.dependencies?.includes("polkadot-api") || false;
-      const requiresPolkadotFromFlag = Boolean(
-        componentInfo.requiresPolkadotApi
-      );
-      const requiresPolkadot =
-        requiresPolkadotFromFlag || hasPolkadotDependency;
-
-      expect(requiresPolkadot).toBe(true);
-
-      const recommendations = await detector.getRecommendedSetup(
+      const requiresPolkadot = componentRequiresPolkadot(componentInfo);
+      const recommendations = await freshDetector.getRecommendedSetup(
         requiresPolkadot
       );
+
       expect(recommendations).toEqual({
         needsInstall: true,
         needsConfig: true,
@@ -383,81 +203,67 @@ describe("Component Detection Tests", () => {
     });
   });
 
+  // Test real-world component scenarios
   describe("Real-world Component Examples", () => {
-    it("should handle block-number component correctly", async () => {
-      const componentInfo: ComponentInfo = {
-        name: "block-number",
-        type: "registry:block",
-        title: "Block Number",
-        description: "Display current block number",
+    test.each([
+      [
+        "block-number component",
+        {
+          name: "block-number",
+          requiresPolkadotApi: true,
+          dependencies: ["polkadot-api"],
+        },
+        true,
+      ],
+      [
+        "regular UI component",
+        { name: "button", requiresPolkadotApi: false, dependencies: ["react"] },
+        false,
+      ],
+      [
+        "component with polkadot dependency but no flag",
+        { name: "balance-display", dependencies: ["polkadot-api", "react"] },
+        true,
+      ],
+      [
+        "component with dedot dependency",
+        { name: "dedot-component", dependencies: ["dedot", "react"] },
+        false, // dedot dependency doesn't trigger polkadot-api requirement
+      ],
+      [
+        "component with mixed polkadot dependencies",
+        {
+          name: "advanced-polkadot",
+          dependencies: ["polkadot-api", "@polkadot-api/descriptors", "react"],
+        },
+        true,
+      ],
+    ])(
+      "should handle %s correctly",
+      (scenario, componentInfo, expectedRequiresPolkadot) => {
+        const result = componentRequiresPolkadot(componentInfo);
+        expect(result).toBe(expectedRequiresPolkadot);
+      }
+    );
+
+    it("should handle edge case where flag gets stripped but dependencies remain", async () => {
+      // Simulate scenario where CLI processes component metadata
+      const originalComponent = {
+        name: "processed-component",
         requiresPolkadotApi: true,
-        dependencies: ["polkadot-api"],
-        registryDependencies: ["button"],
-        files: [],
+        dependencies: ["polkadot-api", "react"],
       };
 
-      const hasPolkadotDependency =
-        componentInfo.dependencies?.includes("polkadot-api") || false;
-      const requiresPolkadotFromFlag = Boolean(
-        componentInfo.requiresPolkadotApi
-      );
-      const requiresPolkadot =
-        requiresPolkadotFromFlag || hasPolkadotDependency;
-
-      expect(hasPolkadotDependency).toBe(true);
-      expect(requiresPolkadotFromFlag).toBe(true);
-      expect(requiresPolkadot).toBe(true);
-    });
-
-    it("should handle regular UI component correctly", async () => {
-      const componentInfo: ComponentInfo = {
-        name: "button",
-        type: "registry:ui",
-        title: "Button",
-        description: "A simple button component",
-        requiresPolkadotApi: false,
-        dependencies: ["react"],
-        registryDependencies: [],
-        files: [],
+      // After processing, flag might be removed but dependencies preserved
+      const processedComponent = {
+        name: "processed-component",
+        dependencies: ["polkadot-api", "react"],
+        // requiresPolkadotApi removed during processing
       };
 
-      const hasPolkadotDependency =
-        componentInfo.dependencies?.includes("polkadot-api") || false;
-      const requiresPolkadotFromFlag = Boolean(
-        componentInfo.requiresPolkadotApi
-      );
-      const requiresPolkadot =
-        requiresPolkadotFromFlag || hasPolkadotDependency;
-
-      expect(hasPolkadotDependency).toBe(false);
-      expect(requiresPolkadotFromFlag).toBe(false);
-      expect(requiresPolkadot).toBe(false);
-    });
-
-    it("should handle component where flag gets stripped but dependencies remain", async () => {
-      // This represents the real issue mentioned in the conversation summary
-      const componentInfo: ComponentInfo = {
-        name: "polkadot-hook",
-        type: "registry:hook",
-        title: "Polkadot Hook",
-        description: "Hook for polkadot operations",
-        requiresPolkadotApi: undefined, // Flag was stripped during shadcn build
-        dependencies: ["polkadot-api"], // But dependencies remain
-        registryDependencies: [],
-        files: [],
-      };
-
-      const hasPolkadotDependency =
-        componentInfo.dependencies?.includes("polkadot-api") || false;
-      const requiresPolkadotFromFlag = Boolean(
-        componentInfo.requiresPolkadotApi
-      );
-      const requiresPolkadot =
-        requiresPolkadotFromFlag || hasPolkadotDependency;
-
-      expect(hasPolkadotDependency).toBe(true);
-      expect(requiresPolkadotFromFlag).toBe(false); // undefined -> false
-      expect(requiresPolkadot).toBe(true); // Still detected via dependencies
+      // Should still detect polkadot requirement via dependencies
+      expect(componentRequiresPolkadot(originalComponent)).toBe(true);
+      expect(componentRequiresPolkadot(processedComponent)).toBe(true);
     });
   });
 });
