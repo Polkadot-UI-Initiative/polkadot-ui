@@ -2,7 +2,8 @@
 
 A monorepo containing a CLI tool and registry server for Polkadot UI components,
 similar to shadcn/ui but specifically designed for Polkadot ecosystem
-development.
+development. For a list of available components visit
+[dot-ui.com](https://dot-ui.com)
 
 ## Architecture
 
@@ -52,7 +53,7 @@ bunx dot-ui add block-number
 
 3. **Test CLI with local registry:**
    ```bash
-   cd packages/cli
+   cd <some_random_project>
    npm run dev -- list --dev
    npm run dev -- add block-number --dev
    ```
@@ -110,7 +111,7 @@ pnpm registry:copy    # Copy registry.json to public/
 
 ### CLI → Registry Communication
 
-1. **Production**: CLI fetches from `https://polkadot-ui-registry.vercel.app`
+1. **Production**: CLI fetches from `https://dot-ui.app`
 2. **Development**: With `--dev` flag, CLI uses `http://localhost:3000`
 
 ### Component Installation Process
@@ -153,9 +154,13 @@ Components are defined in `/registry/polkadot-ui/` with:
      "type": "registry:component",
      "title": "My Component",
      "description": "Component description",
-     "files": ["components/my-component.tsx", "hooks/use-my-component.ts"]
+     "files": [...]
    }
    ```
+
+   See the shadcn [`registry-item-schema`] for more details on how to structure
+   files and other options.
+   (https://ui.shadcn.com/docs/registry/registry-item-json)
 
 3. **Build and test:**
    ```bash
@@ -166,7 +171,7 @@ Components are defined in `/registry/polkadot-ui/` with:
 
 ### Component Guidelines
 
-- Use `polkadot-api` (papi) for chain interactions
+- Use `polkadot-api` (papi) or dedot for chain interactions
 - Follow React Server Component patterns where possible
 - Include TypeScript types for all props and returns
 - Provide comprehensive JSDoc documentation
@@ -202,13 +207,3 @@ The registry server is deployed to Vercel and serves:
 ## License
 
 MIT License - see LICENSE file for details.
-
-## Todo
-
-- [ ] Add config with well-known chains and endpoints predefined
-- [ ] Reduce types in config, move to separate files
-- [ ] Fix config resolution when installing components via CLI
-- [ ] Optimize provider functions to use single parameter where possible
-- [ ] Add component preview/playground functionality
-- [ ] Add automated testing for CLI and components
-- [ ] Set up automated publishing workflow
