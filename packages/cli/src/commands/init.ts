@@ -17,11 +17,28 @@ export class InitCommand {
    * Main init command execution
    */
   async execute(): Promise<void> {
+    logger.info("🔧 INIT: Starting init command execution...");
     logger.info("Initializing new project...");
 
+    await this.initializeProject();
+
+    logger.info("🔧 INIT: Init command about to return/complete...");
+    // Explicitly return to ensure the function completes
+    return;
+  }
+
+  /**
+   * Internal initialization method that can be called from other commands
+   */
+  async initializeProject(): Promise<void> {
     const setupConfig = await this.promptProjectSetup();
+    logger.info("🔧 INIT: Project setup config created, creating project...");
+
     await this.createProject(setupConfig);
+    logger.info("🔧 INIT: Project created, initializing shadcn...");
+
     await this.initializeShadcn(setupConfig);
+    logger.info("🔧 INIT: Shadcn initialized, finishing init command...");
 
     logger.success("Project initialized successfully!");
     logger.info("You can now run 'dot-ui add <component>' to add components.");
@@ -366,7 +383,7 @@ export default defineConfig({
       }
 
       await execa(executable, [...baseArgs, ...shadcnArgs], {
-        stdio: "pipe", // Changed from "inherit" to "pipe" to prevent process interference
+        stdio: "inherit",
       });
 
       spinner.succeed("shadcn/ui initialized successfully");
