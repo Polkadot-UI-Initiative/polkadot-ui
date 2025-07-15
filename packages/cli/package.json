@@ -1,11 +1,11 @@
 {
-  "name": "dot-ui",
+  "name": "polka-ui",
   "version": "0.1.0-alpha.1",
   "description": "CLI for installing Polkadot UI components with automatic API setup",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "dot-ui": "./bin/dot-ui.mjs"
+    "polka-ui": "./bin/dot-ui.mjs"
   },
   "files": [
     "bin/**/*",
