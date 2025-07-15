@@ -19,7 +19,7 @@ export class Logger {
    */
   detail(message: string, force: boolean = false) {
     if (this.verbose || force) {
-      console.log(`${chalk.cyan("i")} ${chalk.gray(message)}`);
+      console.log(`${chalk.gray("i")} ${message}`);
     }
   }
 
@@ -187,7 +187,7 @@ export class Logger {
       this.newline();
     }
 
-    this.info("Happy coding with Polkadot! 🚀");
+    this.detail("Happy coding with Polkadot! 🚀");
   }
 
   /**

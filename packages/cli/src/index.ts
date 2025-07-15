@@ -2,6 +2,7 @@
 
 import { Command } from "commander";
 import { AddCommand } from "./commands/add.js";
+import { InitCommand } from "./commands/init.js";
 import { ListCommand } from "./commands/list.js";
 import { logger } from "./utils/logger.js";
 import { CliOptions } from "./types/index.js";
@@ -20,7 +21,8 @@ program
 program
   .option("--dev", "Use development registry (localhost:3000)")
   .option("--verbose", "Show detailed output")
-  .option("--force", "Force installation even if files exist");
+  .option("--force", "Force installation even if files exist")
+  .option("--yes", "Skip all prompts and use default values");
 
 // Add command
 program
@@ -32,10 +34,27 @@ program
       dev: program.opts().dev,
       verbose: program.opts().verbose,
       force: program.opts().force,
+      yes: program.opts().yes,
     };
 
     const addCommand = new AddCommand(options);
     await addCommand.execute(componentName);
+  });
+
+// Init command
+program
+  .command("init")
+  .description("Initialize a new project with Polkadot UI components")
+  .action(async () => {
+    const options: CliOptions = {
+      dev: program.opts().dev,
+      verbose: program.opts().verbose,
+      force: program.opts().force,
+      yes: program.opts().yes,
+    };
+
+    const initCommand = new InitCommand(options);
+    await initCommand.execute();
   });
 
 // List command
@@ -47,6 +66,7 @@ program
       dev: program.opts().dev,
       verbose: program.opts().verbose,
       force: program.opts().force,
+      yes: program.opts().yes,
     };
 
     const listCommand = new ListCommand(options);

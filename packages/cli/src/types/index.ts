@@ -47,6 +47,20 @@ export interface CliOptions {
   dev?: boolean;
   force?: boolean;
   verbose?: boolean;
+  yes?: boolean;
+}
+
+export interface ProjectSetupConfig {
+  projectName: string;
+  framework: "nextjs" | "vite";
+  useTypeScript: boolean;
+  useESLint: boolean;
+  useTailwind: boolean;
+  useSrcDirectory: boolean;
+  useAppRouter: boolean; // Next.js only
+  useTurbopack: boolean; // Next.js only
+  importAlias: string;
+  polkadotLibrary: "papi" | "dedot";
 }
 
 export interface ValidationResult {

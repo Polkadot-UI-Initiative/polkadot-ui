@@ -1,5 +1,7 @@
 import ora from "ora";
 import execa from "execa";
+import inquirer from "inquirer";
+import path from "path";
 import { ProjectDetector } from "../utils/project-detector.js";
 import { PolkadotDetector } from "../utils/polkadot-detector.js";
 import {
@@ -14,6 +16,7 @@ import {
   ProjectStructure,
   PolkadotApiConfig,
 } from "../types/index.js";
+import { InitCommand } from "./init.js";
 
 export class AddCommand {
   private options: CliOptions;
@@ -103,8 +106,34 @@ export class AddCommand {
       // Check if package.json exists
       if (!(await this.projectDetector.hasPackageJson())) {
         spinner.stop();
-        logger.showProjectGuidance();
-        return null;
+
+        // Ask user if they want to create a new project (or auto-yes if --yes flag)
+        let shouldCreateProject = true;
+
+        if (!this.options.yes) {
+          const result = await inquirer.prompt([
+            {
+              type: "confirm",
+              name: "shouldCreateProject",
+              message:
+                "No project found. Would you like to create a new project?",
+              default: true,
+            },
+          ]);
+          shouldCreateProject = result.shouldCreateProject;
+        }
+
+        if (!shouldCreateProject) {
+          logger.showProjectGuidance();
+          return null;
+        }
+
+        // Run init command to set up the project
+        const initCommand = new InitCommand(this.options);
+        await initCommand.execute();
+
+        // Return the project structure after creation
+        return await this.projectDetector.detectProjectStructure();
       }
 
       // Check if it's a React project
@@ -322,6 +351,18 @@ export class AddCommand {
     const spinner = ora("Installing component with shadcn...").start();
 
     try {
+      // Check if shadcn is initialized (components.json exists)
+      const fs = await import("fs/promises");
+      const componentsJsonExists = await fs
+        .access("components.json")
+        .then(() => true)
+        .catch(() => false);
+
+      if (!componentsJsonExists) {
+        spinner.text = "Initializing shadcn/ui...";
+        await this.initializeShadcn();
+      }
+
       // Determine shadcn version based on Tailwind version
       const tailwindVersion = await this.projectDetector.getTailwindVersion();
       const shadcnVersion =
@@ -346,13 +387,16 @@ export class AddCommand {
 
       // Parse the run command to get the executable and args
       const [executable, ...baseArgs] = runCommand.split(" ");
-      await execa(
-        executable,
-        [...baseArgs, shadcnVersion, "add", componentUrl],
-        {
-          stdio: "inherit", // Show shadcn prompts for user interaction
-        }
-      );
+      const shadcnArgs = [shadcnVersion, "add", componentUrl];
+
+      // Add --yes flag if specified
+      if (this.options.yes) {
+        shadcnArgs.push("--yes");
+      }
+
+      await execa(executable, [...baseArgs, ...shadcnArgs], {
+        stdio: "inherit", // Show shadcn prompts for user interaction
+      });
 
       logger.success("Component installed successfully");
     } catch (error) {
@@ -362,6 +406,50 @@ export class AddCommand {
           error instanceof Error ? error.message : "Unknown error"
         }`
       );
+    }
+  }
+
+  /**
+   * Initialize shadcn/ui in the current project
+   */
+  private async initializeShadcn(): Promise<void> {
+    try {
+      // Get package manager run command
+      const runCommand =
+        await this.projectDetector.getPackageManagerRunCommand();
+      const [executable, ...baseArgs] = runCommand.split(" ");
+
+      // Determine shadcn version based on Tailwind version
+      const tailwindVersion = await this.projectDetector.getTailwindVersion();
+      const shadcnVersion =
+        tailwindVersion === 4 ? "shadcn@canary" : "shadcn@latest";
+
+      const shadcnArgs = [shadcnVersion, "init"];
+
+      // Add explicit defaults when using --yes flag
+      if (this.options.yes) {
+        shadcnArgs.push("--yes");
+        shadcnArgs.push("--base-color", "neutral");
+        shadcnArgs.push("--css-variables");
+        // For add command, we need to detect if src directory is used
+        const projectStructure =
+          await this.projectDetector.detectProjectStructure();
+        if (projectStructure.srcDir && projectStructure.srcDir !== ".") {
+          shadcnArgs.push("--src-dir");
+        } else {
+          shadcnArgs.push("--no-src-dir");
+        }
+      }
+
+      await execa(executable, [...baseArgs, ...shadcnArgs], {
+        stdio: "inherit",
+      });
+
+      logger.success("shadcn/ui initialized successfully");
+    } catch (error) {
+      logger.warning("Failed to initialize shadcn/ui");
+      logger.warning("You may need to run 'npx shadcn@canary init' manually");
+      throw error;
     }
   }
 
