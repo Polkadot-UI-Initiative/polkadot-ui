@@ -1,12 +1,12 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import { useApiContext } from "../../../providers/api-provider";
+import { usePolkadotContext } from "@/registry/polkadot-ui/providers/polkadot-provider";
 
 export function useBlockNumber() {
     const [blockNumber, setBlockNumber] = useState(0);
     const [isLoading, setLoading] = useState(true);
-    const { api, legacy, apiReady } = useApiContext();
+    const { api, legacy, apiReady } = usePolkadotContext();
 
     useEffect(() => {
        let unsubscribe: any;

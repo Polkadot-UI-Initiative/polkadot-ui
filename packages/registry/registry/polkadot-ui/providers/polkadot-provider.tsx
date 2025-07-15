@@ -1,15 +1,15 @@
 "use client"
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { JsonRpcApi } from '../lib/types.polkadot-ui';
-import { ChainId, substrateConfig } from '../lib/config.polkadot-ui';
+import { JsonRpcApi } from '@/registry/polkadot-ui/lib/types.polkadot-ui';
+import { ChainId, substrateConfig } from '@/registry/polkadot-ui/lib/config.polkadot-ui';
 import { DedotClient, LegacyClient, WsProvider } from 'dedot';
 import { PropsWithChildren } from 'react';
 import { useLocalStorage, useAsync, useToggle } from 'react-use';
-import { SubstrateChain } from '../lib/types.polkadot-ui';
-import { getChainConfig, getChainIds } from '../lib/utils.polkadot-ui';
+import { SubstrateChain } from '@/registry/polkadot-ui/lib/types.polkadot-ui';
+import { getChainConfig, getChainIds } from '@/registry/polkadot-ui/lib/utils.polkadot-ui';
 
-interface ApiContextProps {
+interface PolkadotContextProps {
   jsonRpc: JsonRpcApi;
   api?: DedotClient;
   legacy?: LegacyClient;
@@ -20,14 +20,13 @@ interface ApiContextProps {
   availableChains: ChainId[];
 }
 
-const ApiContext = createContext<ApiContextProps | undefined>(undefined);
+const PolkadotContext = createContext<PolkadotContextProps | undefined>(undefined);
 
-export default function ApiProvider({ children }: PropsWithChildren) {
+export default function PolkadotProvider({ children }: PropsWithChildren) {
   const [currentChain, setCurrentChain] = useLocalStorage<ChainId>('SELECTED_CHAIN', 'paseoAssetHub');
   const [chain, setChain] = useState<SubstrateChain | undefined>();
   const availableChains = getChainIds(substrateConfig.chains);
   
-  // API connection logic (moved from use-api.ts)
   const [jsonRpc] = useLocalStorage<JsonRpcApi>('SETTINGS/JSON_RPC_API', JsonRpcApi.NEW);
   const [cacheMetadata] = useLocalStorage<boolean>('SETTINGS/CACHE_METADATA', true);
   const [apiReady, setApiReady] = useToggle(false);
@@ -80,7 +79,7 @@ export default function ApiProvider({ children }: PropsWithChildren) {
     setChain(getChainConfig(substrateConfig.chains, chainId));
   };
 
-  const value: ApiContextProps = {
+  const value: PolkadotContextProps = {
     jsonRpc: jsonRpc!,
     api,
     legacy,
@@ -92,16 +91,16 @@ export default function ApiProvider({ children }: PropsWithChildren) {
   };
 
   return (
-    <ApiContext.Provider value={value}>
+    <PolkadotContext.Provider value={value}>
       {children}
-    </ApiContext.Provider>
+    </PolkadotContext.Provider>
   );
 }
 
-export function useApiContext(): ApiContextProps {
-  const context = useContext(ApiContext);
+export function usePolkadotContext(): PolkadotContextProps {
+  const context = useContext(PolkadotContext);
   if (!context) {
-    throw new Error('useApiContext must be used within an ApiProvider');
+    throw new Error('usePolkadotContext must be used within a PolkadotProvider');
   }
   return context;
-}
+} 

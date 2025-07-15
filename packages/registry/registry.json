@@ -23,7 +23,7 @@
 
 
         {
-          "path": "registry/polkadot-ui/providers/api-provider.tsx",
+          "path": "registry/polkadot-ui/providers/polkadot-provider.tsx",
           "type": "registry:lib"
         },
         {

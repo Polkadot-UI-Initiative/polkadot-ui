@@ -1,13 +1,13 @@
 "use client"
 
 import { useState } from "react";
-import { useBlockNumber } from "../hooks/use-block-number"
-import { useApiContext } from "../../../providers/api-provider";
-import { ChainId } from "../../../lib/config.polkadot-ui";
+import { useBlockNumber } from "@/registry/polkadot-ui/blocks/block-number/hooks/use-block-number"
+import { usePolkadotContext } from "@/registry/polkadot-ui/providers/polkadot-provider";
+import { ChainId } from "@/registry/polkadot-ui/lib/config.polkadot-ui";
 
 export function BlockNumber() {
   const { blockNumber, isLoading } = useBlockNumber(); 
-  const { currentChain, chain, setChainId, availableChains } = useApiContext();
+  const { currentChain, chain, setChainId, availableChains } = usePolkadotContext();
   const [switchingChain, setSwitchingChain] = useState<string | null>(null);
 
   const handleChainSwitch = (chainId: ChainId) => {
