@@ -1,6 +1,6 @@
 {
   "name": "dot-ui",
-  "version": "0.1.0",
+  "version": "0.1.0-alpha.1",
   "description": "CLI for installing Polkadot UI components with automatic API setup",
   "type": "module",
   "main": "dist/index.js",
@@ -10,7 +10,8 @@
   "files": [
     "bin/**/*",
     "dist/**/*",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "dev": "tsx src/index.ts",
