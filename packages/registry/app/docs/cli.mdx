@@ -3,12 +3,287 @@ title: CLI
 description: CLI is the command line interface for the Polkadot UI Initiative.
 ---
 
+import { ComponentList } from '@/components/component-list'
+
 ## Introduction
 
-CLI is the command line interface for the Polkadot UI Initiative.
+The `dot-ui` CLI is a command line interface for adding Polkadot UI components to your project with automatic API setup and configuration.
 
-## dot-ui
+## Quick Start
+
+The fastest way to get started is to add a component to your project:
 
 ```bash
-npx dot-ui@latest
+npx dot-ui@latest add <component-name>
 ```
+
+<ComponentList />
+
+## Installation
+
+You can use the CLI without installation using `npx`, `pnpm dlx`, or `bunx`:
+
+```bash
+# Using npx
+npx dot-ui@latest
+
+# Using pnpm
+pnpm dlx dot-ui@latest
+
+# Using bun
+bunx dot-ui@latest
+```
+
+## Global Options
+
+All commands support these global options:
+
+| Option | Description |
+|--------|-------------|
+| `--dev` | Use development registry (localhost:3000) |
+| `--verbose` | Show detailed output |
+| `--force` | Force installation even if files exist |
+| `--yes` | Skip all prompts and use default values |
+
+## Commands
+
+### add
+
+Add a component to your project.
+
+```bash
+dot-ui add <component> [options]
+```
+
+**Arguments:**
+- `<component>` - Component name to install
+
+**Description:**
+Adds a Polkadot UI component to your project. If no project is found, it will offer to create one. Automatically sets up shadcn/ui if not already initialized.
+
+**Examples:**
+```bash
+# Add a component interactively
+dot-ui add block-number
+
+# Add a component with no prompts
+dot-ui add block-number --yes
+
+# Add from development registry
+dot-ui add block-number --dev
+
+# Force overwrite existing files
+dot-ui add block-number --force
+
+# Verbose output
+dot-ui add block-number --verbose
+```
+
+**What it does:**
+1. Validates project setup (package.json, React, framework)
+2. Creates new project if none exists (when prompted)
+3. Initializes shadcn/ui if not already set up
+4. Fetches component from registry
+5. Installs component with shadcn CLI
+6. Sets up Polkadot API if required by component
+7. Generates chain metadata and types
+
+### init
+
+Initialize a new project with Polkadot UI components.
+
+```bash
+dot-ui init [options]
+```
+
+**Description:**
+Creates a new project with your choice of Next.js or Vite, automatically configures TypeScript, ESLint, Tailwind CSS, and initializes shadcn/ui.
+
+**Examples:**
+```bash
+# Interactive setup
+dot-ui init
+
+# Skip all prompts and use defaults (Next.js)
+dot-ui init --yes
+
+# Use development registry
+dot-ui init --dev
+
+# Verbose output
+dot-ui init --verbose
+```
+
+**Default Configuration (with --yes):**
+- Framework: Next.js
+- TypeScript: Enabled
+- ESLint: Enabled
+- Tailwind CSS: Enabled
+- App Router: Enabled
+- Src Directory: Disabled
+- Turbopack: Disabled
+- Import Alias: `@/*`
+- Polkadot Library: papi
+- Base Color: neutral
+- CSS Variables: Enabled
+
+### list
+
+List available components from the registry.
+
+```bash
+dot-ui list [options]
+```
+
+**Description:**
+Shows all available components in the registry with their descriptions and requirements.
+
+**Examples:**
+```bash
+# List all components
+dot-ui list
+
+# List from development registry
+dot-ui list --dev
+
+# Verbose output with detailed information
+dot-ui list --verbose
+```
+
+**Output includes:**
+- Component name
+- Description
+- Whether it requires Polkadot API
+- Dependencies
+- Registry dependencies (other components)
+
+### help
+
+Show help information.
+
+```bash
+dot-ui help [command]
+```
+
+**Examples:**
+```bash
+# Show general help
+dot-ui help
+
+# Show help for specific command
+dot-ui help add
+dot-ui help init
+dot-ui help list
+```
+
+## Usage Examples
+
+### Quick Start
+
+Create a new project and add a component:
+
+```bash
+# Create new project with defaults
+mkdir my-polkadot-app
+cd my-polkadot-app
+dot-ui init --yes
+
+# Add a component
+dot-ui add block-number --yes
+```
+
+### Development Workflow
+
+Working with local registry during development:
+
+```bash
+# List components from local registry
+dot-ui list --dev
+
+# Add component from local registry
+dot-ui add block-number --dev --yes
+```
+
+### Existing Project
+
+Add components to an existing React project:
+
+```bash
+# The CLI will detect your existing setup
+dot-ui add block-number
+
+# Force overwrite if you need to update files
+dot-ui add block-number --force
+```
+
+## Project Requirements
+
+The CLI works with:
+
+- **Next.js** projects (App Router or Pages Router)
+- **Vite + React** projects
+- **TypeScript** (automatically enabled)
+- **Tailwind CSS** (automatically configured)
+- **shadcn/ui** (automatically initialized)
+
+## Polkadot API Integration
+
+Components that require Polkadot API will automatically:
+
+1. Install `polkadot-api` dependency
+2. Add required chain metadata using `papi` CLI
+3. Generate TypeScript types
+4. Set up providers and configuration
+
+Supported chains are automatically detected from component requirements.
+
+## Configuration Files
+
+The CLI creates and manages these files:
+
+- `components.json` - shadcn/ui configuration
+- `papi/` - Polkadot API configuration and types
+- `lib/utils.ts` - Utility functions
+- `lib/config.polkadot-ui.ts` - Polkadot configuration
+- `providers/polkadot-provider.tsx` - API provider
+
+## Troubleshooting
+
+### Common Issues
+
+**"No project found" error:**
+- Run `dot-ui init` to create a new project
+- Or ensure you're in a React project directory
+
+**"Component not found" error:**
+- Check available components with `dot-ui list`
+- Verify component name spelling
+
+**Memory issues during chain metadata installation:**
+- The CLI automatically increases memory limits
+- For very large chains, you may need to install manually
+
+**Permission issues:**
+- Use `npx`, `pnpm dlx`, or `bunx` instead of global installation
+- Ensure you have write permissions in the project directory
+
+### Getting Help
+
+- Use `dot-ui help [command]` for command-specific help
+- Use `--verbose` flag for detailed output
+- Check the [GitHub repository](https://github.com/Polkadot-UI-Initiative/dot-ui) for issues
+
+## Development Registry
+
+During development, you can use the local registry:
+
+```bash
+# Start local registry server
+pnpm dev
+
+# Use local registry with CLI
+dot-ui list --dev
+dot-ui add block-number --dev
+```
+
+The development registry runs at `http://localhost:3000` and allows you to test components before publishing.
