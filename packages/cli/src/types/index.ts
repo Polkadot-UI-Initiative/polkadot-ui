@@ -3,6 +3,7 @@ export interface ProjectStructure {
   isVite: boolean;
   isCRA: boolean;
   hasTypeScript: boolean;
+  packageManager: "npm" | "pnpm" | "yarn" | "bun";
   srcDir: string;
   componentDir: string;
   hookDir: string;

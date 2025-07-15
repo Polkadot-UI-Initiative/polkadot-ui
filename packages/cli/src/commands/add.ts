@@ -138,7 +138,7 @@ export class AddCommand {
       spinner.succeed(
         `${projectType} project detected${
           structure.hasTypeScript ? " with TypeScript" : ""
-        }`
+        } (${structure.packageManager})`
       );
 
       // Show warnings if any
@@ -213,12 +213,15 @@ export class AddCommand {
       const polkadotConfig = await this.polkadotDetector.getPolkadotApiConfig();
 
       // Check if component requires Polkadot API
-      const requiresPolkadot = Boolean(componentInfo.requiresPolkadotApi);
+      const requiresPolkadot = this.requiresPolkadotApi(componentInfo);
 
       logger.detail(
         `Component requiresPolkadotApi: ${componentInfo.requiresPolkadotApi}`
       );
-      logger.detail(`requiresPolkadot boolean: ${requiresPolkadot}`);
+      logger.detail(
+        `Component dependencies: ${JSON.stringify(componentInfo.dependencies)}`
+      );
+      logger.detail(`requiresPolkadot final: ${requiresPolkadot}`);
 
       if (!requiresPolkadot) {
         spinner.succeed("No Polkadot API setup required");
@@ -285,29 +288,16 @@ export class AddCommand {
       )}`
     );
 
-    // Check if component requires Polkadot API (use dependencies since requiresPolkadotApi gets stripped)
-    const hasPolkadotDependency =
-      componentInfo.dependencies?.includes("polkadot-api") || false;
-    const requiresPolkadotFromFlag = Boolean(componentInfo.requiresPolkadotApi);
-    const requiresPolkadot = requiresPolkadotFromFlag || hasPolkadotDependency;
+    // Check if component requires Polkadot API
+    const requiresPolkadot = this.requiresPolkadotApi(componentInfo);
 
-    logger.detail(`hasPolkadotDependency: ${hasPolkadotDependency}`);
-    logger.detail(`requiresPolkadotFromFlag: ${requiresPolkadotFromFlag}`);
     logger.detail(`requiresPolkadot final: ${requiresPolkadot}`);
     logger.detail(`=== END COMPONENT DEBUG ===`);
 
-    // Install Polkadot API dependencies if needed
+    // Setup Polkadot API if needed (shadcn already installed dependencies)
     if (requiresPolkadot) {
       logger.info(`Component requires Polkadot API setup`);
-      logger.detail(
-        `hasPapi: ${polkadotConfig.hasPapi}, hasDedot: ${polkadotConfig.hasDedot}`
-      );
-
-      if (!polkadotConfig.hasPapi && !polkadotConfig.hasDedot) {
-        await this.installPolkadotDependencies();
-      } else {
-        logger.info("Polkadot API dependencies already installed");
-      }
+      logger.detail("Dependencies already installed by shadcn");
 
       // Setup Polkadot API
       await this.setupPolkadotApi(
@@ -318,7 +308,7 @@ export class AddCommand {
     } else {
       logger.info("Component does not require Polkadot API setup");
       logger.detail(
-        `Reason: hasPolkadotDependency=${hasPolkadotDependency}, requiresPolkadotFromFlag=${requiresPolkadotFromFlag}`
+        `Reason: No polkadot-api dependency found and requiresPolkadotApi flag is false`
       );
     }
   }
@@ -341,15 +331,28 @@ export class AddCommand {
       const registryInfo = await this.registry.getRegistryInfo();
       const componentUrl = `${registryInfo.url}/r/${componentName}.json`;
 
+      // Get package manager runner command
+      const runCommand =
+        await this.projectDetector.getPackageManagerRunCommand();
+
       logger.detail(`Using ${shadcnVersion} to install from ${componentUrl}`);
 
       // Stop spinner before interactive prompts
       spinner.stop();
 
-      logger.info(`Running: npx ${shadcnVersion} add ${componentUrl}`);
-      await execa("npx", [shadcnVersion, "add", componentUrl], {
-        stdio: "inherit", // Show shadcn prompts for user interaction
-      });
+      logger.info(
+        `Running: ${runCommand} ${shadcnVersion} add ${componentUrl}`
+      );
+
+      // Parse the run command to get the executable and args
+      const [executable, ...baseArgs] = runCommand.split(" ");
+      await execa(
+        executable,
+        [...baseArgs, shadcnVersion, "add", componentUrl],
+        {
+          stdio: "inherit", // Show shadcn prompts for user interaction
+        }
+      );
 
       logger.success("Component installed successfully");
     } catch (error) {
@@ -369,15 +372,15 @@ export class AddCommand {
     const spinner = ora("Installing Polkadot API dependencies...").start();
 
     try {
-      logger.info(
-        "Running: pnpm install polkadot-api @polkadot-api/descriptors"
-      );
-      await execa.command(
-        "pnpm install polkadot-api @polkadot-api/descriptors",
-        {
-          stdio: "inherit",
-        }
-      );
+      // Get package manager install command
+      const installCommand =
+        await this.projectDetector.getPackageManagerInstallCommand();
+      const command = `${installCommand} polkadot-api`;
+
+      logger.info(`Running: ${command}`);
+      await execa.command(command, {
+        stdio: "inherit",
+      });
 
       spinner.succeed("Polkadot API dependencies installed");
     } catch (error) {
@@ -423,6 +426,16 @@ export class AddCommand {
   }
 
   /**
+   * Check if component requires Polkadot API setup
+   */
+  private requiresPolkadotApi(componentInfo: ComponentInfo): boolean {
+    const hasPolkadotDependency =
+      componentInfo.dependencies?.includes("polkadot-api") || false;
+    const requiresPolkadotFromFlag = Boolean(componentInfo.requiresPolkadotApi);
+    return requiresPolkadotFromFlag || hasPolkadotDependency;
+  }
+
+  /**
    * Install missing papi chains and generate types
    */
   private async installMissingChains(chains: string[]): Promise<void> {
@@ -431,19 +444,56 @@ export class AddCommand {
     const spinner = ora(`Adding ${chainDisplayName} metadata...`).start();
 
     try {
-      // Add each chain
+      // Add each chain with increased memory limit
       for (const chain of chains) {
         spinner.text = `Adding ${chain} metadata...`;
-        await execa("pnpm", ["papi", "add", chain, "-n", chain], {
-          stdio: "pipe", // Use pipe to avoid interaction issues
-        });
+        try {
+          // Use local papi binary (installed via polkadot-api package)
+          await execa("node_modules/.bin/papi", ["add", chain, "-n", chain], {
+            stdio: "pipe", // Use pipe to avoid interaction issues
+            env: {
+              ...process.env,
+              NODE_OPTIONS: "--max-old-space-size=8192", // Increase memory limit to 8GB
+            },
+          });
+        } catch (chainError) {
+          // Check if it's a memory error
+          const errorMessage =
+            chainError instanceof Error
+              ? chainError.message
+              : String(chainError);
+          if (
+            errorMessage.includes("out of memory") ||
+            errorMessage.includes("JS heap out of memory")
+          ) {
+            spinner.fail(`Failed to install ${chain} - insufficient memory`);
+            logger.warning(
+              `Memory limit exceeded while processing ${chain} metadata`
+            );
+            logger.info("Try one of these solutions:");
+            logger.detail("1. Increase your system memory", true);
+            logger.detail("2. Use a smaller chain set", true);
+            logger.detail("3. Install chains manually one by one", true);
+            logger.newline();
+            logger.info("Manual installation command:");
+            logger.code(
+              `NODE_OPTIONS="--max-old-space-size=8192" node_modules/.bin/papi add ${chain} -n ${chain}`
+            );
+            throw new Error(`Memory limit exceeded for chain ${chain}`);
+          }
+          throw chainError;
+        }
       }
 
       spinner.text = "Generating Polkadot API types...";
 
-      // Generate types for all chains
-      await execa("pnpm", ["papi"], {
+      // Generate types for all chains with increased memory
+      await execa("node_modules/.bin/papi", [], {
         stdio: "pipe", // Use pipe to avoid interaction issues
+        env: {
+          ...process.env,
+          NODE_OPTIONS: "--max-old-space-size=8192", // Increase memory limit to 8GB
+        },
       });
 
       spinner.succeed(`${chainDisplayName} metadata and types generated`);
@@ -470,7 +520,7 @@ export class AddCommand {
     polkadotConfig: PolkadotApiConfig
   ): void {
     const formattedName = formatComponentName(componentInfo.name);
-    const hasPolkadotSetup = Boolean(componentInfo.requiresPolkadotApi);
+    const hasPolkadotSetup = this.requiresPolkadotApi(componentInfo);
 
     logger.showNextSteps(formattedName, hasPolkadotSetup);
   }

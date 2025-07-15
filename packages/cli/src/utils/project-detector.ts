@@ -102,6 +102,75 @@ export class ProjectDetector {
   }
 
   /**
+   * Detect which package manager is being used in the project
+   */
+  async detectPackageManager(): Promise<"npm" | "pnpm" | "yarn" | "bun"> {
+    try {
+      // Check for lockfiles in order of preference
+      const lockfiles = [
+        { file: "bun.lockb", manager: "bun" as const },
+        { file: "pnpm-lock.yaml", manager: "pnpm" as const },
+        { file: "yarn.lock", manager: "yarn" as const },
+        { file: "package-lock.json", manager: "npm" as const },
+      ];
+
+      for (const { file, manager } of lockfiles) {
+        try {
+          await fs.access(path.join(this.cwd, file));
+          return manager;
+        } catch {
+          continue;
+        }
+      }
+
+      // If no lockfile found, default to pnpm
+      return "pnpm";
+    } catch {
+      return "pnpm";
+    }
+  }
+
+  /**
+   * Get the package manager command for installing dependencies
+   */
+  async getPackageManagerInstallCommand(): Promise<string> {
+    const packageManager = await this.detectPackageManager();
+
+    switch (packageManager) {
+      case "bun":
+        return "bun install";
+      case "pnpm":
+        return "pnpm install";
+      case "yarn":
+        return "yarn add";
+      case "npm":
+        return "npm install";
+      default:
+        return "pnpm install";
+    }
+  }
+
+  /**
+   * Get the package manager command for running executables
+   */
+  async getPackageManagerRunCommand(): Promise<string> {
+    const packageManager = await this.detectPackageManager();
+
+    switch (packageManager) {
+      case "bun":
+        return "bun x";
+      case "pnpm":
+        return "pnpm dlx";
+      case "yarn":
+        return "yarn dlx";
+      case "npm":
+        return "npx";
+      default:
+        return "pnpm dlx";
+    }
+  }
+
+  /**
    * Get Tailwind CSS version if installed
    */
   async getTailwindVersion(): Promise<number | null> {
@@ -128,6 +197,7 @@ export class ProjectDetector {
     const projectType = await detectProjectType();
     const hasSrc = await this.hasSrcDirectory();
     const hasTS = await this.hasTypeScript();
+    const packageManager = await this.detectPackageManager();
 
     let srcDir = "";
     let componentDir = "components";
@@ -143,6 +213,7 @@ export class ProjectDetector {
       isVite: projectType === "vite",
       isCRA: projectType === "cra",
       hasTypeScript: hasTS,
+      packageManager,
       srcDir,
       componentDir,
       hookDir: srcDir ? `${srcDir}/hooks` : "hooks",

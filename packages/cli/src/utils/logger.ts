@@ -19,7 +19,7 @@ export class Logger {
    */
   detail(message: string, force: boolean = false) {
     if (this.verbose || force) {
-      console.log(`${chalk.gray("i")} ${chalk.gray(message)}`);
+      console.log(`${chalk.cyan("i")} ${chalk.gray(message)}`);
     }
   }
 
@@ -69,7 +69,7 @@ export class Logger {
    * Code block
    */
   code(code: string) {
-    console.log(chalk.gray(code));
+    console.log(chalk.white(code));
   }
 
   /**
@@ -161,23 +161,18 @@ export class Logger {
    * Show next steps after component installation
    */
   showNextSteps(componentName: string, hasPolkadotSetup: boolean = false) {
-    this.newline();
     this.section("🎉 Component installed successfully!");
-    this.newline();
 
     this.subsection("Next steps:");
-    this.detail("1. Import the component in your project:", true);
+    this.detail("1. Import the component in your project and use it:", true);
     this.code(
       `import { ${componentName} } from '@/components/${componentName}'`
     );
-    this.newline();
-
-    this.detail("2. Use it in your JSX:", true);
     this.code(`<${componentName} />`);
     this.newline();
 
     if (hasPolkadotSetup) {
-      this.detail("3. Make sure to wrap your app with PolkadotProvider:", true);
+      this.detail("2. Make sure to wrap your app with PolkadotProvider:", true);
       this.code(
         `import { PolkadotProvider } from '@/providers/polkadot-provider'`
       );
@@ -192,7 +187,7 @@ export class Logger {
       this.newline();
     }
 
-    this.info("Happy coding! 🚀");
+    this.info("Happy coding with Polkadot! 🚀");
   }
 
   /**
