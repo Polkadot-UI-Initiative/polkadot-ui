@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0-alpha.1] - 2025-01-31
+
+### Changed
+
+- Updated documentation to use "polka-ui" branding consistently
+- Updated all CLI command examples to use `polka-ui` instead of `dot-ui`
+- Updated registry URLs to use dot-ui.com (production domain)
+- Maintained internal references to dot-ui for consistency
+
+### Fixed
+
+- Fixed package manager detection for workspace configurations
+- Improved error handling for registry connection issues
+- Updated component installation examples in documentation
+
 ## [0.1.0-alpha.1] - 2025-01-31
 
 ### Added
@@ -72,7 +87,7 @@ and this project adheres to
 
 ### Registry Integration
 
-- Fetches components from dot-ui.app registry
+- Fetches components from dot-ui.com registry
 - Support for custom registry URLs
 - Automatic component validation
 - Registry dependency resolution

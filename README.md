@@ -9,7 +9,7 @@ development. For a list of available components visit
 
 This project consists of two main packages:
 
-- **CLI** (`packages/cli`) - The `dot-ui` command-line tool for installing
+- **CLI** (`packages/cli`) - The `polka-ui` command-line tool for installing
   components
 - **Registry** (`packages/registry`) - Next.js server that hosts the component
   registry and documentation
@@ -22,14 +22,14 @@ Install Polkadot components in your project:
 
 ```bash
 # List available components
-npx dot-ui list
+npx polka-ui list
 
 # Add a component to your project
-npx dot-ui add block-number
+npx polka-ui add block-number
 
 # You can also use pnpm or bun
-pnpm dlx dot-ui add block-number
-bunx dot-ui add block-number
+pnpm dlx polka-ui add block-number
+bunx polka-ui add block-number
 ```
 
 ## Development
@@ -63,9 +63,9 @@ bunx dot-ui add block-number
 ```
 dot-ui/
 ├── packages/
-│   ├── cli/                    # CLI package (@dot-ui/cli)
-│   │   ├── bin/dot-ui.js      # CLI executable
-│   │   └── package.json       # Published to npm as "dot-ui"
+│   ├── cli/                    # CLI package
+│   │   ├── bin/polka-ui.js    # CLI executable
+│   │   └── package.json       # Published to npm as "polka-ui"
 │   └── registry/              # Registry server (@dot-ui/registry)
 │       ├── app/               # Next.js app directory
 │       ├── registry/          # Component definitions
@@ -111,7 +111,7 @@ pnpm registry:copy    # Copy registry.json to public/
 
 ### CLI → Registry Communication
 
-1. **Production**: CLI fetches from `https://dot-ui.app`
+1. **Production**: CLI fetches from `https://dot-ui.com`
 2. **Development**: With `--dev` flag, CLI uses `http://localhost:3000`
 
 ### Component Installation Process
@@ -181,7 +181,7 @@ Components are defined in `/registry/polkadot-ui/` with:
 
 ### CLI Package
 
-The CLI is published to npm as `dot-ui`:
+The CLI is published to npm as `polka-ui`:
 
 ```bash
 cd packages/cli

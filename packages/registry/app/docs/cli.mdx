@@ -7,14 +7,14 @@ import { ComponentList } from '@/components/component-list'
 
 ## Introduction
 
-The `dot-ui` CLI is a command line interface for adding Polkadot UI components to your project with automatic API setup and configuration.
+The `polka-ui` CLI is a command line interface for adding Polkadot UI components to your project with automatic API setup and configuration.
 
 ## Quick Start
 
 The fastest way to get started is to add a component to your project:
 
 ```bash
-npx dot-ui@latest add <component-name>
+npx polka-ui@latest add <component-name>
 ```
 
 <ComponentList />
@@ -25,13 +25,13 @@ You can use the CLI without installation using `npx`, `pnpm dlx`, or `bunx`:
 
 ```bash
 # Using npx
-npx dot-ui@latest
+npx polka-ui@latest
 
 # Using pnpm
-pnpm dlx dot-ui@latest
+pnpm dlx polka-ui@latest
 
 # Using bun
-bunx dot-ui@latest
+bunx polka-ui@latest
 ```
 
 ## Global Options
@@ -52,7 +52,7 @@ All commands support these global options:
 Add a component to your project.
 
 ```bash
-dot-ui add <component> [options]
+polka-ui add <component> [options]
 ```
 
 **Arguments:**
@@ -64,19 +64,19 @@ Adds a Polkadot UI component to your project. If no project is found, it will of
 **Examples:**
 ```bash
 # Add a component interactively
-dot-ui add block-number
+polka-ui add block-number
 
 # Add a component with no prompts
-dot-ui add block-number --yes
+polka-ui add block-number --yes
 
 # Add from development registry
-dot-ui add block-number --dev
+polka-ui add block-number --dev
 
 # Force overwrite existing files
-dot-ui add block-number --force
+polka-ui add block-number --force
 
 # Verbose output
-dot-ui add block-number --verbose
+polka-ui add block-number --verbose
 ```
 
 **What it does:**
@@ -93,7 +93,7 @@ dot-ui add block-number --verbose
 Initialize a new project with Polkadot UI components.
 
 ```bash
-dot-ui init [options]
+polka-ui init [options]
 ```
 
 **Description:**
@@ -102,16 +102,16 @@ Creates a new project with your choice of Next.js or Vite, automatically configu
 **Examples:**
 ```bash
 # Interactive setup
-dot-ui init
+polka-ui init
 
 # Skip all prompts and use defaults (Next.js)
-dot-ui init --yes
+polka-ui init --yes
 
 # Use development registry
-dot-ui init --dev
+polka-ui init --dev
 
 # Verbose output
-dot-ui init --verbose
+polka-ui init --verbose
 ```
 
 **Default Configuration (with --yes):**
@@ -132,7 +132,7 @@ dot-ui init --verbose
 List available components from the registry.
 
 ```bash
-dot-ui list [options]
+polka-ui list [options]
 ```
 
 **Description:**
@@ -141,13 +141,13 @@ Shows all available components in the registry with their descriptions and requi
 **Examples:**
 ```bash
 # List all components
-dot-ui list
+polka-ui list
 
 # List from development registry
-dot-ui list --dev
+polka-ui list --dev
 
 # Verbose output with detailed information
-dot-ui list --verbose
+polka-ui list --verbose
 ```
 
 **Output includes:**
@@ -162,18 +162,18 @@ dot-ui list --verbose
 Show help information.
 
 ```bash
-dot-ui help [command]
+polka-ui help [command]
 ```
 
 **Examples:**
 ```bash
 # Show general help
-dot-ui help
+polka-ui help
 
 # Show help for specific command
-dot-ui help add
-dot-ui help init
-dot-ui help list
+polka-ui help add
+polka-ui help init
+polka-ui help list
 ```
 
 ## Usage Examples
@@ -186,10 +186,10 @@ Create a new project and add a component:
 # Create new project with defaults
 mkdir my-polkadot-app
 cd my-polkadot-app
-dot-ui init --yes
+polka-ui init --yes
 
 # Add a component
-dot-ui add block-number --yes
+polka-ui add block-number --yes
 ```
 
 ### Development Workflow
@@ -198,10 +198,10 @@ Working with local registry during development:
 
 ```bash
 # List components from local registry
-dot-ui list --dev
+polka-ui list --dev
 
 # Add component from local registry
-dot-ui add block-number --dev --yes
+polka-ui add block-number --dev --yes
 ```
 
 ### Existing Project
@@ -210,10 +210,10 @@ Add components to an existing React project:
 
 ```bash
 # The CLI will detect your existing setup
-dot-ui add block-number
+polka-ui add block-number
 
 # Force overwrite if you need to update files
-dot-ui add block-number --force
+polka-ui add block-number --force
 ```
 
 ## Project Requirements
@@ -252,11 +252,11 @@ The CLI creates and manages these files:
 ### Common Issues
 
 **"No project found" error:**
-- Run `dot-ui init` to create a new project
+- Run `polka-ui init` to create a new project
 - Or ensure you're in a React project directory
 
 **"Component not found" error:**
-- Check available components with `dot-ui list`
+- Check available components with `polka-ui list`
 - Verify component name spelling
 
 **Memory issues during chain metadata installation:**
@@ -269,7 +269,7 @@ The CLI creates and manages these files:
 
 ### Getting Help
 
-- Use `dot-ui help [command]` for command-specific help
+- Use `polka-ui help [command]` for command-specific help
 - Use `--verbose` flag for detailed output
 - Check the [GitHub repository](https://github.com/Polkadot-UI-Initiative/dot-ui) for issues
 
@@ -282,8 +282,8 @@ During development, you can use the local registry:
 pnpm dev
 
 # Use local registry with CLI
-dot-ui list --dev
-dot-ui add block-number --dev
+polka-ui list --dev
+polka-ui add block-number --dev
 ```
 
 The development registry runs at `http://localhost:3000` and allows you to test components before publishing.
