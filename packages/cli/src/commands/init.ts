@@ -17,14 +17,8 @@ export class InitCommand {
    * Main init command execution
    */
   async execute(): Promise<void> {
-    logger.info("🔧 INIT: Starting init command execution...");
     logger.info("Initializing new project...");
-
     await this.initializeProject();
-
-    logger.info("🔧 INIT: Init command about to return/complete...");
-    // Explicitly return to ensure the function completes
-    return;
   }
 
   /**
@@ -32,13 +26,8 @@ export class InitCommand {
    */
   async initializeProject(): Promise<void> {
     const setupConfig = await this.promptProjectSetup();
-    logger.info("🔧 INIT: Project setup config created, creating project...");
-
     await this.createProject(setupConfig);
-    logger.info("🔧 INIT: Project created, initializing shadcn...");
-
     await this.initializeShadcn(setupConfig);
-    logger.info("🔧 INIT: Shadcn initialized, finishing init command...");
 
     logger.success("Project initialized successfully!");
     logger.info("You can now run 'dot-ui add <component>' to add components.");
@@ -197,6 +186,10 @@ export class InitCommand {
 
     await execa(executable, [...baseArgs, ...args], {
       stdio: "inherit",
+      detached: false,
+      cleanup: true,
+      killSignal: "SIGTERM",
+      timeout: 300000, // 5 minutes timeout for project creation
     });
   }
 
@@ -216,12 +209,20 @@ export class InitCommand {
         [...baseArgs, "create-vite@latest", ".", "--template", "react-ts"],
         {
           stdio: "inherit",
+          detached: false,
+          cleanup: true,
+          killSignal: "SIGTERM",
+          timeout: 300000, // 5 minutes timeout
         }
       );
     } else {
       // Use native create-vite flow (shows React preselected, TypeScript variant available)
       await execa(executable, [...baseArgs, "create-vite@latest", "."], {
         stdio: "inherit",
+        detached: false,
+        cleanup: true,
+        killSignal: "SIGTERM",
+        timeout: 300000, // 5 minutes timeout
       });
     }
 
@@ -246,6 +247,10 @@ export class InitCommand {
     if (devDeps.length > 0) {
       await execa.command(`${installCommand} -D ${devDeps.join(" ")}`, {
         stdio: "inherit",
+        detached: false,
+        cleanup: true,
+        killSignal: "SIGTERM",
+        timeout: 300000, // 5 minutes timeout
       });
     }
 
@@ -384,6 +389,10 @@ export default defineConfig({
 
       await execa(executable, [...baseArgs, ...shadcnArgs], {
         stdio: "inherit",
+        detached: false,
+        cleanup: true,
+        killSignal: "SIGTERM",
+        timeout: 120000, // 2 minutes timeout
       });
 
       spinner.succeed("shadcn/ui initialized successfully");

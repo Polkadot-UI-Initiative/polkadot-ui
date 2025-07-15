@@ -36,58 +36,40 @@ export class AddCommand {
    */
   async execute(componentName: string): Promise<void> {
     try {
-      logger.detail("🚀 Starting add command execution...", true);
-
       // Step 1: Validate component name
-      logger.detail("📝 Step 1: Validating component name...", true);
       if (!this.validateComponentName(componentName)) {
         return;
       }
 
       // Step 2: Validate project setup
-      logger.detail("🔧 Step 2: Validating project setup...", true);
       const projectStructure = await this.validateProjectSetup();
       if (!projectStructure) {
-        logger.detail("❌ Project setup validation failed, exiting", true);
         return;
       }
-      logger.detail("✅ Project setup validation completed", true);
 
       // Step 3: Check component availability
-      logger.detail("🔍 Step 3: Checking component availability...", true);
       const componentInfo = await this.validateComponentAvailability(
         componentName
       );
       if (!componentInfo) {
-        logger.detail("❌ Component availability check failed, exiting", true);
         return;
       }
-      logger.detail("✅ Component availability check completed", true);
 
       // Step 4: Detect Polkadot API setup
-      logger.detail("🔗 Step 4: Detecting Polkadot API setup...", true);
       const polkadotConfig = await this.detectPolkadotSetup(componentInfo);
-      logger.detail("✅ Polkadot API setup detection completed", true);
 
       // Step 5: Install component
-      logger.detail("📦 Step 5: Installing component...", true);
       await this.installComponent(
         componentInfo,
         projectStructure,
         polkadotConfig
       );
-      logger.detail("✅ Component installation completed", true);
 
       // Step 6: Show next steps
-      logger.detail("🎉 Step 6: Showing completion message...", true);
       this.showCompletionMessage(componentInfo, polkadotConfig);
-      logger.detail("✅ Add command completed successfully", true);
     } catch (error) {
       logger.error(
         error instanceof Error ? error.message : "An unexpected error occurred"
-      );
-      logger.detail(
-        "If the issue persists, please check the project setup manually"
       );
       process.exit(1);
     }
@@ -148,75 +130,18 @@ export class AddCommand {
 
         // Run init command to set up the project
         const initCommand = new InitCommand(this.options);
-        logger.detail("🔄 Running init command...", true);
-
-        // Add process exit handler to detect unexpected termination
-        const exitHandler = (code: number) => {
-          logger.error(
-            `🚨 PROCESS EXITING with code ${code} during init command!`
-          );
-          logger.error(
-            "This is the root cause - init command is causing process to exit"
-          );
-        };
-
-        process.on("exit", exitHandler);
-
-        // Use internal method instead of full execute to avoid process management issues
-        const initPromise = initCommand.initializeProject();
-        const timeoutPromise = new Promise<void>((_, reject) => {
-          setTimeout(() => {
-            reject(new Error("Init command timed out after 30 seconds"));
-          }, 30 * 1000); // 30 seconds timeout for testing
-        });
-
-        try {
-          await Promise.race([initPromise, timeoutPromise]);
-        } catch (error) {
-          if (error instanceof Error && error.message.includes("timed out")) {
-            logger.error(
-              "Init command appears to be hanging - this is the root cause!"
-            );
-            logger.info(
-              "The init command is not returning control to the add command"
-            );
-            return null;
-          }
-          throw error;
-        } finally {
-          // Remove the exit handler
-          process.off("exit", exitHandler);
-        }
-
-        logger.detail(
-          "✅ Init command completed, continuing with add...",
-          true
-        );
-
-        // Add immediate confirmation that we're past the init command
-        logger.info(
-          "🎯 CRITICAL: Init command has returned control to add command!"
-        );
+        await initCommand.initializeProject();
 
         // Wait a moment for file system to sync
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
         // Return the project structure after creation
         try {
-          logger.detail("🔍 Detecting project structure after init...", true);
           const structure = await this.projectDetector.detectProjectStructure();
-          logger.success(
-            "Project setup completed, continuing with component installation..."
-          );
           return structure;
         } catch (structureError) {
           logger.error(
             "Failed to detect project structure after initialization"
-          );
-          logger.detail(
-            structureError instanceof Error
-              ? structureError.message
-              : "Unknown error detecting project structure"
           );
           logger.info(
             "Please run the command again or check your project setup"
