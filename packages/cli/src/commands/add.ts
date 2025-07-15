@@ -71,6 +71,9 @@ export class AddCommand {
       logger.error(
         error instanceof Error ? error.message : "An unexpected error occurred"
       );
+      logger.detail(
+        "If the issue persists, please check the project setup manually"
+      );
       process.exit(1);
     }
   }
@@ -132,8 +135,30 @@ export class AddCommand {
         const initCommand = new InitCommand(this.options);
         await initCommand.execute();
 
+        // Wait a moment for file system to sync
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
         // Return the project structure after creation
-        return await this.projectDetector.detectProjectStructure();
+        try {
+          const structure = await this.projectDetector.detectProjectStructure();
+          logger.success(
+            "Project setup completed, continuing with component installation..."
+          );
+          return structure;
+        } catch (structureError) {
+          logger.error(
+            "Failed to detect project structure after initialization"
+          );
+          logger.detail(
+            structureError instanceof Error
+              ? structureError.message
+              : "Unknown error detecting project structure"
+          );
+          logger.info(
+            "Please run the command again or check your project setup"
+          );
+          return null;
+        }
       }
 
       // Check if it's a React project
@@ -178,7 +203,10 @@ export class AddCommand {
       return structure;
     } catch (error) {
       spinner.fail("Project validation failed");
-      throw error;
+      logger.error(
+        error instanceof Error ? error.message : "Unknown validation error"
+      );
+      return null;
     }
   }
 
@@ -395,7 +423,7 @@ export class AddCommand {
       }
 
       await execa(executable, [...baseArgs, ...shadcnArgs], {
-        stdio: "inherit", // Show shadcn prompts for user interaction
+        stdio: this.options.yes ? "pipe" : "inherit", // Use pipe for --yes to prevent interference, inherit for interactive
       });
 
       logger.success("Component installed successfully");
@@ -442,7 +470,7 @@ export class AddCommand {
       }
 
       await execa(executable, [...baseArgs, ...shadcnArgs], {
-        stdio: "inherit",
+        stdio: "pipe", // Changed from "inherit" to "pipe" to prevent process interference
       });
 
       logger.success("shadcn/ui initialized successfully");

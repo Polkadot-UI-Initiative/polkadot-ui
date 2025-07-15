@@ -366,7 +366,7 @@ export default defineConfig({
       }
 
       await execa(executable, [...baseArgs, ...shadcnArgs], {
-        stdio: "inherit",
+        stdio: "pipe", // Changed from "inherit" to "pipe" to prevent process interference
       });
 
       spinner.succeed("shadcn/ui initialized successfully");
