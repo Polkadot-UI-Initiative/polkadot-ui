@@ -8,6 +8,7 @@
       "build": "pnpm -r build",
       "build:cli": "pnpm --filter cli build",
       "build:registry": "pnpm --filter registry build",
+      "start": "pnpm --filter registry start",
       "test": "pnpm -r test",
       "lint": "pnpm -r lint",
       "clean": "pnpm -r clean",

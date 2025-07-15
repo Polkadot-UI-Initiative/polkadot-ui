@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import WalletProvider from "@/registry/polkadot-ui/providers/wallet-provider";
 import ApiProvider from "@/registry/polkadot-ui/providers/api-provider";
 import { Navigation } from "@/components/layout/navigation";
 import { ThemeProvider } from "@/components/theme/theme-provider";
@@ -37,12 +36,10 @@ export default function RootLayout({
         <ThemeProvider>
           <div className="relative flex min-h-screen flex-col">
             <Navigation />
-            <WalletProvider appName="Dot UI">
-              <ApiProvider>
-                <MouseFollower />
-                <main className="flex-1">{children}</main>
-              </ApiProvider>
-            </WalletProvider>
+            <ApiProvider>
+              <MouseFollower />
+              <main className="flex-1">{children}</main>
+            </ApiProvider>
           </div>
         </ThemeProvider>
         <Analytics />

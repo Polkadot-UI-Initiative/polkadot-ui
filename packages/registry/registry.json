@@ -20,20 +20,10 @@
           "path": "registry/polkadot-ui/blocks/block-number/hooks/use-block-number.ts",
           "type": "registry:hook"
         },
-        {
-          "path": "registry/polkadot-ui/blocks/block-number/hooks/use-api.ts",
-          "type": "registry:hook"
-        },
-        {
-          "path": "registry/polkadot-ui/blocks/block-number/hooks/use-wallets.ts",
-          "type": "registry:hook"
-        },
+
+
         {
           "path": "registry/polkadot-ui/providers/api-provider.tsx",
-          "type": "registry:lib"
-        },
-        {
-          "path": "registry/polkadot-ui/providers/wallet-provider.tsx",
           "type": "registry:lib"
         },
         {
@@ -47,14 +37,6 @@
         },
         {
           "path": "registry/polkadot-ui/lib/config.polkadot-ui.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "registry/polkadot-ui/lib/extension-wallet.polkadot-ui.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "registry/polkadot-ui/lib/wallet.polkadot-ui.ts",
           "type": "registry:lib"
         }
       ]
