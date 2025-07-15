@@ -1,21 +1,33 @@
 "use client";
 
 import { useBlockNumber } from "@/registry/polkadot-ui/blocks/block-number/hooks/use-block-number";
-import { usePolkadot } from "@/registry/polkadot-ui/providers/polkadot-provider";
 import { Button } from "@/registry/polkadot-ui/ui/button";
+import { useDedot } from "@/registry/polkadot-ui/providers/dedot-provider";
 
 export function BlockNumber() {
   const { blockNumber, error } = useBlockNumber();
+  // Using PolkadotProvider
+  // const {
+  //   setApi,
+  //   availableChains,
+  //   isConnected,
+  //   isLoading: isLoading,
+  //   currentChain,
+  //   chainName,
+  // } = usePolkadot();
+
+  // using DedotProvider
   const {
     setApi,
     availableChains,
     isConnected,
-    isLoading: isLoading,
+    isLoading: isLoadingDedot,
+    isLoading,
     currentChain,
     chainName,
-  } = usePolkadot();
+  } = useDedot();
 
-  if (isLoading(currentChain)) {
+  if (isLoadingDedot) {
     return (
       <div className="w-full max-w-md p-4 borderrounded-md">
         <div className="mb-4">
@@ -63,7 +75,7 @@ export function BlockNumber() {
                 variant={chainId === currentChain ? "default" : "outline"}
                 size="sm"
                 onClick={() => setApi(chainId)}
-                disabled={isLoading(chainId)}
+                disabled={isLoading}
               >
                 {chainId}
                 {isConnected(chainId) && (

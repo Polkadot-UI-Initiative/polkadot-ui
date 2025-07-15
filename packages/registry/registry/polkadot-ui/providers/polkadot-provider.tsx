@@ -84,12 +84,12 @@ export function PolkadotProvider({ children }: PolkadotProviderProps) {
       const chainConfig = getChainConfig(polkadotConfig.chains, chainId);
 
       console.log(
-        `Connecting to ${chainConfig.displayName} at ${chainConfig.endpoint}`
+        `Connecting to ${chainConfig.displayName} at ${chainConfig.endpoints[0]}`
       );
 
       // Create client with the selected chain
       const client = createClient(
-        withPolkadotSdkCompat(getWsProvider(chainConfig.endpoint))
+        withPolkadotSdkCompat(getWsProvider(chainConfig.endpoints[0]))
       );
 
       // Get typed API for the selected chain
