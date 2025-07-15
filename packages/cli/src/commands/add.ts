@@ -130,7 +130,27 @@ export class AddCommand {
 
         // Run init command to set up the project
         const initCommand = new InitCommand(this.options);
-        await initCommand.initializeProject();
+
+        // Use internal method with timeout detection to avoid hanging
+        const initPromise = initCommand.initializeProject();
+        const timeoutPromise = new Promise<void>((_, reject) => {
+          setTimeout(() => {
+            reject(new Error("Init command timed out after 30 seconds"));
+          }, 30 * 1000); // 30 seconds timeout
+        });
+
+        try {
+          await Promise.race([initPromise, timeoutPromise]);
+        } catch (error) {
+          if (error instanceof Error && error.message.includes("timed out")) {
+            logger.error("Init command appears to be hanging");
+            logger.info(
+              "The init command is not returning control to the add command"
+            );
+            return null;
+          }
+          throw error;
+        }
 
         // Wait a moment for file system to sync
         await new Promise((resolve) => setTimeout(resolve, 1000));

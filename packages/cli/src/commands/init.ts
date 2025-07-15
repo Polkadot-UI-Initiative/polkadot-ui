@@ -19,6 +19,8 @@ export class InitCommand {
   async execute(): Promise<void> {
     logger.info("Initializing new project...");
     await this.initializeProject();
+    // Explicitly return to ensure the function completes
+    return;
   }
 
   /**
@@ -186,10 +188,6 @@ export class InitCommand {
 
     await execa(executable, [...baseArgs, ...args], {
       stdio: "inherit",
-      detached: false,
-      cleanup: true,
-      killSignal: "SIGTERM",
-      timeout: 300000, // 5 minutes timeout for project creation
     });
   }
 
@@ -209,20 +207,12 @@ export class InitCommand {
         [...baseArgs, "create-vite@latest", ".", "--template", "react-ts"],
         {
           stdio: "inherit",
-          detached: false,
-          cleanup: true,
-          killSignal: "SIGTERM",
-          timeout: 300000, // 5 minutes timeout
         }
       );
     } else {
       // Use native create-vite flow (shows React preselected, TypeScript variant available)
       await execa(executable, [...baseArgs, "create-vite@latest", "."], {
         stdio: "inherit",
-        detached: false,
-        cleanup: true,
-        killSignal: "SIGTERM",
-        timeout: 300000, // 5 minutes timeout
       });
     }
 
@@ -247,10 +237,6 @@ export class InitCommand {
     if (devDeps.length > 0) {
       await execa.command(`${installCommand} -D ${devDeps.join(" ")}`, {
         stdio: "inherit",
-        detached: false,
-        cleanup: true,
-        killSignal: "SIGTERM",
-        timeout: 300000, // 5 minutes timeout
       });
     }
 
@@ -389,10 +375,6 @@ export default defineConfig({
 
       await execa(executable, [...baseArgs, ...shadcnArgs], {
         stdio: "inherit",
-        detached: false,
-        cleanup: true,
-        killSignal: "SIGTERM",
-        timeout: 120000, // 2 minutes timeout
       });
 
       spinner.succeed("shadcn/ui initialized successfully");
