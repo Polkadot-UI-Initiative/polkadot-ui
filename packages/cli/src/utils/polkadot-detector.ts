@@ -139,6 +139,21 @@ export class PolkadotDetector {
   }
 
   /**
+   * Check if @dedot/chaintypes is installed
+   */
+  async hasChainTypes(): Promise<boolean> {
+    const packageJson = await this.getPackageJson();
+    if (!packageJson) return false;
+
+    const deps = {
+      ...packageJson.dependencies,
+      ...packageJson.devDependencies,
+    };
+
+    return Boolean(deps["@dedot/chaintypes"]);
+  }
+
+  /**
    * Get comprehensive Polkadot API configuration status
    */
   async getPolkadotApiConfig(): Promise<PolkadotApiConfig> {

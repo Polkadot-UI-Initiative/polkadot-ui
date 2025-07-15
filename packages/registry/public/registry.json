@@ -8,7 +8,7 @@
       "type": "registry:component",
       "title": "Block Number",
       "description": "A simple block number component that displays the current block number from Polkadot Asset Hub. Requires polkadot-api setup.",
-      "dependencies": ["polkadot-api", "dedot", "react-use"],
+      "dependencies": ["polkadot-api", "dedot"],
       "requiresPolkadotApi": true,
       "registryDependencies": ["button"],
       "files": [
