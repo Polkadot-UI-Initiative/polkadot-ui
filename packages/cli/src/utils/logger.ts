@@ -19,7 +19,7 @@ export class Logger {
    */
   detail(message: string, force: boolean = false) {
     if (this.verbose || force) {
-      console.log(`${chalk.gray("i")} ${message}`);
+      console.log(chalk.gray(`i ${message}`));
     }
   }
 

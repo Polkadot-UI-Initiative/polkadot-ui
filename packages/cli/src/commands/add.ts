@@ -10,6 +10,7 @@ import {
   formatComponentName,
 } from "../utils/registry.js";
 import { logger } from "../utils/logger.js";
+import { Telemetry } from "../utils/telemetry.js";
 import {
   CliOptions,
   ComponentInfo,
@@ -23,18 +24,22 @@ export class AddCommand {
   private registry: Registry;
   private projectDetector: ProjectDetector;
   private polkadotDetector: PolkadotDetector;
+  private telemetry: Telemetry;
 
   constructor(options: CliOptions) {
     this.options = options;
     this.registry = new Registry(options.dev);
     this.projectDetector = new ProjectDetector();
     this.polkadotDetector = new PolkadotDetector();
+    this.telemetry = new Telemetry(options);
   }
 
   /**
    * Main add command execution
    */
   async execute(componentName: string): Promise<void> {
+    const startTime = Date.now();
+
     try {
       // Step 1: Validate component name
       if (!this.validateComponentName(componentName)) {
@@ -55,6 +60,10 @@ export class AddCommand {
         return;
       }
 
+      // Track installation start
+      const framework = projectStructure.isNextJs ? "nextjs" : "vite";
+      await this.telemetry.trackInstallStart(componentInfo.name, framework);
+
       // Step 4: Detect Polkadot API setup
       const polkadotConfig = await this.detectPolkadotSetup(componentInfo);
 
@@ -67,10 +76,22 @@ export class AddCommand {
 
       // Step 6: Show next steps
       this.showCompletionMessage(componentInfo, polkadotConfig);
+
+      // Track successful installation
+      const duration = Date.now() - startTime;
+      await this.telemetry.trackInstallSuccess(componentInfo.name, framework, {
+        hasTypeScript: projectStructure.hasTypeScript,
+        hasTailwind: true, // We always install Tailwind
+        packageManager: projectStructure.packageManager,
+        duration,
+      });
     } catch (error) {
-      logger.error(
-        error instanceof Error ? error.message : "An unexpected error occurred"
-      );
+      // Track installation error
+      const errorMessage =
+        error instanceof Error ? error.message : "An unexpected error occurred";
+      await this.telemetry.trackInstallError(componentName, errorMessage);
+
+      logger.error(errorMessage);
       process.exit(1);
     }
   }
