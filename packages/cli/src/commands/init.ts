@@ -5,12 +5,15 @@ import path from "path";
 import type { CliOptions, ProjectSetupConfig } from "../types/index.js";
 import { logger } from "../utils/logger.js";
 import { ProjectDetector } from "../utils/project-detector.js";
+import { Telemetry } from "../utils/telemetry.js";
 
 export class InitCommand {
   private projectDetector: ProjectDetector;
+  private telemetry: Telemetry;
 
   constructor(private options: CliOptions) {
     this.projectDetector = new ProjectDetector();
+    this.telemetry = new Telemetry(options);
   }
 
   /**
@@ -27,12 +30,26 @@ export class InitCommand {
    * Internal initialization method that can be called from other commands
    */
   async initializeProject(): Promise<void> {
+    const startTime = Date.now();
     const setupConfig = await this.promptProjectSetup();
+
+    // Track initialization start
+    await this.telemetry.trackInitStart(setupConfig.framework);
+
     await this.createProject(setupConfig);
     await this.initializeShadcn(setupConfig);
 
     logger.success("Project initialized successfully!");
     logger.info("You can now run 'dot-ui add <component>' to add components.");
+
+    // Track successful initialization
+    const duration = Date.now() - startTime;
+    await this.telemetry.trackInitSuccess(setupConfig.framework, {
+      hasTypeScript: setupConfig.useTypeScript,
+      hasTailwind: setupConfig.useTailwind,
+      packageManager: "pnpm", // We can detect this dynamically if needed
+      duration,
+    });
   }
 
   /**
