@@ -1,4 +1,4 @@
-# Dot UI - Polkadot Components
+# WORK IN PROGRESS - NOT RELEASED YET - Dot UI - Polkadot Components
 
 A monorepo containing a CLI tool and registry server for Polkadot UI components,
 similar to shadcn/ui but specifically designed for Polkadot ecosystem
