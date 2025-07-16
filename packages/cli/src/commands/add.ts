@@ -539,7 +539,7 @@ export class AddCommand {
     projectStructure: ProjectStructure,
     polkadotConfig: PolkadotApiConfig
   ): Promise<void> {
-    logger.info("Setting up Polkadot API...");
+    logger.info("Setting up API...");
 
     try {
       // Detect which library is being used
@@ -548,29 +548,26 @@ export class AddCommand {
       if (library === "papi") {
         // Handle papi setup (existing logic)
         await this.setupPapiApi();
+        logger.info("Papi setup complete");
       } else if (library === "dedot") {
         // Handle dedot setup (minimal setup needed)
+      // TODO: since we can't pick which files getting imported from the registry,
+      // we need to setup both libraries
         await this.setupDedotApi();
+        await this.setupPapiApi();
+        logger.info("Dedot setup complete");
       } else {
-        // Double-check if dedot is already installed before defaulting to papi
-        const hasDedot = await this.polkadotDetector.hasDedot();
-        
-        if (hasDedot) {
-          logger.info("Dedot detected - switching to dedot setup");
-          await this.setupDedotApi();
-        } else {
-          // If no library is detected, install papi by default
-          logger.info("No Polkadot library detected, installing polkadot-api...");
-          await this.installPolkadotApi();
-          await this.setupPapiApi();
-        }
+        // If no library is detected, install papi by default
+        logger.info("No Polkadot library detected, installing polkadot-api...");
+        await this.installPolkadotApi();
+        await this.setupPapiApi();
       }
 
-      logger.success("Polkadot API configured");
+      logger.success("API configured");
     } catch (error) {
-      logger.error("Polkadot API setup failed");
+      logger.error("API setup failed");
       throw new Error(
-        `Failed to setup Polkadot API: ${
+        `Failed to setup API: ${
           error instanceof Error ? error.message : "Unknown error"
         }`
       );
@@ -775,8 +772,9 @@ export class AddCommand {
   ): void {
     const formattedName = formatComponentName(componentInfo.name);
     const hasPolkadotSetup = this.requiresPolkadotApi(componentInfo);
+    const hasDedot = componentInfo.dependencies?.includes("dedot") || false;
 
-    logger.showNextSteps(formattedName, hasPolkadotSetup);
+    logger.showNextSteps(formattedName, hasPolkadotSetup, hasDedot);
   }
 
   /**

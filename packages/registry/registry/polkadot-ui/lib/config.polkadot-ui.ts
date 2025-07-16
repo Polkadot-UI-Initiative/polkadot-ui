@@ -10,7 +10,7 @@ export const polkadotConfig = definePolkadotConfig({
     paseo_asset_hub: {
       descriptor: paseo_asset_hub,
       network: "paseo-asset-hub",
-      endpoints: ["wss://sys.ibp.network/asset-hub-paseo"],
+      endpoints: ["wss://sys.ibp.network/asset-hub-paseo", "wss://asset-hub-paseo.dotters.network"],
       displayName: "Paseo Asset Hub",
       explorerUrls: {
         [SubstrateExplorer.PolkadotJs]: `https://polkadot.js.org/apps/?rpc=${encodeURIComponent('wss://sys.ibp.network/asset-hub-paseo')}#/explorer`,
@@ -20,7 +20,7 @@ export const polkadotConfig = definePolkadotConfig({
     paseo: {
       descriptor: paseo,
       network: "paseo",
-      endpoints: ["wss://sys.ibp.network/paseo"],
+      endpoints: ["wss://sys.ibp.network/paseo", "wss://paseo.dotters.network"],
       displayName: "Paseo Relay Chain",
       explorerUrls: {
         [SubstrateExplorer.PolkadotJs]: `https://polkadot.js.org/apps/?rpc=${encodeURIComponent('wss://sys.ibp.network/paseo')}#/explorer`,
