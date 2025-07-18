@@ -32,6 +32,7 @@ export interface ComponentInfo {
   title: string;
   description: string;
   dependencies?: string[];
+  optionalPeerDependencies?: string[];
   requiresPolkadotApi?: boolean;
   registryDependencies?: string[];
   files: ComponentFile[];
