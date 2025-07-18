@@ -14,6 +14,10 @@ async function buildRegistries() {
   if (existsSync("registry.json")) {
     copyFileSync("registry.json", "registry.json.backup");
   }
+  if (!existsSync("registry-papi.json")) {
+    console.error("❌ registry-papi.json not found");
+    process.exit(1);
+  }
   copyFileSync("registry-papi.json", "registry.json");
 
   try {
@@ -36,6 +40,10 @@ async function buildRegistries() {
 
   // Build Dedot registry
   console.log("📦 Building Dedot registry...");
+  if (!existsSync("registry-dedot.json")) {
+    console.error("❌ registry-dedot.json not found");
+    process.exit(1);
+  }
   copyFileSync("registry-dedot.json", "registry.json");
 
   try {

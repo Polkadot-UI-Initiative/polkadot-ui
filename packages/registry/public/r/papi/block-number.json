@@ -4,12 +4,8 @@
   "type": "registry:component",
   "title": "Block Number (PAPI)",
   "description": "A block number component optimized for polkadot-api. Fast, type-safe, and efficient.",
-  "dependencies": [
-    "polkadot-api"
-  ],
-  "registryDependencies": [
-    "button"
-  ],
+  "dependencies": ["polkadot-api"],
+  "registryDependencies": ["button"],
   "files": [
     {
       "path": "registry/dot-ui/blocks/block-number/page.papi.tsx",

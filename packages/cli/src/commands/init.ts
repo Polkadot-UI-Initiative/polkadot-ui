@@ -454,7 +454,7 @@ export default defineConfig({
         });
 
         // Install @dedot/chaintypes as devDependency
-        const devFlag = packageManager === "npm" ? "--save-dev" : "--save-dev";
+        const devFlag = packageManager === "npm" ? "--save-dev" : "-D";
         await execa(
           packageManager,
           [installCommand, devFlag, "@dedot/chaintypes"],

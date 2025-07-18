@@ -628,7 +628,7 @@ export class AddCommand {
       const spinner = ora("Installing @dedot/chaintypes...").start();
 
       try {
-        const devFlag = packageManager === "npm" ? "--save-dev" : "--save-dev";
+        const devFlag = packageManager === "npm" ? "--save-dev" : "-D";
         await execa(
           packageManager,
           [installCommand, devFlag, "@dedot/chaintypes"],
