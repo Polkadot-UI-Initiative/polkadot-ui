@@ -19,8 +19,7 @@
         },
         {
           "path": "registry/dot-ui/blocks/block-number/components/block-number.papi.tsx",
-          "type": "registry:component",
-          "target": "components/block-number.tsx"
+          "type": "registry:component"
         },
         {
           "path": "registry/dot-ui/blocks/block-number/hooks/use-block-number.papi.ts",

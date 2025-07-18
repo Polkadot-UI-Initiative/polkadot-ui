@@ -5,6 +5,7 @@ export class Registry {
   private baseUrl: string;
   private polkadotDetector: PolkadotDetector;
   private isDev: boolean;
+  private cachedDetectedApi: "papi" | "dedot" | "none" | null = null;
 
   constructor(isDev: boolean = false) {
     this.baseUrl = isDev ? "http://localhost:3000" : "https://dot-ui.com";
@@ -13,11 +14,42 @@ export class Registry {
   }
 
   /**
+   * Get the detected Polkadot API library with caching
+   */
+  private async getDetectedApi(): Promise<"papi" | "dedot" | "none"> {
+    if (this.cachedDetectedApi === null) {
+      try {
+        this.cachedDetectedApi =
+          await this.polkadotDetector.detectPolkadotLibrary();
+      } catch {
+        // Default to papi if detection fails
+        this.cachedDetectedApi = "papi";
+      }
+    }
+    return this.cachedDetectedApi;
+  }
+
+  /**
+   * Get the path prefix based on detected API
+   */
+  private async getPathPrefix(): Promise<string> {
+    const detectedApi = await this.getDetectedApi();
+    return detectedApi === "papi" ? "/r/papi" : "/r/dedot";
+  }
+
+  /**
+   * Clear the cached detection result (useful for testing or when project state changes)
+   */
+  public clearDetectionCache(): void {
+    this.cachedDetectedApi = null;
+  }
+
+  /**
    * Get the appropriate registry URL based on detected Polkadot API
    */
   private async getRegistryUrl(): Promise<string> {
     try {
-      const detectedApi = await this.polkadotDetector.detectPolkadotLibrary();
+      const detectedApi = await this.getDetectedApi();
       const registryFile =
         detectedApi === "papi" ? "registry-papi.json" : "registry-dedot.json";
       return `${this.baseUrl}/${registryFile}`;
@@ -56,8 +88,7 @@ export class Registry {
    */
   async fetchComponent(componentName: string): Promise<ComponentInfo | null> {
     try {
-      const detectedApi = await this.polkadotDetector.detectPolkadotLibrary();
-      const pathPrefix = detectedApi === "papi" ? "/r/papi" : "/r/dedot";
+      const pathPrefix = await this.getPathPrefix();
       const response = await fetch(
         `${this.baseUrl}${pathPrefix}/${componentName}.json`
       );
@@ -184,8 +215,7 @@ export class Registry {
       const components = registryData.items || [];
 
       // Get API-specific component URL base
-      const detectedApi = await this.polkadotDetector.detectPolkadotLibrary();
-      const pathPrefix = detectedApi === "papi" ? "/r/papi" : "/r/dedot";
+      const pathPrefix = await this.getPathPrefix();
 
       return {
         url: `${this.baseUrl}${pathPrefix}`,
