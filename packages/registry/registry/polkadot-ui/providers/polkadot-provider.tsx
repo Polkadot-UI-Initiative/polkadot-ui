@@ -83,13 +83,19 @@ export function PolkadotProvider({ children }: PolkadotProviderProps) {
     try {
       const chainConfig = getChainConfig(polkadotConfig.chains, chainId);
 
-      console.log(
-        `Connecting to ${chainConfig.displayName} at ${chainConfig.endpoints[0]}`
-      );
+      // Validate that endpoints array exists and has at least one element
+      if (!chainConfig.endpoints || !chainConfig.endpoints[0]) {
+        throw new Error(
+          `Chain ${chainId} (${chainConfig.displayName}) has no endpoints configured. Please add at least one endpoint to the chain configuration.`
+        );
+      }
+
+      const endpoint = chainConfig.endpoints[0];
+      console.log(`Connecting to ${chainConfig.displayName} at ${endpoint}`);
 
       // Create client with the selected chain
       const client = createClient(
-        withPolkadotSdkCompat(getWsProvider(chainConfig.endpoints[0]))
+        withPolkadotSdkCompat(getWsProvider(endpoint))
       );
 
       // Get typed API for the selected chain

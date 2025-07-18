@@ -6,28 +6,17 @@ import { useDedot } from "@/registry/polkadot-ui/providers/dedot-provider";
 
 export function BlockNumber() {
   const { blockNumber, error } = useBlockNumber();
-  // Using PolkadotProvider
-  // const {
-  //   setApi,
-  //   availableChains,
-  //   isConnected,
-  //   isLoading: isLoading,
-  //   currentChain,
-  //   chainName,
-  // } = usePolkadot();
 
-  // using DedotProvider
   const {
     setApi,
     availableChains,
     isConnected,
-    isLoading: isLoadingDedot,
     isLoading,
     currentChain,
     chainName,
   } = useDedot();
 
-  if (isLoadingDedot) {
+  if (isLoading(currentChain)) {
     return (
       <div className="w-full max-w-md p-4 borderrounded-md">
         <div className="mb-4">
@@ -75,7 +64,7 @@ export function BlockNumber() {
                 variant={chainId === currentChain ? "default" : "outline"}
                 size="sm"
                 onClick={() => setApi(chainId)}
-                disabled={isLoading}
+                disabled={isLoading(chainId)}
               >
                 {chainId}
                 {isConnected(chainId) && (
