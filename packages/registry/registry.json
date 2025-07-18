@@ -21,11 +21,15 @@
           "type": "registry:hook"
         },
         {
-          "path": "registry/polkadot-ui/providers/polkadot-provider.tsx",
+          "path": "registry/polkadot-ui/providers/papi-provider.tsx",
           "type": "registry:lib"
         },
         {
           "path": "registry/polkadot-ui/providers/dedot-provider.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/providers/unified-polkadot-provider.tsx",
           "type": "registry:lib"
         },
         {
