@@ -177,11 +177,11 @@ export function PolkadotProvider({ children }: PolkadotProviderProps) {
   );
 }
 
-export function usePolkadot(): PolkadotContextValue {
+export function usePapi(): PolkadotContextValue {
   const context = useContext(PolkadotContext);
 
   if (context === undefined) {
-    throw new Error("usePolkadot must be used within a PolkadotProvider");
+    throw new Error("usePapi must be used within a PolkadotProvider");
   }
 
   return context;
@@ -189,7 +189,7 @@ export function usePolkadot(): PolkadotContextValue {
 
 // Helper to get properly typed API (maintains backward compatibility)
 export function useTypedPolkadotApi(): ConfiguredChainApi<ChainId> | null {
-  const { api } = usePolkadot();
+  const { api } = usePapi();
   return api;
 }
 

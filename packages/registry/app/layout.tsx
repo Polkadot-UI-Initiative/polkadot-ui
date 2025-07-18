@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import DedotProvider from "@/registry/polkadot-ui/providers/dedot-provider";
+import { PolkadotProvider } from "@/registry/polkadot-ui/providers/unified-polkadot-provider";
 import { Navigation } from "@/components/layout/navigation";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { MouseFollower } from "@/components/mouse-follower";
@@ -38,9 +38,9 @@ export default function RootLayout({
           <ThemeProvider>
             <div className="relative flex min-h-screen flex-col">
               <Navigation />
-              <DedotProvider>
+              <PolkadotProvider api="papi">
                 <main className="flex-1">{children}</main>
-              </DedotProvider>
+              </PolkadotProvider>
               <MouseFollower />
             </div>
           </ThemeProvider>
