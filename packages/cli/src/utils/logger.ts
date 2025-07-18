@@ -172,7 +172,7 @@ export class Logger {
     this.newline();
 
     if (hasDedot) {
-      this.detail("2. Make sure to wrap your app with DedotProvider:", true);
+      this.detail("2. Make sure to wrap your app with PolkadotProvider:", true);
       this.code(
         `import { PolkadotProvider } from '@/providers/dedot-provider'`
       );

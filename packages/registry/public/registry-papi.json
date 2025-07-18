@@ -13,14 +13,17 @@
       "registryDependencies": ["button"],
       "files": [
         {
+          "path": "registry/dot-ui/blocks/block-number/page.papi.tsx",
+          "type": "registry:page",
+          "target": "app/dot-ui/block-number/page.tsx"
+        },
+        {
           "path": "registry/dot-ui/blocks/block-number/components/block-number.papi.tsx",
-          "type": "registry:component",
-          "target": "components/block-number.tsx"
+          "type": "registry:component"
         },
         {
           "path": "registry/dot-ui/blocks/block-number/hooks/use-block-number.papi.ts",
-          "type": "registry:hook",
-          "target": "hooks/use-block-number.ts"
+          "type": "registry:hook"
         },
         {
           "path": "registry/dot-ui/providers/papi-provider.tsx",

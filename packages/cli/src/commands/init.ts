@@ -201,7 +201,7 @@ export class InitCommand {
     const [executable, ...baseArgs] = runCommand.split(" ");
 
     await execa(executable, [...baseArgs, ...args], {
-      stdio: "inherit",
+      stdio: ["ignore", "inherit", "inherit"], // ignore stdin to prevent waiting for input
       detached: false,
       cleanup: true,
       killSignal: "SIGTERM",

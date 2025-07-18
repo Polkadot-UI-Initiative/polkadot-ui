@@ -13,14 +13,18 @@
       "registryDependencies": ["button"],
       "files": [
         {
+          "path": "registry/dot-ui/blocks/block-number/page.dedot.tsx",
+          "type": "registry:page",
+          "target": "app/dot-ui/blocks/block-number/page.tsx"
+        },
+        {
           "path": "registry/dot-ui/blocks/block-number/components/block-number.dedot.tsx",
           "type": "registry:component",
           "target": "components/block-number.tsx"
         },
         {
           "path": "registry/dot-ui/blocks/block-number/hooks/use-block-number.dedot.ts",
-          "type": "registry:hook",
-          "target": "hooks/use-block-number.ts"
+          "type": "registry:hook"
         },
         {
           "path": "registry/dot-ui/providers/dedot-provider.tsx",

@@ -37,7 +37,7 @@ interface DedotProviderProps {
   children: React.ReactNode;
 }
 
-export default function DedotProvider({ children }: DedotProviderProps) {
+export function PolkadotProvider({ children }: DedotProviderProps) {
   const [currentChain, setCurrentChain] = useState<ChainId>(
     dotUiConfig.defaultChain
   );

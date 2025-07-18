@@ -1,27 +1,29 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
-  "name": "dot-ui-dedot",
+  "name": "dot-ui-papi",
   "homepage": "https://dot-ui.com",
   "items": [
     {
       "name": "block-number",
       "type": "registry:component",
-      "title": "Block Number",
-      "description": "A block number component optimized for dedot. Fast, type-safe, and efficient.",
-      "dependencies": ["dedot"],
+      "title": "Block Number (PAPI)",
+      "description": "A block number component optimized for polkadot-api. Fast, type-safe, and efficient.",
+      "dependencies": ["polkadot-api"],
       "requiresPolkadotApi": true,
       "registryDependencies": ["button"],
       "files": [
         {
-          "path": "registry/dot-ui/blocks/block-number/components/block-number.dedot.tsx",
-          "type": "registry:component"
+          "path": "registry/dot-ui/blocks/block-number/components/block-number.papi.tsx",
+          "type": "registry:component",
+          "target": "components/block-number.tsx"
         },
         {
-          "path": "registry/dot-ui/blocks/block-number/hooks/use-block-number.dedot.ts",
-          "type": "registry:hook"
+          "path": "registry/dot-ui/blocks/block-number/hooks/use-block-number.papi.ts",
+          "type": "registry:hook",
+          "target": "hooks/use-block-number.ts"
         },
         {
-          "path": "registry/dot-ui/providers/dedot-provider.tsx",
+          "path": "registry/dot-ui/providers/papi-provider.tsx",
           "type": "registry:lib"
         },
         {
@@ -33,7 +35,11 @@
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/config.polkadot-ui.ts",
+          "path": "registry/dot-ui/lib/config.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/config.papi.ts",
           "type": "registry:lib"
         }
       ]

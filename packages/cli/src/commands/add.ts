@@ -149,7 +149,7 @@ export class AddCommand {
 
         // Run init command to set up the project
         const initCommand = new InitCommand(this.options);
-        await initCommand.initializeProject();
+        await initCommand.execute();
 
         // Wait a moment for file system to sync
         await new Promise((resolve) => setTimeout(resolve, 1000));
