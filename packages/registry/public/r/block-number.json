@@ -4,14 +4,8 @@
   "type": "registry:component",
   "title": "Block Number",
   "description": "A simple block number component that displays the current block number from Polkadot Asset Hub. Requires polkadot-api setup or dedot.",
-  "dependencies": [
-    "polkadot-api",
-    "dedot",
-    "react-use"
-  ],
-  "registryDependencies": [
-    "button"
-  ],
+  "dependencies": ["polkadot-api", "dedot", "react-use"],
+  "registryDependencies": ["button"],
   "files": [
     {
       "path": "registry/polkadot-ui/blocks/block-number/components/block-number.tsx",

@@ -130,9 +130,24 @@ export default function DedotProvider({ children }: DedotProviderProps) {
   };
 
   const disconnect = () => {
-    clients.forEach(async (client) => {
-      await client.disconnect();
-    });
+    // Handle async disconnect operations properly
+    Promise.all(
+      Array.from(clients.values()).map(async (client) => {
+        try {
+          await client.disconnect();
+        } catch (error) {
+          console.error("Error disconnecting client:", error);
+        }
+      })
+    )
+      .then(() => {
+        console.log("All clients disconnected successfully");
+      })
+      .catch((error) => {
+        console.error("Error during disconnect:", error);
+      });
+
+    // Clear state immediately to maintain synchronous interface
     setClients(new Map());
     setApis({});
     setLoadingStates(new Map());
