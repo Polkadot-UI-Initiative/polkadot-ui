@@ -1,31 +1,22 @@
 // To add more chains, run: npx papi add <chain-name> -n <chain-name>
 // Then import the descriptor here and add it to the chains configuration
 import { paseo_asset_hub, paseo } from "@polkadot-api/descriptors";
-import { definePolkadotConfig, SubstrateExplorer } from "@/registry/polkadot-ui/lib/types.polkadot-ui";
+import { definePolkadotConfig } from "@/registry/dot-ui/lib/types.polkadot-ui";
+import { dotUiConfig } from "./config.dot-ui";
 
 // dedot supports multiple endpoints for automatic failover
 // while papi only supports one endpoint so users need to select one manually
 export const polkadotConfig = definePolkadotConfig({
+  ...dotUiConfig,
   chains: {
+    ...dotUiConfig.chains,
     paseo_asset_hub: {
+      ...dotUiConfig.chains.paseo_asset_hub,
       descriptor: paseo_asset_hub,
-      network: "paseo-asset-hub",
-      endpoints: ["wss://sys.ibp.network/asset-hub-paseo", "wss://asset-hub-paseo.dotters.network"],
-      displayName: "Paseo Asset Hub",
-      explorerUrls: {
-        [SubstrateExplorer.PolkadotJs]: `https://polkadot.js.org/apps/?rpc=${encodeURIComponent('wss://sys.ibp.network/asset-hub-paseo')}#/explorer`,
-      },
-      isTestnet: true,
     },
     paseo: {
+      ...dotUiConfig.chains.paseo,
       descriptor: paseo,
-      network: "paseo",
-      endpoints: ["wss://sys.ibp.network/paseo", "wss://paseo.dotters.network"],
-      displayName: "Paseo Relay Chain",
-      explorerUrls: {
-        [SubstrateExplorer.PolkadotJs]: `https://polkadot.js.org/apps/?rpc=${encodeURIComponent('wss://sys.ibp.network/paseo')}#/explorer`,
-      },
-      isTestnet: true,
     },
     // Add more chains here after running `npx papi add <chain-name>`
     // Example for adding Polkadot mainnet:
@@ -42,8 +33,6 @@ export const polkadotConfig = definePolkadotConfig({
   defaultChain: "paseo_asset_hub",
 } as const);
 
-// Simple type aliases for type safety
 export type ChainId = keyof typeof polkadotConfig.chains;
 export type ChainDescriptor<T extends ChainId> =
   (typeof polkadotConfig.chains)[T]["descriptor"];
-export type ChainNetwork<T extends ChainId> = typeof polkadotConfig.chains[T]['network']

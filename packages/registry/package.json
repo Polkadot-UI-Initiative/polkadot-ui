@@ -9,8 +9,8 @@
     "build": "pnpm registry:build && pnpm registry:copy && next build",
     "start": "next start",
     "lint": "next lint",
-    "registry:build": "shadcn build",
-    "registry:copy": "cp registry.json public/",
+    "registry:build": "node scripts/build-registries.mjs",
+    "registry:copy": "cp registry-papi.json public/ && cp registry-dedot.json public/",
     "clean": "rm -rf .next"
   },
   "dependencies": {

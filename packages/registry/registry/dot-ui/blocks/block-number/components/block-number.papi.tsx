@@ -1,14 +1,10 @@
 "use client";
 
-import { useBlockNumber } from "../hooks/use-block-number";
-import {
-  usePolkadot,
-  useApiType,
-} from "@/registry/polkadot-ui/providers/unified-polkadot-provider";
-import { Button } from "@/registry/polkadot-ui/ui/button";
+import { useBlockNumber } from "../hooks/use-block-number.papi";
+import { usePapi } from "@/registry/dot-ui/providers/papi-provider";
+import { Button } from "@/registry/dot-ui/ui/button";
 
 export function BlockNumber() {
-  const { blockNumber, error } = useBlockNumber();
   const {
     setApi,
     availableChains,
@@ -16,8 +12,9 @@ export function BlockNumber() {
     isLoading,
     currentChain,
     chainName,
-  } = usePolkadot();
-  const apiType = useApiType();
+  } = usePapi();
+
+  const { blockNumber, error } = useBlockNumber();
 
   if (isLoading(currentChain)) {
     return (
@@ -29,7 +26,7 @@ export function BlockNumber() {
         <div className="flex items-center space-x-2">
           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
           <span className="text-sm text-gray-600">
-            Connecting to {chainName} using {apiType}...
+            Connecting to {chainName} using PAPI...
           </span>
         </div>
       </div>
@@ -56,7 +53,7 @@ export function BlockNumber() {
             {blockNumber?.toLocaleString() || "Loading..."}
           </div>
           <div className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-            {apiType.toUpperCase()}
+            PAPI
           </div>
         </div>
 

@@ -160,11 +160,7 @@ export class Logger {
   /**
    * Show next steps after component installation
    */
-  showNextSteps(
-    componentName: string,
-    hasPolkadotSetup: boolean = false,
-    hasDedot: boolean = false
-  ) {
+  showNextSteps(componentName: string, hasDedot: boolean = false) {
     this.section("🎉 Component installed successfully!");
 
     this.subsection("Next steps:");
@@ -175,27 +171,25 @@ export class Logger {
     this.code(`<${componentName} />`);
     this.newline();
 
-    if (hasDedot && hasPolkadotSetup) {
+    if (hasDedot) {
       this.detail("2. Make sure to wrap your app with DedotProvider:", true);
       this.code(
-        `import { DedotProvider } from '@/providers/dedot-provider'`
+        `import { PolkadotProvider } from '@/providers/dedot-provider'`
       );
       this.code(``);
       this.code(`function App() {`);
       this.code(`  return (`);
-      this.code(`    <DedotProvider>`);
+      this.code(`    <PolkadotProvider>`);
       this.code(`      <YourApp />`);
-      this.code(`    </DedotProvider>`);
+      this.code(`    </PolkadotProvider>`);
       this.code(`  )`);
       this.code(`}`);
       this.newline();
     }
 
-    if (hasPolkadotSetup && !hasDedot) {
+    if (!hasDedot) {
       this.detail("2. Make sure to wrap your app with PolkadotProvider:", true);
-      this.code(
-        `import { PolkadotProvider } from '@/providers/polkadot-provider'`
-      );
+      this.code(`import { PolkadotProvider } from '@/providers/papi-provider'`);
       this.code(``);
       this.code(`function App() {`);
       this.code(`  return (`);

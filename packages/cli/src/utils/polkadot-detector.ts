@@ -179,9 +179,7 @@ export class PolkadotDetector {
   /**
    * Check if the project needs Polkadot API setup for a component
    */
-  async needsPolkadotSetup(requiresPolkadotApi: boolean): Promise<boolean> {
-    if (!requiresPolkadotApi) return false;
-
+  async needsPolkadotSetup(): Promise<boolean> {
     const library = await this.detectPolkadotLibrary();
 
     // If no Polkadot library is installed, setup is needed
@@ -201,16 +199,16 @@ export class PolkadotDetector {
   /**
    * Get recommended setup steps based on current configuration
    */
-  async getRecommendedSetup(requiresPolkadotApi: boolean): Promise<{
+  async getRecommendedSetup(): Promise<{
     needsInstall: boolean;
     needsConfig: boolean;
     recommendedLibrary: PolkadotLibrary;
     existingLibrary: PolkadotLibrary;
   }> {
     const existingLibrary = await this.detectPolkadotLibrary();
-    const needsSetup = await this.needsPolkadotSetup(requiresPolkadotApi);
+    const needsSetup = await this.needsPolkadotSetup();
 
-    if (!requiresPolkadotApi) {
+    if (!needsSetup) {
       return {
         needsInstall: false,
         needsConfig: false,

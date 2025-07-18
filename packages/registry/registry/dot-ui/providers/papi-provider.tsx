@@ -8,17 +8,17 @@ import {
   polkadotConfig,
   type ChainId,
   type ChainDescriptor,
-} from "@/registry/polkadot-ui/lib/config.polkadot-ui";
+} from "@/registry/dot-ui/lib/config.papi";
 import {
   getChainIds,
   getChainConfig,
   isValidChainId,
-} from "@/registry/polkadot-ui/lib/utils.polkadot-ui";
+} from "@/registry/dot-ui/lib/utils.polkadot-ui";
 
 // Type for the API based on configured chains
 type ConfiguredChainApi<T extends ChainId> = TypedApi<ChainDescriptor<T>>;
 
-// Create a composite API type that includes all registered chains
+// Create a composite API typse that includes all registered chains
 type CompositeApi = {
   [K in ChainId]: ConfiguredChainApi<K>;
 };
@@ -100,7 +100,7 @@ export function PolkadotProvider({ children }: PolkadotProviderProps) {
 
       // Get typed API for the selected chain
       const typedApi = client.getTypedApi(
-        chainConfig.descriptor
+        polkadotConfig.chains[chainId].descriptor
       ) as ConfiguredChainApi<typeof chainId>;
 
       setClients((prev) => new Map(prev).set(chainId, client));

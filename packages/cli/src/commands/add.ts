@@ -1,7 +1,6 @@
 import ora from "ora";
 import execa from "execa";
 import inquirer from "inquirer";
-import path from "path";
 import { ProjectDetector } from "../utils/project-detector.js";
 import { PolkadotDetector } from "../utils/polkadot-detector.js";
 import {
@@ -66,10 +65,7 @@ export class AddCommand {
       // Step 4: Detect Polkadot API setup
       const polkadotConfig = await this.detectPolkadotSetup(componentInfo);
 
-      // Step 5: Handle optionalPeerDependencies before installing component
-      await this.handleOptionalPeerDependencies(componentInfo);
-
-      // Step 6: Install component
+      // Step 5: Install component
       await this.installComponent(
         componentInfo,
         projectStructure,
@@ -281,21 +277,9 @@ export class AddCommand {
     try {
       const polkadotConfig = await this.polkadotDetector.getPolkadotApiConfig();
 
-      // Check if component requires Polkadot API
-      const requiresPolkadot = this.requiresPolkadotApi(componentInfo);
-
-      logger.detail(
-        `Component requiresPolkadotApi: ${componentInfo.requiresPolkadotApi}`
-      );
       logger.detail(
         `Component dependencies: ${JSON.stringify(componentInfo.dependencies)}`
       );
-      logger.detail(`requiresPolkadot final: ${requiresPolkadot}`);
-
-      if (!requiresPolkadot) {
-        spinner.succeed("No Polkadot API setup required");
-        return polkadotConfig;
-      }
 
       // Component requires Polkadot API - check current setup
       const library = await this.polkadotDetector.detectPolkadotLibrary();
@@ -348,50 +332,33 @@ export class AddCommand {
     logger.detail(
       `Component dependencies: ${JSON.stringify(componentInfo.dependencies)}`
     );
-    logger.detail(
-      `Component requiresPolkadotApi: ${componentInfo.requiresPolkadotApi}`
-    );
+
     logger.detail(
       `Component registryDependencies: ${JSON.stringify(
         componentInfo.registryDependencies
       )}`
     );
 
-    // Check if component requires Polkadot API
-    const requiresPolkadot = this.requiresPolkadotApi(componentInfo);
-
-    logger.detail(`requiresPolkadot final: ${requiresPolkadot}`);
-    logger.detail(`=== END COMPONENT DEBUG ===`);
-
     // Component requires Polkadot API - check current setup
     const library = await this.polkadotDetector.detectPolkadotLibrary();
 
-    // Setup Polkadot API if needed (shadcn already installed dependencies)
-    if (requiresPolkadot && library === "none") {
+    // Setup Polkadot API if needed
+    if (library === "none") {
       logger.info(`Component requires Polkadot API setup`);
       logger.detail("Dependencies already installed by shadcn");
-
-      // Setup Polkadot API
-      await this.setupPolkadotApi(
-        componentInfo,
-        projectStructure,
-        polkadotConfig
-      );
-    } else if (requiresPolkadot && library === "dedot") {
+    } else if (library === "papi") {
+      logger.info("Component requires papi setup");
+      logger.detail("Will ensure proper chain configuration");
+    } else if (library === "dedot") {
       logger.info("Component requires dedot");
-
-      // Setup Polkadot API
-      await this.setupPolkadotApi(
-        componentInfo,
-        projectStructure,
-        polkadotConfig
-      );
-    } else {
-      logger.info("Component does not require Polkadot API setup");
-      logger.detail(
-        `Reason: No polkadot-api dependency found and requiresPolkadotApi flag is false`
-      );
     }
+
+    // Setup Polkadot API regardless of current library state
+    await this.setupPolkadotApi(
+      componentInfo,
+      projectStructure,
+      polkadotConfig
+    );
   }
 
   /**
@@ -422,7 +389,7 @@ export class AddCommand {
 
       // Build component URL
       const registryInfo = await this.registry.getRegistryInfo();
-      const componentUrl = `${registryInfo.url}/r/${componentName}.json`;
+      const componentUrl = `${registryInfo.url}/${componentName}.json`;
 
       // Get package manager runner command
       const runCommand =
@@ -556,7 +523,6 @@ export class AddCommand {
         // TODO: since we can't pick which files getting imported from the registry,
         // we need to setup both libraries
         await this.setupDedotApi();
-        await this.setupPapiApi();
         logger.info("Dedot setup complete");
       } else {
         // If no library is detected, install papi by default
@@ -574,28 +540,6 @@ export class AddCommand {
         }`
       );
     }
-  }
-
-  /**
-   * Check if component requires Polkadot API setup
-   */
-  private requiresPolkadotApi(componentInfo: ComponentInfo): boolean {
-    const hasPolkadotDependency =
-      componentInfo.dependencies?.includes("polkadot-api") || false;
-    const hasDedotDependency =
-      componentInfo.dependencies?.includes("dedot") || false;
-    const hasOptionalPolkadotDependency =
-      componentInfo.optionalPeerDependencies?.includes("polkadot-api") || false;
-    const hasOptionalDedotDependency =
-      componentInfo.optionalPeerDependencies?.includes("dedot") || false;
-    const requiresPolkadotFromFlag = Boolean(componentInfo.requiresPolkadotApi);
-    return (
-      requiresPolkadotFromFlag ||
-      hasPolkadotDependency ||
-      hasDedotDependency ||
-      hasOptionalPolkadotDependency ||
-      hasOptionalDedotDependency
-    );
   }
 
   /**
@@ -791,10 +735,9 @@ export class AddCommand {
     polkadotConfig: PolkadotApiConfig
   ): void {
     const formattedName = formatComponentName(componentInfo.name);
-    const hasPolkadotSetup = this.requiresPolkadotApi(componentInfo);
     const hasDedot = componentInfo.dependencies?.includes("dedot") || false;
 
-    logger.showNextSteps(formattedName, hasPolkadotSetup, hasDedot);
+    logger.showNextSteps(formattedName, hasDedot);
   }
 
   /**
@@ -816,102 +759,6 @@ export class AddCommand {
     } catch {
       // Ignore errors in suggestions
     }
-  }
-
-  /**
-   * Handle optionalPeerDependencies by choosing and installing the appropriate API
-   */
-  private async handleOptionalPeerDependencies(
-    componentInfo: ComponentInfo
-  ): Promise<void> {
-    // Check if component has optionalPeerDependencies
-    if (!componentInfo.optionalPeerDependencies?.length) {
-      return;
-    }
-
-    const optionalDeps = componentInfo.optionalPeerDependencies;
-    const hasPolkadotApi = optionalDeps.includes("polkadot-api");
-    const hasDedot = optionalDeps.includes("dedot");
-
-    // Only handle polkadot-api and dedot dependencies
-    if (!hasPolkadotApi && !hasDedot) {
-      return;
-    }
-
-    const spinner = ora("Checking Polkadot API setup...").start();
-
-    try {
-      // Check what's already installed
-      const currentLibrary =
-        await this.polkadotDetector.detectPolkadotLibrary();
-
-      if (currentLibrary === "papi") {
-        spinner.succeed("Using existing polkadot-api setup");
-        return;
-      }
-
-      if (currentLibrary === "dedot") {
-        spinner.succeed("Using existing dedot setup");
-        return;
-      }
-
-      // Nothing installed - need to choose one
-      spinner.stop();
-      const selectedApi = await this.promptForApiChoice(
-        hasPolkadotApi,
-        hasDedot
-      );
-
-      if (selectedApi === "papi") {
-        await this.installPolkadotApi();
-      } else if (selectedApi === "dedot") {
-        await this.installDedot();
-      }
-    } catch (error) {
-      spinner.fail("Failed to handle API dependencies");
-      throw error;
-    }
-  }
-
-  /**
-   * Prompt user to choose between available APIs
-   */
-  private async promptForApiChoice(
-    hasPolkadotApi: boolean,
-    hasDedot: boolean
-  ): Promise<"papi" | "dedot"> {
-    const choices = [];
-
-    if (hasPolkadotApi) {
-      choices.push({
-        name: "Polkadot API (papi) - recommended",
-        value: "papi",
-      });
-    }
-
-    if (hasDedot) {
-      choices.push({ name: "Dedot - experimental", value: "dedot" });
-    }
-
-    // If both are available, prompt user
-    if (choices.length > 1) {
-      const answer = await inquirer.prompt([
-        {
-          type: "list",
-          name: "api",
-          message: "Which Polkadot API would you like to use?",
-          choices,
-          default: "papi",
-        },
-      ]);
-      return answer.api;
-    }
-
-    // If only one is available, use it
-    if (hasPolkadotApi) return "papi";
-    if (hasDedot) return "dedot";
-
-    throw new Error("No Polkadot API options available");
   }
 
   /**

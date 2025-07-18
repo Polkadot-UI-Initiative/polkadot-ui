@@ -14,11 +14,13 @@
       "files": [
         {
           "path": "registry/dot-ui/blocks/block-number/components/block-number.dedot.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "components/block-number.tsx"
         },
         {
           "path": "registry/dot-ui/blocks/block-number/hooks/use-block-number.dedot.ts",
-          "type": "registry:hook"
+          "type": "registry:hook",
+          "target": "hooks/use-block-number.ts"
         },
         {
           "path": "registry/dot-ui/providers/dedot-provider.tsx",
@@ -33,7 +35,7 @@
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/config.polkadot-ui.ts",
+          "path": "registry/dot-ui/lib/config.dot-ui.ts",
           "type": "registry:lib"
         }
       ]

@@ -44,16 +44,6 @@ function mockDirectoryExists(exists: boolean = true) {
   }
 }
 
-// Helper to determine if component requires polkadot (mirrors CLI logic)
-function componentRequiresPolkadot(
-  componentInfo: Partial<ComponentInfo>
-): boolean {
-  const hasPolkadotDependency =
-    componentInfo.dependencies?.includes("polkadot-api") || false;
-  const requiresPolkadotFromFlag = Boolean(componentInfo.requiresPolkadotApi);
-  return requiresPolkadotFromFlag || hasPolkadotDependency;
-}
-
 describe("Component Detection Tests", () => {
   let detector: PolkadotDetector;
 
@@ -61,72 +51,6 @@ describe("Component Detection Tests", () => {
     jest.clearAllMocks();
     detector = new PolkadotDetector(mockCwd);
     detector.clearCache();
-  });
-
-  // Test component requirement detection logic
-  describe("Component Requirements Detection", () => {
-    test.each([
-      [
-        "requiresPolkadotApi flag only",
-        {
-          name: "block-number",
-          requiresPolkadotApi: true,
-          dependencies: ["react"],
-        },
-        true,
-      ],
-      [
-        "polkadot-api dependency only",
-        {
-          name: "balance-display",
-          requiresPolkadotApi: false,
-          dependencies: ["polkadot-api", "react"],
-        },
-        true,
-      ],
-      [
-        "both flag and dependency",
-        {
-          name: "advanced-component",
-          requiresPolkadotApi: true,
-          dependencies: ["polkadot-api", "react"],
-        },
-        true,
-      ],
-      [
-        "neither flag nor dependency",
-        {
-          name: "simple-button",
-          requiresPolkadotApi: false,
-          dependencies: ["react", "tailwind"],
-        },
-        false,
-      ],
-      [
-        "undefined dependencies",
-        {
-          name: "minimal-component",
-          requiresPolkadotApi: false,
-          dependencies: undefined,
-        },
-        false,
-      ],
-      [
-        "empty dependencies",
-        {
-          name: "basic-component",
-          requiresPolkadotApi: false,
-          dependencies: [],
-        },
-        false,
-      ],
-    ])(
-      "should detect polkadot requirement: %s",
-      (scenario, componentInfo, expected) => {
-        const result = componentRequiresPolkadot(componentInfo);
-        expect(result).toBe(expected);
-      }
-    );
   });
 
   // Test integration with actual polkadot setup detection
@@ -147,12 +71,7 @@ describe("Component Detection Tests", () => {
       mockFs.readFile.mockResolvedValue(JSON.stringify(mockPackageJson));
       freshDetector.clearCache();
 
-      const requiresPolkadot = componentRequiresPolkadot(componentInfo);
-      expect(requiresPolkadot).toBe(true);
-
-      const needsSetup = await freshDetector.needsPolkadotSetup(
-        requiresPolkadot
-      );
+      const needsSetup = await freshDetector.needsPolkadotSetup();
       expect(needsSetup).toBe(false); // dedot satisfies polkadot requirement
     });
 
@@ -169,12 +88,7 @@ describe("Component Detection Tests", () => {
       };
       mockPackageJsonRead(mockPackageJson);
 
-      const requiresPolkadot = componentRequiresPolkadot(componentInfo);
-      expect(requiresPolkadot).toBe(true);
-
-      const needsSetup = await freshDetector.needsPolkadotSetup(
-        requiresPolkadot
-      );
+      const needsSetup = await freshDetector.needsPolkadotSetup();
       expect(needsSetup).toBe(true);
     });
 
@@ -189,10 +103,7 @@ describe("Component Detection Tests", () => {
       const mockPackageJson = { dependencies: { react: "^18.0.0" } };
       mockPackageJsonRead(mockPackageJson);
 
-      const requiresPolkadot = componentRequiresPolkadot(componentInfo);
-      const recommendations = await freshDetector.getRecommendedSetup(
-        requiresPolkadot
-      );
+      const recommendations = await freshDetector.getRecommendedSetup();
 
       expect(recommendations).toEqual({
         needsInstall: true,
@@ -241,7 +152,7 @@ describe("Component Detection Tests", () => {
     ])(
       "should handle %s correctly",
       (scenario, componentInfo, expectedRequiresPolkadot) => {
-        const result = componentRequiresPolkadot(componentInfo);
+        const result = detector.needsPolkadotSetup();
         expect(result).toBe(expectedRequiresPolkadot);
       }
     );
@@ -262,8 +173,8 @@ describe("Component Detection Tests", () => {
       };
 
       // Should still detect polkadot requirement via dependencies
-      expect(componentRequiresPolkadot(originalComponent)).toBe(true);
-      expect(componentRequiresPolkadot(processedComponent)).toBe(true);
+      expect(detector.needsPolkadotSetup()).toBe(true);
+      expect(detector.needsPolkadotSetup()).toBe(true);
     });
   });
 });
