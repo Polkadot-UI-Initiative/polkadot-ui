@@ -760,33 +760,4 @@ export class AddCommand {
       // Ignore errors in suggestions
     }
   }
-
-  /**
-   * Install dedot and its dependencies
-   */
-  private async installDedot(): Promise<void> {
-    const spinner = ora("Installing dedot...").start();
-
-    try {
-      const packageManager = await this.projectDetector.detectPackageManager();
-      const installCommand = packageManager === "npm" ? "install" : "add";
-
-      await execa(
-        packageManager,
-        [installCommand, "dedot", "@dedot/chaintypes"],
-        {
-          stdio: "pipe",
-        }
-      );
-
-      spinner.succeed("dedot installed");
-    } catch (error) {
-      spinner.fail("Failed to install dedot");
-      throw new Error(
-        `Failed to install dedot: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`
-      );
-    }
-  }
 }
