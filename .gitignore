@@ -26,6 +26,9 @@ packages/registry/.next/
 #fumadocs
 packages/registry/.source
 
+# registry
+packages/registry/public/**/*.json
+
 # production
 /build
 

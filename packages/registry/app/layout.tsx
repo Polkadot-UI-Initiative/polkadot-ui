@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { PolkadotProvider } from "@/registry/polkadot-ui/providers/polkadot-provider";
+import { PolkadotProvider } from "@/registry/dot-ui/providers/papi-provider";
 import { Navigation } from "@/components/layout/navigation";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { MouseFollower } from "@/components/mouse-follower";

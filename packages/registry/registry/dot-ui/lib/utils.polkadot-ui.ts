@@ -1,4 +1,4 @@
-import type { ChainConfig } from "@/registry/polkadot-ui/lib/types.polkadot-ui";
+import type { ChainConfig } from "@/registry/dot-ui/lib/types.polkadot-ui";
 
 // Generic helper functions that work with any polkadot config
 export function getChainIds<T extends Record<string, ChainConfig>>(
@@ -9,7 +9,7 @@ export function getChainIds<T extends Record<string, ChainConfig>>(
 
 export function getChainConfig<
   T extends Record<string, ChainConfig>,
-  K extends keyof T
+  K extends keyof T,
 >(chains: T, chainId: K): T[K] {
   return chains[chainId];
 }

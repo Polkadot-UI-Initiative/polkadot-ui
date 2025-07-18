@@ -9,8 +9,8 @@
     "build": "pnpm registry:build && pnpm registry:copy && next build",
     "start": "next start",
     "lint": "next lint",
-    "registry:build": "shadcn build",
-    "registry:copy": "cp registry.json public/",
+    "registry:build": "node scripts/build-registries.mjs",
+    "registry:copy": "cp registry-papi.json public/ && cp registry-dedot.json public/",
     "clean": "rm -rf .next"
   },
   "dependencies": {
@@ -24,6 +24,7 @@
     "@vercel/analytics": "^1.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dedot": "^0.14.1",
     "fumadocs-core": "^15.6.3",
     "fumadocs-mdx": "^11.6.11",
     "fumadocs-ui": "^15.6.3",
@@ -39,6 +40,7 @@
     "zod": "^3.24.3"
   },
   "devDependencies": {
+    "@dedot/chaintypes": "^0.123.0",
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",

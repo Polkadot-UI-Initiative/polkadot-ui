@@ -1,7 +1,6 @@
 import ora from "ora";
 import execa from "execa";
 import inquirer from "inquirer";
-import path from "path";
 import { ProjectDetector } from "../utils/project-detector.js";
 import { PolkadotDetector } from "../utils/polkadot-detector.js";
 import {
@@ -53,9 +52,8 @@ export class AddCommand {
       }
 
       // Step 3: Check component availability
-      const componentInfo = await this.validateComponentAvailability(
-        componentName
-      );
+      const componentInfo =
+        await this.validateComponentAvailability(componentName);
       if (!componentInfo) {
         return;
       }
@@ -74,7 +72,7 @@ export class AddCommand {
         polkadotConfig
       );
 
-      // Step 6: Show next steps
+      // Step 7: Show next steps
       this.showCompletionMessage(componentInfo, polkadotConfig);
 
       // Track successful installation
@@ -151,7 +149,7 @@ export class AddCommand {
 
         // Run init command to set up the project
         const initCommand = new InitCommand(this.options);
-        await initCommand.initializeProject();
+        await initCommand.execute();
 
         // Wait a moment for file system to sync
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -194,10 +192,10 @@ export class AddCommand {
       const projectType = structure.isNextJs
         ? "Next.js"
         : structure.isVite
-        ? "Vite"
-        : structure.isCRA
-        ? "Create React App"
-        : "Unknown";
+          ? "Vite"
+          : structure.isCRA
+            ? "Create React App"
+            : "Unknown";
 
       spinner.succeed(
         `${projectType} project detected${
@@ -279,21 +277,9 @@ export class AddCommand {
     try {
       const polkadotConfig = await this.polkadotDetector.getPolkadotApiConfig();
 
-      // Check if component requires Polkadot API
-      const requiresPolkadot = this.requiresPolkadotApi(componentInfo);
-
-      logger.detail(
-        `Component requiresPolkadotApi: ${componentInfo.requiresPolkadotApi}`
-      );
       logger.detail(
         `Component dependencies: ${JSON.stringify(componentInfo.dependencies)}`
       );
-      logger.detail(`requiresPolkadot final: ${requiresPolkadot}`);
-
-      if (!requiresPolkadot) {
-        spinner.succeed("No Polkadot API setup required");
-        return polkadotConfig;
-      }
 
       // Component requires Polkadot API - check current setup
       const library = await this.polkadotDetector.detectPolkadotLibrary();
@@ -346,38 +332,33 @@ export class AddCommand {
     logger.detail(
       `Component dependencies: ${JSON.stringify(componentInfo.dependencies)}`
     );
-    logger.detail(
-      `Component requiresPolkadotApi: ${componentInfo.requiresPolkadotApi}`
-    );
+
     logger.detail(
       `Component registryDependencies: ${JSON.stringify(
         componentInfo.registryDependencies
       )}`
     );
 
-    // Check if component requires Polkadot API
-    const requiresPolkadot = this.requiresPolkadotApi(componentInfo);
+    // Component requires Polkadot API - check current setup
+    const library = await this.polkadotDetector.detectPolkadotLibrary();
 
-    logger.detail(`requiresPolkadot final: ${requiresPolkadot}`);
-    logger.detail(`=== END COMPONENT DEBUG ===`);
-
-    // Setup Polkadot API if needed (shadcn already installed dependencies)
-    if (requiresPolkadot) {
+    // Setup Polkadot API if needed
+    if (library === "none") {
       logger.info(`Component requires Polkadot API setup`);
       logger.detail("Dependencies already installed by shadcn");
-
-      // Setup Polkadot API
-      await this.setupPolkadotApi(
-        componentInfo,
-        projectStructure,
-        polkadotConfig
-      );
-    } else {
-      logger.info("Component does not require Polkadot API setup");
-      logger.detail(
-        `Reason: No polkadot-api dependency found and requiresPolkadotApi flag is false`
-      );
+    } else if (library === "papi") {
+      logger.info("Component requires papi setup");
+      logger.detail("Will ensure proper chain configuration");
+    } else if (library === "dedot") {
+      logger.info("Component requires dedot");
     }
+
+    // Setup Polkadot API regardless of current library state
+    await this.setupPolkadotApi(
+      componentInfo,
+      projectStructure,
+      polkadotConfig
+    );
   }
 
   /**
@@ -408,7 +389,7 @@ export class AddCommand {
 
       // Build component URL
       const registryInfo = await this.registry.getRegistryInfo();
-      const componentUrl = `${registryInfo.url}/r/${componentName}.json`;
+      const componentUrl = `${registryInfo.url}/${componentName}.json`;
 
       // Get package manager runner command
       const runCommand =
@@ -527,24 +508,34 @@ export class AddCommand {
     projectStructure: ProjectStructure,
     polkadotConfig: PolkadotApiConfig
   ): Promise<void> {
-    logger.info("Setting up Polkadot API...");
+    logger.info("Setting up API...");
 
     try {
-      // Determine required chains based on dev/prod mode
-      const defaultChains = this.options.dev
-        ? ["paseo_asset_hub", "paseo"]
-        : ["polkadot"];
+      // Detect which library is being used
+      const library = await this.polkadotDetector.detectPolkadotLibrary();
 
-      logger.detail(`Required chains: ${defaultChains.join(", ")}`);
+      if (library === "papi") {
+        // Handle papi setup (existing logic)
+        await this.setupPapiApi();
+        logger.info("Papi setup complete");
+      } else if (library === "dedot") {
+        // Handle dedot setup (minimal setup needed)
+        // TODO: since we can't pick which files getting imported from the registry,
+        // we need to setup both libraries
+        await this.setupDedotApi();
+        logger.info("Dedot setup complete");
+      } else {
+        // If no library is detected, install papi by default
+        logger.info("No Polkadot library detected, installing polkadot-api...");
+        await this.installPolkadotApi();
+        await this.setupPapiApi();
+      }
 
-      // Simple approach: always install required chains (papi handles duplicates gracefully)
-      await this.installMissingChains(defaultChains);
-
-      logger.success("Polkadot API configured");
+      logger.success("API configured");
     } catch (error) {
-      logger.error("Polkadot API setup failed");
+      logger.error("API setup failed");
       throw new Error(
-        `Failed to setup Polkadot API: ${
+        `Failed to setup API: ${
           error instanceof Error ? error.message : "Unknown error"
         }`
       );
@@ -552,13 +543,111 @@ export class AddCommand {
   }
 
   /**
-   * Check if component requires Polkadot API setup
+   * Install polkadot-api package and dependencies
    */
-  private requiresPolkadotApi(componentInfo: ComponentInfo): boolean {
-    const hasPolkadotDependency =
-      componentInfo.dependencies?.includes("polkadot-api") || false;
-    const requiresPolkadotFromFlag = Boolean(componentInfo.requiresPolkadotApi);
-    return requiresPolkadotFromFlag || hasPolkadotDependency;
+  private async installPolkadotApi(): Promise<void> {
+    const spinner = ora("Installing polkadot-api...").start();
+
+    try {
+      const packageManager = await this.projectDetector.detectPackageManager();
+      const installCommand = packageManager === "npm" ? "install" : "add";
+
+      await execa(
+        packageManager,
+        [installCommand, "polkadot-api", "@polkadot-api/descriptors"],
+        {
+          stdio: "pipe",
+        }
+      );
+
+      spinner.succeed("polkadot-api installed");
+    } catch (error) {
+      spinner.fail("Failed to install polkadot-api");
+      throw new Error(
+        `Failed to install polkadot-api: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
+    }
+  }
+
+  /**
+   * Setup papi-specific configuration
+   */
+  private async setupPapiApi(): Promise<void> {
+    // Determine required chains based on dev/prod mode
+    const defaultChains = this.options.dev
+      ? ["paseo_asset_hub", "paseo"]
+      : ["polkadot"];
+
+    logger.detail(`Required chains: ${defaultChains.join(", ")}`);
+
+    // Simple approach: always install required chains (papi handles duplicates gracefully)
+    await this.installMissingChains(defaultChains);
+  }
+
+  /**
+   * Setup dedot-specific configuration (minimal setup)
+   */
+  private async setupDedotApi(): Promise<void> {
+    logger.info("Setting up dedot configuration...");
+
+    // Check existing installation using existing interfaces
+    const hasDedot = await this.polkadotDetector.hasDedot();
+    const hasChainTypes = await this.polkadotDetector.hasChainTypes();
+
+    if (hasDedot && hasChainTypes) {
+      logger.info("Dedot is already fully configured - skipping setup");
+      return;
+    }
+
+    const packageManager = await this.projectDetector.detectPackageManager();
+    const installCommand = packageManager === "npm" ? "install" : "add";
+
+    // Install dedot if not present
+    if (!hasDedot) {
+      const spinner = ora("Installing dedot...").start();
+
+      try {
+        await execa(packageManager, [installCommand, "dedot"], {
+          stdio: "pipe",
+        });
+        spinner.succeed("dedot installed");
+      } catch (error) {
+        spinner.fail("Failed to install dedot");
+        throw new Error(
+          `Failed to install dedot: ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`
+        );
+      }
+    }
+
+    // Install @dedot/chaintypes as devDependency if not present
+    if (!hasChainTypes) {
+      const spinner = ora("Installing @dedot/chaintypes...").start();
+
+      try {
+        const devFlag = packageManager === "npm" ? "--save-dev" : "-D";
+        await execa(
+          packageManager,
+          [installCommand, devFlag, "@dedot/chaintypes"],
+          {
+            stdio: "pipe",
+          }
+        );
+        spinner.succeed("@dedot/chaintypes installed as devDependency");
+      } catch (error) {
+        spinner.fail("Failed to install @dedot/chaintypes");
+        throw new Error(
+          `Failed to install @dedot/chaintypes: ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`
+        );
+      }
+    }
+
+    logger.info("Dedot setup complete - no additional configuration needed");
   }
 
   /**
@@ -646,9 +735,9 @@ export class AddCommand {
     polkadotConfig: PolkadotApiConfig
   ): void {
     const formattedName = formatComponentName(componentInfo.name);
-    const hasPolkadotSetup = this.requiresPolkadotApi(componentInfo);
+    const hasDedot = componentInfo.dependencies?.includes("dedot") || false;
 
-    logger.showNextSteps(formattedName, hasPolkadotSetup);
+    logger.showNextSteps(formattedName, hasDedot);
   }
 
   /**
@@ -656,9 +745,8 @@ export class AddCommand {
    */
   private async suggestSimilarComponents(componentName: string): Promise<void> {
     try {
-      const similarComponents = await this.registry.searchComponents(
-        componentName
-      );
+      const similarComponents =
+        await this.registry.searchComponents(componentName);
 
       if (similarComponents.length > 0) {
         logger.info("Did you mean one of these?");

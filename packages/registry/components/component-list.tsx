@@ -8,7 +8,6 @@ interface ComponentInfo {
   title: string;
   description: string;
   dependencies?: string[];
-  requiresPolkadotApi?: boolean;
   registryDependencies?: string[];
 }
 

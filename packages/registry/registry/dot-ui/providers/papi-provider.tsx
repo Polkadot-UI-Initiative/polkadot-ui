@@ -8,17 +8,17 @@ import {
   polkadotConfig,
   type ChainId,
   type ChainDescriptor,
-} from "@/registry/polkadot-ui/lib/config.polkadot-ui";
+} from "@/registry/dot-ui/lib/config.papi";
 import {
   getChainIds,
   getChainConfig,
   isValidChainId,
-} from "@/registry/polkadot-ui/lib/utils.polkadot-ui";
+} from "@/registry/dot-ui/lib/utils.polkadot-ui";
 
 // Type for the API based on configured chains
 type ConfiguredChainApi<T extends ChainId> = TypedApi<ChainDescriptor<T>>;
 
-// Create a composite API type that includes all registered chains
+// Create a composite API typse that includes all registered chains
 type CompositeApi = {
   [K in ChainId]: ConfiguredChainApi<K>;
 };
@@ -83,18 +83,24 @@ export function PolkadotProvider({ children }: PolkadotProviderProps) {
     try {
       const chainConfig = getChainConfig(polkadotConfig.chains, chainId);
 
-      console.log(
-        `Connecting to ${chainConfig.displayName} at ${chainConfig.endpoint}`
-      );
+      // Validate that endpoints array exists and has at least one element
+      if (!chainConfig.endpoints || !chainConfig.endpoints[0]) {
+        throw new Error(
+          `Chain ${chainId} (${chainConfig.displayName}) has no endpoints configured. Please add at least one endpoint to the chain configuration.`
+        );
+      }
+
+      const endpoint = chainConfig.endpoints[0];
+      console.log(`Connecting to ${chainConfig.displayName} at ${endpoint}`);
 
       // Create client with the selected chain
       const client = createClient(
-        withPolkadotSdkCompat(getWsProvider(chainConfig.endpoint))
+        withPolkadotSdkCompat(getWsProvider(endpoint))
       );
 
       // Get typed API for the selected chain
       const typedApi = client.getTypedApi(
-        chainConfig.descriptor
+        polkadotConfig.chains[chainId].descriptor
       ) as ConfiguredChainApi<typeof chainId>;
 
       setClients((prev) => new Map(prev).set(chainId, client));
@@ -171,11 +177,11 @@ export function PolkadotProvider({ children }: PolkadotProviderProps) {
   );
 }
 
-export function usePolkadot(): PolkadotContextValue {
+export function usePapi(): PolkadotContextValue {
   const context = useContext(PolkadotContext);
 
   if (context === undefined) {
-    throw new Error("usePolkadot must be used within a PolkadotProvider");
+    throw new Error("usePapi must be used within a PolkadotProvider");
   }
 
   return context;
@@ -183,7 +189,7 @@ export function usePolkadot(): PolkadotContextValue {
 
 // Helper to get properly typed API (maintains backward compatibility)
 export function useTypedPolkadotApi(): ConfiguredChainApi<ChainId> | null {
-  const { api } = usePolkadot();
+  const { api } = usePapi();
   return api;
 }
 

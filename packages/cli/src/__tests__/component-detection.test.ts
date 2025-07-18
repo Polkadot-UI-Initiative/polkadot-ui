@@ -44,16 +44,6 @@ function mockDirectoryExists(exists: boolean = true) {
   }
 }
 
-// Helper to determine if component requires polkadot (mirrors CLI logic)
-function componentRequiresPolkadot(
-  componentInfo: Partial<ComponentInfo>
-): boolean {
-  const hasPolkadotDependency =
-    componentInfo.dependencies?.includes("polkadot-api") || false;
-  const requiresPolkadotFromFlag = Boolean(componentInfo.requiresPolkadotApi);
-  return requiresPolkadotFromFlag || hasPolkadotDependency;
-}
-
 describe("Component Detection Tests", () => {
   let detector: PolkadotDetector;
 
@@ -63,75 +53,9 @@ describe("Component Detection Tests", () => {
     detector.clearCache();
   });
 
-  // Test component requirement detection logic
-  describe("Component Requirements Detection", () => {
-    test.each([
-      [
-        "requiresPolkadotApi flag only",
-        {
-          name: "block-number",
-          requiresPolkadotApi: true,
-          dependencies: ["react"],
-        },
-        true,
-      ],
-      [
-        "polkadot-api dependency only",
-        {
-          name: "balance-display",
-          requiresPolkadotApi: false,
-          dependencies: ["polkadot-api", "react"],
-        },
-        true,
-      ],
-      [
-        "both flag and dependency",
-        {
-          name: "advanced-component",
-          requiresPolkadotApi: true,
-          dependencies: ["polkadot-api", "react"],
-        },
-        true,
-      ],
-      [
-        "neither flag nor dependency",
-        {
-          name: "simple-button",
-          requiresPolkadotApi: false,
-          dependencies: ["react", "tailwind"],
-        },
-        false,
-      ],
-      [
-        "undefined dependencies",
-        {
-          name: "minimal-component",
-          requiresPolkadotApi: false,
-          dependencies: undefined,
-        },
-        false,
-      ],
-      [
-        "empty dependencies",
-        {
-          name: "basic-component",
-          requiresPolkadotApi: false,
-          dependencies: [],
-        },
-        false,
-      ],
-    ])(
-      "should detect polkadot requirement: %s",
-      (scenario, componentInfo, expected) => {
-        const result = componentRequiresPolkadot(componentInfo);
-        expect(result).toBe(expected);
-      }
-    );
-  });
-
   // Test integration with actual polkadot setup detection
   describe("Integration with Setup Detection", () => {
-    it("should not require setup when dedot is installed", async () => {
+    it("should require setup when only dedot is installed", async () => {
       const componentInfo = {
         name: "polkadot-component",
         requiresPolkadotApi: true,
@@ -147,13 +71,8 @@ describe("Component Detection Tests", () => {
       mockFs.readFile.mockResolvedValue(JSON.stringify(mockPackageJson));
       freshDetector.clearCache();
 
-      const requiresPolkadot = componentRequiresPolkadot(componentInfo);
-      expect(requiresPolkadot).toBe(true);
-
-      const needsSetup = await freshDetector.needsPolkadotSetup(
-        requiresPolkadot
-      );
-      expect(needsSetup).toBe(false); // dedot satisfies polkadot requirement
+      const needsSetup = await freshDetector.needsPolkadotSetup();
+      expect(needsSetup).toBe(true); // dedot alone no longer satisfies polkadot requirement
     });
 
     it("should require setup when no polkadot library exists", async () => {
@@ -169,12 +88,7 @@ describe("Component Detection Tests", () => {
       };
       mockPackageJsonRead(mockPackageJson);
 
-      const requiresPolkadot = componentRequiresPolkadot(componentInfo);
-      expect(requiresPolkadot).toBe(true);
-
-      const needsSetup = await freshDetector.needsPolkadotSetup(
-        requiresPolkadot
-      );
+      const needsSetup = await freshDetector.needsPolkadotSetup();
       expect(needsSetup).toBe(true);
     });
 
@@ -189,10 +103,7 @@ describe("Component Detection Tests", () => {
       const mockPackageJson = { dependencies: { react: "^18.0.0" } };
       mockPackageJsonRead(mockPackageJson);
 
-      const requiresPolkadot = componentRequiresPolkadot(componentInfo);
-      const recommendations = await freshDetector.getRecommendedSetup(
-        requiresPolkadot
-      );
+      const recommendations = await freshDetector.getRecommendedSetup();
 
       expect(recommendations).toEqual({
         needsInstall: true,
@@ -203,46 +114,44 @@ describe("Component Detection Tests", () => {
     });
   });
 
-  // Test real-world component scenarios
-  describe("Real-world Component Examples", () => {
+  // Test project-level polkadot setup detection
+  describe("Project Setup Detection", () => {
     test.each([
       [
-        "block-number component",
+        "project with no polkadot dependencies",
+        { dependencies: { react: "^18.0.0", next: "^13.0.0" } },
+        true, // needs setup because no polkadot library
+      ],
+      [
+        "project with polkadot-api installed",
+        { dependencies: { react: "^18.0.0", "polkadot-api": "^1.0.0" } },
+        true, // needs setup because papi requires configuration
+      ],
+      [
+        "project with dedot installed",
+        { dependencies: { react: "^18.0.0", dedot: "^1.0.0" } },
+        false, // dedot doesn't require additional setup
+      ],
+      [
+        "project with both polkadot libraries",
         {
-          name: "block-number",
-          requiresPolkadotApi: true,
-          dependencies: ["polkadot-api"],
+          dependencies: {
+            react: "^18.0.0",
+            "polkadot-api": "^1.0.0",
+            dedot: "^1.0.0",
+          },
         },
-        true,
-      ],
-      [
-        "regular UI component",
-        { name: "button", requiresPolkadotApi: false, dependencies: ["react"] },
-        false,
-      ],
-      [
-        "component with polkadot dependency but no flag",
-        { name: "balance-display", dependencies: ["polkadot-api", "react"] },
-        true,
-      ],
-      [
-        "component with dedot dependency",
-        { name: "dedot-component", dependencies: ["dedot", "react"] },
-        false, // dedot dependency doesn't trigger polkadot-api requirement
-      ],
-      [
-        "component with mixed polkadot dependencies",
-        {
-          name: "advanced-polkadot",
-          dependencies: ["polkadot-api", "@polkadot-api/descriptors", "react"],
-        },
-        true,
+        true, // papi takes precedence and needs setup
       ],
     ])(
-      "should handle %s correctly",
-      (scenario, componentInfo, expectedRequiresPolkadot) => {
-        const result = componentRequiresPolkadot(componentInfo);
-        expect(result).toBe(expectedRequiresPolkadot);
+      "should detect setup needs for %s",
+      async (scenario, mockDependencies, expectedNeedsSetup) => {
+        const freshDetector = new PolkadotDetector(mockCwd);
+        const mockPackageJson = mockDependencies;
+        mockPackageJsonRead(mockPackageJson);
+
+        const result = await freshDetector.needsPolkadotSetup();
+        expect(result).toBe(expectedNeedsSetup);
       }
     );
 
@@ -262,8 +171,8 @@ describe("Component Detection Tests", () => {
       };
 
       // Should still detect polkadot requirement via dependencies
-      expect(componentRequiresPolkadot(originalComponent)).toBe(true);
-      expect(componentRequiresPolkadot(processedComponent)).toBe(true);
+      expect(detector.needsPolkadotSetup()).toBe(true);
+      expect(detector.needsPolkadotSetup()).toBe(true);
     });
   });
 });

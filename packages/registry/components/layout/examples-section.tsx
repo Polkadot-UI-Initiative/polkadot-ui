@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BlockNumber } from "@/registry/polkadot-ui/blocks/block-number/components/block-number";
+import { BlockNumber } from "@/registry/dot-ui/blocks/block-number/components/block-number.papi";
 import {
   Card,
   CardContent,

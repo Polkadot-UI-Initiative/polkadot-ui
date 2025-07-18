@@ -116,7 +116,7 @@ describe("Chain Configuration Tests", () => {
         return Promise.reject(new Error("File not found"));
       });
 
-      const needsSetup = await detector.needsPolkadotSetup(true);
+      const needsSetup = await detector.needsPolkadotSetup();
       expect(needsSetup).toBe(true);
     });
 
@@ -151,7 +151,7 @@ describe("Chain Configuration Tests", () => {
         return Promise.reject(new Error("File not found"));
       });
 
-      const needsSetup = await detector.needsPolkadotSetup(true);
+      const needsSetup = await detector.needsPolkadotSetup();
       expect(needsSetup).toBe(false);
     });
   });

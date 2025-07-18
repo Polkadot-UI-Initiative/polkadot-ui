@@ -1,10 +1,30 @@
 import { ComponentInfo, CliOptions } from "../types/index.js";
+import { PolkadotDetector } from "./polkadot-detector.js";
 
 export class Registry {
   private baseUrl: string;
+  private polkadotDetector: PolkadotDetector;
+  private isDev: boolean;
 
   constructor(isDev: boolean = false) {
     this.baseUrl = isDev ? "http://localhost:3000" : "https://dot-ui.com";
+    this.polkadotDetector = new PolkadotDetector();
+    this.isDev = isDev;
+  }
+
+  /**
+   * Get the appropriate registry URL based on detected Polkadot API
+   */
+  private async getRegistryUrl(): Promise<string> {
+    try {
+      const detectedApi = await this.polkadotDetector.detectPolkadotLibrary();
+      const registryFile =
+        detectedApi === "papi" ? "registry-papi.json" : "registry-dedot.json";
+      return `${this.baseUrl}/${registryFile}`;
+    } catch {
+      // Default to papi if detection fails
+      return `${this.baseUrl}/registry-papi.json`;
+    }
   }
 
   /**
@@ -12,7 +32,8 @@ export class Registry {
    */
   async fetchRegistry(): Promise<ComponentInfo[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/registry.json`);
+      const registryUrl = await this.getRegistryUrl();
+      const response = await fetch(registryUrl);
 
       if (!response.ok) {
         throw new Error(
@@ -35,7 +56,11 @@ export class Registry {
    */
   async fetchComponent(componentName: string): Promise<ComponentInfo | null> {
     try {
-      const response = await fetch(`${this.baseUrl}/r/${componentName}.json`);
+      const detectedApi = await this.polkadotDetector.detectPolkadotLibrary();
+      const pathPrefix = detectedApi === "papi" ? "/r/papi" : "/r/dedot";
+      const response = await fetch(
+        `${this.baseUrl}${pathPrefix}/${componentName}.json`
+      );
 
       if (!response.ok) {
         if (response.status === 404) {
@@ -102,14 +127,6 @@ export class Registry {
   }
 
   /**
-   * Check if component requires Polkadot API setup
-   */
-  async requiresPolkadotApi(componentName: string): Promise<boolean> {
-    const component = await this.fetchComponent(componentName);
-    return Boolean(component?.requiresPolkadotApi);
-  }
-
-  /**
    * Validate registry connection
    */
   async validateConnection(): Promise<{
@@ -117,7 +134,8 @@ export class Registry {
     error?: string;
   }> {
     try {
-      const response = await fetch(`${this.baseUrl}/registry.json`, {
+      const registryUrl = await this.getRegistryUrl();
+      const response = await fetch(registryUrl, {
         method: "HEAD",
       });
 
@@ -154,7 +172,8 @@ export class Registry {
     }
 
     try {
-      const response = await fetch(`${this.baseUrl}/registry.json`);
+      const registryUrl = await this.getRegistryUrl();
+      const response = await fetch(registryUrl);
       if (!response.ok) {
         throw new Error(
           `Failed to fetch registry metadata: ${response.status}`
@@ -164,8 +183,12 @@ export class Registry {
       const registryData = await response.json();
       const components = registryData.items || [];
 
+      // Get API-specific component URL base
+      const detectedApi = await this.polkadotDetector.detectPolkadotLibrary();
+      const pathPrefix = detectedApi === "papi" ? "/r/papi" : "/r/dedot";
+
       return {
-        url: this.baseUrl,
+        url: `${this.baseUrl}${pathPrefix}`,
         isConnected: true,
         componentCount: components.length,
         homepage: registryData.homepage,

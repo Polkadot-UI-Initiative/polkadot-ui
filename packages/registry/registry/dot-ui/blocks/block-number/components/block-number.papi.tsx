@@ -1,23 +1,24 @@
 "use client";
 
-import { useBlockNumber } from "@/registry/polkadot-ui/blocks/block-number/hooks/use-block-number";
-import { usePolkadot } from "@/registry/polkadot-ui/providers/polkadot-provider";
-import { Button } from "@/registry/polkadot-ui/ui/button";
+import { useBlockNumber } from "../hooks/use-block-number.papi";
+import { usePapi } from "@/registry/dot-ui/providers/papi-provider";
+import { Button } from "@/registry/dot-ui/ui/button";
 
 export function BlockNumber() {
-  const { blockNumber, error } = useBlockNumber();
   const {
     setApi,
     availableChains,
     isConnected,
-    isLoading: isLoading,
+    isLoading,
     currentChain,
     chainName,
-  } = usePolkadot();
+  } = usePapi();
+
+  const { blockNumber, error } = useBlockNumber();
 
   if (isLoading(currentChain)) {
     return (
-      <div className="w-full max-w-md p-4 borderrounded-md">
+      <div className="w-full max-w-md p-4 border rounded-md">
         <div className="mb-4">
           <h3 className="text-lg font-semibold">Block Number</h3>
           <p className="text-sm text-gray-600">Loading...</p>
@@ -25,7 +26,7 @@ export function BlockNumber() {
         <div className="flex items-center space-x-2">
           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
           <span className="text-sm text-gray-600">
-            Connecting to {chainName}...
+            Connecting to {chainName} using PAPI...
           </span>
         </div>
       </div>
@@ -34,12 +35,12 @@ export function BlockNumber() {
 
   if (error) {
     return (
-      <div className="w-full max-w-md p-4 border border-error rounded-md bg-error">
+      <div className="w-full max-w-md p-4 border border-red-500 rounded-md bg-red-50">
         <div className="mb-4">
-          <h3 className="text-lg font-semibold text-error">Block Number</h3>
-          <p className="text-sm text-error">Error loading block number</p>
+          <h3 className="text-lg font-semibold text-red-800">Block Number</h3>
+          <p className="text-sm text-red-600">Error loading block number</p>
         </div>
-        <div className="text-error text-sm">{error}</div>
+        <div className="text-red-700 text-sm">{error}</div>
       </div>
     );
   }
@@ -47,8 +48,13 @@ export function BlockNumber() {
   return (
     <div className="w-full max-w-md rounded-md">
       <div className="space-y-4">
-        <div className="text-3xl font-bold text-polkadot-pink">
-          {blockNumber?.toLocaleString() || "Loading..."}
+        <div className="flex items-center gap-2">
+          <div className="text-3xl font-bold text-polkadot-pink">
+            {blockNumber?.toLocaleString() || "Loading..."}
+          </div>
+          <div className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+            PAPI
+          </div>
         </div>
 
         <div className="space-y-2">

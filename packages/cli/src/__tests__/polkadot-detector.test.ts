@@ -233,7 +233,7 @@ describe("PolkadotDetector", () => {
   // Test setup requirements
   describe("Setup Requirements", () => {
     it("should not require setup when component doesn't need polkadot", async () => {
-      expect(await detector.needsPolkadotSetup(false)).toBe(false);
+      expect(await detector.needsPolkadotSetup()).toBe(false);
     });
 
     test.each([
@@ -265,7 +265,7 @@ describe("PolkadotDetector", () => {
           );
         }
 
-        const result = await freshDetector.needsPolkadotSetup(true);
+        const result = await freshDetector.needsPolkadotSetup();
         expect(result).toBe(expectedNeedsSetup);
       }
     );
@@ -274,7 +274,7 @@ describe("PolkadotDetector", () => {
   // Test setup recommendations
   describe("Setup Recommendations", () => {
     it("should recommend no action when component doesn't need polkadot", async () => {
-      const result = await detector.getRecommendedSetup(false);
+      const result = await detector.getRecommendedSetup();
       expect(result.needsInstall).toBe(false);
       expect(result.needsConfig).toBe(false);
       expect(result.recommendedLibrary).toBe("none");
@@ -305,7 +305,7 @@ describe("PolkadotDetector", () => {
       ],
       [
         "no setup for dedot",
-        { dedot: "^1.0.0" },
+        { dedot: "^1.0.0", "@dedot/chaintypes": "^1.0.0" },
         false,
         {
           needsInstall: false,
@@ -344,10 +344,143 @@ describe("PolkadotDetector", () => {
           );
         }
 
-        const result = await freshDetector.getRecommendedSetup(true);
+        const result = await freshDetector.getRecommendedSetup();
         expect(result).toEqual(expected);
       }
     );
+  });
+
+  // Test library selection exclusivity
+  describe("Library Selection Exclusivity", () => {
+    test.each([
+      [
+        "should recommend papi when no library is installed",
+        { react: "^18.0.0" },
+        {
+          needsInstall: true,
+          needsConfig: true,
+          recommendedLibrary: "papi",
+          existingLibrary: "none",
+        },
+      ],
+      [
+        "should recommend dedot when dedot is already installed",
+        { dedot: "^1.0.0", "@dedot/chaintypes": "^1.0.0" },
+        {
+          needsInstall: false,
+          needsConfig: false,
+          recommendedLibrary: "dedot",
+          existingLibrary: "dedot",
+        },
+      ],
+      [
+        "should recommend papi when papi is already installed",
+        { "polkadot-api": "^1.0.0", "@polkadot-api/descriptors": "^1.0.0" },
+        {
+          needsInstall: false,
+          needsConfig: false,
+          recommendedLibrary: "papi",
+          existingLibrary: "papi",
+        },
+      ],
+      [
+        "should recommend papi when both libraries are installed (papi takes precedence)",
+        {
+          "polkadot-api": "^1.0.0",
+          "@polkadot-api/descriptors": "^1.0.0",
+          dedot: "^1.0.0",
+          "@dedot/chaintypes": "^1.0.0",
+        },
+        {
+          needsInstall: false,
+          needsConfig: false,
+          recommendedLibrary: "papi",
+          existingLibrary: "papi",
+        },
+      ],
+      [
+        "should recommend dedot installation when only dedot is installed but missing chaintypes",
+        { dedot: "^1.0.0" },
+        {
+          needsInstall: false,
+          needsConfig: false,
+          recommendedLibrary: "dedot",
+          existingLibrary: "dedot",
+        },
+      ],
+      [
+        "should recommend papi installation when only papi is installed but missing descriptors",
+        { "polkadot-api": "^1.0.0" },
+        {
+          needsInstall: true,
+          needsConfig: false,
+          recommendedLibrary: "papi",
+          existingLibrary: "papi",
+        },
+      ],
+    ])("%s", async (scenario, dependencies, expected) => {
+      const freshDetector = new PolkadotDetector(mockCwd);
+      mockPackageJsonRead({ dependencies });
+
+      // Mock papi config as needed
+      const hasPapiConfig =
+        (dependencies as any)["polkadot-api"] &&
+        (dependencies as any)["@polkadot-api/descriptors"];
+      mockDirectoryExists(hasPapiConfig);
+
+      if (hasPapiConfig) {
+        const mockConfig = {
+          version: 0,
+          descriptorPath: ".papi/descriptors",
+          entries: { test: {} },
+        };
+        mockPackageJsonRead(
+          { dependencies },
+          { "polkadot-api.json": mockConfig }
+        );
+      }
+
+      const result = await freshDetector.getRecommendedSetup();
+      expect(result).toEqual(expected);
+    });
+
+    it("should not recommend installing both libraries simultaneously", async () => {
+      const freshDetector = new PolkadotDetector(mockCwd);
+
+      // Test with no libraries installed
+      mockPackageJsonRead({ dependencies: { react: "^18.0.0" } });
+
+      const result = await freshDetector.getRecommendedSetup();
+
+      // Should only recommend one library
+      expect(result.recommendedLibrary).toBe("papi");
+      expect(result.existingLibrary).toBe("none");
+
+      // Should not recommend both
+      expect(result.recommendedLibrary).not.toBe("both");
+      expect(result.recommendedLibrary).not.toBe("all");
+    });
+
+    it("should maintain library preference when both are partially installed", async () => {
+      const freshDetector = new PolkadotDetector(mockCwd);
+
+      // Test with both libraries installed but both incomplete
+      mockPackageJsonRead({
+        dependencies: {
+          "polkadot-api": "^1.0.0", // papi without descriptors
+          dedot: "^1.0.0", // dedot without chaintypes
+        },
+      });
+      mockDirectoryExists(false); // no papi config
+
+      const result = await freshDetector.getRecommendedSetup();
+
+      // Should prefer papi (existing precedence rule)
+      expect(result.recommendedLibrary).toBe("papi");
+      expect(result.existingLibrary).toBe("papi");
+      expect(result.needsInstall).toBe(true); // needs descriptors
+      expect(result.needsConfig).toBe(true); // needs config
+    });
   });
 
   // Test caching behavior

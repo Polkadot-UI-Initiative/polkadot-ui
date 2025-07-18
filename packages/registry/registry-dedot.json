@@ -1,0 +1,47 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "dot-ui-dedot",
+  "homepage": "https://dot-ui.com",
+  "items": [
+    {
+      "name": "block-number",
+      "type": "registry:component",
+      "title": "Block Number",
+      "description": "A block number component optimized for dedot. Fast, type-safe, and efficient.",
+      "dependencies": ["dedot"],
+      "requiresPolkadotApi": true,
+      "registryDependencies": ["button"],
+      "files": [
+        {
+          "path": "registry/dot-ui/blocks/block-number/page.dedot.tsx",
+          "type": "registry:page",
+          "target": "app/dot-ui/block-number/page.tsx"
+        },
+        {
+          "path": "registry/dot-ui/blocks/block-number/components/block-number.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/dot-ui/blocks/block-number/hooks/use-block-number.dedot.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/dot-ui/providers/dedot-provider.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/utils.polkadot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/types.polkadot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/config.dot-ui.ts",
+          "type": "registry:lib"
+        }
+      ]
+    }
+  ]
+}

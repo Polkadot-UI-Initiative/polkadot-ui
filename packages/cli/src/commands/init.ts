@@ -2,6 +2,7 @@ import inquirer from "inquirer";
 import ora from "ora";
 import execa from "execa";
 import path from "path";
+import fs from "fs/promises";
 import type { CliOptions, ProjectSetupConfig } from "../types/index.js";
 import { logger } from "../utils/logger.js";
 import { ProjectDetector } from "../utils/project-detector.js";
@@ -21,15 +22,6 @@ export class InitCommand {
    */
   async execute(): Promise<void> {
     logger.info("Initializing new project...");
-    await this.initializeProject();
-    // Explicitly return to ensure the function completes
-    return;
-  }
-
-  /**
-   * Internal initialization method that can be called from other commands
-   */
-  async initializeProject(): Promise<void> {
     const startTime = Date.now();
     const setupConfig = await this.promptProjectSetup();
 
@@ -37,6 +29,7 @@ export class InitCommand {
     await this.telemetry.trackInitStart(setupConfig.framework);
 
     await this.createProject(setupConfig);
+    await this.installPolkadotLibrary(setupConfig);
     await this.initializeShadcn(setupConfig);
 
     logger.success("Project initialized successfully!");
@@ -60,6 +53,10 @@ export class InitCommand {
 
     // If --yes flag is used, return defaults
     if (this.options.yes) {
+      logger.info("Using --yes flag, defaulting to polkadot-api (papi)");
+      logger.detail(
+        "To use dedot instead, run without --yes flag and select dedot when prompted"
+      );
       return {
         projectName: currentDir,
         framework: "nextjs",
@@ -142,7 +139,7 @@ export class InitCommand {
         message: "Which Polkadot API library would you like to use?",
         choices: [
           { name: "Polkadot API (papi)", value: "papi" },
-          { name: "Dedot - experimental", value: "dedot" },
+          { name: "Dedot", value: "dedot" },
         ],
         default: "papi",
       },
@@ -204,7 +201,7 @@ export class InitCommand {
     const [executable, ...baseArgs] = runCommand.split(" ");
 
     await execa(executable, [...baseArgs, ...args], {
-      stdio: "inherit",
+      stdio: ["ignore", "inherit", "inherit"], // ignore stdin to prevent waiting for input
       detached: false,
       cleanup: true,
       killSignal: "SIGTERM",
@@ -419,6 +416,134 @@ export default defineConfig({
       spinner.fail("Failed to initialize shadcn/ui");
       logger.warning("You may need to run 'npx shadcn@canary init' manually");
       logger.warning("This is required before adding components");
+    }
+  }
+
+  /**
+   * Install the selected API library
+   */
+  private async installPolkadotLibrary(
+    config: ProjectSetupConfig
+  ): Promise<void> {
+    // Debug logging to see what library is being installed
+    logger.detail(`Installing library: ${config.polkadotLibrary}`);
+
+    const spinner = ora(
+      `Installing ${config.polkadotLibrary === "papi" ? "polkadot-api" : "dedot"}...`
+    ).start();
+
+    try {
+      const packageManager = await this.projectDetector.detectPackageManager();
+      const installCommand = packageManager === "npm" ? "install" : "add";
+
+      if (config.polkadotLibrary === "papi") {
+        logger.detail("Installing polkadot-api and @polkadot-api/descriptors");
+        await execa(
+          packageManager,
+          [installCommand, "polkadot-api", "@polkadot-api/descriptors"],
+          {
+            stdio: "pipe",
+          }
+        );
+        spinner.succeed("polkadot-api installed");
+      } else if (config.polkadotLibrary === "dedot") {
+        logger.detail("Installing dedot and @dedot/chaintypes");
+        // Install dedot as regular dependency
+        await execa(packageManager, [installCommand, "dedot"], {
+          stdio: "pipe",
+        });
+
+        // Install @dedot/chaintypes as devDependency
+        const devFlag = packageManager === "npm" ? "--save-dev" : "-D";
+        await execa(
+          packageManager,
+          [installCommand, devFlag, "@dedot/chaintypes"],
+          {
+            stdio: "pipe",
+          }
+        );
+
+        spinner.succeed("dedot and @dedot/chaintypes installed");
+
+        // Verify installation
+        await this.verifyDedotInstallation();
+      } else {
+        // Safety check - this should never happen
+        spinner.fail(`Unknown library: ${config.polkadotLibrary}`);
+        throw new Error(
+          `Unsupported polkadot library: ${config.polkadotLibrary}`
+        );
+      }
+    } catch (error) {
+      spinner.fail(
+        `Failed to install ${config.polkadotLibrary === "papi" ? "polkadot-api" : "dedot"}`
+      );
+      logger.warning("You may need to install the Polkadot library manually");
+      if (config.polkadotLibrary === "papi") {
+        logger.info(
+          `Run: ${await this.projectDetector.detectPackageManager()} ${
+            (await this.projectDetector.detectPackageManager()) === "npm"
+              ? "install"
+              : "add"
+          } polkadot-api @polkadot-api/descriptors`
+        );
+      } else {
+        logger.info(
+          `Run: ${await this.projectDetector.detectPackageManager()} ${
+            (await this.projectDetector.detectPackageManager()) === "npm"
+              ? "install"
+              : "add"
+          } dedot`
+        );
+        logger.info(
+          `Run: ${await this.projectDetector.detectPackageManager()} ${
+            (await this.projectDetector.detectPackageManager()) === "npm"
+              ? "install"
+              : "add"
+          } --save-dev @dedot/chaintypes`
+        );
+      }
+    }
+  }
+
+  /**
+   * Verify dedot installation
+   */
+  private async verifyDedotInstallation(): Promise<void> {
+    const spinner = ora("Verifying dedot installation...").start();
+
+    try {
+      // Simple verification by checking if packages exist in package.json
+      const packageJsonPath = path.join(process.cwd(), "package.json");
+      const packageJson = JSON.parse(
+        await fs.readFile(packageJsonPath, "utf-8")
+      );
+
+      const hasDedot = Boolean(packageJson.dependencies?.dedot);
+      const hasChainTypes = Boolean(
+        packageJson.devDependencies?.["@dedot/chaintypes"]
+      );
+
+      if (hasDedot && hasChainTypes) {
+        spinner.succeed("Dedot installation verified successfully");
+        logger.detail("✓ dedot package installed");
+        logger.detail("✓ @dedot/chaintypes installed as devDependency");
+      } else {
+        spinner.fail("Dedot installation verification failed");
+        logger.error("Installation verification results:");
+        logger.detail(`dedot installed: ${hasDedot ? "✓" : "✗"}`);
+        logger.detail(
+          `@dedot/chaintypes installed: ${hasChainTypes ? "✓" : "✗"}`
+        );
+        throw new Error("Dedot installation is incomplete");
+      }
+    } catch (error) {
+      spinner.fail("Failed to verify dedot installation");
+      throw new Error(
+        `Failed to verify dedot installation: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     }
   }
 }
