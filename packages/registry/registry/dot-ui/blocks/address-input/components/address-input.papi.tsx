@@ -4,7 +4,7 @@ import { forwardRef, useState, useEffect, useRef } from "react";
 import { Input } from "@/registry/dot-ui/ui/input";
 import { Label } from "@/registry/dot-ui/ui/label";
 import { Badge } from "@/registry/dot-ui/ui/badge";
-import { CheckCircle, XCircle, Loader2 } from "lucide-react";
+import { CheckCircle, XCircle, Loader2, Copy, Check } from "lucide-react";
 import { Identicon } from "@polkadot/react-identicon";
 
 import { cn } from "@/registry/dot-ui/lib/utils";
@@ -16,6 +16,7 @@ import {
   truncateAddress,
   type ValidationResult,
 } from "@/registry/dot-ui/blocks/address-input/lib/address-validation";
+import { Button } from "@/registry/dot-ui/ui/button";
 
 export interface AddressInputProps {
   value?: string;
@@ -27,6 +28,7 @@ export interface AddressInputProps {
   withIdentityLookup?: boolean;
   withIdentitySearch?: boolean;
   withEnsLookup?: boolean;
+  withCopyButton?: boolean;
   onIdentityFound?: (identity: IdentityResult) => void;
   ethProviderUrl?: string;
   truncate?: boolean | number;
@@ -53,6 +55,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
       format = "ss58",
       withIdentityLookup = true,
       withIdentitySearch = true,
+      withCopyButton = true,
       // withEnsLookup = false, // TODO: Implement ENS lookup
       onIdentityFound,
       // ethProviderUrl, // TODO: Implement ENS lookup
@@ -70,6 +73,8 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
     const [debouncedAddress, setDebouncedAddress] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
     const [showDropdown, setShowDropdown] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [isCopied, setIsCopied] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
     // Merge forwarded ref with internal ref
@@ -132,6 +137,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
     // Sync external value changes
     useEffect(() => {
       setInputValue(value);
+      setIsEditing(false); // Stop editing when value changes externally
     }, [value]);
 
     // Notify parent when identity is found
@@ -151,9 +157,11 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(e.target.value);
       setShowDropdown(false);
+      setIsEditing(true);
     };
 
     const handleFocus = () => {
+      setIsEditing(true);
       if (
         !validationResult?.isValid &&
         debouncedSearch.length > 2 &&
@@ -165,6 +173,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
     };
 
     const handleBlur = () => {
+      setIsEditing(false);
       // Delay hiding dropdown to allow clicks on dropdown items
       setTimeout(() => setShowDropdown(false), 150);
     };
@@ -172,15 +181,30 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
     const handleSelectIdentity = (address: string, display: string) => {
       setInputValue(address);
       setShowDropdown(false);
+
       if (onChange) {
         onChange(address);
       }
+      inputRef.current?.blur();
+
       // Trigger identity found callback
       if (onIdentityFound) {
         onIdentityFound({
           type: "polkadot",
           data: { display, verified: false },
         });
+      }
+    };
+
+    const handleCopy = async () => {
+      if (!inputValue) return;
+
+      try {
+        await navigator.clipboard.writeText(inputValue);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+      } catch (error) {
+        console.error("Failed to copy address:", error);
       }
     };
 
@@ -199,7 +223,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
     }, [validationResult, debouncedSearch, identitySearch.data]);
 
     const displayValue =
-      truncate && validationResult?.isValid
+      truncate && validationResult?.isValid && !isEditing
         ? truncateAddress(inputValue, truncate)
         : inputValue;
 
@@ -302,6 +326,28 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
               <Identicon value={inputValue} size={20} theme="polkadot" />
             </div>
           )}
+
+          {/* Copy button - shown when not editing and has valid address and not loading */}
+          {withCopyButton &&
+            !isEditing &&
+            validationResult?.isValid &&
+            inputValue &&
+            !isIdentityLoading &&
+            !isApiLoading && (
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={handleCopy}
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 h-7 w-7 rounded-sm"
+                title={isCopied ? "Copied!" : "Copy address"}
+              >
+                {isCopied ? (
+                  <Check className="h-2 w-2" />
+                ) : (
+                  <Copy className="h-2 w-2" />
+                )}
+              </Button>
+            )}
 
           {/* Loading spinner */}
           {(isIdentityLoading || isApiLoading) && (
