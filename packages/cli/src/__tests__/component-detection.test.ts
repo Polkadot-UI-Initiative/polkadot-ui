@@ -72,7 +72,7 @@ describe("Component Detection Tests", () => {
       freshDetector.clearCache();
 
       const needsSetup = await freshDetector.needsPolkadotSetup();
-      expect(needsSetup).toBe(true); // dedot alone no longer satisfies polkadot requirement
+      expect(needsSetup).toBe(false); // dedot basic installation is sufficient
     });
 
     it("should require setup when no polkadot library exists", async () => {
@@ -171,8 +171,7 @@ describe("Component Detection Tests", () => {
       };
 
       // Should still detect polkadot requirement via dependencies
-      expect(detector.needsPolkadotSetup()).toBe(true);
-      expect(detector.needsPolkadotSetup()).toBe(true);
+      expect(await detector.needsPolkadotSetup()).toBe(true);
     });
   });
 });

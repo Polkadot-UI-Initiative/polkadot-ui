@@ -4,12 +4,63 @@ import { PolkadotDetector } from "./polkadot-detector.js";
 export class Registry {
   private baseUrl: string;
   private polkadotDetector: PolkadotDetector;
-  private isDev: boolean;
+  private cachedDetectedApi: "papi" | "dedot" | "none" | null = null;
+  private selectedLibrary: "papi" | "dedot" | null = null; // New: user's explicit choice
 
   constructor(isDev: boolean = false) {
     this.baseUrl = isDev ? "http://localhost:3000" : "https://dot-ui.com";
     this.polkadotDetector = new PolkadotDetector();
-    this.isDev = isDev;
+  }
+
+  /**
+   * Set the user's library choice (used when prompting before detection)
+   */
+  setSelectedLibrary(library: "papi" | "dedot"): void {
+    this.selectedLibrary = library;
+  }
+
+  /**
+   * Get the user's selected library choice
+   */
+  getSelectedLibrary(): "papi" | "dedot" | null {
+    return this.selectedLibrary;
+  }
+
+  /**
+   * Get the detected Polkadot API library with caching
+   */
+  private async getDetectedApi(): Promise<"papi" | "dedot" | "none"> {
+    // If user has made an explicit choice, use that
+    if (this.selectedLibrary) {
+      return this.selectedLibrary;
+    }
+
+    // Otherwise use detection logic
+    if (this.cachedDetectedApi === null) {
+      try {
+        this.cachedDetectedApi =
+          await this.polkadotDetector.detectPolkadotLibrary();
+      } catch {
+        // Default to papi if detection fails
+        this.cachedDetectedApi = "papi";
+      }
+    }
+    return this.cachedDetectedApi;
+  }
+
+  /**
+   * Get the path prefix based on detected API
+   */
+  private async getPathPrefix(): Promise<string> {
+    const detectedApi = await this.getDetectedApi();
+    return detectedApi === "dedot" ? "/r/dedot" : "/r/papi";
+  }
+
+  /**
+   * Clear the cached detection result (useful for testing or when project state changes)
+   */
+  public clearDetectionCache(): void {
+    this.cachedDetectedApi = null;
   }
 
   /**
@@ -17,9 +68,9 @@ export class Registry {
    */
   private async getRegistryUrl(): Promise<string> {
     try {
-      const detectedApi = await this.polkadotDetector.detectPolkadotLibrary();
+      const detectedApi = await this.getDetectedApi();
       const registryFile =
-        detectedApi === "papi" ? "registry-papi.json" : "registry-dedot.json";
+        detectedApi === "dedot" ? "registry-dedot.json" : "registry-papi.json";
       return `${this.baseUrl}/${registryFile}`;
     } catch {
       // Default to papi if detection fails
@@ -56,8 +107,7 @@ export class Registry {
    */
   async fetchComponent(componentName: string): Promise<ComponentInfo | null> {
     try {
-      const detectedApi = await this.polkadotDetector.detectPolkadotLibrary();
-      const pathPrefix = detectedApi === "papi" ? "/r/papi" : "/r/dedot";
+      const pathPrefix = await this.getPathPrefix();
       const response = await fetch(
         `${this.baseUrl}${pathPrefix}/${componentName}.json`
       );
@@ -184,8 +234,7 @@ export class Registry {
       const components = registryData.items || [];
 
       // Get API-specific component URL base
-      const detectedApi = await this.polkadotDetector.detectPolkadotLibrary();
-      const pathPrefix = detectedApi === "papi" ? "/r/papi" : "/r/dedot";
+      const pathPrefix = await this.getPathPrefix();
 
       return {
         url: `${this.baseUrl}${pathPrefix}`,
