@@ -201,7 +201,7 @@ export class InitCommand {
     const [executable, ...baseArgs] = runCommand.split(" ");
 
     await execa(executable, [...baseArgs, ...args], {
-      stdio: ["ignore", "inherit", "inherit"], // ignore stdin to prevent waiting for input
+      stdio: "pipe", // hide all output, spinner shows progress
       detached: false,
       cleanup: true,
       killSignal: "SIGTERM",
@@ -224,7 +224,7 @@ export class InitCommand {
         executable,
         [...baseArgs, "create-vite@latest", ".", "--template", "react-ts"],
         {
-          stdio: "inherit",
+          stdio: "pipe", // hide all output, spinner shows progress
           detached: false,
           cleanup: true,
           killSignal: "SIGTERM",
@@ -234,7 +234,7 @@ export class InitCommand {
     } else {
       // Use native create-vite flow (shows React preselected, TypeScript variant available)
       await execa(executable, [...baseArgs, "create-vite@latest", "."], {
-        stdio: "inherit",
+        stdio: "pipe", // hide all output, spinner shows progress
         detached: false,
         cleanup: true,
         killSignal: "SIGTERM",
