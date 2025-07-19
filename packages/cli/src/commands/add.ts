@@ -527,7 +527,7 @@ export class AddCommand {
         logger.info("Dedot setup complete");
       } else {
         // If no library is detected, check if user made a selection
-        const selectedLibrary = (this.registry as any).selectedLibrary;
+        const selectedLibrary = this.registry.getSelectedLibrary();
 
         if (selectedLibrary === "papi") {
           logger.info("Installing and configuring Polkadot API (papi)...");

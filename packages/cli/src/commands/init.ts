@@ -354,6 +354,14 @@ export class InitCommand {
       : "vite.config.js";
     const aliasPrefix = config.importAlias.replace("/*", "");
 
+    // Detect project structure to get the correct source directory
+    const projectStructure =
+      await this.projectDetector.detectProjectStructure();
+    const aliasPath =
+      projectStructure.srcDir && projectStructure.srcDir !== "."
+        ? projectStructure.srcDir
+        : ".";
+
     const viteConfig = `import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
@@ -366,7 +374,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "${aliasPrefix}": path.resolve(__dirname, "."),
+      "${aliasPrefix}": path.resolve(__dirname, "${aliasPath}"),
     },
   },
 })

@@ -20,6 +20,13 @@ export class Registry {
   }
 
   /**
+   * Get the user's selected library choice
+   */
+  getSelectedLibrary(): "papi" | "dedot" | null {
+    return this.selectedLibrary;
+  }
+
+  /**
    * Get the detected Polkadot API library with caching
    */
   private async getDetectedApi(): Promise<"papi" | "dedot" | "none"> {
