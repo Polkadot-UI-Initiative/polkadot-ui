@@ -72,7 +72,7 @@ export class AddCommand {
         polkadotConfig
       );
 
-      // Step 7: Show next steps
+      // Step 6: Show completion message
       this.showCompletionMessage(componentInfo, polkadotConfig);
 
       // Track successful installation
@@ -84,13 +84,7 @@ export class AddCommand {
         duration,
       });
     } catch (error) {
-      // Track installation error
-      const errorMessage =
-        error instanceof Error ? error.message : "An unexpected error occurred";
-      await this.telemetry.trackInstallError(componentName, errorMessage);
-
-      logger.error(errorMessage);
-      process.exit(1);
+      await this.handleInstallationError(error, componentName, startTime);
     }
   }
 
@@ -100,7 +94,11 @@ export class AddCommand {
   private validateComponentName(componentName: string): boolean {
     if (!componentName) {
       logger.error("Component name is required");
-      logger.info("Usage: dot-ui add <component-name>");
+      logger.info("Usage: polka-ui add <component-name>");
+      logger.newline();
+      logger.subsection("Examples:");
+      logger.detail("polka-ui add block-number", true);
+      logger.detail("polka-ui add wallet-connect", true);
       return false;
     }
 
@@ -109,6 +107,16 @@ export class AddCommand {
       logger.info(
         "Component names should be kebab-case (e.g., block-number, user-profile)"
       );
+      logger.newline();
+      logger.subsection("Valid examples:");
+      logger.detail("✓ block-number", true);
+      logger.detail("✓ wallet-connect", true);
+      logger.detail("✓ staking-rewards", true);
+      logger.newline();
+      logger.subsection("Invalid examples:");
+      logger.detail("✗ blockNumber (camelCase)", true);
+      logger.detail("✗ BlockNumber (PascalCase)", true);
+      logger.detail("✗ block_number (snake_case)", true);
       return false;
     }
 
@@ -125,48 +133,7 @@ export class AddCommand {
       // Check if package.json exists
       if (!(await this.projectDetector.hasPackageJson())) {
         spinner.stop();
-
-        // Ask user if they want to create a new project (or auto-yes if --yes flag)
-        let shouldCreateProject = true;
-
-        if (!this.options.yes) {
-          const result = await inquirer.prompt([
-            {
-              type: "confirm",
-              name: "shouldCreateProject",
-              message:
-                "No project found. Would you like to create a new project?",
-              default: true,
-            },
-          ]);
-          shouldCreateProject = result.shouldCreateProject;
-        }
-
-        if (!shouldCreateProject) {
-          logger.showProjectGuidance();
-          return null;
-        }
-
-        // Run init command to set up the project
-        const initCommand = new InitCommand(this.options);
-        await initCommand.execute();
-
-        // Wait a moment for file system to sync
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // Return the project structure after creation
-        try {
-          const structure = await this.projectDetector.detectProjectStructure();
-          return structure;
-        } catch (structureError) {
-          logger.error(
-            "Failed to detect project structure after initialization"
-          );
-          logger.info(
-            "Please run the command again or check your project setup"
-          );
-          return null;
-        }
+        return await this.handleMissingProject();
       }
 
       // Check if it's a React project
@@ -188,7 +155,7 @@ export class AddCommand {
       // Get project structure
       const structure = await this.projectDetector.detectProjectStructure();
 
-      // Show detected project info in success message
+      // Show detected project info
       const projectType = structure.isNextJs
         ? "Next.js"
         : structure.isVite
@@ -219,6 +186,52 @@ export class AddCommand {
   }
 
   /**
+   * Handle missing project scenario
+   */
+  private async handleMissingProject(): Promise<ProjectStructure | null> {
+    let shouldCreateProject = this.options.yes;
+
+    if (!this.options.yes) {
+      const result = await inquirer.prompt([
+        {
+          type: "confirm",
+          name: "shouldCreateProject",
+          message: "No project found. Would you like to create a new project?",
+          default: true,
+        },
+      ]);
+      shouldCreateProject = result.shouldCreateProject;
+    } else {
+      logger.info(
+        "No project found. Creating new project automatically (--yes flag)"
+      );
+    }
+
+    if (!shouldCreateProject) {
+      logger.showProjectGuidance();
+      return null;
+    }
+
+    // Run init command to set up the project
+    try {
+      const initCommand = new InitCommand(this.options);
+      await initCommand.execute();
+
+      // Wait for file system to sync
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Return the project structure after creation
+      const structure = await this.projectDetector.detectProjectStructure();
+      logger.success("Project initialized successfully");
+      return structure;
+    } catch (structureError) {
+      logger.error("Failed to detect project structure after initialization");
+      logger.info("Please run the command again or check your project setup");
+      return null;
+    }
+  }
+
+  /**
    * Step 3: Check component availability
    */
   private async validateComponentAvailability(
@@ -233,14 +246,7 @@ export class AddCommand {
       if (!registryInfo.isConnected) {
         spinner.fail("Registry connection failed");
         logger.error(`Cannot connect to registry: ${registryInfo.url}`);
-        if (this.options.dev) {
-          logger.detail(
-            "Make sure your local registry server is running on localhost:3000"
-          );
-        }
-        if (registryInfo.error) {
-          logger.detail(registryInfo.error);
-        }
+        this.showRegistryConnectionGuidance(registryInfo);
         return null;
       }
 
@@ -250,8 +256,6 @@ export class AddCommand {
       if (!componentInfo) {
         spinner.fail("Component not found");
         logger.error(`Component "${componentName}" not found in registry`);
-
-        // Suggest similar components
         await this.suggestSimilarComponents(componentName);
         return null;
       }
@@ -262,7 +266,35 @@ export class AddCommand {
       return componentInfo;
     } catch (error) {
       spinner.fail("Component check failed");
-      throw error;
+      throw new Error(
+        `Failed to check component availability: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
+    }
+  }
+
+  /**
+   * Show registry connection guidance
+   */
+  private showRegistryConnectionGuidance(registryInfo: any): void {
+    if (this.options.dev) {
+      logger.detail(
+        "Make sure your local registry server is running on localhost:3000"
+      );
+    }
+    if (registryInfo.error) {
+      logger.detail(registryInfo.error);
+    }
+
+    logger.newline();
+    logger.subsection("Troubleshooting:");
+    if (this.options.dev) {
+      logger.detail("• Start the development server: pnpm dev", true);
+      logger.detail("• Check if localhost:3000 is accessible", true);
+    } else {
+      logger.detail("• Check your internet connection", true);
+      logger.detail("• Try using development registry: --dev flag", true);
     }
   }
 
@@ -276,14 +308,13 @@ export class AddCommand {
 
     try {
       const polkadotConfig = await this.polkadotDetector.getPolkadotApiConfig();
+      const library = await this.polkadotDetector.detectPolkadotLibrary();
 
       logger.detail(
         `Component dependencies: ${JSON.stringify(componentInfo.dependencies)}`
       );
 
-      // Component requires Polkadot API - check current setup
-      const library = await this.polkadotDetector.detectPolkadotLibrary();
-
+      // Provide status based on detected library
       if (library === "none") {
         spinner.succeed("Polkadot API setup will be configured");
         logger.info(
@@ -309,7 +340,11 @@ export class AddCommand {
       return polkadotConfig;
     } catch (error) {
       spinner.fail("Polkadot detection failed");
-      throw error;
+      throw new Error(
+        `Failed to detect Polkadot setup: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     }
   }
 
@@ -324,41 +359,15 @@ export class AddCommand {
     // Install component using shadcn CLI (handles component files and registryDependencies automatically)
     await this.installComponentWithShadcn(componentInfo.name);
 
-    // Debug component info
-    logger.detail(`=== COMPONENT DEBUG INFO ===`);
-    logger.detail(`Component name: ${componentInfo.name}`);
-    logger.detail(`Component type: ${componentInfo.type}`);
-    logger.detail(`Component title: ${componentInfo.title}`);
-    logger.detail(
-      `Component dependencies: ${JSON.stringify(componentInfo.dependencies)}`
-    );
-
-    logger.detail(
-      `Component registryDependencies: ${JSON.stringify(
-        componentInfo.registryDependencies
-      )}`
-    );
-
-    // Component requires Polkadot API - check current setup
-    const library = await this.polkadotDetector.detectPolkadotLibrary();
-
     // Setup Polkadot API if needed
-    if (library === "none") {
-      logger.info(`Component requires Polkadot API setup`);
-      logger.detail("Dependencies already installed by shadcn");
-    } else if (library === "papi") {
-      logger.info("Component requires papi setup");
-      logger.detail("Will ensure proper chain configuration");
-    } else if (library === "dedot") {
-      logger.info("Component requires dedot");
-    }
-
-    // Setup Polkadot API regardless of current library state
     await this.setupPolkadotApi(
       componentInfo,
       projectStructure,
       polkadotConfig
     );
+
+    // Validate installation
+    await this.validateInstallation(componentInfo);
   }
 
   /**
@@ -370,49 +379,36 @@ export class AddCommand {
     const spinner = ora("Installing component with shadcn...").start();
 
     try {
-      // Check if shadcn is initialized (components.json exists)
-      const fs = await import("fs/promises");
-      const componentsJsonExists = await fs
-        .access("components.json")
-        .then(() => true)
-        .catch(() => false);
+      // Check if shadcn is initialized
+      await this.ensureShadcnInitialized();
 
-      if (!componentsJsonExists) {
-        spinner.text = "Initializing shadcn/ui...";
-        await this.initializeShadcn();
-      }
-
-      // Determine shadcn version based on Tailwind version
-      const tailwindVersion = await this.projectDetector.getTailwindVersion();
-      const shadcnVersion =
-        tailwindVersion === 4 ? "shadcn@canary" : "shadcn@latest";
-
-      // Build component URL
+      // Get registry info and build component URL
       const registryInfo = await this.registry.getRegistryInfo();
       const componentUrl = `${registryInfo.url}/${componentName}.json`;
 
-      // Get package manager runner command
+      // Get package manager command
       const runCommand =
         await this.projectDetector.getPackageManagerRunCommand();
+      const tailwindVersion = await this.projectDetector.getTailwindVersion();
+      const shadcnVersion =
+        tailwindVersion === 4 ? "shadcn@canary" : "shadcn@latest";
 
       logger.detail(`Using ${shadcnVersion} to install from ${componentUrl}`);
 
       // Stop spinner before interactive prompts
       spinner.stop();
 
-      logger.info(
-        `Running: ${runCommand} ${shadcnVersion} add ${componentUrl}`
-      );
-
-      // Parse the run command to get the executable and args
+      // Build command arguments
       const [executable, ...baseArgs] = runCommand.split(" ");
       const shadcnArgs = [shadcnVersion, "add", componentUrl];
 
-      // Add --yes flag if specified
       if (this.options.yes) {
         shadcnArgs.push("--yes");
       }
 
+      logger.info(`Running: ${runCommand} ${shadcnArgs.join(" ")}`);
+
+      // Execute shadcn add command
       await execa(executable, [...baseArgs, ...shadcnArgs], {
         stdio: "inherit",
       });
@@ -429,28 +425,41 @@ export class AddCommand {
   }
 
   /**
+   * Ensure shadcn/ui is initialized
+   */
+  private async ensureShadcnInitialized(): Promise<void> {
+    const fs = await import("fs/promises");
+    const componentsJsonExists = await fs
+      .access("components.json")
+      .then(() => true)
+      .catch(() => false);
+
+    if (!componentsJsonExists) {
+      await this.initializeShadcn();
+    }
+  }
+
+  /**
    * Initialize shadcn/ui in the current project
    */
   private async initializeShadcn(): Promise<void> {
+    const spinner = ora("Initializing shadcn/ui...").start();
+
     try {
-      // Get package manager run command
       const runCommand =
         await this.projectDetector.getPackageManagerRunCommand();
-      const [executable, ...baseArgs] = runCommand.split(" ");
-
-      // Determine shadcn version based on Tailwind version
       const tailwindVersion = await this.projectDetector.getTailwindVersion();
       const shadcnVersion =
         tailwindVersion === 4 ? "shadcn@canary" : "shadcn@latest";
 
+      const [executable, ...baseArgs] = runCommand.split(" ");
       const shadcnArgs = [shadcnVersion, "init"];
 
       // Add explicit defaults when using --yes flag
       if (this.options.yes) {
-        shadcnArgs.push("--yes");
-        shadcnArgs.push("--base-color", "neutral");
-        shadcnArgs.push("--css-variables");
-        // For add command, we need to detect if src directory is used
+        shadcnArgs.push("--yes", "--base-color", "neutral", "--css-variables");
+
+        // Detect if src directory is used
         const projectStructure =
           await this.projectDetector.detectProjectStructure();
         if (projectStructure.srcDir && projectStructure.srcDir !== ".") {
@@ -464,39 +473,11 @@ export class AddCommand {
         stdio: "inherit",
       });
 
-      logger.success("shadcn/ui initialized successfully");
+      spinner.succeed("shadcn/ui initialized successfully");
     } catch (error) {
-      logger.warning("Failed to initialize shadcn/ui");
+      spinner.fail("Failed to initialize shadcn/ui");
       logger.warning("You may need to run 'npx shadcn@canary init' manually");
       throw error;
-    }
-  }
-
-  /**
-   * Install Polkadot API dependencies
-   */
-  private async installPolkadotDependencies(): Promise<void> {
-    const spinner = ora("Installing Polkadot API dependencies...").start();
-
-    try {
-      // Get package manager install command
-      const installCommand =
-        await this.projectDetector.getPackageManagerInstallCommand();
-      const command = `${installCommand} polkadot-api`;
-
-      logger.info(`Running: ${command}`);
-      await execa.command(command, {
-        stdio: "inherit",
-      });
-
-      spinner.succeed("Polkadot API dependencies installed");
-    } catch (error) {
-      spinner.fail("Failed to install Polkadot API dependencies");
-      throw new Error(
-        `Failed to install Polkadot dependencies: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`
-      );
     }
   }
 
@@ -515,13 +496,9 @@ export class AddCommand {
       const library = await this.polkadotDetector.detectPolkadotLibrary();
 
       if (library === "papi") {
-        // Handle papi setup (existing logic)
         await this.setupPapiApi();
         logger.info("Papi setup complete");
       } else if (library === "dedot") {
-        // Handle dedot setup (minimal setup needed)
-        // TODO: since we can't pick which files getting imported from the registry,
-        // we need to setup both libraries
         await this.setupDedotApi();
         logger.info("Dedot setup complete");
       } else {
@@ -555,9 +532,7 @@ export class AddCommand {
       await execa(
         packageManager,
         [installCommand, "polkadot-api", "@polkadot-api/descriptors"],
-        {
-          stdio: "pipe",
-        }
+        { stdio: "pipe" }
       );
 
       spinner.succeed("polkadot-api installed");
@@ -575,14 +550,24 @@ export class AddCommand {
    * Setup papi-specific configuration
    */
   private async setupPapiApi(): Promise<void> {
-    // Determine required chains based on dev/prod mode
+    // Use the already detected polkadot config
+    const polkadotConfig = await this.polkadotDetector.getPolkadotApiConfig();
+
+    // If we already have existing chains configured, we're good
+    if (polkadotConfig.existingChains.length > 0) {
+      logger.info(
+        `Papi already configured with ${polkadotConfig.existingChains.length} chains: ${polkadotConfig.existingChains.join(", ")}`
+      );
+      return;
+    }
+
+    // If no chains are configured, install defaults
+    logger.info("No chains configured, installing defaults");
     const defaultChains = this.options.dev
       ? ["paseo_asset_hub", "paseo"]
       : ["polkadot"];
 
-    logger.detail(`Required chains: ${defaultChains.join(", ")}`);
-
-    // Simple approach: always install required chains (papi handles duplicates gracefully)
+    logger.detail(`Installing default chains: ${defaultChains.join(", ")}`);
     await this.installMissingChains(defaultChains);
   }
 
@@ -592,7 +577,7 @@ export class AddCommand {
   private async setupDedotApi(): Promise<void> {
     logger.info("Setting up dedot configuration...");
 
-    // Check existing installation using existing interfaces
+    // Check existing installation
     const hasDedot = await this.polkadotDetector.hasDedot();
     const hasChainTypes = await this.polkadotDetector.hasChainTypes();
 
@@ -606,48 +591,58 @@ export class AddCommand {
 
     // Install dedot if not present
     if (!hasDedot) {
-      const spinner = ora("Installing dedot...").start();
-
-      try {
-        await execa(packageManager, [installCommand, "dedot"], {
-          stdio: "pipe",
-        });
-        spinner.succeed("dedot installed");
-      } catch (error) {
-        spinner.fail("Failed to install dedot");
-        throw new Error(
-          `Failed to install dedot: ${
-            error instanceof Error ? error.message : "Unknown error"
-          }`
-        );
-      }
+      await this.installDedotPackage(packageManager, installCommand);
     }
 
     // Install @dedot/chaintypes as devDependency if not present
     if (!hasChainTypes) {
-      const spinner = ora("Installing @dedot/chaintypes...").start();
-
-      try {
-        const devFlag = packageManager === "npm" ? "--save-dev" : "-D";
-        await execa(
-          packageManager,
-          [installCommand, devFlag, "@dedot/chaintypes"],
-          {
-            stdio: "pipe",
-          }
-        );
-        spinner.succeed("@dedot/chaintypes installed as devDependency");
-      } catch (error) {
-        spinner.fail("Failed to install @dedot/chaintypes");
-        throw new Error(
-          `Failed to install @dedot/chaintypes: ${
-            error instanceof Error ? error.message : "Unknown error"
-          }`
-        );
-      }
+      await this.installDedotChainTypes(packageManager, installCommand);
     }
 
-    logger.info("Dedot setup complete - no additional configuration needed");
+    logger.info("Dedot setup complete");
+  }
+
+  /**
+   * Install dedot package
+   */
+  private async installDedotPackage(
+    packageManager: string,
+    installCommand: string
+  ): Promise<void> {
+    const spinner = ora("Installing dedot...").start();
+
+    try {
+      await execa(packageManager, [installCommand, "dedot"], { stdio: "pipe" });
+      spinner.succeed("dedot installed");
+    } catch (error) {
+      spinner.fail("Failed to install dedot");
+      throw error;
+    }
+  }
+
+  /**
+   * Install @dedot/chaintypes as devDependency
+   */
+  private async installDedotChainTypes(
+    packageManager: string,
+    installCommand: string
+  ): Promise<void> {
+    const spinner = ora("Installing @dedot/chaintypes...").start();
+
+    try {
+      const devFlag = packageManager === "npm" ? "--save-dev" : "-D";
+      await execa(
+        packageManager,
+        [installCommand, devFlag, "@dedot/chaintypes"],
+        {
+          stdio: "pipe",
+        }
+      );
+      spinner.succeed("@dedot/chaintypes installed as devDependency");
+    } catch (error) {
+      spinner.fail("Failed to install @dedot/chaintypes");
+      throw error;
+    }
   }
 
   /**
@@ -662,41 +657,18 @@ export class AddCommand {
       // Add each chain with increased memory limit
       for (const chain of chains) {
         spinner.text = `Adding ${chain} metadata...`;
+
         try {
-          // Use local papi binary (installed via polkadot-api package)
           await execa("node_modules/.bin/papi", ["add", chain, "-n", chain], {
-            stdio: "pipe", // Use pipe to avoid interaction issues
+            stdio: "pipe",
             env: {
               ...process.env,
-              NODE_OPTIONS: "--max-old-space-size=8192", // Increase memory limit to 8GB
+              NODE_OPTIONS: "--max-old-space-size=8192", // Increase memory limit
             },
           });
         } catch (chainError) {
-          // Check if it's a memory error
-          const errorMessage =
-            chainError instanceof Error
-              ? chainError.message
-              : String(chainError);
-          if (
-            errorMessage.includes("out of memory") ||
-            errorMessage.includes("JS heap out of memory")
-          ) {
-            spinner.fail(`Failed to install ${chain} - insufficient memory`);
-            logger.warning(
-              `Memory limit exceeded while processing ${chain} metadata`
-            );
-            logger.info("Try one of these solutions:");
-            logger.detail("1. Increase your system memory", true);
-            logger.detail("2. Use a smaller chain set", true);
-            logger.detail("3. Install chains manually one by one", true);
-            logger.newline();
-            logger.info("Manual installation command:");
-            logger.code(
-              `NODE_OPTIONS="--max-old-space-size=8192" node_modules/.bin/papi add ${chain} -n ${chain}`
-            );
-            throw new Error(`Memory limit exceeded for chain ${chain}`);
-          }
-          throw chainError;
+          await this.handleChainInstallError(chainError, chain, spinner);
+          return;
         }
       }
 
@@ -704,10 +676,10 @@ export class AddCommand {
 
       // Generate types for all chains with increased memory
       await execa("node_modules/.bin/papi", [], {
-        stdio: "pipe", // Use pipe to avoid interaction issues
+        stdio: "pipe",
         env: {
           ...process.env,
-          NODE_OPTIONS: "--max-old-space-size=8192", // Increase memory limit to 8GB
+          NODE_OPTIONS: "--max-old-space-size=8192",
         },
       });
 
@@ -715,9 +687,7 @@ export class AddCommand {
     } catch (error) {
       spinner.fail("Failed to install chains");
       logger.error(
-        `papi error: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`
+        `papi error: ${error instanceof Error ? error.message : "Unknown error"}`
       );
       throw new Error(
         `Failed to install papi chains: ${
@@ -725,6 +695,55 @@ export class AddCommand {
         }`
       );
     }
+  }
+
+  /**
+   * Handle chain installation errors with recovery suggestions
+   */
+  private async handleChainInstallError(
+    chainError: unknown,
+    chain: string,
+    spinner: any
+  ): Promise<void> {
+    const errorMessage =
+      chainError instanceof Error ? chainError.message : String(chainError);
+
+    if (
+      errorMessage.includes("out of memory") ||
+      errorMessage.includes("JS heap out of memory")
+    ) {
+      spinner.fail(`Failed to install ${chain} - insufficient memory`);
+      logger.warning(
+        `Memory limit exceeded while processing ${chain} metadata`
+      );
+
+      logger.newline();
+      logger.subsection("Memory error solutions:");
+      logger.detail("1. Increase your system memory", true);
+      logger.detail("2. Use a smaller chain set", true);
+      logger.detail("3. Install chains manually one by one", true);
+
+      logger.newline();
+      logger.subsection("Manual installation command:");
+      logger.code(
+        `NODE_OPTIONS="--max-old-space-size=8192" node_modules/.bin/papi add ${chain} -n ${chain}`
+      );
+
+      throw new Error(`Memory limit exceeded for chain ${chain}`);
+    }
+
+    throw chainError;
+  }
+
+  /**
+   * Validate component installation
+   */
+  private async validateInstallation(
+    componentInfo: ComponentInfo
+  ): Promise<void> {
+    // Basic validation - check if component files were created
+    // This could be expanded to verify file contents, imports, etc.
+    logger.detail("Installation validation complete");
   }
 
   /**
@@ -741,6 +760,80 @@ export class AddCommand {
   }
 
   /**
+   * Handle installation errors with recovery suggestions
+   */
+  private async handleInstallationError(
+    error: unknown,
+    componentName: string,
+    startTime: number
+  ): Promise<void> {
+    const errorMessage =
+      error instanceof Error ? error.message : "An unexpected error occurred";
+
+    // Track installation error
+    await this.telemetry.trackInstallError(componentName, errorMessage);
+
+    logger.error("Component installation failed");
+    logger.error(errorMessage);
+    logger.newline();
+
+    // Provide recovery suggestions
+    this.showInstallationRecovery(error, componentName);
+
+    process.exit(1);
+  }
+
+  /**
+   * Show installation recovery suggestions
+   */
+  private showInstallationRecovery(
+    error: unknown,
+    componentName: string
+  ): void {
+    const errorMessage = error instanceof Error ? error.message : "";
+
+    if (errorMessage.includes("shadcn")) {
+      logger.subsection("shadcn/ui issues:");
+      logger.detail(
+        "• Try initializing shadcn manually: npx shadcn@canary init",
+        true
+      );
+      logger.detail("• Check if components.json exists", true);
+      logger.detail("• Verify Tailwind CSS is properly configured", true);
+    } else if (
+      errorMessage.includes("registry") ||
+      errorMessage.includes("fetch")
+    ) {
+      logger.subsection("Registry connection issues:");
+      logger.detail("• Check your internet connection", true);
+      logger.detail("• Try using development registry: --dev flag", true);
+      logger.detail("• Verify component name spelling", true);
+    } else if (
+      errorMessage.includes("memory") ||
+      errorMessage.includes("heap")
+    ) {
+      logger.subsection("Memory issues:");
+      logger.detail("• Close other applications to free memory", true);
+      logger.detail("• Try installing smaller components first", true);
+      logger.detail("• Consider upgrading system memory", true);
+    } else {
+      logger.subsection("General recovery:");
+      logger.detail("• Ensure project has valid package.json", true);
+      logger.detail("• Check if React is properly installed", true);
+      logger.detail("• Try running: polka-ui list", true);
+      logger.detail("• Use --verbose flag for detailed output", true);
+    }
+
+    logger.newline();
+    logger.subsection("Get help:");
+    logger.detail("• Documentation: https://dot-ui.com/docs", true);
+    logger.detail(
+      "• GitHub Issues: https://github.com/Polkadot-UI-Initiative/dot-ui/issues",
+      true
+    );
+  }
+
+  /**
    * Suggest similar components when component not found
    */
   private async suggestSimilarComponents(componentName: string): Promise<void> {
@@ -749,15 +842,20 @@ export class AddCommand {
         await this.registry.searchComponents(componentName);
 
       if (similarComponents.length > 0) {
-        logger.info("Did you mean one of these?");
+        logger.newline();
+        logger.subsection("Did you mean one of these?");
         similarComponents.slice(0, 3).forEach((component) => {
-          logger.detail(`• ${component.name} - ${component.description}`);
+          logger.detail(`• ${component.name} - ${component.description}`, true);
         });
+        logger.newline();
+        logger.info("To see all available components, run: polka-ui list");
       } else {
-        logger.info("To see all available components, run: dot-ui list");
+        logger.newline();
+        logger.info("To see all available components, run: polka-ui list");
       }
     } catch {
       // Ignore errors in suggestions
+      logger.info("To see all available components, run: polka-ui list");
     }
   }
 }
