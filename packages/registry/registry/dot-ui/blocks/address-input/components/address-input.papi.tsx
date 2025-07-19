@@ -4,7 +4,7 @@ import { forwardRef, useState, useEffect, useRef } from "react";
 import { Input } from "@/registry/dot-ui/ui/input";
 import { Label } from "@/registry/dot-ui/ui/label";
 import { Badge } from "@/registry/dot-ui/ui/badge";
-import { CheckCircle, XCircle, Loader2, Copy, Check } from "lucide-react";
+import { Loader2, Copy, Check, CircleCheck } from "lucide-react";
 import { Identicon } from "@polkadot/react-identicon";
 
 import { cn } from "@/registry/dot-ui/lib/utils";
@@ -230,9 +230,11 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
     const placeholder =
       format === "eth"
         ? "Enter Ethereum address"
-        : format === "ss58"
-          ? "Enter Polkadot address"
-          : props.placeholder || "Enter address";
+        : format === "ss58" && withIdentitySearch
+          ? "Polkadot address or identity"
+          : format === "ss58" && !withIdentitySearch
+            ? "Polkadot address"
+            : props.placeholder || "Enter address";
 
     return (
       <div className="space-y-1 w-full">
@@ -249,7 +251,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
             autoComplete="off"
             className={cn(
               "mb-2",
-              showIdenticon && validationResult?.isValid && "pl-12",
+              showIdenticon && validationResult?.isValid && "pl-10",
               validationResult?.isValid === false &&
                 "border-red-500 focus:border-red-500",
               validationResult?.isValid === true &&
@@ -360,7 +362,6 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
         {/* Connection status */}
         {validationResult?.type === "ss58" && !isConnected(currentChain) && (
           <div className="flex items-center gap-2 text-sm text-yellow-600">
-            <XCircle className="h-4 w-4" />
             <span>Not connected to chain. Identity lookup unavailable.</span>
           </div>
         )}
@@ -368,7 +369,6 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
         {/* Validation error display */}
         {validationResult?.error && (
           <div className="flex items-center gap-2 text-sm text-red-600">
-            <XCircle className="h-4 w-4" />
             <span>{validationResult.error}</span>
           </div>
         )}
@@ -376,7 +376,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
         {/* Valid address info */}
         {validationResult?.isValid && (
           <div className="flex items-center gap-2 text-sm text-green-600">
-            <CheckCircle className="h-4 w-4" />
+            <CircleCheck className="h-4 w-4" />
             <span>
               Valid {validationResult.type === "ss58" ? "Polkadot" : "Ethereum"}{" "}
               address
@@ -398,7 +398,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
         {/* Identity display */}
         {polkadotIdentity.data && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <CheckCircle className="h-4 w-4 text-green-600" />
+            <CircleCheck className="h-4 w-4 text-green-600" />
             <span>Identity: {polkadotIdentity.data.display}</span>
             {polkadotIdentity.data.verified && (
               <Badge variant="secondary" className="text-xs">
