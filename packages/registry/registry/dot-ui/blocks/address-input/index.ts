@@ -11,4 +11,4 @@ export {
   validateAddress,
   truncateAddress,
   type ValidationResult,
-} from "../../lib/address-validation";
+} from "./lib/address-validation";

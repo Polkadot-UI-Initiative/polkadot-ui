@@ -3,9 +3,10 @@ import {
   usePapi,
   usePolkadotApi,
 } from "@/registry/dot-ui/providers/papi-provider";
+import { extractText } from "../lib/extract-text";
 
 export interface PolkadotIdentity {
-  display?: any;
+  display?: string;
   legal?: string;
   email?: string;
   twitter?: string;
@@ -29,19 +30,19 @@ export function usePolkadotIdentity(address: string) {
       }
 
       try {
-        const identityQuery = peopleApi?.query?.Identity?.IdentityOf;
-        if (!identityQuery) return null;
+        const identityQuery =
+          peopleApi?.query.Identity.IdentityOf.getValue(address);
 
-        const identity = await identityQuery.getValue(address);
+        const identity = await identityQuery;
         if (!identity) return null;
 
         console.log(identity);
 
         return {
-          display: identity.info?.display?.value.asText() || undefined,
-          legal: identity.info?.legal?.value?.toString() || undefined,
-          email: identity.info?.email?.value?.toString() || undefined,
-          twitter: identity.info?.twitter?.value?.toString() || undefined,
+          display: extractText(identity.info?.display?.value),
+          legal: extractText(identity.info?.legal?.value),
+          email: extractText(identity.info?.email?.value),
+          twitter: extractText(identity.info?.twitter?.value),
           verified: false, // TODO: Implement proper judgement verification
         };
       } catch (error) {
