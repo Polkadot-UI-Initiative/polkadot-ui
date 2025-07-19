@@ -172,7 +172,6 @@ describe("Component Detection Tests", () => {
 
       // Should still detect polkadot requirement via dependencies
       expect(await detector.needsPolkadotSetup()).toBe(true);
-      expect(await detector.needsPolkadotSetup()).toBe(true);
     });
   });
 });

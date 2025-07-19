@@ -4,7 +4,9 @@ import { BlockNumber } from "@/registry/dot-ui/blocks/block-number/components/bl
 export default function BlockNumberPage() {
   return (
     <PolkadotProvider>
-      <BlockNumber />
+      <div className="flex flex-col items-center justify-center h-screen">
+        <BlockNumber />
+      </div>
     </PolkadotProvider>
   );
 }

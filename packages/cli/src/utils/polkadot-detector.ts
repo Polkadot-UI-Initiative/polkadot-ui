@@ -248,4 +248,43 @@ export class PolkadotDetector {
       existingLibrary,
     };
   }
+
+  /**
+   * Prompt user to select a Polkadot library when none is detected
+   */
+  async promptForLibrarySelection(
+    options: {
+      skipPrompt?: boolean;
+      defaultLibrary?: "papi" | "dedot";
+    } = {}
+  ): Promise<"papi" | "dedot"> {
+    const { skipPrompt = false, defaultLibrary = "papi" } = options;
+
+    // If skipPrompt is true (e.g., --yes flag), return default
+    if (skipPrompt) {
+      return defaultLibrary;
+    }
+
+    const inquirer = await import("inquirer");
+    const { polkadotLibrary } = await inquirer.default.prompt([
+      {
+        type: "list",
+        name: "polkadotLibrary",
+        message: "Which Polkadot API library would you like to use?",
+        choices: [
+          {
+            name: "Polkadot API (papi)",
+            value: "papi",
+          },
+          {
+            name: "Dedot",
+            value: "dedot",
+          },
+        ],
+        default: defaultLibrary,
+      },
+    ]);
+
+    return polkadotLibrary;
+  }
 }

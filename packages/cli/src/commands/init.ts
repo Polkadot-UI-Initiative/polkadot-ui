@@ -7,6 +7,7 @@ import type { CliOptions, ProjectSetupConfig } from "../types/index.js";
 import { logger } from "../utils/logger.js";
 import { ProjectDetector } from "../utils/project-detector.js";
 import { Telemetry } from "../utils/telemetry.js";
+import { PolkadotDetector } from "../utils/polkadot-detector.js";
 
 export class InitCommand {
   private projectDetector: ProjectDetector;
@@ -167,23 +168,15 @@ export class InitCommand {
           return true;
         },
       },
-      {
-        type: "list",
-        name: "polkadotLibrary",
-        message: "Which Polkadot API library would you like to use?",
-        choices: [
-          {
-            name: "Polkadot API (papi)",
-            value: "papi",
-          },
-          {
-            name: "Dedot",
-            value: "dedot",
-          },
-        ],
-        default: "papi",
-      },
+      // Note: Polkadot library selection is now handled by PolkadotDetector.promptForLibrarySelection()
     ]);
+
+    // Handle Polkadot library selection using the shared utility
+    const polkadotDetector = new PolkadotDetector();
+    const polkadotLibrary = await polkadotDetector.promptForLibrarySelection({
+      skipPrompt: false, // Init command always prompts
+      defaultLibrary: "papi",
+    });
 
     return {
       projectName: answers.projectName,
@@ -195,7 +188,7 @@ export class InitCommand {
       useAppRouter: answers.useAppRouter || false,
       useTurbopack: answers.useTurbopack || false,
       importAlias: answers.importAlias || "@/*",
-      polkadotLibrary: answers.polkadotLibrary,
+      polkadotLibrary: polkadotLibrary,
     };
   }
 

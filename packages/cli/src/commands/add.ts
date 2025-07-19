@@ -314,13 +314,37 @@ export class AddCommand {
         `Component dependencies: ${JSON.stringify(componentInfo.dependencies)}`
       );
 
-      // Provide status based on detected library
+      // Handle case where no library is detected - prompt user
       if (library === "none") {
-        spinner.succeed("Polkadot API setup will be configured");
+        spinner.stop();
+
+        logger.info("No Polkadot API library detected.");
         logger.info(
-          "This component requires Polkadot API - it will be set up automatically"
+          "This component requires a Polkadot API library to function."
         );
-      } else if (library === "papi") {
+
+        // Prompt user for library choice
+        const selectedLibrary =
+          await this.polkadotDetector.promptForLibrarySelection({
+            skipPrompt: this.options.yes,
+            defaultLibrary: "papi",
+          });
+
+        // Tell the registry about the user's choice so it fetches the right files
+        this.registry.setSelectedLibrary(selectedLibrary);
+
+        logger.info(
+          `Selected: ${selectedLibrary === "papi" ? "Polkadot API (papi)" : "Dedot"}`
+        );
+        logger.info(
+          "The library will be installed and configured automatically."
+        );
+
+        return polkadotConfig;
+      }
+
+      // Provide status based on detected library
+      if (library === "papi") {
         if (polkadotConfig.hasExistingConfig) {
           spinner.succeed(
             `Polkadot API (papi) detected with ${polkadotConfig.existingChains.length} chains`
@@ -492,7 +516,7 @@ export class AddCommand {
     logger.info("Setting up API...");
 
     try {
-      // Detect which library is being used
+      // Detect which library is being used or was selected
       const library = await this.polkadotDetector.detectPolkadotLibrary();
 
       if (library === "papi") {
@@ -502,10 +526,24 @@ export class AddCommand {
         await this.setupDedotApi();
         logger.info("Dedot setup complete");
       } else {
-        // If no library is detected, install papi by default
-        logger.info("No Polkadot library detected, installing polkadot-api...");
-        await this.installPolkadotApi();
-        await this.setupPapiApi();
+        // If no library is detected, check if user made a selection
+        const selectedLibrary = (this.registry as any).selectedLibrary;
+
+        if (selectedLibrary === "papi") {
+          logger.info("Installing and configuring Polkadot API (papi)...");
+          await this.installPolkadotApi();
+          await this.setupPapiApi();
+        } else if (selectedLibrary === "dedot") {
+          logger.info("Installing and configuring Dedot...");
+          await this.setupDedotApi(); // This will install dedot if needed
+        } else {
+          // Fallback to papi if no selection made (shouldn't happen with new flow)
+          logger.info(
+            "No library selected, defaulting to Polkadot API (papi)..."
+          );
+          await this.installPolkadotApi();
+          await this.setupPapiApi();
+        }
       }
 
       logger.success("API configured");
