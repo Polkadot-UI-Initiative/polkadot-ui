@@ -1,8 +1,6 @@
 "use client";
 
 import { forwardRef, useState, useEffect, useRef } from "react";
-import { Keyring } from "@polkadot/keyring";
-import { hexToU8a } from "@polkadot/util";
 import { Input } from "@/registry/dot-ui/ui/input";
 import { Label } from "@/registry/dot-ui/ui/label";
 import { Badge } from "@/registry/dot-ui/ui/badge";
@@ -264,9 +262,11 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
             className={cn(
               "mb-2",
               showIdenticon && validationResult?.isValid && "pl-10",
-              validationResult?.isValid === false &&
+              inputValue.trim() &&
+                validationResult?.isValid === false &&
                 "border-red-500 focus:border-red-500",
-              validationResult?.isValid === true &&
+              inputValue.trim() &&
+                validationResult?.isValid === true &&
                 "border-green-500 focus:border-green-500",
               className
             )}
