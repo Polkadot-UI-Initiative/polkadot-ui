@@ -39,6 +39,7 @@ interface PolkadotContextValue {
   // Connection management
   disconnect: () => void;
   isConnected: (chainId: ChainId) => boolean;
+  initializeChain: (chainId: ChainId) => Promise<void>;
 
   // Chain information
   chainName: string | null;
@@ -51,11 +52,23 @@ const PolkadotContext = createContext<PolkadotContextValue | undefined>(
 
 interface PolkadotProviderProps {
   children: React.ReactNode;
+  defaultChain?: ChainId;
 }
 
-export function PolkadotProvider({ children }: PolkadotProviderProps) {
+/**
+ * Provides Polkadot API connection management and context to child components.
+ *
+ * Initializes and manages connections to multiple Polkadot-based blockchain APIs, tracks loading and error states per chain, and exposes functions for switching chains, disconnecting, and initializing connections. The provider supports an optional default chain and supplies the current API context to its descendants.
+ *
+ * @param children - React nodes to render within the provider
+ * @param defaultChain - Optional chain ID to use as the initial default chain
+ */
+export function PolkadotProvider({
+  children,
+  defaultChain,
+}: PolkadotProviderProps) {
   const [currentChain, setCurrentChain] = useState<ChainId>(
-    polkadotConfig.defaultChain
+    defaultChain || polkadotConfig.defaultChain
   );
   const [apis, setApis] = useState<Partial<CompositeApi>>({});
   const [clients, setClients] = useState<
@@ -70,8 +83,8 @@ export function PolkadotProvider({ children }: PolkadotProviderProps) {
 
   // Initialize the default chain on mount
   useEffect(() => {
-    initializeChain(polkadotConfig.defaultChain);
-  }, []);
+    initializeChain(defaultChain || polkadotConfig.defaultChain);
+  }, [defaultChain]);
 
   const initializeChain = async (chainId: ChainId) => {
     // Don't initialize if already connected
@@ -141,7 +154,7 @@ export function PolkadotProvider({ children }: PolkadotProviderProps) {
     setApis({});
     setLoadingStates(new Map());
     setErrorStates(new Map());
-    setCurrentChain(polkadotConfig.defaultChain);
+    setCurrentChain(defaultChain || polkadotConfig.defaultChain);
   };
 
   const isConnected = (chainId: ChainId): boolean => {
@@ -166,6 +179,7 @@ export function PolkadotProvider({ children }: PolkadotProviderProps) {
     disconnect,
     isConnected,
     isLoading,
+    initializeChain,
     chainName: currentChainConfig.displayName,
     availableChains: getChainIds(polkadotConfig.chains),
   };
@@ -187,10 +201,35 @@ export function usePapi(): PolkadotContextValue {
   return context;
 }
 
-// Helper to get properly typed API (maintains backward compatibility)
+/**
+ * Returns the typed Polkadot API for the currently active chain.
+ *
+ * @returns The configured API instance for the current chain, or null if unavailable.
+ */
 export function useTypedPolkadotApi(): ConfiguredChainApi<ChainId> | null {
   const { api } = usePapi();
   return api;
+}
+
+/**
+ * Returns the typed Polkadot API for a specified chain, automatically initializing the connection if needed.
+ *
+ * @param chainId - The identifier of the Polkadot chain to access
+ * @returns The typed API for the specified chain, or null if not yet available
+ */
+export function usePolkadotApi<T extends ChainId>(
+  chainId: T
+): ConfiguredChainApi<T> | null {
+  const { apis, initializeChain } = usePapi();
+
+  // Auto-initialize the chain if not connected
+  useEffect(() => {
+    if (!apis[chainId]) {
+      initializeChain(chainId);
+    }
+  }, [chainId, apis, initializeChain]);
+
+  return (apis[chainId] as ConfiguredChainApi<T>) || null;
 }
 
 // Type exports

@@ -1,22 +1,36 @@
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
+/**
+ * Renders a button that links to a resource on v0.dev, opening it in a new tab with optional title and prompt parameters.
+ *
+ * The button displays the text "Open in" followed by an inline SVG icon. The link's URL is constructed using the provided `name` prop and optional `title` and `prompt` values, defaulting to the resource name and "Explain this code" if not specified.
+ *
+ * @param name - The resource identifier used to construct the target URL.
+ * @param title - Optional title for the resource; defaults to `name` if not provided.
+ * @param prompt - Optional prompt for the resource; defaults to "Explain this code" if not provided.
+ * @param variant - Optional button style variant; defaults to "default".
+ */
 export function OpenInV0Button({
   name,
+  title,
+  prompt,
+  variant = "default",
   className,
-}: { name: string } & React.ComponentProps<typeof Button>) {
+}: {
+  name: string;
+  title?: string;
+  prompt?: string;
+} & React.ComponentProps<typeof Button>) {
   return (
     <Button
       aria-label="Open in v0"
       size="sm"
-      className={cn(
-        "shadow-none bg-black text-white hover:bg-black hover:text-white dark:bg-white dark:text-black",
-        className
-      )}
+      variant={variant}
+      className={className}
       asChild
     >
       <a
-        href={`https://v0.dev/chat/api/open?url=${process.env.NEXT_PUBLIC_BASE_URL}/r/${name}.json`}
+        href={`https://v0.dev/chat/api/open?url=${process.env.NEXT_PUBLIC_BASE_URL}/r/${name}.json&title=${encodeURIComponent(title ?? name)}&prompt=${encodeURIComponent(prompt ?? "Explain this code")}`}
         target="_blank"
         rel="noreferrer"
       >
