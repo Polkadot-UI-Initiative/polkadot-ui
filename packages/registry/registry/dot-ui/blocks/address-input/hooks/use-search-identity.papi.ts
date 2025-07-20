@@ -45,6 +45,7 @@ export function useIdentityByDisplayName(
         // Get all identity entries
         const entries = await peopleApi.query.Identity.IdentityOf.getEntries();
 
+        const MAX_RESULTS = 10;
         const matches: IdentitySearchResult[] = [];
 
         for (const { keyArgs, value } of entries) {
@@ -67,6 +68,10 @@ export function useIdentityByDisplayName(
                 web: extractText(value.info?.web?.value),
               },
             });
+
+            if (matches.length >= MAX_RESULTS) {
+              break;
+            }
           }
         }
 
@@ -81,7 +86,7 @@ export function useIdentityByDisplayName(
     enabled:
       !!peopleApi &&
       !!displayName &&
-      displayName.length > 0 &&
+      displayName.length >= 3 &&
       isConnected(IDENTITY_CHAIN),
     staleTime: 5 * 60 * 1000, // 5 minutes - identities don't change often
     gcTime: 10 * 60 * 1000, // 10 minutes - keep cached longer for search

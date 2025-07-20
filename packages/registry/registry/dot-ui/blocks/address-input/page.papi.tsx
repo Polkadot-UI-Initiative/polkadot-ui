@@ -6,14 +6,14 @@ import { AddressInput } from "@/registry/dot-ui/blocks/address-input/components/
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+const queryClient = new QueryClient();
+
 export default function AddressInputPage() {
   const [address, setAddress] = useState("");
   const [identityResult, setIdentityResult] = useState<{
     type: string;
     data: Record<string, unknown>;
   } | null>(null);
-
-  const queryClient = new QueryClient();
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -4,6 +4,7 @@ import { Command } from "commander";
 import { AddCommand } from "./commands/add.js";
 import { InitCommand } from "./commands/init.js";
 import { ListCommand } from "./commands/list.js";
+import { TelemetryCommand } from "./commands/telemetry.js";
 import { logger } from "./utils/logger.js";
 import { CliOptions } from "./types/index.js";
 
@@ -88,6 +89,27 @@ program
     } finally {
       // Ensure telemetry is properly flushed (ListCommand doesn't have telemetry)
       await (listCommand as any).telemetry?.shutdown?.();
+    }
+  });
+
+// Telemetry command
+program
+  .command("telemetry")
+  .description("Manage telemetry settings and view privacy information")
+  .argument("[action]", "Action to perform: status, enable, disable, info")
+  .action(async (action) => {
+    const options: CliOptions = {
+      dev: program.opts().dev,
+      verbose: program.opts().verbose,
+      force: program.opts().force,
+      interactive: program.opts().interactive,
+    };
+
+    const telemetryCommand = new TelemetryCommand(options);
+    try {
+      await telemetryCommand.execute(action);
+    } finally {
+      // Telemetry command handles its own shutdown
     }
   });
 

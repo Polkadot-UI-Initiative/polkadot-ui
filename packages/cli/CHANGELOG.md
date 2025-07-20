@@ -67,6 +67,20 @@ and this project adheres to
   - Improved library detection for Polkadot APIs
   - Enhanced error messages and recovery suggestions
 
+### Improved
+
+- **Accessibility** - Enhanced address input component with WCAG 2.1 AA
+  compliance
+  - Added `aria-expanded` attribute to input element indicating dropdown state
+  - Added `aria-haspopup="listbox"` to announce dropdown functionality
+  - Added `aria-controls` linking input to dropdown for screen readers
+  - Added `role="listbox"` to search results dropdown container
+  - Added `aria-label="Address search results"` for accessible dropdown naming
+  - Added `role="option"` to each search result button
+  - Added `aria-selected="false"` to indicate option selection state
+  - Improved keyboard navigation and screen reader experience
+  - Enhanced focus management for assistive technologies
+
 ### Technical Improvements
 
 - **Code Quality** - Enhanced development workflow and standards

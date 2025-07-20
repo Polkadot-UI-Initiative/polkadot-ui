@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useState, useEffect, useRef } from "react";
+import { forwardRef, useState, useEffect, useRef, useMemo } from "react";
 import { Input } from "@/registry/dot-ui/ui/input";
 import { Label } from "@/registry/dot-ui/ui/label";
 import { Badge } from "@/registry/dot-ui/ui/badge";
@@ -259,6 +259,14 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
             onBlur={handleBlur}
             placeholder={placeholder}
             autoComplete="off"
+            aria-expanded={
+              showDropdown &&
+              withIdentitySearch &&
+              !validationResult?.isValid &&
+              debouncedSearch.length > 2
+            }
+            aria-haspopup="listbox"
+            aria-controls={showDropdown ? "address-search-listbox" : undefined}
             className={cn(
               "mb-2",
               showIdenticon && validationResult?.isValid && "pl-10",
@@ -278,7 +286,12 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
             withIdentitySearch &&
             !validationResult?.isValid &&
             debouncedSearch.length > 2 && (
-              <div className="absolute left-0 top-full z-50 mt-1 w-full bg-background border border-border rounded-md shadow-lg max-h-60 overflow-auto">
+              <div
+                id="address-search-listbox"
+                role="listbox"
+                aria-label="Address search results"
+                className="absolute left-0 top-full z-50 mt-1 w-full bg-background border border-border rounded-md shadow-lg max-h-60 overflow-auto"
+              >
                 {identitySearch.isLoading && (
                   <div className="p-3 text-sm text-muted-foreground flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -298,6 +311,8 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
                     <button
                       key={result.address}
                       type="button"
+                      role="option"
+                      aria-selected="false"
                       className="w-full text-left px-3 py-2 hover:bg-muted/50 focus:bg-muted/50 focus:outline-none transition-colors duration-150 ease-in-out flex items-center gap-3"
                       onMouseDown={(e) => e.preventDefault()}
                       onClick={() =>
@@ -457,8 +472,18 @@ export function AddressInputWithProvider({
   chainId,
   ...props
 }: AddressInputWithProviderProps) {
-  const queryClient = new QueryClient();
-
+  const queryClient = useMemo(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: false,
+            staleTime: 5 * 60 * 1000, // 5 minutes
+          },
+        },
+      }),
+    []
+  );
   return (
     <PolkadotProvider defaultChain={chainId}>
       <QueryClientProvider client={queryClient}>

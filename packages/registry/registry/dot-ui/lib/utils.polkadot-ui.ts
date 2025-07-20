@@ -66,7 +66,8 @@ export interface ValidationResult {
 
 export function validateAddress(
   address: string,
-  format: "eth" | "ss58" | "both"
+  format: "eth" | "ss58" | "both",
+  ss58Prefix: number = 42
 ): ValidationResult {
   if (!address.trim()) {
     return { isValid: false, type: "unknown", error: "Address is required" };
@@ -82,7 +83,7 @@ export function validateAddress(
         throw new Error("Invalid address length");
       }
 
-      const encoded = encodeAddress(decoded, 42); // Polkadot prefix
+      const encoded = encodeAddress(decoded, ss58Prefix);
       return {
         isValid: true,
         type: "ss58",
