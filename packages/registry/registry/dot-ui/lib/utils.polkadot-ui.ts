@@ -76,6 +76,12 @@ export function validateAddress(
   if (format === "ss58" || format === "both") {
     try {
       const decoded = decodeAddress(address);
+
+      // Check if the decoded address has the proper length (32 bytes for a public key)
+      if (decoded.length !== 32) {
+        throw new Error("Invalid address length");
+      }
+
       const encoded = encodeAddress(decoded, 42); // Polkadot prefix
       return {
         isValid: true,
