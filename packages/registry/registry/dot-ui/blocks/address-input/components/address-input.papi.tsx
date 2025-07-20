@@ -1,11 +1,14 @@
 "use client";
 
 import { forwardRef, useState, useEffect, useRef } from "react";
+import { Keyring } from "@polkadot/keyring";
+import { hexToU8a } from "@polkadot/util";
 import { Input } from "@/registry/dot-ui/ui/input";
 import { Label } from "@/registry/dot-ui/ui/label";
 import { Badge } from "@/registry/dot-ui/ui/badge";
 import { Loader2, Copy, Check, CircleCheck } from "lucide-react";
 import { Identicon } from "@polkadot/react-identicon";
+import { type IconTheme } from "@polkadot/react-identicon/types";
 
 import { cn } from "@/registry/dot-ui/lib/utils";
 import {
@@ -23,6 +26,19 @@ import { Button } from "@/registry/dot-ui/ui/button";
 import type { ChainId } from "@/registry/dot-ui/lib/config.papi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+// Convert Ethereum address to SS58 format for identicon display
+function ethToSS58(ethAddress: string): string {
+  try {
+    const keyring = new Keyring({ type: "sr25519" });
+    const ethBytes = hexToU8a(ethAddress);
+    const ss58Address = keyring.encodeAddress(ethBytes.slice(0, 32), 42); // Using generic substrate prefix
+    console.log("ss58Address", ss58Address, ethAddress);
+    return ss58Address;
+  } catch {
+    return ethAddress;
+  }
+}
+
 export interface AddressInputProps {
   value?: string;
   onChange?: (value: string) => void;
@@ -38,6 +54,8 @@ export interface AddressInputProps {
   ethProviderUrl?: string;
   truncate?: boolean | number;
   showIdenticon?: boolean;
+  identiconTheme?: IconTheme;
+
   className?: string;
 }
 
@@ -66,6 +84,8 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
       // ethProviderUrl, // TODO: Implement ENS lookup
       truncate = false,
       showIdenticon = true,
+      identiconTheme = "polkadot",
+
       className,
       ...props
     },
@@ -303,8 +323,13 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
                       <div className="flex items-center gap-2 flex-1 min-w-0">
                         <Identicon
                           value={result.address}
-                          size={20}
-                          theme="polkadot"
+                          size={24}
+                          theme={
+                            validateAddress(result.address, format).type ===
+                            "eth"
+                              ? "ethereum"
+                              : identiconTheme
+                          }
                         />
                         <span className="text-sm font-medium truncate text-foreground">
                           {result.identity.display}
@@ -329,8 +354,14 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
 
           {/* Identicon placeholder */}
           {showIdenticon && validationResult?.isValid && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center">
-              <Identicon value={inputValue} size={20} theme="polkadot" />
+            <div className="absolute left-2 top-1/2 -translate-y-1/2 flex items-center justify-center">
+              <Identicon
+                value={inputValue}
+                size={26}
+                theme={
+                  validationResult.type === "eth" ? "ethereum" : identiconTheme
+                }
+              />
             </div>
           )}
 

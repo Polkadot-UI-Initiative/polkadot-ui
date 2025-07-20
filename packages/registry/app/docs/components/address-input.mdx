@@ -75,6 +75,25 @@ function MyComponent() {
 />
 ```
 
+### Custom Identicon Themes
+
+```tsx
+<AddressInput
+  format="ss58"
+  identiconTheme="beachball"  // Colorful beachball style
+/>
+
+<AddressInput
+  format="ss58"
+  identiconTheme="substrate"  // Substrate theme (default)
+/>
+
+<AddressInput
+  format="ss58"
+  identiconTheme="jdenticon"  // Jdenticon style
+/>
+```
+
 ## Props
 
 | Prop | Type | Default | Description |
@@ -89,6 +108,7 @@ function MyComponent() {
 | `onIdentityFound` | `(identity: IdentityResult) => void` | - | Called when identity is found |
 | `truncate` | `boolean \| number` | `false` | Truncate display (true=8 chars) |
 | `showIdenticon` | `boolean` | `true` | Show address identicon |
+| `identiconTheme` | `"polkadot" \| "substrate" \| "beachball" \| "jdenticon"` | `"polkadot"` | Identicon visual theme |
 | `className` | `string` | - | Additional CSS classes |
 
 ## Validation States
@@ -108,6 +128,25 @@ When `withIdentityLookup` is enabled:
 2. Displays identity name if found
 3. Shows verification status
 4. Includes "PAPI" badge to indicate API source
+
+## Identicon Support
+
+The component automatically displays the appropriate identicon based on address type:
+
+### Polkadot/Substrate Addresses (SS58)
+Different visual themes available via the `identiconTheme` prop:
+
+- **`polkadot`** (default): Official Polkadot-style identicon with geometric patterns
+- **`substrate`**: Alternative Substrate-themed identicon style  
+- **`beachball`**: Colorful circular pattern resembling a beach ball
+- **`jdenticon`**: JDenticon style with geometric shapes and patterns
+
+### Ethereum Addresses
+- **Ethereum Identicons**: Automatically uses the `jdenticon` theme for ETH addresses
+- Ethereum addresses are converted to SS58 format for consistent identicon generation
+- Uses the same @polkadot/react-identicon library with specialized handling for Ethereum
+
+The component intelligently switches between identicon themes based on address type, providing a consistent visual experience.
 
 ## Examples
 

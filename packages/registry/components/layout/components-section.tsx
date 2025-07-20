@@ -19,7 +19,9 @@ const examples = [
     code: "address-input",
     description:
       "Input component with SS58/Ethereum validation and identity lookup",
-    component: <AddressInputWithProvider className="w-full" truncate={8} />,
+    component: (
+      <AddressInputWithProvider className="w-full" truncate={8} format="eth" />
+    ),
   },
   {
     name: "Block Number DEMO",
