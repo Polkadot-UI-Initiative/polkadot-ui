@@ -34,7 +34,7 @@ export function useIdentityByDisplayName(
         !api ||
         !peopleApi ||
         !displayName ||
-        displayName.length === 0 ||
+        displayName.length < 3 ||
         isLoading(currentChain) ||
         !isConnected(currentChain)
       ) {
