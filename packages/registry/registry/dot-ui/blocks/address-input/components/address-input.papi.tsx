@@ -26,19 +26,6 @@ import { Button } from "@/registry/dot-ui/ui/button";
 import type { ChainId } from "@/registry/dot-ui/lib/config.papi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-// Convert Ethereum address to SS58 format for identicon display
-function ethToSS58(ethAddress: string): string {
-  try {
-    const keyring = new Keyring({ type: "sr25519" });
-    const ethBytes = hexToU8a(ethAddress);
-    const ss58Address = keyring.encodeAddress(ethBytes.slice(0, 32), 42); // Using generic substrate prefix
-    console.log("ss58Address", ss58Address, ethAddress);
-    return ss58Address;
-  } catch {
-    return ethAddress;
-  }
-}
-
 export interface AddressInputProps {
   value?: string;
   onChange?: (value: string) => void;

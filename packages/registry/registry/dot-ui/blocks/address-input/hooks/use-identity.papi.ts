@@ -36,8 +36,6 @@ export function usePolkadotIdentity(address: string) {
         const identity = await identityQuery;
         if (!identity) return null;
 
-        console.log(identity);
-
         return {
           display: extractText(identity.info?.display?.value),
           legal: extractText(identity.info?.legal?.value),
