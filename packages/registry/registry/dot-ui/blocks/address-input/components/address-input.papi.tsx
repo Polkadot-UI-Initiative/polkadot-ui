@@ -8,15 +8,20 @@ import { Loader2, Copy, Check, CircleCheck } from "lucide-react";
 import { Identicon } from "@polkadot/react-identicon";
 
 import { cn } from "@/registry/dot-ui/lib/utils";
-import { usePapi } from "@/registry/dot-ui/providers/papi-provider";
-import { usePolkadotIdentity } from "../hooks/use-identity.papi";
-import { useIdentityByDisplayName } from "../hooks/use-search-identity.papi";
+import {
+  usePapi,
+  PolkadotProvider,
+} from "@/registry/dot-ui/providers/papi-provider";
+import { usePolkadotIdentity } from "@/registry/dot-ui/blocks/address-input/hooks/use-identity.papi";
+import { useIdentityByDisplayName } from "@/registry/dot-ui/blocks/address-input/hooks/use-search-identity.papi";
 import {
   validateAddress,
   truncateAddress,
   type ValidationResult,
-} from "@/registry/dot-ui/blocks/address-input/lib/address-validation";
+} from "@/registry/dot-ui/lib/utils.polkadot-ui";
 import { Button } from "@/registry/dot-ui/ui/button";
+import type { ChainId } from "@/registry/dot-ui/lib/config.papi";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export interface AddressInputProps {
   value?: string;
@@ -424,3 +429,25 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
 );
 
 AddressInput.displayName = "AddressInput";
+
+// Wrapped version with provider for drop-in usage
+export interface AddressInputWithProviderProps extends AddressInputProps {
+  chainId?: ChainId;
+}
+
+export function AddressInputWithProvider({
+  chainId,
+  ...props
+}: AddressInputWithProviderProps) {
+  const queryClient = new QueryClient();
+
+  return (
+    <PolkadotProvider defaultChain={chainId}>
+      <QueryClientProvider client={queryClient}>
+        <AddressInput {...props} />
+      </QueryClientProvider>
+    </PolkadotProvider>
+  );
+}
+
+AddressInputWithProvider.displayName = "AddressInputWithProvider";
