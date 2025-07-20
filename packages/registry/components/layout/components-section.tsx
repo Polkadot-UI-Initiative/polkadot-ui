@@ -76,7 +76,7 @@ export function ComponentsSection() {
   return (
     <section className="container space-y-6 py-8 md:py-8 lg:py-12">
       {/* Examples grid */}
-      <div className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3">
+      <div className="mx-auto grid justify-center gap-4 sm:grid-cols-1 md:max-w-[64rem] md:grid-cols-2 2xl:grid-cols-3">
         {examples.map((example) => (
           <Card
             key={example.name}
@@ -89,12 +89,12 @@ export function ComponentsSection() {
             <CardContent className="flex items-center justify-center">
               {example.component}
             </CardContent>
-            <CardFooter className="flex items-center justify-between pt-2">
+            <CardFooter className="flex items-center pt-2 gap-2">
               <Link
                 href={example.href}
                 className="text-xs text-primary hover:underline"
               >
-                <Button size="sm" className="text-xs">
+                <Button size="sm" variant="ghost" className="text-xs">
                   <BookText /> Docs →
                 </Button>
               </Link>
@@ -102,20 +102,23 @@ export function ComponentsSection() {
                 name={example.code}
                 title={example.name}
                 prompt={example.description}
+                variant="ghost"
               />
             </CardFooter>
           </Card>
         ))}
-        <Card className="relative overflow-hidden flex flex-col justify-center items-center">
+        <Card className="relative overflow-hidden flex flex-col justify-center items-center col-span-full">
           <CardHeader className="text-center">
-            <CardTitle className="text-lg">More Coming Soon</CardTitle>
+            <CardTitle className="text-lg">
+              More Polkadot Components Coming Soon
+            </CardTitle>
           </CardHeader>
           <CardFooter className="flex items-center justify-center pt-0">
             <Link
               href="https://github.com/Polkadot-UI-Initiative/dot-ui"
               className="text-xs text-primary hover:underline"
             >
-              View on GitHub →
+              Follow and ⭐️ on GitHub →
             </Link>
           </CardFooter>
         </Card>

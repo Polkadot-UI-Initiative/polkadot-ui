@@ -5,6 +5,7 @@ export function OpenInV0Button({
   name,
   title,
   prompt,
+  variant = "default",
   className,
 }: {
   name: string;
@@ -15,14 +16,12 @@ export function OpenInV0Button({
     <Button
       aria-label="Open in v0"
       size="sm"
-      className={cn(
-        "shadow-none bg-black text-white hover:bg-black hover:text-white dark:bg-white dark:text-black",
-        className
-      )}
+      variant={variant}
+      className={className}
       asChild
     >
       <a
-        href={`https://v0.dev/chat/api/open?url=${process.env.NEXT_PUBLIC_BASE_URL}/r/${name}.json&title=${encodeURIComponent(title ?? name)}&prompt=${encodeURIComponent(prompt ?? "")}`}
+        href={`https://v0.dev/chat/api/open?url=${process.env.NEXT_PUBLIC_BASE_URL}/r/${name}.json&title=${encodeURIComponent(title ?? name)}&prompt=${encodeURIComponent(prompt ?? "Explain this code")}`}
         target="_blank"
         rel="noreferrer"
       >
