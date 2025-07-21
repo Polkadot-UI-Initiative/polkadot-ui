@@ -3,7 +3,13 @@
 import { createClient, TypedApi } from "polkadot-api";
 import { getWsProvider } from "polkadot-api/ws-provider/web";
 import { withPolkadotSdkCompat } from "polkadot-api/polkadot-sdk-compat";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import {
   polkadotConfig,
   type ChainId,
@@ -78,54 +84,57 @@ export function PolkadotProvider({
     initializeChain(defaultChain || polkadotConfig.defaultChain);
   }, [defaultChain]);
 
-  const initializeChain = async (chainId: ChainId) => {
-    // Don't initialize if already connected
-    if (apis[chainId]) return;
+  const initializeChain = useCallback(
+    async (chainId: ChainId) => {
+      // Don't initialize if already connected
+      if (apis[chainId]) return;
 
-    setLoadingStates((prev) => new Map(prev).set(chainId, true));
-    setErrorStates((prev) => new Map(prev).set(chainId, null));
+      setLoadingStates((prev) => new Map(prev).set(chainId, true));
+      setErrorStates((prev) => new Map(prev).set(chainId, null));
 
-    try {
-      const chainConfig = getChainConfig(polkadotConfig.chains, chainId);
+      try {
+        const chainConfig = getChainConfig(polkadotConfig.chains, chainId);
 
-      // Validate that endpoints array exists and has at least one element
-      if (!chainConfig.endpoints || !chainConfig.endpoints[0]) {
-        throw new Error(
-          `Chain ${chainId} (${chainConfig.displayName}) has no endpoints configured. Please add at least one endpoint to the chain configuration.`
+        // Validate that endpoints array exists and has at least one element
+        if (!chainConfig.endpoints || !chainConfig.endpoints[0]) {
+          throw new Error(
+            `Chain ${chainId} (${chainConfig.displayName}) has no endpoints configured. Please add at least one endpoint to the chain configuration.`
+          );
+        }
+
+        const endpoint = chainConfig.endpoints[0];
+        console.log(`Connecting to ${chainConfig.displayName} at ${endpoint}`);
+
+        // Create client with the selected chain
+        const client = createClient(
+          withPolkadotSdkCompat(getWsProvider(endpoint))
         );
+
+        // Get typed API for the selected chain
+        const typedApi = client.getTypedApi(
+          polkadotConfig.chains[chainId].descriptor
+        ) as ConfiguredChainApi<typeof chainId>;
+
+        setClients((prev) => new Map(prev).set(chainId, client));
+        setApis((prev) => ({ ...prev, [chainId]: typedApi }));
+
+        console.log(`Successfully connected to ${chainConfig.displayName}`);
+      } catch (err) {
+        console.error(`Failed to initialize ${chainId}:`, err);
+        setErrorStates((prev) =>
+          new Map(prev).set(
+            chainId,
+            err instanceof Error
+              ? err.message
+              : "Failed to initialize Polkadot API"
+          )
+        );
+      } finally {
+        setLoadingStates((prev) => new Map(prev).set(chainId, false));
       }
-
-      const endpoint = chainConfig.endpoints[0];
-      console.log(`Connecting to ${chainConfig.displayName} at ${endpoint}`);
-
-      // Create client with the selected chain
-      const client = createClient(
-        withPolkadotSdkCompat(getWsProvider(endpoint))
-      );
-
-      // Get typed API for the selected chain
-      const typedApi = client.getTypedApi(
-        polkadotConfig.chains[chainId].descriptor
-      ) as ConfiguredChainApi<typeof chainId>;
-
-      setClients((prev) => new Map(prev).set(chainId, client));
-      setApis((prev) => ({ ...prev, [chainId]: typedApi }));
-
-      console.log(`Successfully connected to ${chainConfig.displayName}`);
-    } catch (err) {
-      console.error(`Failed to initialize ${chainId}:`, err);
-      setErrorStates((prev) =>
-        new Map(prev).set(
-          chainId,
-          err instanceof Error
-            ? err.message
-            : "Failed to initialize Polkadot API"
-        )
-      );
-    } finally {
-      setLoadingStates((prev) => new Map(prev).set(chainId, false));
-    }
-  };
+    },
+    [apis, setLoadingStates, setErrorStates, setClients, setApis]
+  );
 
   const setApi = (chainId: ChainId) => {
     if (!isValidChainId(polkadotConfig.chains, chainId)) {
