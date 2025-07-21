@@ -1,4 +1,4 @@
-import type { ChainConfig } from "@/registry/dot-ui/lib/types.polkadot-ui";
+import type { ChainConfig } from "@/registry/dot-ui/lib/types.dot-ui";
 import { decodeAddress, encodeAddress } from "@polkadot/keyring";
 import { ethers } from "ethers";
 

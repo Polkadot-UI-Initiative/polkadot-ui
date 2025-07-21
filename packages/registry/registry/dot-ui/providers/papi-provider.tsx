@@ -19,7 +19,7 @@ import {
   getChainIds,
   getChainConfig,
   isValidChainId,
-} from "@/registry/dot-ui/lib/utils.polkadot-ui";
+} from "@/registry/dot-ui/lib/utils.dot-ui";
 
 // Type for the API based on configured chains
 type ConfiguredChainApi<T extends ChainId> = TypedApi<ChainDescriptor<T>>;

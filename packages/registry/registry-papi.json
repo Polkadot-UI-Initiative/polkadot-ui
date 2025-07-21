@@ -30,11 +30,11 @@
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/utils.polkadot-ui.ts",
+          "path": "registry/dot-ui/lib/utils.dot-ui.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/types.polkadot-ui.ts",
+          "path": "registry/dot-ui/lib/types.dot-ui.ts",
           "type": "registry:lib"
         },
         {
@@ -86,11 +86,11 @@
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/utils.polkadot-ui.ts",
+          "path": "registry/dot-ui/lib/utils.dot-ui.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/types.polkadot-ui.ts",
+          "path": "registry/dot-ui/lib/types.dot-ui.ts",
           "type": "registry:lib"
         },
         {

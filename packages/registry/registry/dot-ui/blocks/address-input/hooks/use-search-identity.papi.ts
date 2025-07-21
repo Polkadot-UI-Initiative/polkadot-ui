@@ -5,7 +5,7 @@ import {
   usePapi,
   usePolkadotApi,
 } from "@/registry/dot-ui/providers/papi-provider";
-import { extractText } from "@/registry/dot-ui/lib/utils.polkadot-ui";
+import { extractText } from "@/registry/dot-ui/lib/utils.dot-ui";
 
 export interface FormattedIdentity {
   display?: string;

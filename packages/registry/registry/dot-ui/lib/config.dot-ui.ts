@@ -1,4 +1,4 @@
-import { DotUiConfig, SubstrateExplorer } from "./types.polkadot-ui";
+import { DotUiConfig, SubstrateExplorer } from "./types.dot-ui";
 
 export const dotUiConfig: DotUiConfig = {
   chains: {

@@ -19,7 +19,7 @@ import {
   validateAddress,
   truncateAddress,
   type ValidationResult,
-} from "@/registry/dot-ui/lib/utils.polkadot-ui";
+} from "@/registry/dot-ui/lib/utils.dot-ui";
 import { Button } from "@/registry/dot-ui/ui/button";
 import type { ChainId } from "@/registry/dot-ui/lib/config.papi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
