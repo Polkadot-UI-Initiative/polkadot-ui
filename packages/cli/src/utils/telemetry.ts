@@ -120,15 +120,20 @@ class TelemetryConfigManager {
    * Generate a random UUID v4
    */
   private generateUUID(): string {
-    // Simple UUID v4 generation without dependencies
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-      /[xy]/g,
-      function (c) {
-        const r = (Math.random() * 16) | 0;
-        const v = c === "x" ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-      }
-    );
+    try {
+      const crypto = require("crypto");
+      return crypto.randomUUID();
+    } catch {
+      // Fallback for older Node.js versions
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+        /[xy]/g,
+        function (c) {
+          const r = (Math.random() * 16) | 0;
+          const v = c === "x" ? r : (r & 0x3) | 0x8;
+          return v.toString(16);
+        }
+      );
+    }
   }
 
   /**
