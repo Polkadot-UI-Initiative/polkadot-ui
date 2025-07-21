@@ -12,6 +12,7 @@ real-time validation and identity lookup.
 - ✅ **Flexible Formats**: Support for SS58, Ethereum, or both address types
 - ✅ **TypeScript**: Full type safety with comprehensive interfaces
 - ✅ **Customizable**: Optional identicon, truncation, and styling options
+- ✅ **Keyboard Navigation**: Arrow keys, Enter, and Tab to select options
 
 ## Installation
 
