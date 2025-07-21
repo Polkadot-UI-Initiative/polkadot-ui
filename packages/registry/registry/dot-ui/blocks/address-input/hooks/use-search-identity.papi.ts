@@ -14,6 +14,7 @@ export interface FormattedIdentity {
   matrix?: string;
   twitter?: string;
   web?: string;
+  verified?: boolean;
 }
 
 export interface IdentitySearchResult {
@@ -57,6 +58,16 @@ export function useIdentityByDisplayName(
             display &&
             display.toLowerCase().includes(displayName.toLowerCase())
           ) {
+            // Check identity judgements for determining verified identity
+            const hasPositiveJudgement = value.judgements && 
+              value.judgements.length > 0 && 
+              value.judgements.some((judgement: [number, unknown]) => {
+                // Judgement types: Unknown, FeePaid, Reasonable, KnownGood, OutOfDate, LowQuality, Erroneous
+                // More info: https://wiki.polkadot.network/learn/learn-identity/#judgements
+                const judgementType = (judgement[1] as { type?: string })?.type || judgement[1];
+                return judgementType === "Reasonable" || judgementType === "KnownGood";
+              });
+
             matches.push({
               address: keyArgs[0] as string,
               identity: {
@@ -66,6 +77,7 @@ export function useIdentityByDisplayName(
                 matrix: extractText(value.info?.matrix?.value),
                 twitter: extractText(value.info?.twitter?.value),
                 web: extractText(value.info?.web?.value),
+                verified: hasPositiveJudgement || false,
               },
             });
 

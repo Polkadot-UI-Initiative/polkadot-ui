@@ -248,9 +248,10 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
 
       // Trigger identity found callback
       if (onIdentityFound) {
+        const selectedResult = identitySearch.data?.find(result => result.address === address);
         onIdentityFound({
           type: "polkadot",
-          data: { display, verified: false },
+          data: { display, verified: selectedResult?.identity.verified || false },
         });
       }
     };
@@ -472,7 +473,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
           )}
 
           {/* Valid address info */}
-          {validationResult?.isValid && (
+          {validationResult?.isValid && polkadotIdentity.data && !polkadotIdentity.data.verified && (
             <div className="flex items-center gap-2 text-sm text-green-600">
               <CircleCheck className="h-4 w-4" />
               <span>
@@ -494,15 +495,10 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
             )}
 
           {/* Identity display */}
-          {polkadotIdentity.data && (
+          {polkadotIdentity.data && polkadotIdentity.data.verified && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <CircleCheck className="h-4 w-4 text-green-600" />
               <span>Identity: {polkadotIdentity.data.display}</span>
-              {polkadotIdentity.data.verified && (
-                <Badge variant="secondary" className="text-xs">
-                  Verified
-                </Badge>
-              )}
             </div>
           )}
 

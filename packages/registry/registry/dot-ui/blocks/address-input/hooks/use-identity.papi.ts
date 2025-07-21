@@ -37,12 +37,22 @@ export function usePolkadotIdentity(address: string) {
         const identity = await identityQuery;
         if (!identity) return null;
 
+        // Check identity judgements for determining verified identity
+        const hasPositiveJudgement = identity.judgements && 
+          identity.judgements.length > 0 && 
+          identity.judgements.some((judgement: [number, unknown]) => {
+            // Judgement types: Unknown, FeePaid, Reasonable, KnownGood, OutOfDate, LowQuality, Erroneous
+            // More info: https://wiki.polkadot.network/learn/learn-identity/#judgements
+            const judgementType = (judgement[1] as { type?: string })?.type || judgement[1];
+            return judgementType === "Reasonable" || judgementType === "KnownGood";
+          });
+
         return {
           display: extractText(identity.info?.display?.value),
           legal: extractText(identity.info?.legal?.value),
           email: extractText(identity.info?.email?.value),
           twitter: extractText(identity.info?.twitter?.value),
-          verified: false, // TODO: Implement proper judgement verification
+          verified: hasPositiveJudgement || false,
         };
       } catch (error) {
         console.error("Identity lookup failed:", error);
