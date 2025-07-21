@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BlockNumber } from "@/registry/dot-ui/blocks/block-number/components/block-number.papi";
+
 import {
   Card,
   CardContent,
@@ -9,12 +9,28 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+import { BlockNumber } from "@/registry/dot-ui/blocks/block-number/components/block-number.papi";
+import { AddressInputWithProvider } from "@/registry/dot-ui/blocks/address-input/components/address-input.papi";
+import { OpenInV0Button } from "../open-in-v0-button";
+import { Button } from "@/components/ui/button";
+import { BookText } from "lucide-react";
+
 const examples = [
   {
-    name: "Block Number",
-    href: "/blocks",
+    name: "Address Input",
+    href: "/docs/components/address-input",
+    code: "address-input",
+    description:
+      "Input component with SS58/Ethereum validation and identity lookup",
+    component: (
+      <AddressInputWithProvider className="w-full" truncate={8} format="both" />
+    ),
+  },
+  {
+    name: "Block Number DEMO",
+    href: "/docs/components/block-number",
     code: "block-number",
-    description: "Display the current block number on a chain",
+    description: "Will not be part of the library",
     component: <BlockNumber />,
   },
 ];
@@ -56,13 +72,16 @@ const examples = [
 //   },
 // ];
 
-export function ExamplesSection() {
+export function ComponentsSection() {
   return (
     <section className="container space-y-6 py-8 md:py-8 lg:py-12">
       {/* Examples grid */}
-      <div className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3">
+      <div className="mx-auto grid justify-center gap-4 sm:grid-cols-1 md:max-w-[64rem] md:grid-cols-2 2xl:grid-cols-3">
         {examples.map((example) => (
-          <Card key={example.name} className="relative overflow-hidden">
+          <Card
+            key={example.name}
+            className="relative overflow-hidden flex flex-col justify-between"
+          >
             <CardHeader>
               <CardTitle className="text-lg">{example.name}</CardTitle>
               <CardDescription>{example.description}</CardDescription>
@@ -70,29 +89,36 @@ export function ExamplesSection() {
             <CardContent className="flex items-center justify-center">
               {example.component}
             </CardContent>
-            <CardFooter className="flex items-center justify-between pt-0">
-              <div className="text-xs text-muted-foreground font-mono">
-                {example.code}
-              </div>
+            <CardFooter className="flex items-center pt-2 gap-2">
               <Link
                 href={example.href}
                 className="text-xs text-primary hover:underline"
               >
-                View →
+                <Button size="sm" variant="ghost" className="text-xs">
+                  <BookText /> Docs →
+                </Button>
               </Link>
+              <OpenInV0Button
+                name={example.code}
+                title={example.name}
+                prompt={example.description}
+                variant="ghost"
+              />
             </CardFooter>
           </Card>
         ))}
-        <Card className="relative overflow-hidden flex flex-col justify-center items-center">
+        <Card className="relative overflow-hidden flex flex-col justify-center items-center col-span-full">
           <CardHeader className="text-center">
-            <CardTitle className="text-lg">More Coming Soon</CardTitle>
+            <CardTitle className="text-lg">
+              More Polkadot Components Coming Soon
+            </CardTitle>
           </CardHeader>
           <CardFooter className="flex items-center justify-center pt-0">
             <Link
               href="https://github.com/Polkadot-UI-Initiative/dot-ui"
               className="text-xs text-primary hover:underline"
             >
-              View on GitHub →
+              Follow and ⭐️ on GitHub →
             </Link>
           </CardFooter>
         </Card>

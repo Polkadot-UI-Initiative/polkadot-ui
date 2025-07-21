@@ -6,7 +6,97 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.2.0-alpha.1] - 2025-01-31
+## [0.3.1] - 2025-07-21
+
+### Added
+
+- **Address Input Component** - New comprehensive address input component with
+  validation
+  - Support for both SS58 (Polkadot) and Ethereum address formats
+  - Real-time address validation with visual feedback
+  - Identity lookup integration with Polkadot identity registry
+  - Search functionality by display name
+  - Customizable identicon support
+  - Truncated address display options
+  - Copy-to-clipboard functionality
+  - TypeScript support with comprehensive prop types
+- **Testing Infrastructure** - Complete Jest testing setup for component library
+  - Jest configuration for TypeScript and React components
+  - Testing utilities and mocks for Polkadot APIs
+  - Component testing examples and best practices
+  - Coverage reporting and CI integration
+- **Analytics and Telemetry** - PostHog integration for usage tracking
+  - Command usage tracking
+  - Component addition success/failure metrics
+  - Library detection and selection analytics
+  - System information collection for debugging
+  - Privacy-focused telemetry with opt-out capabilities
+- **New Chain Support** - Added Paseo People chain configuration
+  - Metadata and descriptor generation for paseo_people chain
+  - Updated default chain configuration
+  - Improved chain initialization and management
+
+### Changed
+
+- **CLI Options** - Replaced `--yes` flag with `--interactive` for better UX
+  - Interactive mode now shows detailed prompts and configuration options
+  - Fast mode (non-interactive) is now the default behavior
+  - Improved command flow and user experience
+- **Component Library** - Enhanced UI components and utilities
+  - Updated Badge, Input, and Label components with better styling
+  - Improved utility functions for address validation and formatting
+  - Enhanced provider components with chain initialization
+  - Better TypeScript types and interfaces
+- **Dependencies** - Updated core dependencies for better stability
+  - Next.js updated to 15.4.2 with improved performance
+  - Updated Polkadot API libraries and utilities
+  - Enhanced testing libraries and Jest ecosystem packages
+
+### Fixed
+
+- **TypeScript Compilation** - Resolved type conflicts in Jest setup
+  - Fixed TextDecoder type compatibility issues
+  - Improved global type declarations for testing environment
+  - Better type safety for CSS and Web API mocks
+- **Build Process** - Improved reliability of registry building
+  - Better error handling for metadata generation
+  - Memory optimization for large chain metadata processing
+  - More robust postinstall script execution
+- **Component Resolution** - Enhanced component detection and installation
+  - Better handling of missing projects with auto-creation
+  - Improved library detection for Polkadot APIs
+  - Enhanced error messages and recovery suggestions
+
+### Improved
+
+- **Accessibility** - Enhanced address input component with WCAG 2.1 AA
+  compliance
+  - Added `aria-expanded` attribute to input element indicating dropdown state
+  - Added `aria-haspopup="listbox"` to announce dropdown functionality
+  - Added `aria-controls` linking input to dropdown for screen readers
+  - Added `role="listbox"` to search results dropdown container
+  - Added `aria-label="Address search results"` for accessible dropdown naming
+  - Added `role="option"` to each search result button
+  - Added `aria-selected="false"` to indicate option selection state
+  - Improved keyboard navigation and screen reader experience
+  - Enhanced focus management for assistive technologies
+
+### Technical Improvements
+
+- **Code Quality** - Enhanced development workflow and standards
+  - Comprehensive testing setup with coverage reporting
+  - Better error handling and logging throughout CLI
+  - Improved type safety and TypeScript coverage
+- **Performance** - Optimized build and installation processes
+  - Faster component installation with parallel processing
+  - Memory-efficient metadata handling
+  - Improved registry caching and validation
+- **Documentation** - Enhanced component documentation and examples
+  - Comprehensive README files for new components
+  - Testing guides and best practices
+  - Updated installation and usage examples
+
+## [0.2.0-alpha.1] - 2025-07-18
 
 ### Changed
 

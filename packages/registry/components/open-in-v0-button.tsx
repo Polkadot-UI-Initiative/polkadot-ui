@@ -1,22 +1,26 @@
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 export function OpenInV0Button({
   name,
+  title,
+  prompt,
+  variant = "default",
   className,
-}: { name: string } & React.ComponentProps<typeof Button>) {
+}: {
+  name: string;
+  title?: string;
+  prompt?: string;
+} & React.ComponentProps<typeof Button>) {
   return (
     <Button
       aria-label="Open in v0"
       size="sm"
-      className={cn(
-        "shadow-none bg-black text-white hover:bg-black hover:text-white dark:bg-white dark:text-black",
-        className
-      )}
+      variant={variant}
+      className={className}
       asChild
     >
       <a
-        href={`https://v0.dev/chat/api/open?url=${process.env.NEXT_PUBLIC_BASE_URL}/r/${name}.json`}
+        href={`https://v0.dev/chat/api/open?url=${process.env.NEXT_PUBLIC_BASE_URL}/r/${name}.json&title=${encodeURIComponent(title ?? name)}&prompt=${encodeURIComponent(prompt ?? "Explain this code")}`}
         target="_blank"
         rel="noreferrer"
       >

@@ -6,7 +6,7 @@ import {
   getChainIds,
   getChainConfig,
   isValidChainId,
-} from "@/registry/dot-ui/lib/utils.polkadot-ui";
+} from "@/registry/dot-ui/lib/utils.dot-ui";
 import { DedotClient, WsProvider } from "dedot";
 
 interface DedotContextValue {

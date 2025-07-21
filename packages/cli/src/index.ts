@@ -4,6 +4,7 @@ import { Command } from "commander";
 import { AddCommand } from "./commands/add.js";
 import { InitCommand } from "./commands/init.js";
 import { ListCommand } from "./commands/list.js";
+import { TelemetryCommand } from "./commands/telemetry.js";
 import { logger } from "./utils/logger.js";
 import { CliOptions } from "./types/index.js";
 
@@ -22,7 +23,10 @@ program
   .option("--dev", "Use development registry (localhost:3000)")
   .option("--verbose", "Show detailed output")
   .option("--force", "Force installation even if files exist")
-  .option("--yes", "Skip all prompts and use default values");
+  .option(
+    "--interactive",
+    "Show detailed prompts for create-next-app and shadcn configuration"
+  );
 
 // Add command
 program
@@ -34,11 +38,16 @@ program
       dev: program.opts().dev,
       verbose: program.opts().verbose,
       force: program.opts().force,
-      yes: program.opts().yes,
+      interactive: program.opts().interactive,
     };
 
     const addCommand = new AddCommand(options);
-    await addCommand.execute(componentName);
+    try {
+      await addCommand.execute(componentName);
+    } finally {
+      // Ensure telemetry is properly flushed
+      await (addCommand as any).telemetry?.shutdown?.();
+    }
   });
 
 // Init command
@@ -50,11 +59,16 @@ program
       dev: program.opts().dev,
       verbose: program.opts().verbose,
       force: program.opts().force,
-      yes: program.opts().yes,
+      interactive: program.opts().interactive,
     };
 
     const initCommand = new InitCommand(options);
-    await initCommand.execute();
+    try {
+      await initCommand.execute();
+    } finally {
+      // Ensure telemetry is properly flushed
+      await (initCommand as any).telemetry?.shutdown?.();
+    }
   });
 
 // List command
@@ -66,11 +80,37 @@ program
       dev: program.opts().dev,
       verbose: program.opts().verbose,
       force: program.opts().force,
-      yes: program.opts().yes,
+      interactive: program.opts().interactive,
     };
 
     const listCommand = new ListCommand(options);
-    await listCommand.execute();
+    try {
+      await listCommand.execute();
+    } finally {
+      // Ensure telemetry is properly flushed (ListCommand doesn't have telemetry)
+      await (listCommand as any).telemetry?.shutdown?.();
+    }
+  });
+
+// Telemetry command
+program
+  .command("telemetry")
+  .description("Manage telemetry settings and view privacy information")
+  .argument("[action]", "Action to perform: status, enable, disable, info")
+  .action(async (action) => {
+    const options: CliOptions = {
+      dev: program.opts().dev,
+      verbose: program.opts().verbose,
+      force: program.opts().force,
+      interactive: program.opts().interactive,
+    };
+
+    const telemetryCommand = new TelemetryCommand(options);
+    try {
+      await telemetryCommand.execute(action);
+    } finally {
+      // Telemetry command handles its own shutdown
+    }
   });
 
 // Help command
