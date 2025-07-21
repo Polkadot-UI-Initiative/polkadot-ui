@@ -197,20 +197,22 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
         switch (e.key) {
           // Selecting options
           case 'ArrowDown':
-          case 'Tab':
+          case 'Tab': {
             e.preventDefault();
             setHighlightedIndex(prev => 
               prev < optionsCount - 1 ? prev + 1 : 0
             );
             break;
-          case 'ArrowUp':
+          }
+          case 'ArrowUp': {
             e.preventDefault();
             setHighlightedIndex(prev => 
               prev > 0 ? prev - 1 : optionsCount - 1
             );
             break;
+          }
           // Confirming the first option or the highlighted option
-          case 'Enter':
+          case 'Enter': {
             e.preventDefault();
             const selectedIndex = highlightedIndex >= 0 ? highlightedIndex : 0;
             const selectedResult = identitySearch.data[selectedIndex];
@@ -221,13 +223,15 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
               );
             }
             break;
+          }
           // Closing the dropdown
-          case 'Escape':
+          case 'Escape': {
             e.preventDefault();
             setShowDropdown(false);
             setHighlightedIndex(-1);
             inputRef.current?.blur();
             break;
+          }
         }
       }
     };
