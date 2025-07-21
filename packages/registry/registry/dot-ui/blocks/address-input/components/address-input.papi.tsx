@@ -397,65 +397,68 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
           )}
         </div>
 
-        {/* Connection status */}
-        {validationResult?.type === "ss58" && !isConnected(currentChain) && (
-          <div className="flex items-center gap-2 text-sm text-yellow-600">
-            <span>Not connected to chain. Identity lookup unavailable.</span>
-          </div>
-        )}
-
-        {/* Validation error display */}
-        {validationResult?.error && (
-          <div className="flex items-center gap-2 text-sm text-red-600">
-            <span>{validationResult.error}</span>
-          </div>
-        )}
-
-        {/* Valid address info */}
-        {validationResult?.isValid && (
-          <div className="flex items-center gap-2 text-sm text-green-600">
-            <CircleCheck className="h-4 w-4" />
-            <span>
-              Valid {validationResult.type === "ss58" ? "Polkadot" : "Ethereum"}{" "}
-              address
-            </span>
-          </div>
-        )}
-
-        {/* Identity loading state */}
-        {validationResult?.isValid &&
-          withIdentityLookup &&
-          validationResult.type === "ss58" &&
-          (polkadotIdentity.isFetching || polkadotIdentity.isLoading) && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              <span>Looking up identity...</span>
+        {/* Fixed height when status messages are shown to prevent layout shift */}
+        <div className="min-h-[60px] space-y-1">
+          {/* Connection status */}
+          {validationResult?.type === "ss58" && !isConnected(currentChain) && (
+            <div className="flex items-center gap-2 text-sm text-yellow-600">
+              <span>Not connected to chain. Identity lookup unavailable.</span>
             </div>
           )}
 
-        {/* Identity display */}
-        {polkadotIdentity.data && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <CircleCheck className="h-4 w-4 text-green-600" />
-            <span>Identity: {polkadotIdentity.data.display}</span>
-            {polkadotIdentity.data.verified && (
-              <Badge variant="secondary" className="text-xs">
-                Verified
-              </Badge>
+          {/* Validation error display */}
+          {validationResult?.error && (
+            <div className="flex items-center gap-2 text-sm text-red-600">
+              <span>{validationResult.error}</span>
+            </div>
+          )}
+
+          {/* Valid address info */}
+          {validationResult?.isValid && (
+            <div className="flex items-center gap-2 text-sm text-green-600">
+              <CircleCheck className="h-4 w-4" />
+              <span>
+                Valid {validationResult.type === "ss58" ? "Polkadot" : "Ethereum"}{" "}
+                address
+              </span>
+            </div>
+          )}
+
+          {/* Identity loading state */}
+          {validationResult?.isValid &&
+            withIdentityLookup &&
+            validationResult.type === "ss58" &&
+            (polkadotIdentity.isFetching || polkadotIdentity.isLoading) && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>Looking up identity...</span>
+              </div>
             )}
-          </div>
-        )}
 
-        {/* No identity found info */}
-        {validationResult?.isValid &&
-          withIdentityLookup &&
-          validationResult.type === "ss58" &&
-          !polkadotIdentity.data &&
-          !polkadotIdentity.isLoading && (
+          {/* Identity display */}
+          {polkadotIdentity.data && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span>• No identity found</span>
+              <CircleCheck className="h-4 w-4 text-green-600" />
+              <span>Identity: {polkadotIdentity.data.display}</span>
+              {polkadotIdentity.data.verified && (
+                <Badge variant="secondary" className="text-xs">
+                  Verified
+                </Badge>
+              )}
             </div>
           )}
+
+          {/* No identity found info */}
+          {validationResult?.isValid &&
+            withIdentityLookup &&
+            validationResult.type === "ss58" &&
+            !polkadotIdentity.data &&
+            !polkadotIdentity.isLoading && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <span>• No identity found</span>
+              </div>
+            )}
+        </div>
       </div>
     );
   }
