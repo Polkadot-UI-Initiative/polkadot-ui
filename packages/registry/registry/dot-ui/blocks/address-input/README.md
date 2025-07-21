@@ -178,7 +178,8 @@ interface ValidationResult {
 
 ## Implementation Status
 
-✅ **PAPI Version**: Fully implemented with Polkadot API support 🚧 **Dedot
-Version**: Planned for future implementation
+✅ **PAPI Version**: Fully implemented with Polkadot API support 
+
+🚧 **Dedot Version**: Planned for future implementation
 
 See `page.papi.tsx` for live examples and demonstrations.
