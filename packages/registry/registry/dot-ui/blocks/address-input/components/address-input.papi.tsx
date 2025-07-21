@@ -82,10 +82,11 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
       useState<ValidationResult>();
     const [debouncedAddress, setDebouncedAddress] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
-    const [showDropdown, setShowDropdown] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
-    const [isCopied, setIsCopied] = useState(false);
-    const inputRef = useRef<HTMLInputElement>(null);
+      const [showDropdown, setShowDropdown] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const inputRef = useRef<HTMLInputElement>(null);
 
     // Merge forwarded ref with internal ref
     useEffect(() => {
@@ -188,9 +189,53 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
       setTimeout(() => setShowDropdown(false), 150);
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      // Handle keyboard navigation for search results
+      if (showDropdown && identitySearch.data && identitySearch.data.length > 0) {
+        const optionsCount = identitySearch.data.length;
+        
+        switch (e.key) {
+          // Selecting options
+          case 'ArrowDown':
+          case 'Tab':
+            e.preventDefault();
+            setHighlightedIndex(prev => 
+              prev < optionsCount - 1 ? prev + 1 : 0
+            );
+            break;
+          case 'ArrowUp':
+            e.preventDefault();
+            setHighlightedIndex(prev => 
+              prev > 0 ? prev - 1 : optionsCount - 1
+            );
+            break;
+          // Confirming the first option or the highlighted option
+          case 'Enter':
+            e.preventDefault();
+            const selectedIndex = highlightedIndex >= 0 ? highlightedIndex : 0;
+            const selectedResult = identitySearch.data[selectedIndex];
+            if (selectedResult) {
+              handleSelectIdentity(
+                selectedResult.address,
+                selectedResult.identity.display || ""
+              );
+            }
+            break;
+          // Closing the dropdown
+          case 'Escape':
+            e.preventDefault();
+            setShowDropdown(false);
+            setHighlightedIndex(-1);
+            inputRef.current?.blur();
+            break;
+        }
+      }
+    };
+
     const handleSelectIdentity = (address: string, display: string) => {
       setInputValue(address);
       setShowDropdown(false);
+      setHighlightedIndex(-1);
 
       if (onChange) {
         onChange(address);
@@ -227,8 +272,10 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
         identitySearch.data.length > 0
       ) {
         setShowDropdown(true);
+        setHighlightedIndex(-1);
       } else {
         setShowDropdown(false);
+        setHighlightedIndex(-1);
       }
     }, [validationResult, debouncedSearch, identitySearch.data]);
 
@@ -257,6 +304,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
             onChange={handleInputChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
             placeholder={placeholder}
             autoComplete="off"
             aria-expanded={
@@ -307,14 +355,20 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
                   !identitySearch.error &&
                   identitySearch.data &&
                   identitySearch.data.length > 0 &&
-                  identitySearch.data.map((result) => (
+                  identitySearch.data.map((result, index) => (
                     <button
                       key={result.address}
                       type="button"
                       role="option"
-                      aria-selected="false"
-                      className="w-full text-left px-3 py-2 hover:bg-muted/50 focus:bg-muted/50 focus:outline-none transition-colors duration-150 ease-in-out flex items-center gap-3"
+                      aria-selected={index === highlightedIndex}
+                      className={cn(
+                        "w-full text-left px-3 py-2 focus:outline-none transition-colors duration-150 ease-in-out flex items-center gap-3",
+                        index === highlightedIndex 
+                          ? "bg-muted text-foreground" 
+                          : "hover:bg-muted/50"
+                      )}
                       onMouseDown={(e) => e.preventDefault()}
+                      onMouseEnter={() => setHighlightedIndex(index)}
                       onClick={() =>
                         handleSelectIdentity(
                           result.address,
