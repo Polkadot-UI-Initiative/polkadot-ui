@@ -85,6 +85,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
   const [isEditing, setIsEditing] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const [selectedFromSearch, setSelectedFromSearch] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
     // Merge forwarded ref with internal ref
@@ -113,16 +114,16 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
       const timer = setTimeout(() => {
         if (!validationResult?.isValid && inputValue.length > 2) {
           setDebouncedSearch(inputValue);
-        } else {
+        } else if (!selectedFromSearch) {
           setDebouncedSearch("");
         }
       }, 300);
       return () => clearTimeout(timer);
-    }, [inputValue, validationResult]);
+    }, [inputValue, validationResult, selectedFromSearch]);
 
-    // Identity lookup
+    // Identity lookup (skip if selected from search to avoid redundant call)
     const polkadotIdentity = usePolkadotIdentity(
-      withIdentityLookup && validationResult?.type === "ss58"
+      withIdentityLookup && validationResult?.type === "ss58" && !selectedFromSearch
         ? debouncedAddress
         : ""
     );
@@ -150,15 +151,23 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
       setIsEditing(false); // Stop editing when value changes externally
     }, [value]);
 
-    // Notify parent when identity is found
+    // Get identity data from search results when selected from search
+    const searchResultIdentity = selectedFromSearch && validationResult?.isValid
+      ? identitySearch.data?.find(result => result.address === inputValue)?.identity
+      : null;
+
+    // Combined identity data - use search result if available, otherwise polkadot identity
+    const currentIdentity = searchResultIdentity || polkadotIdentity.data;
+
+    // Notify parent element when identity is found
     useEffect(() => {
-      if (polkadotIdentity.data && onIdentityFound) {
+      if (currentIdentity && onIdentityFound) {
         onIdentityFound({
           type: "polkadot",
-          data: polkadotIdentity.data,
+          data: currentIdentity,
         });
       }
-    }, [polkadotIdentity.data, onIdentityFound]);
+    }, [currentIdentity, onIdentityFound]);
 
     // Loading states
     const isIdentityLoading = polkadotIdentity.isLoading;
@@ -169,6 +178,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
       setInputValue(e.target.value);
       setShowDropdown(false);
       setIsEditing(true);
+      setSelectedFromSearch(false);
     };
 
     const handleFocus = () => {
@@ -237,6 +247,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
     };
 
     const handleSelectIdentity = (address: string, display: string) => {
+      setSelectedFromSearch(true);
       setInputValue(address);
       setShowDropdown(false);
       setHighlightedIndex(-1);
@@ -472,7 +483,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
           )}
 
           {/* Valid address info */}
-          {validationResult?.isValid && polkadotIdentity.data && !polkadotIdentity.data.verified && (
+          {validationResult?.isValid && currentIdentity && !currentIdentity.verified && (
             <div className="flex items-center gap-2 text-sm text-green-600">
               <CircleCheck className="h-4 w-4" />
               <span>
@@ -482,10 +493,11 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
             </div>
           )}
 
-          {/* Identity loading state */}
+          {/* Identity loading state - only show if not selected from search results */}
           {validationResult?.isValid &&
             withIdentityLookup &&
             validationResult.type === "ss58" &&
+            !selectedFromSearch &&
             (polkadotIdentity.isFetching || isIdentityLoading) && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -494,10 +506,10 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
             )}
 
           {/* Identity display */}
-          {polkadotIdentity.data?.verified && (
+          {currentIdentity?.verified && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <CircleCheck className="h-4 w-4 text-green-600" />
-              <span>{polkadotIdentity.data.display ? `Identity: ${polkadotIdentity.data.display}` : "Identity: No identity defined"}</span>
+              <span>{currentIdentity.display ? `Identity: ${currentIdentity.display}` : "Identity: No identity defined"}</span>
             </div>
           )}
 
@@ -505,7 +517,8 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
           {validationResult?.isValid &&
             withIdentityLookup &&
             validationResult.type === "ss58" &&
-            !polkadotIdentity.data &&
+            !currentIdentity &&
+            !selectedFromSearch &&
             !isIdentityLoading && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <span>• No identity found</span>
