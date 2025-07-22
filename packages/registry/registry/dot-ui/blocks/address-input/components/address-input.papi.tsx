@@ -497,7 +497,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
           {polkadotIdentity.data?.verified && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <CircleCheck className="h-4 w-4 text-green-600" />
-              <span>Identity: {polkadotIdentity.data.display}</span>
+              <span>{polkadotIdentity.data.display ? `Identity: ${polkadotIdentity.data.display}` : "Identity: No identity defined"}</span>
             </div>
           )}
 
