@@ -5,7 +5,7 @@ import {
   usePapi,
   usePolkadotApi,
 } from "@/registry/dot-ui/providers/papi-provider";
-import { extractText } from "@/registry/dot-ui/lib/utils.dot-ui";
+import { extractText, hasPositiveIdentityJudgement } from "@/registry/dot-ui/lib/utils.dot-ui";
 
 export interface FormattedIdentity {
   display?: string;
@@ -58,15 +58,7 @@ export function useIdentityByDisplayName(
             display &&
             display.toLowerCase().includes(displayName.toLowerCase())
           ) {
-            // Check identity judgements for determining verified identity
-            const hasPositiveJudgement = value.judgements && 
-              value.judgements.length > 0 && 
-              value.judgements.some((judgement: [number, unknown]) => {
-                // Judgement types: Unknown, FeePaid, Reasonable, KnownGood, OutOfDate, LowQuality, Erroneous
-                // More info: https://wiki.polkadot.network/learn/learn-identity/#judgements
-                const judgementType = (judgement[1] as { type?: string })?.type || judgement[1];
-                return judgementType === "Reasonable" || judgementType === "KnownGood";
-              });
+            const hasPositiveJudgement = hasPositiveIdentityJudgement(value.judgements);
 
             matches.push({
               address: keyArgs[0] as string,
