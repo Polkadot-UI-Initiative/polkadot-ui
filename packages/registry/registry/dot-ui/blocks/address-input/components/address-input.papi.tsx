@@ -3,7 +3,6 @@
 import { forwardRef, useState, useEffect, useRef, useMemo } from "react";
 import { Input } from "@/registry/dot-ui/ui/input";
 import { Label } from "@/registry/dot-ui/ui/label";
-import { Badge } from "@/registry/dot-ui/ui/badge";
 import { Loader2, Copy, Check, CircleCheck } from "lucide-react";
 import { Identicon } from "@polkadot/react-identicon";
 import { type IconTheme } from "@polkadot/react-identicon/types";
@@ -163,6 +162,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
 
     // Loading states
     const isIdentityLoading = polkadotIdentity.isLoading;
+    const isIdentitySearching = identitySearch.isLoading;
     const isApiLoading = isLoading(currentChain);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -268,13 +268,12 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
       }
     };
 
-    // Show dropdown when search results are available
+    // Show dropdown when search is active or results are available
     useEffect(() => {
       if (
         !validationResult?.isValid &&
         debouncedSearch.length > 2 &&
-        identitySearch.data &&
-        identitySearch.data.length > 0
+        (isIdentitySearching || (identitySearch.data && identitySearch.data.length > 0))
       ) {
         setShowDropdown(true);
         setHighlightedIndex(-1);
@@ -282,7 +281,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
         setShowDropdown(false);
         setHighlightedIndex(-1);
       }
-    }, [validationResult, debouncedSearch, identitySearch.data]);
+    }, [validationResult, debouncedSearch, identitySearch.data, isIdentitySearching]);
 
     const displayValue =
       truncate && validationResult?.isValid && !isEditing
@@ -345,7 +344,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
                 aria-label="Address search results"
                 className="absolute left-0 top-full z-50 mt-1 w-full bg-background border border-border rounded-md shadow-lg max-h-60 overflow-auto"
               >
-                {identitySearch.isLoading && (
+                {isIdentitySearching && (
                   <div className="p-3 text-sm text-muted-foreground flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Searching identities...
@@ -356,7 +355,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
                     Search failed: {identitySearch.error.message}
                   </div>
                 )}
-                {!identitySearch.isLoading &&
+                {!isIdentitySearching &&
                   !identitySearch.error &&
                   identitySearch.data &&
                   identitySearch.data.length > 0 &&
@@ -401,7 +400,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
                       </span>
                     </button>
                   ))}
-                {!identitySearch.isLoading &&
+                {!isIdentitySearching &&
                   !identitySearch.error &&
                   identitySearch.data &&
                   identitySearch.data.length === 0 && (
@@ -487,7 +486,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
           {validationResult?.isValid &&
             withIdentityLookup &&
             validationResult.type === "ss58" &&
-            (polkadotIdentity.isFetching || polkadotIdentity.isLoading) && (
+            (polkadotIdentity.isFetching || isIdentityLoading) && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 <span>Looking up identity...</span>
@@ -507,7 +506,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
             withIdentityLookup &&
             validationResult.type === "ss58" &&
             !polkadotIdentity.data &&
-            !polkadotIdentity.isLoading && (
+            !isIdentityLoading && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <span>• No identity found</span>
               </div>
