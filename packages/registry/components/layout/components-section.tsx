@@ -9,7 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { BlockNumber } from "@/registry/dot-ui/blocks/block-number/components/block-number.papi";
 import { AddressInputWithProvider } from "@/registry/dot-ui/blocks/address-input/components/address-input.papi";
 import { OpenInV0Button } from "../open-in-v0-button";
 import { Button } from "@/components/ui/button";
