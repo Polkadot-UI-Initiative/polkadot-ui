@@ -26,13 +26,13 @@ const examples = [
       <AddressInputWithProvider className="w-full" truncate={8} format="both" />
     ),
   },
-  {
-    name: "Block Number DEMO",
-    href: "/docs/components/block-number",
-    code: "block-number",
-    description: "Will not be part of the library",
-    component: <BlockNumber />,
-  },
+  // {
+  //   name: "Block Number DEMO",
+  //   href: "/docs/components/block-number",
+  //   code: "block-number",
+  //   description: "Will not be part of the library",
+  //   component: <BlockNumber />,
+  // },
 ];
 
 // const categories = [
