@@ -14,6 +14,7 @@ import { OpenInV0Button } from "../open-in-v0-button";
 import { Button } from "@/components/ui/button";
 import { BookText } from "lucide-react";
 import { Label } from "@/registry/dot-ui/ui/label";
+import { cn } from "@/lib/utils";
 
 const examples = [
   {
@@ -114,7 +115,12 @@ export function ComponentsSection() {
             </CardFooter>
           </Card>
         ))}
-        <Card className="relative overflow-hidden flex flex-col justify-center items-center col-span-full">
+        <Card
+          className={cn(
+            "relative overflow-hidden flex flex-col justify-center items-center",
+            examples.length % 2 === 0 && "col-span-full"
+          )}
+        >
           <CardHeader className="text-center">
             <CardTitle className="text-lg">
               More Polkadot Components Coming Soon
