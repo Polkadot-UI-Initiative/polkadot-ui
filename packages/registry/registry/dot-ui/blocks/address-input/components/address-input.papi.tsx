@@ -22,6 +22,9 @@ import {
 import { Button } from "@/registry/dot-ui/ui/button";
 import type { ChainId } from "@/registry/dot-ui/lib/config.papi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
+import { SubstrateExplorer } from "@/registry/dot-ui/lib/types.dot-ui";
+import Link from "next/link";
 
 export interface AddressInputProps {
   value?: string;
@@ -81,12 +84,12 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
       useState<ValidationResult>();
     const [debouncedAddress, setDebouncedAddress] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
-      const [showDropdown, setShowDropdown] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [isCopied, setIsCopied] = useState(false);
-  const [highlightedIndex, setHighlightedIndex] = useState(-1);
-  const [selectedFromSearch, setSelectedFromSearch] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [isCopied, setIsCopied] = useState(false);
+    const [highlightedIndex, setHighlightedIndex] = useState(-1);
+    const [selectedFromSearch, setSelectedFromSearch] = useState(false);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     // Merge forwarded ref with internal ref
     useEffect(() => {
@@ -123,7 +126,9 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
 
     // Identity lookup (skip if selected from search to avoid redundant call)
     const polkadotIdentity = usePolkadotIdentity(
-      withIdentityLookup && validationResult?.type === "ss58" && !selectedFromSearch
+      withIdentityLookup &&
+        validationResult?.type === "ss58" &&
+        !selectedFromSearch
         ? debouncedAddress
         : ""
     );
@@ -152,9 +157,11 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
     }, [value]);
 
     // Get identity data from search results when selected from search
-    const searchResultIdentity = selectedFromSearch && validationResult?.isValid
-      ? identitySearch.data?.find(result => result.address === inputValue)?.identity
-      : null;
+    const searchResultIdentity =
+      selectedFromSearch && validationResult?.isValid
+        ? identitySearch.data?.find((result) => result.address === inputValue)
+            ?.identity
+        : null;
 
     // Combined identity data - use search result if available, otherwise polkadot identity
     const currentIdentity = searchResultIdentity || polkadotIdentity.data;
@@ -201,28 +208,32 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       // Handle keyboard navigation for search results
-      if (showDropdown && identitySearch.data && identitySearch.data.length > 0) {
+      if (
+        showDropdown &&
+        identitySearch.data &&
+        identitySearch.data.length > 0
+      ) {
         const optionsCount = identitySearch.data.length;
-        
+
         switch (e.key) {
           // Selecting options
-          case 'ArrowDown':
-          case 'Tab': {
+          case "ArrowDown":
+          case "Tab": {
             e.preventDefault();
-            setHighlightedIndex(prev => 
+            setHighlightedIndex((prev) =>
               prev < optionsCount - 1 ? prev + 1 : 0
             );
             break;
           }
-          case 'ArrowUp': {
+          case "ArrowUp": {
             e.preventDefault();
-            setHighlightedIndex(prev => 
+            setHighlightedIndex((prev) =>
               prev > 0 ? prev - 1 : optionsCount - 1
             );
             break;
           }
           // Confirming the first option or the highlighted option
-          case 'Enter': {
+          case "Enter": {
             e.preventDefault();
             const selectedIndex = highlightedIndex >= 0 ? highlightedIndex : 0;
             const selectedResult = identitySearch.data[selectedIndex];
@@ -235,7 +246,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
             break;
           }
           // Closing the dropdown
-          case 'Escape': {
+          case "Escape": {
             e.preventDefault();
             setShowDropdown(false);
             setHighlightedIndex(-1);
@@ -259,10 +270,15 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
 
       // Trigger identity found callback
       if (onIdentityFound) {
-        const selectedResult = identitySearch.data?.find(result => result.address === address);
+        const selectedResult = identitySearch.data?.find(
+          (result) => result.address === address
+        );
         onIdentityFound({
           type: "polkadot",
-          data: { display, verified: selectedResult?.identity.verified || false },
+          data: {
+            display,
+            verified: selectedResult?.identity.verified || false,
+          },
         });
       }
     };
@@ -284,7 +300,8 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
       if (
         !validationResult?.isValid &&
         debouncedSearch.length > 2 &&
-        (isIdentitySearching || (identitySearch.data && identitySearch.data.length > 0))
+        (isIdentitySearching ||
+          (identitySearch.data && identitySearch.data.length > 0))
       ) {
         setShowDropdown(true);
         setHighlightedIndex(-1);
@@ -292,7 +309,12 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
         setShowDropdown(false);
         setHighlightedIndex(-1);
       }
-    }, [validationResult, debouncedSearch, identitySearch.data, isIdentitySearching]);
+    }, [
+      validationResult,
+      debouncedSearch,
+      identitySearch.data,
+      isIdentitySearching,
+    ]);
 
     const displayValue =
       truncate && validationResult?.isValid && !isEditing
@@ -378,8 +400,8 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
                       aria-selected={index === highlightedIndex}
                       className={cn(
                         "w-full text-left px-3 py-2 focus:outline-none transition-colors duration-150 ease-in-out flex items-center gap-3",
-                        index === highlightedIndex 
-                          ? "bg-muted text-foreground" 
+                        index === highlightedIndex
+                          ? "bg-muted text-foreground"
                           : "hover:bg-muted/50"
                       )}
                       onMouseDown={(e) => e.preventDefault()}
@@ -483,15 +505,18 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
           )}
 
           {/* Valid address info */}
-          {validationResult?.isValid && currentIdentity && !currentIdentity.verified && (
-            <div className="flex items-center gap-2 text-sm text-green-600">
-              <CircleCheck className="h-4 w-4" />
-              <span>
-                Valid {validationResult.type === "ss58" ? "Polkadot" : "Ethereum"}{" "}
-                address
-              </span>
-            </div>
-          )}
+          {validationResult?.isValid &&
+            currentIdentity &&
+            !currentIdentity.verified && (
+              <div className="flex items-center gap-1 text-sm text-green-600">
+                <CircleCheck className="h-4 w-4" />
+                <span>
+                  Valid{" "}
+                  {validationResult.type === "ss58" ? "Polkadot" : "Ethereum"}{" "}
+                  address
+                </span>
+              </div>
+            )}
 
           {/* Identity loading state - only show if not selected from search results */}
           {validationResult?.isValid &&
@@ -499,7 +524,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
             validationResult.type === "ss58" &&
             !selectedFromSearch &&
             (polkadotIdentity.isFetching || isIdentityLoading) && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="flex items-center gap-1 text-sm text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 <span>Looking up identity...</span>
               </div>
@@ -507,9 +532,27 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
 
           {/* Identity display */}
           {currentIdentity?.verified && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <CircleCheck className="h-4 w-4 text-green-600" />
-              <span>{currentIdentity.display ? `Identity: ${currentIdentity.display}` : "Identity: No identity defined"}</span>
+            <div className="flex items-center gap-1 text-sm">
+              <CircleCheck className="h-5 w-5 text-background fill-green-600 stroke-background" />
+              {dotUiConfig.chains[currentChain].explorerUrls?.[
+                SubstrateExplorer.Subscan
+              ] ? (
+                <Link
+                  href={`${dotUiConfig.chains[currentChain].explorerUrls?.[SubstrateExplorer.Subscan]}account/${inputValue}`}
+                  target="_blank"
+                  className="hover:underline hover:after:content-['_↗']"
+                >
+                  {currentIdentity.display
+                    ? `${currentIdentity.display}`
+                    : "No identity defined"}
+                </Link>
+              ) : (
+                <span>
+                  {currentIdentity.display
+                    ? `${currentIdentity.display}`
+                    : "No identity defined"}
+                </span>
+              )}
             </div>
           )}
 
