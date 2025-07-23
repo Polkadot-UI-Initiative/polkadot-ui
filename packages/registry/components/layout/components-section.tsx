@@ -13,6 +13,7 @@ import { AddressInputWithProvider } from "@/registry/dot-ui/blocks/address-input
 import { OpenInV0Button } from "../open-in-v0-button";
 import { Button } from "@/components/ui/button";
 import { BookText } from "lucide-react";
+import { Label } from "@/registry/dot-ui/ui/label";
 
 const examples = [
   {
@@ -22,7 +23,14 @@ const examples = [
     description:
       "Input component with SS58/Ethereum validation and identity lookup",
     component: (
-      <AddressInputWithProvider className="w-full" truncate={8} format="both" />
+      <div className="flex flex-col gap-2 w-full">
+        <Label>Address</Label>
+        <AddressInputWithProvider
+          className="w-full"
+          truncate={8}
+          format="both"
+        />
+      </div>
     ),
   },
   // {
