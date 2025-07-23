@@ -3,7 +3,7 @@ import {
   usePapi,
   usePolkadotApi,
 } from "@/registry/dot-ui/providers/papi-provider";
-import { extractText } from "@/registry/dot-ui/lib/utils.dot-ui";
+import { extractText, hasPositiveIdentityJudgement } from "@/registry/dot-ui/lib/utils.dot-ui";
 
 export interface PolkadotIdentity {
   display?: string;
@@ -37,12 +37,15 @@ export function usePolkadotIdentity(address: string) {
         const identity = await identityQuery;
         if (!identity) return null;
 
+        // Check identity judgements for determining verified identity
+        const hasPositiveJudgement = hasPositiveIdentityJudgement(identity.judgements);
+
         return {
           display: extractText(identity.info?.display?.value),
           legal: extractText(identity.info?.legal?.value),
           email: extractText(identity.info?.email?.value),
           twitter: extractText(identity.info?.twitter?.value),
-          verified: false, // TODO: Implement proper judgement verification
+          verified: hasPositiveJudgement || false,
         };
       } catch (error) {
         console.error("Identity lookup failed:", error);

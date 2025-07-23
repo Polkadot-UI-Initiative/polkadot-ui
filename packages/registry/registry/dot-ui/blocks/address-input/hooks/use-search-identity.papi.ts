@@ -5,7 +5,7 @@ import {
   usePapi,
   usePolkadotApi,
 } from "@/registry/dot-ui/providers/papi-provider";
-import { extractText } from "@/registry/dot-ui/lib/utils.dot-ui";
+import { extractText, hasPositiveIdentityJudgement } from "@/registry/dot-ui/lib/utils.dot-ui";
 
 export interface FormattedIdentity {
   display?: string;
@@ -14,6 +14,7 @@ export interface FormattedIdentity {
   matrix?: string;
   twitter?: string;
   web?: string;
+  verified?: boolean;
 }
 
 export interface IdentitySearchResult {
@@ -57,6 +58,8 @@ export function useIdentityByDisplayName(
             display &&
             display.toLowerCase().includes(displayName.toLowerCase())
           ) {
+            const hasPositiveJudgement = hasPositiveIdentityJudgement(value.judgements);
+
             matches.push({
               address: keyArgs[0] as string,
               identity: {
@@ -66,6 +69,7 @@ export function useIdentityByDisplayName(
                 matrix: extractText(value.info?.matrix?.value),
                 twitter: extractText(value.info?.twitter?.value),
                 web: extractText(value.info?.web?.value),
+                verified: hasPositiveJudgement || false,
               },
             });
 

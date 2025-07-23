@@ -139,3 +139,23 @@ export function truncateAddress(
 
   return `${address.slice(0, truncLength)}...${address.slice(-truncLength)}`;
 }
+
+/**
+ * Check if an identity has positive judgements to determine a verified identity
+ * @param judgements Array of judgements from on chain query
+ * @returns {boolean} indicating if identity is verified
+ */
+export function hasPositiveIdentityJudgement(
+  judgements: [number, unknown][] | null | undefined
+): boolean {
+  if (!judgements || judgements.length === 0) {
+    return false;
+  }
+
+  return judgements.some((judgement: [number, unknown]) => {
+    // Judgement types: Unknown, FeePaid, Reasonable, KnownGood, OutOfDate, LowQuality, Erroneous
+    // More info: https://wiki.polkadot.network/learn/learn-identity/#judgements
+    const judgementType = (judgement[1] as { type?: string })?.type || judgement[1];
+    return judgementType === "Reasonable" || judgementType === "KnownGood";
+  });
+}
