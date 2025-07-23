@@ -20,7 +20,7 @@ import {
   type ValidationResult,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
 import { Button } from "@/registry/dot-ui/ui/button";
-import type { ChainId } from "@/registry/dot-ui/lib/config.papi";
+import type { ChainIdWithIdentity } from "@/registry/dot-ui/lib/types.papi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
 import { SubstrateExplorer } from "@/registry/dot-ui/lib/types.dot-ui";
@@ -42,8 +42,8 @@ export interface AddressInputProps {
   truncate?: boolean | number;
   showIdenticon?: boolean;
   identiconTheme?: IconTheme;
-
   className?: string;
+  identityChain?: ChainIdWithIdentity;
 }
 
 export interface IdentityResult {
@@ -63,16 +63,16 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
       value = "",
       onChange,
       format = "ss58",
+      identityChain = "paseo_people",
       withIdentityLookup = true,
       withIdentitySearch = true,
       withCopyButton = true,
-      // withEnsLookup = false, // TODO: Implement ENS lookup
       onIdentityFound,
+      // withEnsLookup = false, // TODO: Implement ENS lookup
       // ethProviderUrl, // TODO: Implement ENS lookup
       truncate = false,
       showIdenticon = true,
       identiconTheme = "polkadot",
-
       className,
       ...props
     },
@@ -130,14 +130,16 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
         validationResult?.type === "ss58" &&
         !selectedFromSearch
         ? debouncedAddress
-        : ""
+        : "",
+      identityChain
     );
 
     // Identity search
     const identitySearch = useIdentityByDisplayName(
       withIdentitySearch && format !== "eth" && debouncedSearch.length > 2
         ? debouncedSearch
-        : null
+        : null,
+      identityChain
     );
 
     // Validation on input change
@@ -538,7 +540,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
                 SubstrateExplorer.Subscan
               ] ? (
                 <Link
-                  href={`${dotUiConfig.chains[currentChain].explorerUrls?.[SubstrateExplorer.Subscan]}account/${inputValue}`}
+                  href={`${dotUiConfig.chains[identityChain].explorerUrls?.[SubstrateExplorer.Subscan]}account/${inputValue}`}
                   target="_blank"
                   className="hover:underline hover:after:content-['_↗']"
                 >
@@ -576,14 +578,8 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
 AddressInput.displayName = "AddressInput";
 
 // Wrapped version with provider for drop-in usage
-export interface AddressInputWithProviderProps extends AddressInputProps {
-  chainId?: ChainId;
-}
 
-export function AddressInputWithProvider({
-  chainId,
-  ...props
-}: AddressInputWithProviderProps) {
+export function AddressInputWithProvider({ ...props }: AddressInputProps) {
   const queryClient = useMemo(
     () =>
       new QueryClient({
@@ -597,7 +593,7 @@ export function AddressInputWithProvider({
     []
   );
   return (
-    <PolkadotProvider defaultChain={chainId}>
+    <PolkadotProvider>
       <QueryClientProvider client={queryClient}>
         <AddressInput {...props} />
       </QueryClientProvider>

@@ -78,6 +78,31 @@ function MyComponent() {
 </TabsContent>
 </Tabs>
 
+### Custom Identity Chain
+
+<Tabs defaultValue="preview" className="max-w-[600px]">
+  <TabsList>
+    <TabsTrigger value="preview">Preview</TabsTrigger>
+    <TabsTrigger value="code">Code</TabsTrigger>
+  </TabsList>
+  <TabsContent value="preview">
+    <AddressInputWithProvider 
+      format="ss58"
+      identityChain="paseo_people"
+      withIdentityLookup={true}
+    />
+  </TabsContent>
+  <TabsContent value="code" className="my-0">
+```tsx
+<AddressInput
+  format="ss58"
+  identityChain="paseo_people"  // Specify which chain to use for identity lookup
+  withIdentityLookup={true}
+/>
+```
+</TabsContent>
+</Tabs>
+
 ### With Identity Callback
 
 <Tabs defaultValue="preview" className="max-w-[600px]">
@@ -208,6 +233,7 @@ function MyComponent() {
 | `disabled` | `boolean` | `false` | Disable the input |
 | `format` | `"ss58" \| "eth" \| "both"` | `"ss58"` | Address format(s) to accept |
 | `withIdentityLookup` | `boolean` | `true` | Enable Polkadot identity lookup |
+| `identityChain` | `ChainIdWithIdentity` | `"paseo_people"` | Chain to use for identity lookups |
 | `onIdentityFound` | `(identity: IdentityResult) => void` | - | Called when identity is found |
 | `truncate` | `boolean \| number` | `false` | Truncate display (true=8 chars) |
 | `showIdenticon` | `boolean` | `true` | Show address identicon |
@@ -231,6 +257,16 @@ When `withIdentityLookup` is enabled:
 2. Displays identity name if found
 3. Shows verification status
 4. Includes "PAPI" badge to indicate API source
+
+### Multi-Chain Identity Support
+
+The `identityChain` prop allows you to specify which chain to use for identity lookups. This is particularly useful in multi-chain environments where different chains may have different identity registries:
+
+- **`paseo_people`** (default): Paseo People chain for testnet identities
+- **`kusama_people`**: Kusama People chain for Kusama identities  
+- **`polkadot_people`**: Polkadot People chain for mainnet identities
+
+The type `ChainIdWithIdentity` ensures only chains with Identity pallet support can be used.
 
 ## Identicon Support
 
