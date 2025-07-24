@@ -507,18 +507,15 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
           )}
 
           {/* Valid address info */}
-          {validationResult?.isValid &&
-            currentIdentity &&
-            !currentIdentity.verified && (
-              <div className="flex items-center gap-1 text-sm text-green-600">
-                <CircleCheck className="h-4 w-4" />
-                <span>
-                  Valid{" "}
-                  {validationResult.type === "ss58" ? "Polkadot" : "Ethereum"}{" "}
-                  address
-                </span>
-              </div>
-            )}
+          {validationResult?.isValid && (!currentIdentity || !currentIdentity.verified) && (
+            <div className="flex items-center gap-2 text-sm text-green-600">
+              <CircleCheck className="h-4 w-4" />
+              <span>
+                Valid {validationResult.type === "ss58" ? "Polkadot" : "Ethereum"}{" "}
+                address
+              </span>
+            </div>
+          )}
 
           {/* Identity loading state - only show if not selected from search results */}
           {validationResult?.isValid &&
