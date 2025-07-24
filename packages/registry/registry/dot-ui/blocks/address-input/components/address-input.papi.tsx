@@ -483,7 +483,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
           )}
 
           {/* Valid address info */}
-          {validationResult?.isValid && currentIdentity && !currentIdentity.verified && (
+          {validationResult?.isValid && (!currentIdentity || !currentIdentity.verified) && (
             <div className="flex items-center gap-2 text-sm text-green-600">
               <CircleCheck className="h-4 w-4" />
               <span>
