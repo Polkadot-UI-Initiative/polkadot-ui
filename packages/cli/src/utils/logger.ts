@@ -164,42 +164,28 @@ export class Logger {
     this.section("🎉 Component installed successfully!");
 
     this.subsection("Next steps:");
-    this.detail("1. Import the component in your project and use it:", true);
+    this.detail("1. Use the component in your project:", true);
     this.code(
-      `import { ${componentName} } from '@/components/${componentName}'`
+      `import { ${componentName}WithProvider } from '@/components/${componentName}.${hasDedot ? "dedot" : "papi"}'`
     );
-    this.code(`<${componentName} />`);
+    this.code("// ...");
+    this.code(`<${componentName}WithProvider />`);
     this.newline();
 
-    if (hasDedot) {
-      this.detail("2. Make sure to wrap your app with PolkadotProvider:", true);
-      this.code(
-        `import { PolkadotProvider } from '@/providers/dedot-provider'`
-      );
-      this.code(``);
-      this.code(`function App() {`);
-      this.code(`  return (`);
-      this.code(`    <PolkadotProvider>`);
-      this.code(`      <YourApp />`);
-      this.code(`    </PolkadotProvider>`);
-      this.code(`  )`);
-      this.code(`}`);
-      this.newline();
-    }
+    this.detail("2. Read the component documentation:", true);
+    this.code(`https://dot-ui.com/docs/components/${componentName}`);
+    this.newline();
 
-    if (!hasDedot) {
-      this.detail("2. Make sure to wrap your app with PolkadotProvider:", true);
-      this.code(`import { PolkadotProvider } from '@/providers/papi-provider'`);
-      this.code(``);
-      this.code(`function App() {`);
-      this.code(`  return (`);
-      this.code(`    <PolkadotProvider>`);
-      this.code(`      <YourApp />`);
-      this.code(`    </PolkadotProvider>`);
-      this.code(`  )`);
-      this.code(`}`);
-      this.newline();
-    }
+    this.detail(
+      "3. Make sure you understand how to write scalable code.",
+      true
+    );
+    this.code(
+      `Use <${componentName} /> instead of <${componentName}WithProvider /> and wrap your app in <PolkadotProvider>`
+    );
+    this.newline();
+    this.code("Read more at https://dot-ui.com/docs#add-your-first-component");
+    this.newline();
 
     this.detail("Happy coding with Polkadot! 🚀");
   }

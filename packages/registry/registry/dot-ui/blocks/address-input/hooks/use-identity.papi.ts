@@ -3,7 +3,11 @@ import {
   usePapi,
   usePolkadotApi,
 } from "@/registry/dot-ui/providers/papi-provider";
-import { extractText, hasPositiveIdentityJudgement } from "@/registry/dot-ui/lib/utils.dot-ui";
+import {
+  extractText,
+  hasPositiveIdentityJudgement,
+} from "@/registry/dot-ui/lib/utils.dot-ui";
+import { ChainIdWithIdentity } from "@/registry/dot-ui/lib/types.papi";
 
 export interface PolkadotIdentity {
   display?: string;
@@ -13,19 +17,21 @@ export interface PolkadotIdentity {
   verified: boolean;
 }
 
-export function usePolkadotIdentity(address: string) {
-  const IDENTITY_CHAIN = "paseo_people";
+export function usePolkadotIdentity(
+  address: string,
+  identityChain: ChainIdWithIdentity = "paseo_people"
+) {
   const { isLoading, isConnected } = usePapi();
-  const peopleApi = usePolkadotApi(IDENTITY_CHAIN);
+  const peopleApi = usePolkadotApi(identityChain);
 
   return useQuery({
-    queryKey: ["polkadot-identity", address, IDENTITY_CHAIN],
+    queryKey: ["polkadot-identity", address, identityChain],
     queryFn: async (): Promise<PolkadotIdentity | null> => {
       if (
         !peopleApi ||
         !address ||
-        isLoading(IDENTITY_CHAIN) ||
-        !isConnected(IDENTITY_CHAIN)
+        isLoading(identityChain) ||
+        !isConnected(identityChain)
       ) {
         return null;
       }
@@ -38,7 +44,9 @@ export function usePolkadotIdentity(address: string) {
         if (!identity) return null;
 
         // Check identity judgements for determining verified identity
-        const hasPositiveJudgement = hasPositiveIdentityJudgement(identity.judgements);
+        const hasPositiveJudgement = hasPositiveIdentityJudgement(
+          identity.judgements
+        );
 
         return {
           display: extractText(identity.info?.display?.value),
@@ -56,7 +64,7 @@ export function usePolkadotIdentity(address: string) {
       !!peopleApi &&
       !!address &&
       address.length > 0 &&
-      isConnected(IDENTITY_CHAIN),
+      isConnected(identityChain),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }

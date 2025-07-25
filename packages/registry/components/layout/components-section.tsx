@@ -9,11 +9,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { BlockNumber } from "@/registry/dot-ui/blocks/block-number/components/block-number.papi";
 import { AddressInputWithProvider } from "@/registry/dot-ui/blocks/address-input/components/address-input.papi";
 import { OpenInV0Button } from "../open-in-v0-button";
 import { Button } from "@/components/ui/button";
 import { BookText } from "lucide-react";
+import { Label } from "@/registry/dot-ui/ui/label";
+import { cn } from "@/lib/utils";
 
 const examples = [
   {
@@ -23,16 +24,23 @@ const examples = [
     description:
       "Input component with SS58/Ethereum validation and identity lookup",
     component: (
-      <AddressInputWithProvider className="w-full" truncate={8} format="both" />
+      <div className="flex flex-col gap-2 w-full">
+        <Label>Address</Label>
+        <AddressInputWithProvider
+          className="w-full"
+          truncate={8}
+          format="both"
+        />
+      </div>
     ),
   },
-  {
-    name: "Block Number DEMO",
-    href: "/docs/components/block-number",
-    code: "block-number",
-    description: "Will not be part of the library",
-    component: <BlockNumber />,
-  },
+  // {
+  //   name: "Block Number DEMO",
+  //   href: "/docs/components/block-number",
+  //   code: "block-number",
+  //   description: "Will not be part of the library",
+  //   component: <BlockNumber />,
+  // },
 ];
 
 // const categories = [
@@ -107,7 +115,12 @@ export function ComponentsSection() {
             </CardFooter>
           </Card>
         ))}
-        <Card className="relative overflow-hidden flex flex-col justify-center items-center col-span-full">
+        <Card
+          className={cn(
+            "relative overflow-hidden flex flex-col justify-center items-center",
+            examples.length % 2 === 0 && "col-span-full"
+          )}
+        >
           <CardHeader className="text-center">
             <CardTitle className="text-lg">
               More Polkadot Components Coming Soon
