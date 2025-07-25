@@ -23,7 +23,7 @@ export function OpenInV0Button({
       asChild
     >
       <a
-        href={`https://v0.dev/chat/api/open?url=${process.env.VERCEL_BRANCH_URL}/r/${library ?? supportedLibraries.Papi}/${name}.json&title=${encodeURIComponent(title ?? name)}&prompt=${encodeURIComponent(prompt ?? "Explain this code")}`}
+        href={`https://v0.dev/chat/api/open?url=https://${process.env.VERCEL_BRANCH_URL}/r/${library ?? supportedLibraries.Papi}/${name}.json&title=${encodeURIComponent(title ?? name)}&prompt=${encodeURIComponent(prompt ?? "Explain this code")}`}
         target="_blank"
         rel="noreferrer"
       >
