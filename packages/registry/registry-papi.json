@@ -104,6 +104,26 @@
         {
           "path": "registry/dot-ui/lib/config.papi.ts",
           "type": "registry:lib"
+        },
+        {
+          "path": ".papi/descriptors/dist/paseo.d.ts",
+          "type": "registry:file",
+          "target": ".papi/descriptors/dist/paseo.d.ts"
+        },
+        {
+          "path": ".papi/descriptors/dist/paseo_metadata.d.ts",
+          "type": "registry:file",
+          "target": ".papi/descriptors/dist/paseo_metadata.d.ts"
+        },
+        {
+          "path": ".papi/descriptors/dist/paseo_people.d.ts",
+          "type": "registry:file",
+          "target": ".papi/descriptors/dist/paseo_people.d.ts"
+        },
+        {
+          "path": ".papi/descriptors/dist/paseo_people_metadata.d.ts",
+          "type": "registry:file",
+          "target": ".papi/descriptors/dist/paseo_people_metadata.d.ts"
         }
       ]
     }
