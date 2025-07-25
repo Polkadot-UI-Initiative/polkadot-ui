@@ -1,6 +1,6 @@
 "use client";
 
-import { createClient, TypedApi } from "polkadot-api";
+import { createClient, UnsafeApi } from "polkadot-api";
 import { getWsProvider } from "polkadot-api/ws-provider/web";
 import { withPolkadotSdkCompat } from "polkadot-api/polkadot-sdk-compat";
 import {
@@ -16,12 +16,12 @@ import {
   getChainConfig,
   isValidChainId,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
-import { ChainDescriptor, ChainId } from "@/registry/dot-ui/lib/types.papi";
+import { ChainId } from "@/registry/dot-ui/lib/types.papi";
 
 // Type for the API based on configured chains
-type ConfiguredChainApi<T extends ChainId> = TypedApi<ChainDescriptor<T>>;
+type ConfiguredChainApi<T extends ChainId> = UnsafeApi<T>;
 
-// Create a composite API typse that includes all registered chains
+// Create a composite API type that includes all registered chains
 type CompositeApi = {
   [K in ChainId]: ConfiguredChainApi<K>;
 };
@@ -29,12 +29,12 @@ type CompositeApi = {
 interface PolkadotContextValue {
   // Current active chain and its API
   currentChain: ChainId;
-  api: ConfiguredChainApi<ChainId> | null;
+  api: UnsafeApi<ChainId> | null;
   isLoading: (chainId: ChainId) => boolean;
   error: string | null;
 
-  // All APIs for all registered chainsp
-  apis: Partial<CompositeApi>;
+  // All APIs for all registered chains
+  apis: Partial<Record<ChainId, UnsafeApi<ChainId>>>;
 
   // Function to switch active chain (type-safe)
   setApi: (chainId: ChainId) => void;
@@ -65,7 +65,9 @@ export function PolkadotProvider({
   const [currentChain, setCurrentChain] = useState<ChainId>(
     defaultChain || polkadotConfig.defaultChain
   );
-  const [apis, setApis] = useState<Partial<CompositeApi>>({});
+  const [apis, setApis] = useState<
+    Partial<Record<ChainId, UnsafeApi<ChainId>>>
+  >({});
   const [clients, setClients] = useState<
     Map<ChainId, ReturnType<typeof createClient>>
   >(new Map());
@@ -84,7 +86,10 @@ export function PolkadotProvider({
   const initializeChain = useCallback(
     async (chainId: ChainId) => {
       // Don't initialize if already connected
-      if (apis[chainId]) return;
+      if (apis[chainId]) {
+        console.log(`Already connected to ${chainId}`);
+        return;
+      }
 
       setLoadingStates((prev) => new Map(prev).set(chainId, true));
       setErrorStates((prev) => new Map(prev).set(chainId, null));
@@ -108,12 +113,17 @@ export function PolkadotProvider({
         );
 
         // Get typed API for the selected chain
-        const typedApi = client.getTypedApi(
-          polkadotConfig.chains[chainId].descriptor
-        ) as ConfiguredChainApi<typeof chainId>;
+        // const typedApi = client.getTypedApi(
+        //   polkadotConfig.chains[chainId].descriptor
+        // ) as ConfiguredChainApi<typeof chainId>;
+
+        const unsafeApi = client.getUnsafeApi<typeof chainId>();
 
         setClients((prev) => new Map(prev).set(chainId, client));
-        setApis((prev) => ({ ...prev, [chainId]: typedApi }));
+        setApis((prev) => ({
+          ...prev,
+          [chainId]: unsafeApi,
+        }));
 
         console.log(`Successfully connected to ${chainConfig.displayName}`);
       } catch (err) {
@@ -208,7 +218,7 @@ export function useTypedPolkadotApi(): ConfiguredChainApi<ChainId> | null {
 // Helper to get a specific chain's API (type-safe)
 export function usePolkadotApi<T extends ChainId>(
   chainId: T
-): ConfiguredChainApi<T> | null {
+): UnsafeApi<T> | null {
   const { apis, initializeChain } = usePapi();
 
   // Auto-initialize the chain if not connected
@@ -218,8 +228,8 @@ export function usePolkadotApi<T extends ChainId>(
     }
   }, [chainId, apis, initializeChain]);
 
-  return (apis[chainId] as ConfiguredChainApi<T>) || null;
+  return (apis[chainId] as UnsafeApi<T>) || null;
 }
 
 // Type exports
-export type { ChainId, ConfiguredChainApi, CompositeApi };
+export type { ChainId, UnsafeApi, CompositeApi };
