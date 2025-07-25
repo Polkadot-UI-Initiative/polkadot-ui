@@ -1,6 +1,6 @@
 // To add more chains, run: npx papi add <chain-name> -n <chain-name>
 // Then import the descriptor here and add it to the chains configuration
-import { paseo, paseo_people } from "@polkadot-api/descriptors";
+// import { paseo, paseo_people } from "@polkadot-api/descriptors";
 import { definePolkadotConfig } from "@/registry/dot-ui/lib/types.dot-ui";
 import { dotUiConfig } from "./config.dot-ui";
 
@@ -11,11 +11,11 @@ export const polkadotConfig = definePolkadotConfig({
 
     paseo: {
       ...dotUiConfig.chains.paseo,
-      descriptor: paseo,
+      // descriptor: paseo,
     },
     paseo_people: {
       ...dotUiConfig.chains.paseo_people,
-      descriptor: paseo_people,
+      // descriptor: paseo_people,
     },
     // Add more chains here after running `npx papi add <chain-name>`
     // Example for adding Polkadot mainnet:
