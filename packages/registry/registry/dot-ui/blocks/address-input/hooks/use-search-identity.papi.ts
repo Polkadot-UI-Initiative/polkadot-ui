@@ -9,7 +9,7 @@ import {
   extractText,
   hasPositiveIdentityJudgement,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
-import { ChainId } from "@/registry/dot-ui/lib/types.papi";
+import { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 
 export interface FormattedIdentity {
   display?: string;

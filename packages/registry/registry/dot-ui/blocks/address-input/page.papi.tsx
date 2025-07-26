@@ -1,6 +1,6 @@
 "use client";
 
-import { polkadotConfig } from "@/registry/dot-ui/lib/config.papi";
+import { dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
 import { PolkadotProvider } from "@/registry/dot-ui/providers/papi-provider";
 import { AddressInput } from "@/registry/dot-ui/blocks/address-input/components/address-input.papi";
 import { useState } from "react";
@@ -24,7 +24,7 @@ export default function AddressInputPage() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <PolkadotProvider defaultChain={polkadotConfig.defaultChain}>
+      <PolkadotProvider defaultChain={dotUiConfig.defaultChain}>
         <div className="min-h-screen bg-white">
           <div className="max-w-2xl mx-auto px-6 py-12">
             {/* Header */}
