@@ -40,10 +40,6 @@
         {
           "path": "registry/dot-ui/lib/config.dot-ui.ts",
           "type": "registry:lib"
-        },
-        {
-          "path": "registry/dot-ui/lib/config.papi.ts",
-          "type": "registry:lib"
         }
       ]
     },
@@ -94,15 +90,7 @@
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/types.papi.ts",
-          "type": "registry:lib"
-        },
-        {
           "path": "registry/dot-ui/lib/config.dot-ui.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "registry/dot-ui/lib/config.papi.ts",
           "type": "registry:lib"
         },
         {
