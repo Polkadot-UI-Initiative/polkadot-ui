@@ -20,7 +20,7 @@ import {
   type ValidationResult,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
 import { Button } from "@/registry/dot-ui/ui/button";
-import type { ChainId } from "@/registry/dot-ui/lib/types.papi";
+import type { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
 import { SubstrateExplorer } from "@/registry/dot-ui/lib/types.dot-ui";

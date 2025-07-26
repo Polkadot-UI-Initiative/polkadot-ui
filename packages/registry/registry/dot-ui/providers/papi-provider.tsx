@@ -10,21 +10,12 @@ import {
   useState,
   useCallback,
 } from "react";
-import { polkadotConfig } from "@/registry/dot-ui/lib/config.papi";
+import { ChainId, dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
 import {
   getChainIds,
   getChainConfig,
   isValidChainId,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
-import { ChainId } from "@/registry/dot-ui/lib/types.papi";
-
-// Type for the API based on configured chains
-type ConfiguredChainApi<T extends ChainId> = UnsafeApi<T>;
-
-// Create a composite API type that includes all registered chains
-type CompositeApi = {
-  [K in ChainId]: ConfiguredChainApi<K>;
-};
 
 interface PolkadotContextValue {
   // Current active chain and its API
@@ -63,7 +54,7 @@ export function PolkadotProvider({
   defaultChain,
 }: PolkadotProviderProps) {
   const [currentChain, setCurrentChain] = useState<ChainId>(
-    defaultChain || polkadotConfig.defaultChain
+    defaultChain || dotUiConfig.defaultChain
   );
   const [apis, setApis] = useState<
     Partial<Record<ChainId, UnsafeApi<ChainId>>>
@@ -80,7 +71,7 @@ export function PolkadotProvider({
 
   // Initialize the default chain on mount
   useEffect(() => {
-    initializeChain(defaultChain || polkadotConfig.defaultChain);
+    initializeChain(defaultChain || dotUiConfig.defaultChain);
   }, [defaultChain]);
 
   const initializeChain = useCallback(
@@ -95,7 +86,7 @@ export function PolkadotProvider({
       setErrorStates((prev) => new Map(prev).set(chainId, null));
 
       try {
-        const chainConfig = getChainConfig(polkadotConfig.chains, chainId);
+        const chainConfig = getChainConfig(dotUiConfig.chains, chainId);
 
         // Validate that endpoints array exists and has at least one element
         if (!chainConfig.endpoints || !chainConfig.endpoints[0]) {
@@ -144,7 +135,7 @@ export function PolkadotProvider({
   );
 
   const setApi = (chainId: ChainId) => {
-    if (!isValidChainId(polkadotConfig.chains, chainId)) {
+    if (!isValidChainId(dotUiConfig.chains, chainId)) {
       console.error(`Invalid chain ID: ${chainId}`);
       return;
     }
@@ -162,7 +153,7 @@ export function PolkadotProvider({
     setApis({});
     setLoadingStates(new Map());
     setErrorStates(new Map());
-    setCurrentChain(defaultChain || polkadotConfig.defaultChain);
+    setCurrentChain(defaultChain || dotUiConfig.defaultChain);
   };
 
   const isConnected = (chainId: ChainId): boolean => {
@@ -173,10 +164,7 @@ export function PolkadotProvider({
     return loadingStates.get(chainId) || false;
   };
 
-  const currentChainConfig = getChainConfig(
-    polkadotConfig.chains,
-    currentChain
-  );
+  const currentChainConfig = getChainConfig(dotUiConfig.chains, currentChain);
 
   const value: PolkadotContextValue = {
     currentChain,
@@ -189,7 +177,7 @@ export function PolkadotProvider({
     isLoading,
     initializeChain,
     chainName: currentChainConfig.displayName,
-    availableChains: getChainIds(polkadotConfig.chains),
+    availableChains: getChainIds(dotUiConfig.chains),
   };
 
   return (
@@ -210,7 +198,7 @@ export function usePapi(): PolkadotContextValue {
 }
 
 // Helper to get properly typed API (maintains backward compatibility)
-export function useTypedPolkadotApi(): ConfiguredChainApi<ChainId> | null {
+export function useTypedPolkadotApi(): UnsafeApi<ChainId> | null {
   const { api } = usePapi();
   return api;
 }
@@ -232,4 +220,4 @@ export function usePolkadotApi<T extends ChainId>(
 }
 
 // Type exports
-export type { ChainId, UnsafeApi, CompositeApi };
+export type { ChainId, UnsafeApi };
