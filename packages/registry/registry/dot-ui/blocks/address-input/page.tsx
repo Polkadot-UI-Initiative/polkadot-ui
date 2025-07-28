@@ -3,12 +3,11 @@
 import { useState } from "react";
 
 // Import the unified component
-import { AddressInputWithProvider } from "./components/address-input.shared";
+import { AddressInputWithProvider } from "./components/address-input.papi";
 import type { IdentityResult } from "./components/address-input.base";
 
 export default function AddressInputDemo() {
   const [unifiedPapiAddress, setUnifiedPapiAddress] = useState("");
-  const [unifiedDedotAddress, setUnifiedDedotAddress] = useState("");
   const [foundIdentity, setFoundIdentity] = useState<IdentityResult | null>(
     null
   );
@@ -17,8 +16,6 @@ export default function AddressInputDemo() {
     setFoundIdentity(identity);
     console.log("Identity found:", identity);
   };
-
-  // Services are handled internally by the components
 
   return (
     <div className="container mx-auto p-6 space-y-8 max-w-6xl">
@@ -49,7 +46,6 @@ export default function AddressInputDemo() {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">PAPI Implementation</h3>
             <AddressInputWithProvider
-              library="papi"
               label="Polkadot Address (PAPI)"
               value={unifiedPapiAddress}
               onChange={setUnifiedPapiAddress}
@@ -63,24 +59,6 @@ export default function AddressInputDemo() {
               Try:
               &ldquo;5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY&rdquo; or
               search &ldquo;alice&rdquo;
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Dedot Implementation</h3>
-            <AddressInputWithProvider
-              library="dedot"
-              label="Polkadot Address (Dedot)"
-              value={unifiedDedotAddress}
-              onChange={setUnifiedDedotAddress}
-              onIdentityFound={handleIdentityFound}
-              placeholder="Enter address or search by identity name"
-              withIdentityLookup={true}
-              withIdentitySearch={true}
-              showIdenticon={true}
-            />
-            <p className="text-sm text-muted-foreground">
-              Same API, different underlying library implementation
             </p>
           </div>
         </div>
