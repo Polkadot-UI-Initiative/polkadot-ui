@@ -14,41 +14,24 @@ import {
   isValidChainId,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
 import { DedotClient, WsProvider } from "dedot";
+import {
+  BasePolkadotContextValue,
+  BasePolkadotProviderProps,
+} from "@/registry/dot-ui/lib/types.dot-ui";
 
-interface DedotContextValue {
-  // Current active chain and its API
-  currentChain: ChainId;
-  api: DedotClient | null;
-  isLoading: (chainId: ChainId) => boolean;
-  error: string | null;
-
-  // All APIs for all registered chains
-  apis: Partial<Record<ChainId, DedotClient>>;
-
-  // Function to switch active chain (type-safe)
-  setApi: (chainId: ChainId) => void;
-
-  // Connection management
-  disconnect: () => void;
-  isConnected: (chainId: ChainId) => boolean;
-  initializeChain: (chainId: ChainId) => Promise<void>;
-
-  // Chain information
-  chainName: string | null;
-  availableChains: ChainId[];
-}
+// Dedot-specific context type extending the base
+type DedotContextValue = BasePolkadotContextValue<
+  DedotClient,
+  Partial<Record<ChainId, DedotClient>>,
+  ChainId
+>;
 
 const DedotContext = createContext<DedotContextValue | undefined>(undefined);
-
-interface DedotProviderProps {
-  children: React.ReactNode;
-  defaultChain?: ChainId;
-}
 
 export function PolkadotProvider({
   children,
   defaultChain,
-}: DedotProviderProps) {
+}: BasePolkadotProviderProps<ChainId>) {
   const [currentChain, setCurrentChain] = useState<ChainId>(
     defaultChain || dotUiConfig.defaultChain
   );
