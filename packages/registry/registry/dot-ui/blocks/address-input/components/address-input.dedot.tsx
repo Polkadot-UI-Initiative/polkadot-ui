@@ -46,7 +46,6 @@ export function AddressInput(props: AddressInputProps) {
 
   return <AddressInputBase {...props} services={services} />;
 }
-
 // Wrapped version with provider for drop-in usage
 export function AddressInputWithProvider(props: AddressInputProps) {
   return (

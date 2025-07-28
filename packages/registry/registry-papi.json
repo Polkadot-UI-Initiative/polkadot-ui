@@ -20,7 +20,7 @@
       "registryDependencies": ["input", "label", "badge", "button"],
       "files": [
         {
-          "path": "registry/dot-ui/blocks/address-input/page.papi.tsx",
+          "path": "registry/dot-ui/blocks/address-input/page.tsx",
           "type": "registry:page",
           "target": "app/dot-ui/address-input/page.tsx"
         },

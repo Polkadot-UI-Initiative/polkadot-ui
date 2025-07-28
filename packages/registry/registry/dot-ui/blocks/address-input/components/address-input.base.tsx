@@ -137,7 +137,7 @@ export const AddressInputBase = forwardRef<
       onIdentityFound,
       // withEnsLookup = false, // TODO: Implement ENS lookup
       // ethProviderUrl, // TODO: Implement ENS lookup
-      truncate = false,
+      truncate = 8,
       showIdenticon = true,
       identiconTheme = "polkadot",
       className,

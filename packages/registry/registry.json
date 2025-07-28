@@ -1,12 +1,12 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
-  "name": "dot-ui-papi",
+  "name": "dot-ui-dedot",
   "homepage": "https://dot-ui.com",
   "items": [
     {
       "name": "address-input",
       "type": "registry:component",
-      "title": "Address Input (PAPI)",
+      "title": "Address Input (dedot)",
       "description": "A comprehensive address input component with SS58/Ethereum validation, identity lookup using polkadot-api, and customizable identicon themes (polkadot, substrate, beachball, jdenticon).",
       "dependencies": [
         "@polkadot/keyring",
@@ -20,7 +20,7 @@
       "registryDependencies": ["input", "label", "badge", "button"],
       "files": [
         {
-          "path": "registry/dot-ui/blocks/address-input/page.papi.tsx",
+          "path": "registry/dot-ui/blocks/address-input/page.dedot.tsx",
           "type": "registry:page",
           "target": "app/dot-ui/address-input/page.tsx"
         },
@@ -29,7 +29,7 @@
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/blocks/address-input/components/address-input-base.papi.tsx",
+          "path": "registry/dot-ui/blocks/address-input/components/address-input.base.tsx",
           "type": "registry:component"
         },
         {
