@@ -161,6 +161,7 @@ export const AddressInputBase = forwardRef<
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
     const [selectedFromSearch, setSelectedFromSearch] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     // Merge forwarded ref with internal ref
     useEffect(() => {
@@ -239,8 +240,6 @@ export const AddressInputBase = forwardRef<
     // Combined identity data - use search result if available, otherwise polkadot identity
     const currentIdentity = searchResultIdentity || polkadotIdentity.data;
 
-    console.log("currentIdentity", currentIdentity);
-
     // Notify parent element when identity is found
     useEffect(() => {
       if (currentIdentity && onIdentityFound) {
@@ -277,8 +276,12 @@ export const AddressInputBase = forwardRef<
 
     const handleBlur = () => {
       setIsEditing(false);
+      // Clear any existing timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
       // Delay hiding dropdown to allow clicks on dropdown items
-      setTimeout(() => setShowDropdown(false), 150);
+      timeoutRef.current = setTimeout(() => setShowDropdown(false), 150);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -390,6 +393,15 @@ export const AddressInputBase = forwardRef<
       identitySearch.data,
       isIdentitySearching,
     ]);
+
+    // Cleanup timeout on unmount
+    useEffect(() => {
+      return () => {
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+      };
+    }, []);
 
     const displayValue =
       truncate && validationResult?.isValid && !isEditing

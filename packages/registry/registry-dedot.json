@@ -7,7 +7,7 @@
       "name": "address-input",
       "type": "registry:component",
       "title": "Address Input (dedot)",
-      "description": "A comprehensive address input component with SS58/Ethereum validation, identity lookup using polkadot-api, and customizable identicon themes (polkadot, substrate, beachball, jdenticon).",
+      "description": "A comprehensive address input component with SS58/Ethereum validation, identity lookup using dedot, and customizable identicon themes (polkadot, substrate, beachball, jdenticon).",
       "dependencies": [
         "@polkadot/keyring",
         "@polkadot/util",

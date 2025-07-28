@@ -35,10 +35,10 @@ export function AddressInput(props: AddressInputProps) {
 
       useProvider: () => ({
         isLoading: (chainId: string) =>
-          papiContext.isLoading(chainId as "paseo" | "paseo_people"),
+          papiContext.isLoading(chainId as typeof IDENTITY_CHAIN),
         currentChain: papiContext.currentChain,
         isConnected: (chainId: string) =>
-          papiContext.isConnected(chainId as "paseo" | "paseo_people"),
+          papiContext.isConnected(chainId as typeof IDENTITY_CHAIN),
       }),
     }),
     [papiContext]
