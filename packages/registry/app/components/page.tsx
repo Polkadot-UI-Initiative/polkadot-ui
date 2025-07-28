@@ -1,4 +1,4 @@
-import AddressInputPage from "@/registry/dot-ui/blocks/address-input/demo/page.papi";
+import AddressInputPage from "@/registry/dot-ui/blocks/address-input/demo/page.dedot";
 
 export default function Docs() {
   return (

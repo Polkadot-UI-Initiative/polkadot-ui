@@ -239,6 +239,8 @@ export const AddressInputBase = forwardRef<
     // Combined identity data - use search result if available, otherwise polkadot identity
     const currentIdentity = searchResultIdentity || polkadotIdentity.data;
 
+    console.log("currentIdentity", currentIdentity);
+
     // Notify parent element when identity is found
     useEffect(() => {
       if (currentIdentity && onIdentityFound) {

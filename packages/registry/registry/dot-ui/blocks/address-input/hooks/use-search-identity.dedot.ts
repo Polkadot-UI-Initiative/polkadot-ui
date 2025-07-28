@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useDedot } from "@/registry/dot-ui/providers/dedot-provider";
 import { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
+import { hasPositiveIdentityJudgement } from "@/registry/dot-ui/lib/utils.dot-ui";
 
 export interface FormattedIdentity {
   display?: string;
@@ -61,15 +62,6 @@ export function useIdentitySearch(
           return undefined;
         };
 
-        // Check for positive judgements
-        const hasPositiveJudgement = (judgements: unknown): boolean => {
-          if (!Array.isArray(judgements)) return false;
-          return judgements.some(
-            ([, judgement]: [unknown, unknown]) =>
-              judgement === "Reasonable" || judgement === "KnownGood"
-          );
-        };
-
         for (const [key, value] of entries) {
           if (!value || !value.info?.display) continue;
 
@@ -79,22 +71,26 @@ export function useIdentitySearch(
             display &&
             display.toLowerCase().includes(displayName.toLowerCase())
           ) {
-            const verified = hasPositiveJudgement(value.judgements);
+            const hasPositiveJudgement = hasPositiveIdentityJudgement(
+              value.judgements
+            );
 
             // Extract address from key (convert to string)
-            const address = key.toString();
+            const address = key.raw.toString();
 
-            matches.push({
-              address,
-              identity: {
-                display,
-                email: extractText(value.info?.email),
-                legal: extractText(value.info?.legal),
-                twitter: extractText(value.info?.twitter),
-                web: extractText(value.info?.web),
-                verified: verified || false,
-              },
-            });
+            if (hasPositiveJudgement) {
+              matches.push({
+                address,
+                identity: {
+                  display,
+                  email: extractText(value.info?.email),
+                  legal: extractText(value.info?.legal),
+                  twitter: extractText(value.info?.twitter),
+                  web: extractText(value.info?.web),
+                  verified: true,
+                },
+              });
+            }
 
             if (matches.length >= MAX_RESULTS) {
               break;

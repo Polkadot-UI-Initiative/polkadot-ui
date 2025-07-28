@@ -6,6 +6,7 @@ import {
   usePolkadotApi,
 } from "@/registry/dot-ui/providers/dedot-provider";
 import { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
+import { hasPositiveIdentityJudgement } from "@/registry/dot-ui/lib/utils.dot-ui";
 
 export interface PolkadotIdentity {
   display?: string;
@@ -61,11 +62,9 @@ export function usePolkadotIdentity(
         };
 
         // Check for positive judgements
-        const hasPositiveJudgement =
-          identity.judgements?.some(
-            ([, judgement]: [unknown, unknown]) =>
-              judgement === "Reasonable" || judgement === "KnownGood"
-          ) || false;
+        const hasPositiveJudgement = hasPositiveIdentityJudgement(
+          identity.judgements
+        );
 
         return {
           display: extractText(info.display),
