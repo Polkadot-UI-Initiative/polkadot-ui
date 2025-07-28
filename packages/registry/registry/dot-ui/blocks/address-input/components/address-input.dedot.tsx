@@ -3,26 +3,26 @@
 import { useMemo } from "react";
 import {
   PolkadotProvider,
-  usePapi,
-} from "@/registry/dot-ui/providers/papi-provider";
+  useDedot,
+} from "@/registry/dot-ui/providers/dedot-provider";
 import {
   AddressInputBase,
   AddressInputProvider,
   type AddressInputBaseProps,
 } from "./address-input.base";
 
-// Import PAPI-specific hooks
-import { usePolkadotIdentity } from "../hooks/use-identity.papi";
-import { useIdentityByDisplayName } from "../hooks/use-search-identity.papi";
+// Import Dedot-specific hooks
+import { usePolkadotIdentity } from "../hooks/use-identity.dedot";
+import { useIdentityByDisplayName } from "../hooks/use-search-identity.dedot";
 
 // Props type - removes services prop since we inject it
 export type AddressInputProps = Omit<AddressInputBaseProps, "services">;
 
-// Identity chain for PAPI
+// Identity chain for Dedot
 const IDENTITY_CHAIN = "paseo_people" as const;
 
 export function AddressInput(props: AddressInputProps) {
-  const papiContext = usePapi();
+  const dedotContext = useDedot();
 
   // Create elegant services object with proper typing
   const services = useMemo(
@@ -35,13 +35,13 @@ export function AddressInput(props: AddressInputProps) {
 
       useProvider: () => ({
         isLoading: (chainId: string) =>
-          papiContext.isLoading(chainId as "paseo" | "paseo_people"),
-        currentChain: papiContext.currentChain,
+          dedotContext.isLoading(chainId as typeof IDENTITY_CHAIN),
+        currentChain: dedotContext.currentChain,
         isConnected: (chainId: string) =>
-          papiContext.isConnected(chainId as "paseo" | "paseo_people"),
+          dedotContext.isConnected(chainId as typeof IDENTITY_CHAIN),
       }),
     }),
-    [papiContext]
+    [dedotContext]
   );
 
   return <AddressInputBase {...props} services={services} />;

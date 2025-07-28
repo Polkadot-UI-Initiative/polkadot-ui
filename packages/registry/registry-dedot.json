@@ -4,29 +4,44 @@
   "homepage": "https://dot-ui.com",
   "items": [
     {
-      "name": "block-number",
+      "name": "address-input",
       "type": "registry:component",
-      "title": "Block Number",
-      "description": "A block number component optimized for dedot. Fast, type-safe, and efficient.",
-      "dependencies": ["dedot"],
+      "title": "Address Input (dedot)",
+      "description": "A comprehensive address input component with SS58/Ethereum validation, identity lookup using polkadot-api, and customizable identicon themes (polkadot, substrate, beachball, jdenticon).",
+      "dependencies": [
+        "@polkadot/keyring",
+        "@polkadot/util",
+        "ethers",
+        "@tanstack/react-query",
+        "@polkadot/react-identicon",
+        "polkadot-api"
+      ],
       "requiresPolkadotApi": true,
-      "registryDependencies": ["button"],
+      "registryDependencies": ["input", "label", "badge", "button"],
       "files": [
         {
-          "path": "registry/dot-ui/blocks/block-number/page.dedot.tsx",
+          "path": "registry/dot-ui/blocks/address-input/page.dedot.tsx",
           "type": "registry:page",
-          "target": "app/dot-ui/block-number/page.tsx"
+          "target": "app/dot-ui/address-input/page.tsx"
         },
         {
-          "path": "registry/dot-ui/blocks/block-number/components/block-number.dedot.tsx",
+          "path": "registry/dot-ui/blocks/address-input/components/address-input.papi.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/blocks/block-number/hooks/use-block-number.dedot.ts",
+          "path": "registry/dot-ui/blocks/address-input/components/address-input.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/dot-ui/blocks/address-input/hooks/use-identity.papi.ts",
           "type": "registry:hook"
         },
         {
-          "path": "registry/dot-ui/providers/dedot-provider.tsx",
+          "path": "registry/dot-ui/blocks/address-input/hooks/use-search-identity.papi.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/dot-ui/providers/papi-provider.tsx",
           "type": "registry:lib"
         },
         {
@@ -38,7 +53,15 @@
           "type": "registry:lib"
         },
         {
+          "path": "registry/dot-ui/lib/types.papi.ts",
+          "type": "registry:lib"
+        },
+        {
           "path": "registry/dot-ui/lib/config.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/config.papi.ts",
           "type": "registry:lib"
         }
       ]
