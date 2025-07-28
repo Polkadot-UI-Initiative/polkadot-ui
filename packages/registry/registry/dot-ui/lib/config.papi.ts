@@ -31,7 +31,3 @@ export const polkadotConfig = definePolkadotConfig({
   },
   defaultChain: "paseo",
 } as const);
-
-export type ChainId = keyof typeof polkadotConfig.chains;
-export type ChainDescriptor<T extends ChainId> =
-  (typeof polkadotConfig.chains)[T]["descriptor"];

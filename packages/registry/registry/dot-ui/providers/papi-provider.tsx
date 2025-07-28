@@ -10,16 +10,13 @@ import {
   useState,
   useCallback,
 } from "react";
-import {
-  polkadotConfig,
-  type ChainId,
-  type ChainDescriptor,
-} from "@/registry/dot-ui/lib/config.papi";
+import { polkadotConfig } from "@/registry/dot-ui/lib/config.papi";
 import {
   getChainIds,
   getChainConfig,
   isValidChainId,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
+import { ChainDescriptor, ChainId } from "@/registry/dot-ui/lib/types.papi";
 
 // Type for the API based on configured chains
 type ConfiguredChainApi<T extends ChainId> = TypedApi<ChainDescriptor<T>>;

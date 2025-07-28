@@ -372,7 +372,7 @@ export class Telemetry {
   /**
    * Show privacy notice on first run if enabled
    */
-  private async maybeShowPrivacyNotice(): Promise<void> {
+  public async maybeShowPrivacyNotice(): Promise<void> {
     if (!this.config) {
       this.config = await this.configManager.getConfig();
     }

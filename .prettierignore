@@ -1,0 +1,5 @@
+# .prettierignore - covers prettier-specific exclusions
+.papi/
+pnpm-lock.yaml
+*.min.js
+*.min.css 

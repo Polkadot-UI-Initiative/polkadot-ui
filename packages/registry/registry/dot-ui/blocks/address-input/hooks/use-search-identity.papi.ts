@@ -5,7 +5,11 @@ import {
   usePapi,
   usePolkadotApi,
 } from "@/registry/dot-ui/providers/papi-provider";
-import { extractText, hasPositiveIdentityJudgement } from "@/registry/dot-ui/lib/utils.dot-ui";
+import {
+  extractText,
+  hasPositiveIdentityJudgement,
+} from "@/registry/dot-ui/lib/utils.dot-ui";
+import { ChainIdWithIdentity } from "@/registry/dot-ui/lib/types.papi";
 
 export interface FormattedIdentity {
   display?: string;
@@ -23,21 +27,21 @@ export interface IdentitySearchResult {
 }
 
 export function useIdentityByDisplayName(
-  displayName: string | null | undefined
+  displayName: string | null | undefined,
+  identityChain: ChainIdWithIdentity = "paseo_people"
 ) {
-  const IDENTITY_CHAIN = "paseo_people";
   const { isLoading, isConnected } = usePapi();
-  const peopleApi = usePolkadotApi(IDENTITY_CHAIN);
+  const peopleApi = usePolkadotApi(identityChain);
 
   return useQuery({
-    queryKey: ["identity-search", displayName, IDENTITY_CHAIN],
+    queryKey: ["identity-search", displayName, identityChain],
     queryFn: async (): Promise<IdentitySearchResult[]> => {
       if (
         !peopleApi ||
         !displayName ||
         displayName.length < 3 ||
-        isLoading(IDENTITY_CHAIN) ||
-        !isConnected(IDENTITY_CHAIN)
+        isLoading(identityChain) ||
+        !isConnected(identityChain)
       ) {
         return [];
       }
@@ -58,7 +62,9 @@ export function useIdentityByDisplayName(
             display &&
             display.toLowerCase().includes(displayName.toLowerCase())
           ) {
-            const hasPositiveJudgement = hasPositiveIdentityJudgement(value.judgements);
+            const hasPositiveJudgement = hasPositiveIdentityJudgement(
+              value.judgements
+            );
 
             // Only include verified identities in search results
             // Remove this if block if we want to show all identities
@@ -95,7 +101,7 @@ export function useIdentityByDisplayName(
       !!peopleApi &&
       !!displayName &&
       displayName.length >= 3 &&
-      isConnected(IDENTITY_CHAIN),
+      isConnected(identityChain),
     staleTime: 5 * 60 * 1000, // 5 minutes - identities don't change often
     gcTime: 10 * 60 * 1000, // 10 minutes - keep cached longer for search
   });

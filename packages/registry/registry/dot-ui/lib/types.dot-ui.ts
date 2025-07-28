@@ -1,6 +1,4 @@
-import type { ChainDefinition } from "polkadot-api";
-
-// interfaces related to dot-ui
+// interfaces related to dot-ui will be used by papi + dedot
 export interface ChainConfig {
   readonly endpoints: string[];
   readonly displayName: string;
@@ -13,10 +11,6 @@ export interface ChainConfig {
 export interface DotUiConfig {
   readonly chains: Record<string, ChainConfig>;
   readonly defaultChain: string;
-}
-
-export interface PapiConfig extends ChainConfig {
-  readonly descriptor: ChainDefinition;
 }
 
 export interface PolkadotConfig<
@@ -34,7 +28,6 @@ export function definePolkadotConfig<
   return config;
 }
 
-// interfaces related to dedot
 export enum SubstrateExplorer {
   Subscan = "subscan",
   PolkadotJs = "polkadot-js",

@@ -93,6 +93,10 @@ export class InitCommand {
         package_manager: await this.projectDetector.detectPackageManager(),
         duration_ms: duration,
       });
+
+      // Show privacy notice after successful command execution
+      await this.telemetry.maybeShowPrivacyNotice();
+
       this.logger.detail(
         "✅ InitCommand.execute() - Completed successfully in " +
           duration +

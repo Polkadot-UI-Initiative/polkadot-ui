@@ -102,6 +102,9 @@ export class AddCommand {
         duration_ms: duration,
         project_type: projectStructure.isNextJs ? "nextjs" : "vite",
       });
+
+      // Show privacy notice after successful command execution
+      await this.telemetry.maybeShowPrivacyNotice();
     } catch (error) {
       await this.handleInstallationError(error, componentName, startTime);
     }

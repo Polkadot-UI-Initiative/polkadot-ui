@@ -1,0 +1,64 @@
+---
+title: FAQ
+---
+
+import { 
+  Accordion, 
+  AccordionContent, 
+  AccordionItem, 
+  AccordionTrigger 
+} from "@/components/ui/accordion"
+
+<Accordion type="single" collapsible className="w-full">
+  <AccordionItem value="telemetry">
+    <AccordionTrigger>
+    <h2 className="text-lg font-semibold mt-0 pt-0">Does Dot UI collect telemetry?</h2>
+    </AccordionTrigger>
+    <AccordionContent>
+
+To help improve the CLI experience, Dot UI collects anonymous usage telemetry by default. This data helps us understand how the CLI is being used and identify areas for improvement.
+
+### What data is collected
+
+The telemetry system tracks:
+- Component installation events (success/failure)
+- Project initialization events
+- Framework type (Next.js or Vite)
+- TypeScript and Tailwind CSS usage
+- Package manager used (npm, pnpm, yarn, bun)
+- Operation duration (for performance improvements)
+- CLI version
+- Error messages (truncated to protect sensitive data)
+
+### Privacy
+
+- **No personal information** is collected (no usernames, project names, or file paths)
+- **No code or component content** is transmitted
+- Data is only used in aggregate to improve the CLI
+- Telemetry **fails silently** and will never break your CLI operations
+
+### Disabling telemetry
+
+You can disable telemetry in several ways:
+
+**Environment variable (recommended):**
+```bash
+export POLKA_UI_DISABLE_TELEMETRY=true
+```
+
+**Per-command using dev flag:**
+```bash
+npx polka-ui add button --dev
+```
+
+**Permanently in your shell profile:**
+```bash
+# Add to ~/.bashrc, ~/.zshrc, etc.
+export POLKA_UI_DISABLE_TELEMETRY=true
+```
+
+Telemetry is automatically disabled when using the `--dev` flag for local development.
+    </AccordionContent>
+  </AccordionItem>
+  
+</Accordion>
