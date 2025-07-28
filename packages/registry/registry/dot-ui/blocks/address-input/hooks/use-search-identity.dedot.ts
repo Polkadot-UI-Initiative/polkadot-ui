@@ -18,7 +18,7 @@ export interface IdentitySearchResult {
   identity: FormattedIdentity;
 }
 
-export function useIdentityByDisplayName(
+export function useIdentitySearch(
   displayName: string | null | undefined,
   identityChain: ChainId = "paseo_people"
 ) {
@@ -28,6 +28,7 @@ export function useIdentityByDisplayName(
     queryKey: ["identity-search-dedot", displayName, identityChain],
     queryFn: async (): Promise<IdentitySearchResult[]> => {
       const api = apis[identityChain];
+
       if (
         !api ||
         !displayName ||

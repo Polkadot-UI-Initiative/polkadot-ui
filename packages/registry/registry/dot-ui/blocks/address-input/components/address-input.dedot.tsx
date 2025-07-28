@@ -13,7 +13,7 @@ import {
 
 // Import Dedot-specific hooks
 import { usePolkadotIdentity } from "@/registry/dot-ui/blocks/address-input/hooks/use-identity.dedot";
-import { useIdentityByDisplayName } from "@/registry/dot-ui/blocks/address-input/hooks/use-search-identity.dedot";
+import { useIdentitySearch } from "@/registry/dot-ui/blocks/address-input/hooks/use-search-identity.dedot";
 
 // Props type - removes services prop since we inject it
 export type AddressInputProps = Omit<AddressInputBaseProps, "services">;
@@ -31,7 +31,7 @@ export function AddressInput(props: AddressInputProps) {
         usePolkadotIdentity(address, IDENTITY_CHAIN),
 
       useIdentitySearch: (displayName: string | null) =>
-        useIdentityByDisplayName(displayName, IDENTITY_CHAIN),
+        useIdentitySearch(displayName, IDENTITY_CHAIN),
 
       useProvider: () => ({
         isLoading: (chainId: string) =>

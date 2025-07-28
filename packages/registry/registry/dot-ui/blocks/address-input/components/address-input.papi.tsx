@@ -13,7 +13,7 @@ import {
 
 // Import PAPI-specific hooks
 import { usePolkadotIdentity } from "@/registry/dot-ui/blocks/address-input/hooks/use-identity.papi";
-import { useIdentityByDisplayName } from "@/registry/dot-ui/blocks/address-input/hooks/use-search-identity.papi";
+import { useIdentitySearch } from "@/registry/dot-ui/blocks/address-input/hooks/use-search-identity.papi";
 
 // Props type - removes services prop since we inject it
 export type AddressInputProps = Omit<AddressInputBaseProps, "services">;
@@ -31,7 +31,7 @@ export function AddressInput(props: AddressInputProps) {
         usePolkadotIdentity(address, IDENTITY_CHAIN),
 
       useIdentitySearch: (displayName: string | null) =>
-        useIdentityByDisplayName(displayName, IDENTITY_CHAIN),
+        useIdentitySearch(displayName, IDENTITY_CHAIN),
 
       useProvider: () => ({
         isLoading: (chainId: string) =>

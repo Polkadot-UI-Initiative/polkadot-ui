@@ -1,7 +1,10 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useDedot } from "@/registry/dot-ui/providers/dedot-provider";
+import {
+  useDedot,
+  usePolkadotApi,
+} from "@/registry/dot-ui/providers/dedot-provider";
 import { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 
 export interface PolkadotIdentity {
@@ -16,19 +19,24 @@ export function usePolkadotIdentity(
   address: string,
   identityChain: ChainId = "paseo_people"
 ) {
-  const { apis, isConnected } = useDedot();
+  const { isLoading, isConnected } = useDedot();
+  const peopleApi = usePolkadotApi(identityChain);
 
   return useQuery({
     queryKey: ["polkadot-identity-dedot", address, identityChain],
     queryFn: async (): Promise<PolkadotIdentity | null> => {
-      const api = apis[identityChain];
-      if (!api || !address || !isConnected(identityChain)) {
+      if (
+        !peopleApi ||
+        !address ||
+        isLoading(identityChain) ||
+        !isConnected(identityChain)
+      ) {
         return null;
       }
 
       try {
         // Query identity using Dedot API
-        const identity = await api.query.identity.identityOf(address);
+        const identity = await peopleApi.query.identity.identityOf(address);
 
         if (!identity || !identity.info) {
           return null;
@@ -71,7 +79,7 @@ export function usePolkadotIdentity(
         return null;
       }
     },
-    enabled: !!apis[identityChain] && !!address && isConnected(identityChain),
+    enabled: !!peopleApi && !!address && isConnected(identityChain),
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 1,
   });
