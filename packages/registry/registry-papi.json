@@ -16,13 +16,17 @@
         "@polkadot/react-identicon",
         "polkadot-api"
       ],
-      "requiresPolkadotApi": true,
       "registryDependencies": ["input", "label", "badge", "button"],
       "files": [
         {
-          "path": "registry/dot-ui/blocks/address-input/page.tsx",
+          "path": "registry/dot-ui/blocks/address-input/demo/page.papi.tsx",
           "type": "registry:page",
-          "target": "app/dot-ui/address-input/page.tsx"
+          "target": "app/demo/dot-ui/addre ss-input/page.papi.tsx"
+        },
+        {
+          "path": "registry/dot-ui/blocks/address-input/demo/address-input-demo.tsx",
+          "type": "registry:page",
+          "target": "app/demo/dot-ui/address-input/address-input-demo.tsx"
         },
         {
           "path": "registry/dot-ui/blocks/address-input/components/address-input.papi.tsx",

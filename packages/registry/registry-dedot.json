@@ -14,18 +14,22 @@
         "ethers",
         "@tanstack/react-query",
         "@polkadot/react-identicon",
-        "polkadot-api"
+        "dedot"
       ],
-      "requiresPolkadotApi": true,
       "registryDependencies": ["input", "label", "badge", "button"],
       "files": [
         {
-          "path": "registry/dot-ui/blocks/address-input/page.tsx",
+          "path": "registry/dot-ui/blocks/address-input/demo/page.dedot.tsx",
           "type": "registry:page",
-          "target": "app/dot-ui/address-input/page.tsx"
+          "target": "app/demo/dot-ui/address-input/page.dedot.tsx"
         },
         {
-          "path": "registry/dot-ui/blocks/address-input/components/address-input.papi.tsx",
+          "path": "registry/dot-ui/blocks/address-input/demo/address-input-demo.tsx",
+          "type": "registry:page",
+          "target": "app/demo/dot-ui/address-input/address-input-demo.tsx"
+        },
+        {
+          "path": "registry/dot-ui/blocks/address-input/components/address-input.dedot.tsx",
           "type": "registry:component"
         },
         {
@@ -33,15 +37,15 @@
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/blocks/address-input/hooks/use-identity.papi.ts",
+          "path": "registry/dot-ui/blocks/address-input/hooks/use-identity.dedot.ts",
           "type": "registry:hook"
         },
         {
-          "path": "registry/dot-ui/blocks/address-input/hooks/use-search-identity.papi.ts",
+          "path": "registry/dot-ui/blocks/address-input/hooks/use-search-identity.dedot.ts",
           "type": "registry:hook"
         },
         {
-          "path": "registry/dot-ui/providers/papi-provider.tsx",
+          "path": "registry/dot-ui/providers/dedot-provider.tsx",
           "type": "registry:lib"
         },
         {
@@ -53,15 +57,7 @@
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/types.papi.ts",
-          "type": "registry:lib"
-        },
-        {
           "path": "registry/dot-ui/lib/config.dot-ui.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "registry/dot-ui/lib/config.papi.ts",
           "type": "registry:lib"
         }
       ]
