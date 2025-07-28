@@ -73,7 +73,8 @@ export default function AddressInputDemo({
           <div className="mb-12">
             <h2 className="text-xl font-bold mb-3">Sample Addresses</h2>
             <p className="text-muted-foreground mb-6">
-              Try these sample addresses to test the validation
+              Try these sample addresses to test the validation and identity
+              lookup
             </p>
 
             <div className="space-y-4">

@@ -21,7 +21,7 @@
         {
           "path": "registry/dot-ui/blocks/address-input/demo/page.papi.tsx",
           "type": "registry:page",
-          "target": "app/demo/dot-ui/addre ss-input/page.papi.tsx"
+          "target": "app/demo/dot-ui/address-input/page.tsx"
         },
         {
           "path": "registry/dot-ui/blocks/address-input/demo/address-input-demo.tsx",
