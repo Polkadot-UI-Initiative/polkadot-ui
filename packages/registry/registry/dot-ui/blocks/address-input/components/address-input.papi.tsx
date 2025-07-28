@@ -12,8 +12,8 @@ import {
 } from "./address-input.base";
 
 // Import PAPI-specific hooks
-import { usePolkadotIdentity } from "../hooks/use-identity.papi";
-import { useIdentityByDisplayName } from "../hooks/use-search-identity.papi";
+import { usePolkadotIdentity } from "@/registry/dot-ui/blocks/address-input/hooks/use-identity.papi";
+import { useIdentityByDisplayName } from "@/registry/dot-ui/blocks/address-input/hooks/use-search-identity.papi";
 
 // Props type - removes services prop since we inject it
 export type AddressInputProps = Omit<AddressInputBaseProps, "services">;

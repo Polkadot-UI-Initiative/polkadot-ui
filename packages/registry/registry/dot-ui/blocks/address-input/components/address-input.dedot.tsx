@@ -9,11 +9,11 @@ import {
   AddressInputBase,
   AddressInputProvider,
   type AddressInputBaseProps,
-} from "./address-input.base";
+} from "@/registry/dot-ui/blocks/address-input/components/address-input.base";
 
 // Import Dedot-specific hooks
-import { usePolkadotIdentity } from "../hooks/use-identity.dedot";
-import { useIdentityByDisplayName } from "../hooks/use-search-identity.dedot";
+import { usePolkadotIdentity } from "@/registry/dot-ui/blocks/address-input/hooks/use-identity.dedot";
+import { useIdentityByDisplayName } from "@/registry/dot-ui/blocks/address-input/hooks/use-search-identity.dedot";
 
 // Props type - removes services prop since we inject it
 export type AddressInputProps = Omit<AddressInputBaseProps, "services">;

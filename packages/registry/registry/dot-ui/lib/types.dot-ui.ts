@@ -1,3 +1,5 @@
+import { type ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
+
 // interfaces related to dot-ui will be used by papi + dedot
 export interface ChainConfig {
   readonly endpoints: string[];
@@ -10,7 +12,7 @@ export interface ChainConfig {
 
 export interface DotUiConfig {
   readonly chains: Record<string, ChainConfig>;
-  readonly defaultChain: string;
+  readonly defaultChain: ChainId;
 }
 
 export interface PolkadotConfig<
