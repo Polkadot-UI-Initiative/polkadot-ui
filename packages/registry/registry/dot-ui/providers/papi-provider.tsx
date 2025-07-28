@@ -17,7 +17,7 @@ import {
   isValidChainId,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
 
-interface PolkadotContextValue {
+export interface PolkadotContextValue {
   // Current active chain and its API
   currentChain: ChainId;
   api: UnsafeApi<ChainId> | null;

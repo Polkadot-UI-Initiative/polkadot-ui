@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import { ChainId, dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
 import {
   getChainIds,
@@ -8,8 +14,9 @@ import {
   isValidChainId,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
 import { DedotClient, WsProvider } from "dedot";
+import { PaseoPeopleApi } from "@dedot/chaintypes";
 
-interface DedotContextValue {
+export interface DedotContextValue {
   // Current active chain and its API
   currentChain: ChainId;
   api: DedotClient | null;
@@ -25,6 +32,7 @@ interface DedotContextValue {
   // Connection management
   disconnect: () => void;
   isConnected: (chainId: ChainId) => boolean;
+  initializeChain: (chainId: ChainId) => Promise<void>;
 
   // Chain information
   chainName: string | null;
@@ -35,11 +43,12 @@ const DedotContext = createContext<DedotContextValue | undefined>(undefined);
 
 interface DedotProviderProps {
   children: React.ReactNode;
+  defaultChain?: ChainId;
 }
 
-export function PolkadotProvider({ children }: DedotProviderProps) {
+export function DedotProvider({ children, defaultChain }: DedotProviderProps) {
   const [currentChain, setCurrentChain] = useState<ChainId>(
-    dotUiConfig.defaultChain
+    defaultChain || dotUiConfig.defaultChain
   );
   const [apis, setApis] = useState<Partial<Record<ChainId, DedotClient>>>({});
   const [clients, setClients] = useState<Map<ChainId, DedotClient>>(new Map());
@@ -52,61 +61,68 @@ export function PolkadotProvider({ children }: DedotProviderProps) {
 
   // Initialize the default chain on mount
   useEffect(() => {
-    initializeChain(dotUiConfig.defaultChain);
-  }, []);
+    initializeChain(defaultChain || dotUiConfig.defaultChain);
+  }, [defaultChain]);
 
-  const initializeChain = async (chainId: ChainId) => {
-    // Don't initialize if already connected
-    if (apis[chainId]) return;
+  const initializeChain = useCallback(
+    async (chainId: ChainId) => {
+      // Don't initialize if already connected
+      if (apis[chainId]) return;
 
-    setLoadingStates((prev) => new Map(prev).set(chainId, true));
-    setErrorStates((prev) => new Map(prev).set(chainId, null));
+      setLoadingStates((prev) => new Map(prev).set(chainId, true));
+      setErrorStates((prev) => new Map(prev).set(chainId, null));
 
-    try {
-      const chainConfig = getChainConfig(dotUiConfig.chains, chainId);
+      try {
+        const chainConfig = getChainConfig(dotUiConfig.chains, chainId);
 
-      // Validate that endpoints array exists and has at least one element
-      if (!chainConfig.endpoints || !chainConfig.endpoints[0]) {
-        throw new Error(
-          `Chain ${chainId} (${chainConfig.displayName}) has no endpoints configured. Please add at least one endpoint to the chain configuration.`
+        // Validate that endpoints array exists and has at least one element
+        if (!chainConfig.endpoints || !chainConfig.endpoints[0]) {
+          throw new Error(
+            `Chain ${chainId} (${chainConfig.displayName}) has no endpoints configured. Please add at least one endpoint to the chain configuration.`
+          );
+        }
+
+        const provider = new WsProvider(chainConfig.endpoints);
+        provider.on("connected", (endpoint: string) => {
+          console.log("Connected Endpoint", endpoint);
+        });
+
+        await provider.connect();
+
+        let client: DedotClient;
+        if (chainId === "paseo_people") {
+          client = (await DedotClient.new<PaseoPeopleApi>({
+            provider,
+            cacheMetadata: true,
+          })) as unknown as DedotClient;
+        } else {
+          client = await DedotClient.new({
+            provider,
+            cacheMetadata: true,
+          });
+        }
+
+        setClients((prev) => new Map(prev).set(chainId, client));
+        setApis((prev: Partial<Record<ChainId, DedotClient>>) => ({
+          ...prev,
+          [chainId]: client,
+        }));
+      } catch (err) {
+        console.error(`Failed to initialize ${chainId}:`, err);
+        setErrorStates((prev) =>
+          new Map(prev).set(
+            chainId,
+            err instanceof Error
+              ? err.message
+              : "Failed to initialize Polkadot API"
+          )
         );
+      } finally {
+        setLoadingStates((prev) => new Map(prev).set(chainId, false));
       }
-
-      console.log(`Connecting to ${chainConfig.displayName} using dedot`);
-
-      const provider = new WsProvider(chainConfig.endpoints);
-      provider.on("connected", (endpoint: string) => {
-        console.log("Connected Endpoint", endpoint);
-      });
-
-      await provider.connect();
-
-      const client = await DedotClient.new({
-        provider,
-        cacheMetadata: true,
-      });
-
-      setClients((prev) => new Map(prev).set(chainId, client));
-      setApis((prev: Partial<Record<ChainId, DedotClient>>) => ({
-        ...prev,
-        [chainId]: client,
-      }));
-
-      console.log(`Successfully connected to ${chainConfig.displayName}`);
-    } catch (err) {
-      console.error(`Failed to initialize ${chainId}:`, err);
-      setErrorStates((prev) =>
-        new Map(prev).set(
-          chainId,
-          err instanceof Error
-            ? err.message
-            : "Failed to initialize Polkadot API"
-        )
-      );
-    } finally {
-      setLoadingStates((prev) => new Map(prev).set(chainId, false));
-    }
-  };
+    },
+    [apis, setLoadingStates, setErrorStates, setClients, setApis]
+  );
 
   const setApi = (chainId: ChainId) => {
     if (!isValidChainId(dotUiConfig.chains, chainId)) {
@@ -166,6 +182,7 @@ export function PolkadotProvider({ children }: DedotProviderProps) {
     disconnect,
     isConnected,
     isLoading,
+    initializeChain,
     chainName: currentChainConfig.displayName,
     availableChains: getChainIds(dotUiConfig.chains),
   };
@@ -183,5 +200,18 @@ export function useDedot(): DedotContextValue {
   return context;
 }
 
-// Type exports (matching polkadot provider)
+export function useDedotApi(chainId: ChainId): DedotClient | null {
+  const { apis, initializeChain } = useDedot();
+
+  useEffect(() => {
+    if (!apis[chainId]) {
+      initializeChain(chainId);
+    }
+  }, [apis, initializeChain, chainId]);
+
+  return (apis[chainId] as DedotClient) || null;
+}
+
+
+
 export type { ChainId };

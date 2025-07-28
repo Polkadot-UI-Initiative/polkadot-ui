@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { AddressInputWithProvider } from "@/registry/dot-ui/blocks/address-input/components/address-input.papi";
+import { AddressInputWithProvider } from "@/registry/dot-ui/blocks/address-input/components/address-input";
 import { OpenInV0Button } from "../open-in-v0-button";
 import { Button } from "@/components/ui/button";
 import { BookText } from "lucide-react";
@@ -30,6 +30,7 @@ const examples = [
           className="w-full"
           truncate={8}
           format="both"
+          providerType="dedot"
         />
       </div>
     ),
