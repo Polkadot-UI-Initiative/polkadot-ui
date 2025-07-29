@@ -76,3 +76,27 @@ export interface BasePolkadotHooks<TApi, TChainId = string> {
   useTypedPolkadotApi: () => TApi | null;
   usePolkadotApi: (chainId: TChainId) => TApi | null;
 }
+
+export interface FormattedIdentity {
+  display?: string;
+  email?: string;
+  legal?: string;
+  matrix?: string; // for papi
+  riot?: string; // for dedot
+  twitter?: string;
+  web?: string;
+  verified?: boolean;
+}
+
+export interface PolkadotIdentity {
+  display?: string;
+  legal?: string;
+  email?: string;
+  twitter?: string;
+  verified: boolean;
+}
+
+export interface IdentitySearchResult {
+  address: string;
+  identity: FormattedIdentity;
+}

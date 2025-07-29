@@ -10,21 +10,7 @@ import {
   hasPositiveIdentityJudgement,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
 import { ChainIdWithIdentity } from "@/registry/dot-ui/lib/types.papi";
-
-export interface FormattedIdentity {
-  display?: string;
-  email?: string;
-  legal?: string;
-  matrix?: string;
-  twitter?: string;
-  web?: string;
-  verified?: boolean;
-}
-
-export interface IdentitySearchResult {
-  address: string;
-  identity: FormattedIdentity;
-}
+import { IdentitySearchResult } from "@/registry/dot-ui/lib/types.dot-ui";
 
 export function useIdentitySearch(
   displayName: string | null | undefined,

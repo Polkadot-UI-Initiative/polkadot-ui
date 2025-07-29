@@ -18,29 +18,11 @@ import {
 import { Button } from "@/registry/dot-ui/ui/button";
 import { dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
 import { SubstrateExplorer } from "@/registry/dot-ui/lib/types.dot-ui";
+import {
+  IdentitySearchResult,
+  PolkadotIdentity,
+} from "@/registry/dot-ui/lib/types.dot-ui";
 import Link from "next/link";
-
-// Types for identity data
-export interface PolkadotIdentity {
-  display?: string;
-  legal?: string;
-  email?: string;
-  twitter?: string;
-  verified: boolean;
-}
-
-export interface IdentitySearchResult {
-  address: string;
-  identity: {
-    display?: string;
-    email?: string;
-    legal?: string;
-    matrix?: string;
-    twitter?: string;
-    web?: string;
-    verified?: boolean;
-  };
-}
 
 // Services interface for dependency injection
 export interface AddressInputServices {
