@@ -15,14 +15,11 @@ import {
 } from "@/registry/dot-ui/lib/utils.dot-ui";
 import { Button } from "@/registry/dot-ui/ui/button";
 import type { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
-import { QueryClient, QueryClientProvider, UseQueryResult } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
 import { SubstrateExplorer } from "@/registry/dot-ui/lib/types.dot-ui";
 import Link from "next/link";
 import type {
-  IdentitySearchResult,
-  PolkadotIdentity,
-  ProviderHookInterface,
   IdentityHookInterface,
   IdentityResult,
 } from "@/registry/dot-ui/lib/types.dot-ui";
@@ -45,23 +42,14 @@ export interface AddressInputProps {
   identiconTheme?: IconTheme;
   className?: string;
   identityChain?: ChainId;
-  providerType?: "papi" | "dedot";
+  libraryName?: "papi" | "dedot";
 }
 
-const AddressInputBase = forwardRef<
-  HTMLInputElement,
-  AddressInputProps & {
-    usePolkadotIdentity: (
-      address: string,
-      identityChain?: ChainId
-    ) => UseQueryResult<PolkadotIdentity | null, Error>;
-    useIdentityByDisplayName: (
-      displayName: string | null | undefined,
-      identityChain?: ChainId
-    ) => UseQueryResult<IdentitySearchResult[], Error>;
-    useProvider: () => ProviderHookInterface;
-  }
->(
+interface AddressInputHookProps
+  extends IdentityHookInterface,
+    AddressInputProps {}
+
+const AddressInputBase = forwardRef<HTMLInputElement, AddressInputHookProps>(
   (
     {
       value = "",
@@ -76,7 +64,6 @@ const AddressInputBase = forwardRef<
       showIdenticon = true,
       identiconTheme = "polkadot",
       className,
-      providerType = "papi",
       usePolkadotIdentity,
       useIdentityByDisplayName,
       useProvider,
@@ -581,12 +568,6 @@ const AddressInputBase = forwardRef<
                 <span>• No identity found</span>
               </div>
             )}
-
-          {/* Provider type indicator */}
-          <div className="text-xs text-gray-500">
-            Provider:{" "}
-            <span className="font-mono">{providerType.toUpperCase()}</span>
-          </div>
         </div>
       </div>
     );
@@ -597,17 +578,17 @@ AddressInputBase.displayName = "AddressInputBase";
 
 export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
   (props, ref) => {
-    const { providerType = "papi" } = props;
+    const { libraryName = "papi" } = props;
     const [hooks, setHooks] = useState<Partial<IdentityHookInterface>>({});
 
-    const memoizedProviderType = useMemo(() => providerType, [providerType]);
+    const memoizedLibraryName = useMemo(() => libraryName, [libraryName]);
 
     useEffect(() => {
       let isMounted = true;
 
       const loadHooks = async () => {
         try {
-          if (memoizedProviderType === "papi") {
+          if (memoizedLibraryName === "papi") {
             const [identityModule, searchModule, providerModule] =
               await Promise.all([
                 import(
@@ -648,7 +629,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
           }
         } catch (error) {
           console.error(
-            `❌ Failed to load ${memoizedProviderType} hooks:`,
+            `❌ Failed to load ${memoizedLibraryName} hooks:`,
             error
           );
         }
@@ -659,7 +640,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
       return () => {
         isMounted = false;
       };
-    }, [memoizedProviderType]);
+    }, [memoizedLibraryName]);
 
     // Show loading state until hooks are loaded
     if (
@@ -689,54 +670,65 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
 
 AddressInput.displayName = "AddressInput";
 
-export const AddressInputWithProvider = forwardRef<HTMLInputElement, AddressInputProps>(
-  (props, ref) => {
-    const queryClient = useMemo(() => new QueryClient({
-      defaultOptions: {
-        queries: {
-          staleTime: 5 * 60 * 1000,
+export const AddressInputWithProvider = forwardRef<
+  HTMLInputElement,
+  AddressInputProps
+>((props, ref) => {
+  const queryClient = useMemo(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 5 * 60 * 1000,
+          },
         },
-      },
-    }), []);
+      }),
+    []
+  );
 
-    const { providerType = 'papi', ...otherProps } = props;
-    const [Provider, setProvider] = useState<React.ComponentType<{ children: React.ReactNode }> | null>(null);
+  const { libraryName = "papi", ...otherProps } = props;
+  const [Provider, setProvider] = useState<React.ComponentType<{
+    children: React.ReactNode;
+  }> | null>(null);
 
-    useEffect(() => {
-      const loadProvider = async () => {
-        try {
-          if (providerType === 'papi') {
-            const providerModule = await import("@/registry/dot-ui/providers/papi-provider");
-            setProvider(() => providerModule.PolkadotProvider);
-          } else {
-            const providerModule = await import("@/registry/dot-ui/providers/dedot-provider");
-            setProvider(() => providerModule.DedotProvider);
-          }
-        } catch (error) {
-          console.error(`Failed to load ${providerType} provider:`, error);
+  useEffect(() => {
+    const loadProvider = async () => {
+      try {
+        if (libraryName === "papi") {
+          const providerModule = await import(
+            "@/registry/dot-ui/providers/papi-provider"
+          );
+          setProvider(() => providerModule.PolkadotProvider);
+        } else {
+          const providerModule = await import(
+            "@/registry/dot-ui/providers/dedot-provider"
+          );
+          setProvider(() => providerModule.DedotProvider);
         }
-      };
+      } catch (error) {
+        console.error(`Failed to load ${libraryName} provider:`, error);
+      }
+    };
 
-      loadProvider();
-    }, [providerType]);
+    loadProvider();
+  }, [libraryName]);
 
-    if (!Provider) {
-      return (
-        <div className="space-y-1 w-full">
-          {props.label && <Label>{props.label}</Label>}
-          <Input disabled placeholder="Loading provider..." />
-        </div>
-      );
-    }
-
+  if (!Provider) {
     return (
-      <Provider>
-        <QueryClientProvider client={queryClient}>
-          <AddressInput {...otherProps} providerType={providerType} ref={ref} />
-        </QueryClientProvider>
-      </Provider>
+      <div className="space-y-1 w-full">
+        {props.label && <Label>{props.label}</Label>}
+        <Input disabled placeholder="Loading provider..." />
+      </div>
     );
   }
-);
+
+  return (
+    <Provider>
+      <QueryClientProvider client={queryClient}>
+        <AddressInput {...otherProps} libraryName={libraryName} ref={ref} />
+      </QueryClientProvider>
+    </Provider>
+  );
+});
 
 AddressInputWithProvider.displayName = "AddressInputWithProvider"; 

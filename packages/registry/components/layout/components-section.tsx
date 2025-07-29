@@ -18,11 +18,11 @@ import { cn } from "@/lib/utils";
 
 const examples = [
   {
-    name: "Address Input",
+    name: "Address Input (Dedot)",
     href: "/docs/components/address-input",
     code: "address-input",
     description:
-      "Input component with SS58/Ethereum validation and identity lookup",
+      "Input component with SS58/Ethereum validation and identity lookup using Dedot library",
     component: (
       <div className="flex flex-col gap-2 w-full">
         <Label>Address</Label>
@@ -30,7 +30,25 @@ const examples = [
           className="w-full"
           truncate={8}
           format="both"
-          providerType="dedot"
+          libraryName="dedot"
+        />
+      </div>
+    ),
+  },
+  {
+    name: "Address Input (PAPI)",
+    href: "/docs/components/address-input",
+    code: "address-input",
+    description:
+      "Input component with SS58/Ethereum validation and identity lookup using PAPI library",
+    component: (
+      <div className="flex flex-col gap-2 w-full">
+        <Label>Address</Label>
+        <AddressInputWithProvider
+          className="w-full"
+          truncate={8}
+          format="both"
+          libraryName="papi"
         />
       </div>
     ),
