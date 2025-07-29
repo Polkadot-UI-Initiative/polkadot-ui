@@ -4,25 +4,24 @@
   "homepage": "https://dot-ui.com",
   "items": [
     {
-      "name": "block-number",
+      "name": "address-input",
       "type": "registry:component",
-      "title": "Block Number",
-      "description": "A block number component optimized for dedot. Fast, type-safe, and efficient.",
+      "title": "Address Input",
+      "description": "A type-safe unified address input component that supports both PAPI and Dedot libraries with identity lookup and search capabilities.",
       "dependencies": ["dedot"],
       "requiresPolkadotApi": true,
-      "registryDependencies": ["button"],
+      "registryDependencies": ["button", "input", "label"],
       "files": [
         {
-          "path": "registry/dot-ui/blocks/block-number/page.dedot.tsx",
-          "type": "registry:page",
-          "target": "app/dot-ui/block-number/page.tsx"
-        },
-        {
-          "path": "registry/dot-ui/blocks/block-number/components/block-number.dedot.tsx",
+          "path": "registry/dot-ui/blocks/address-input/components/address-input.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/blocks/block-number/hooks/use-block-number.dedot.ts",
+          "path": "registry/dot-ui/blocks/address-input/hooks/use-identity.dedot.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/dot-ui/blocks/address-input/hooks/use-search-identity.dedot.ts",
           "type": "registry:hook"
         },
         {

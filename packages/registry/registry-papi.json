@@ -4,46 +4,6 @@
   "homepage": "https://dot-ui.com",
   "items": [
     {
-      "name": "block-number",
-      "type": "registry:component",
-      "title": "Block Number (PAPI)",
-      "description": "A block number component optimized for polkadot-api. Fast, type-safe, and efficient.",
-      "dependencies": ["polkadot-api"],
-      "requiresPolkadotApi": true,
-      "registryDependencies": ["button"],
-      "files": [
-        {
-          "path": "registry/dot-ui/blocks/block-number/page.papi.tsx",
-          "type": "registry:page",
-          "target": "app/dot-ui/blocks/block-number/page.tsx"
-        },
-        {
-          "path": "registry/dot-ui/blocks/block-number/components/block-number.papi.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/dot-ui/blocks/block-number/hooks/use-block-number.papi.ts",
-          "type": "registry:hook"
-        },
-        {
-          "path": "registry/dot-ui/providers/papi-provider.tsx",
-          "type": "registry:lib"
-        },
-        {
-          "path": "registry/dot-ui/lib/utils.dot-ui.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "registry/dot-ui/lib/types.dot-ui.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "registry/dot-ui/lib/config.dot-ui.ts",
-          "type": "registry:lib"
-        }
-      ]
-    },
-    {
       "name": "address-input",
       "type": "registry:component",
       "title": "Address Input (PAPI)",
