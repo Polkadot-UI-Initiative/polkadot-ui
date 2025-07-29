@@ -19,8 +19,13 @@ import { QueryClient, QueryClientProvider, UseQueryResult } from "@tanstack/reac
 import { dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
 import { SubstrateExplorer } from "@/registry/dot-ui/lib/types.dot-ui";
 import Link from "next/link";
-import { IdentitySearchResult } from "@/registry/dot-ui/blocks/address-input/hooks/use-search-identity.papi";
-import { PolkadotIdentity } from "@/registry/dot-ui/blocks/address-input/hooks/use-identity.papi";
+import type {
+  IdentitySearchResult,
+  PolkadotIdentity,
+  ProviderHookInterface,
+  IdentityHookInterface,
+  IdentityResult,
+} from "@/registry/dot-ui/lib/types.dot-ui";
 
 export interface AddressInputProps {
   value?: string;
@@ -40,26 +45,23 @@ export interface AddressInputProps {
   identiconTheme?: IconTheme;
   className?: string;
   identityChain?: ChainId;
-  providerType?: 'papi' | 'dedot';
+  providerType?: "papi" | "dedot";
 }
 
-export interface IdentityResult {
-  type: "polkadot" | "ens";
-  data: {
-    display?: string;
-    legal?: string;
-    email?: string;
-    twitter?: string;
-    verified?: boolean;
-  };
-}
-
-// Internal component that always calls hooks unconditionally
-const AddressInputInner = forwardRef<HTMLInputElement, AddressInputProps & {
-  usePolkadotIdentity: (address: string, identityChain?: ChainId) => UseQueryResult<PolkadotIdentity | null, Error>;
-  useIdentityByDisplayName: (displayName: string | null | undefined, identityChain?: ChainId) => UseQueryResult<IdentitySearchResult[], Error>;
-  useProvider: () => { isLoading: (chain: string) => boolean; currentChain: string; isConnected: (chain: string) => boolean };
-}>(
+const AddressInputBase = forwardRef<
+  HTMLInputElement,
+  AddressInputProps & {
+    usePolkadotIdentity: (
+      address: string,
+      identityChain?: ChainId
+    ) => UseQueryResult<PolkadotIdentity | null, Error>;
+    useIdentityByDisplayName: (
+      displayName: string | null | undefined,
+      identityChain?: ChainId
+    ) => UseQueryResult<IdentitySearchResult[], Error>;
+    useProvider: () => ProviderHookInterface;
+  }
+>(
   (
     {
       value = "",
@@ -74,7 +76,7 @@ const AddressInputInner = forwardRef<HTMLInputElement, AddressInputProps & {
       showIdenticon = true,
       identiconTheme = "polkadot",
       className,
-      providerType = 'papi',
+      providerType = "papi",
       usePolkadotIdentity,
       useIdentityByDisplayName,
       useProvider,
@@ -82,9 +84,9 @@ const AddressInputInner = forwardRef<HTMLInputElement, AddressInputProps & {
     },
     _ref
   ) => {
-    // All hooks called unconditionally
     const [inputValue, setInputValue] = useState(value);
-    const [validationResult, setValidationResult] = useState<ValidationResult>();
+    const [validationResult, setValidationResult] =
+      useState<ValidationResult>();
     const [debouncedAddress, setDebouncedAddress] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
     const [showDropdown, setShowDropdown] = useState(false);
@@ -95,23 +97,27 @@ const AddressInputInner = forwardRef<HTMLInputElement, AddressInputProps & {
     const inputRef = useRef<HTMLInputElement>(null);
 
     const { isLoading, currentChain, isConnected } = useProvider();
-    
-    const identityLookupParams = withIdentityLookup &&
+
+    const identityLookupParams =
+      withIdentityLookup &&
       validationResult?.type === "ss58" &&
       !selectedFromSearch
-      ? debouncedAddress
-      : "";
-    
-    const identitySearchParams = withIdentitySearch && format !== "eth" && debouncedSearch.length > 2
-      ? debouncedSearch
-      : null;
+        ? debouncedAddress
+        : "";
 
+    const identitySearchParams =
+      withIdentitySearch && format !== "eth" && debouncedSearch.length > 2
+        ? debouncedSearch
+        : null;
 
-
-    const polkadotIdentity = usePolkadotIdentity(identityLookupParams, identityChain);
-    const identitySearch = useIdentityByDisplayName(identitySearchParams, identityChain);
-
-
+    const polkadotIdentity = usePolkadotIdentity(
+      identityLookupParams,
+      identityChain
+    );
+    const identitySearch = useIdentityByDisplayName(
+      identitySearchParams,
+      identityChain
+    );
 
     // Merge forwarded ref with internal ref
     useEffect(() => {
@@ -373,88 +379,86 @@ const AddressInputInner = forwardRef<HTMLInputElement, AddressInputProps & {
 
           {/* Search Results Dropdown */}
           {(() => {
-            const shouldShowDropdown = showDropdown &&
+            const shouldShowDropdown =
+              showDropdown &&
               withIdentitySearch &&
               !validationResult?.isValid &&
               debouncedSearch.length > 2;
-            
 
-            
             return shouldShowDropdown;
           })() && (
-              <div
-                id="address-search-listbox"
-                role="listbox"
-                aria-label="Address search results"
-                className="absolute left-0 top-full z-50 mt-1 w-full bg-background border border-border rounded-md shadow-lg max-h-60 overflow-auto"
-              >
-                {isIdentitySearching && (
-                  <div className="p-3 text-sm text-muted-foreground flex items-center gap-2">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Searching identities...
-                  </div>
-                )}
-                {identitySearch.error && (
-                  <div className="p-3 text-sm text-red-600">
-                    Search failed: {identitySearch.error.message}
-                  </div>
-                )}
-                {!isIdentitySearching &&
-                  !identitySearch.error &&
-                  identitySearch.data &&
-                  identitySearch.data.length > 0 &&
-                  identitySearch.data.map((result, index) => (
-                    <button
-                      key={result.address}
-                      type="button"
-                      role="option"
-                      aria-selected={index === highlightedIndex}
-                      className={cn(
-                        "w-full text-left px-3 py-2 focus:outline-none transition-colors duration-150 ease-in-out flex items-center gap-3",
-                        index === highlightedIndex
-                          ? "bg-muted text-foreground"
-                          : "hover:bg-muted/50"
-                      )}
-                      onMouseDown={(e) => e.preventDefault()}
-                      onMouseEnter={() => setHighlightedIndex(index)}
-                      onClick={() =>
-                        handleSelectIdentity(
-                          result.address,
-                          result.identity.display || ""
-                        )
-                      }
-                    >
-                      <div className="flex items-center gap-2 flex-1 min-w-0">
-                        <Identicon
-                          value={result.address}
-                          size={24}
-                          theme={
-                            validateAddress(result.address, format).type ===
-                            "eth"
-                              ? "ethereum"
-                              : identiconTheme
-                          }
-                        />
-                        <span className="text-sm font-medium truncate text-foreground">
-                          {result.identity.display}
-                        </span>
-                      </div>
-                      <span className="text-xs text-muted-foreground truncate max-w-[120px] font-mono">
-                        {truncateAddress(result.address, 6)}
+            <div
+              id="address-search-listbox"
+              role="listbox"
+              aria-label="Address search results"
+              className="absolute left-0 top-full z-50 mt-1 w-full bg-background border border-border rounded-md shadow-lg max-h-60 overflow-auto"
+            >
+              {isIdentitySearching && (
+                <div className="p-3 text-sm text-muted-foreground flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Searching identities...
+                </div>
+              )}
+              {identitySearch.error && (
+                <div className="p-3 text-sm text-red-600">
+                  Search failed: {identitySearch.error.message}
+                </div>
+              )}
+              {!isIdentitySearching &&
+                !identitySearch.error &&
+                identitySearch.data &&
+                identitySearch.data.length > 0 &&
+                identitySearch.data.map((result, index) => (
+                  <button
+                    key={result.address}
+                    type="button"
+                    role="option"
+                    aria-selected={index === highlightedIndex}
+                    className={cn(
+                      "w-full text-left px-3 py-2 focus:outline-none transition-colors duration-150 ease-in-out flex items-center gap-3",
+                      index === highlightedIndex
+                        ? "bg-muted text-foreground"
+                        : "hover:bg-muted/50"
+                    )}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onMouseEnter={() => setHighlightedIndex(index)}
+                    onClick={() =>
+                      handleSelectIdentity(
+                        result.address,
+                        result.identity.display || ""
+                      )
+                    }
+                  >
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <Identicon
+                        value={result.address}
+                        size={24}
+                        theme={
+                          validateAddress(result.address, format).type === "eth"
+                            ? "ethereum"
+                            : identiconTheme
+                        }
+                      />
+                      <span className="text-sm font-medium truncate text-foreground">
+                        {result.identity.display}
                       </span>
-                    </button>
-                  ))}
-                {!isIdentitySearching &&
-                  !identitySearch.error &&
-                  identitySearch.data &&
-                  identitySearch.data.length === 0 && (
-                    <div className="p-3 text-sm text-muted-foreground">
-                      No identities found matching &ldquo;{debouncedSearch}
-                      &rdquo;
                     </div>
-                  )}
-              </div>
-            )}
+                    <span className="text-xs text-muted-foreground truncate max-w-[120px] font-mono">
+                      {truncateAddress(result.address, 6)}
+                    </span>
+                  </button>
+                ))}
+              {!isIdentitySearching &&
+                !identitySearch.error &&
+                identitySearch.data &&
+                identitySearch.data.length === 0 && (
+                  <div className="p-3 text-sm text-muted-foreground">
+                    No identities found matching &ldquo;{debouncedSearch}
+                    &rdquo;
+                  </div>
+                )}
+            </div>
+          )}
 
           {/* Identicon placeholder */}
           {showIdenticon && validationResult?.isValid && (
@@ -580,7 +584,8 @@ const AddressInputInner = forwardRef<HTMLInputElement, AddressInputProps & {
 
           {/* Provider type indicator */}
           <div className="text-xs text-gray-500">
-            Provider: <span className="font-mono">{providerType.toUpperCase()}</span>
+            Provider:{" "}
+            <span className="font-mono">{providerType.toUpperCase()}</span>
           </div>
         </div>
       </div>
@@ -588,71 +593,90 @@ const AddressInputInner = forwardRef<HTMLInputElement, AddressInputProps & {
   }
 );
 
-AddressInputInner.displayName = "AddressInputInner";
+AddressInputBase.displayName = "AddressInputBase";
 
-// Dynamic loader wrapper that handles hook loading
 export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
   (props, ref) => {
-    const { providerType = 'papi' } = props;
-    const [hooks, setHooks] = useState<{
-      usePolkadotIdentity?: (address: string, identityChain?: ChainId) => UseQueryResult<PolkadotIdentity | null, Error>;
-      useIdentityByDisplayName?: (displayName: string | null | undefined, identityChain?: ChainId) => UseQueryResult<IdentitySearchResult[], Error>;
-      useProvider?: () => { isLoading: (chain: string) => boolean; currentChain: string; isConnected: (chain: string) => boolean };
-    }>({});
+    const { providerType = "papi" } = props;
+    const [hooks, setHooks] = useState<Partial<IdentityHookInterface>>({});
+
+    const memoizedProviderType = useMemo(() => providerType, [providerType]);
 
     useEffect(() => {
+      let isMounted = true;
+
       const loadHooks = async () => {
         try {
-          if (providerType === 'papi') {
-            const [identityModule, searchModule, providerModule] = await Promise.all([
-              import("@/registry/dot-ui/blocks/address-input/hooks/use-identity.papi"),
-              import("@/registry/dot-ui/blocks/address-input/hooks/use-search-identity.papi"),
-              import("@/registry/dot-ui/providers/papi-provider")
-            ]);
-            
-            setHooks({
-              usePolkadotIdentity: identityModule.usePolkadotIdentity,
-              useIdentityByDisplayName: searchModule.useIdentityByDisplayName,
-              useProvider: providerModule.usePapi,
-            });
+          if (memoizedProviderType === "papi") {
+            const [identityModule, searchModule, providerModule] =
+              await Promise.all([
+                import(
+                  "@/registry/dot-ui/blocks/address-input/hooks/use-identity.papi"
+                ),
+                import(
+                  "@/registry/dot-ui/blocks/address-input/hooks/use-search-identity.papi"
+                ),
+                import("@/registry/dot-ui/providers/papi-provider"),
+              ]);
+
+            if (isMounted) {
+              setHooks({
+                usePolkadotIdentity: identityModule.usePolkadotIdentity,
+                useIdentityByDisplayName: searchModule.useIdentityByDisplayName,
+                useProvider: providerModule.usePapi,
+              });
+            }
           } else {
-            const [identityModule, searchModule, providerModule] = await Promise.all([
-              import("@/registry/dot-ui/blocks/address-input/hooks/use-identity.dedot"),
-              import("@/registry/dot-ui/blocks/address-input/hooks/use-search-identity.dedot"),
-              import("@/registry/dot-ui/providers/dedot-provider")
-            ]);
-            
-            setHooks({
-              usePolkadotIdentity: identityModule.usePolkadotIdentity,
-              useIdentityByDisplayName: searchModule.useIdentityByDisplayName,
-              useProvider: providerModule.useDedot,
-            });
+            const [identityModule, searchModule, providerModule] =
+              await Promise.all([
+                import(
+                  "@/registry/dot-ui/blocks/address-input/hooks/use-identity.dedot"
+                ),
+                import(
+                  "@/registry/dot-ui/blocks/address-input/hooks/use-search-identity.dedot"
+                ),
+                import("@/registry/dot-ui/providers/dedot-provider"),
+              ]);
+
+            if (isMounted) {
+              setHooks({
+                usePolkadotIdentity: identityModule.usePolkadotIdentity,
+                useIdentityByDisplayName: searchModule.useIdentityByDisplayName,
+                useProvider: providerModule.useDedot,
+              });
+            }
           }
         } catch (error) {
-          console.error(`❌ Failed to load ${providerType} hooks:`, error);
+          console.error(
+            `❌ Failed to load ${memoizedProviderType} hooks:`,
+            error
+          );
         }
       };
 
       loadHooks();
-    }, [providerType]);
+
+      return () => {
+        isMounted = false;
+      };
+    }, [memoizedProviderType]);
 
     // Show loading state until hooks are loaded
-    if (!hooks.usePolkadotIdentity || !hooks.useIdentityByDisplayName || !hooks.useProvider) {
+    if (
+      !hooks.usePolkadotIdentity ||
+      !hooks.useIdentityByDisplayName ||
+      !hooks.useProvider
+    ) {
       return (
         <div className="space-y-1 w-full">
           {props.label && <Label>{props.label}</Label>}
-          <Input
-            disabled
-            placeholder="Loading provider..."
-            className="mb-2"
-          />
+          <Input disabled placeholder="Loading provider..." className="mb-2" />
         </div>
       );
     }
 
-    // Render the inner component with loaded hooks
     return (
-      <AddressInputInner
+      <AddressInputBase
         {...props}
         ref={ref}
         usePolkadotIdentity={hooks.usePolkadotIdentity}
@@ -665,7 +689,6 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
 
 AddressInput.displayName = "AddressInput";
 
-// Wrapped version with provider for drop-in usage
 export const AddressInputWithProvider = forwardRef<HTMLInputElement, AddressInputProps>(
   (props, ref) => {
     const queryClient = useMemo(() => new QueryClient({

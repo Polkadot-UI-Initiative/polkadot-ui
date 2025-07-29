@@ -1,17 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
 import { useDedot, useDedotApi } from "@/registry/dot-ui/providers/dedot-provider";
 import {
-  extractText,
   hasPositiveIdentityJudgement,
+  extractDedotText,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
 import { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
+import type { PolkadotIdentity } from "@/registry/dot-ui/lib/types.dot-ui";
 
-export interface PolkadotIdentity {
-  display?: string;
-  legal?: string;
-  email?: string;
-  twitter?: string;
-  verified: boolean;
+function extractDedotIdentityInfo(info: {
+  display?: unknown;
+  email?: unknown;
+  legal?: unknown;
+  twitter?: unknown;
+}): Omit<PolkadotIdentity, "verified"> {
+  return {
+    display: extractDedotText(info?.display),
+    legal: extractDedotText(info?.legal),
+    email: extractDedotText(info?.email),
+    twitter: extractDedotText(info?.twitter),
+  };
 }
 
 export function usePolkadotIdentity(
@@ -19,11 +26,11 @@ export function usePolkadotIdentity(
   identityChain: ChainId = "paseo_people"
 ) {
   const { isLoading, isConnected } = useDedot();
-  
+
   const peopleApi = useDedotApi(identityChain);
-  
+
   return useQuery({
-    queryKey: ["polkadot-identity", address, identityChain],
+    queryKey: ["polkadot-identity-dedot", address, identityChain],
     queryFn: async (): Promise<PolkadotIdentity | null> => {
       if (
         !peopleApi ||
@@ -36,7 +43,7 @@ export function usePolkadotIdentity(
 
       try {
         const identity = await peopleApi.query.identity.identityOf(address);
-        
+
         if (!identity) return null;
 
         // Check identity judgements for determining verified identity
@@ -44,11 +51,9 @@ export function usePolkadotIdentity(
           identity.judgements
         );
 
+        const identityInfo = extractDedotIdentityInfo(identity.info);
         return {
-          display: extractText(identity.info?.display),
-          legal: extractText(identity.info?.legal),
-          email: extractText(identity.info?.email),
-          twitter: extractText(identity.info?.twitter),
+          ...identityInfo,
           verified: hasPositiveJudgement || false,
         };
       } catch (error) {

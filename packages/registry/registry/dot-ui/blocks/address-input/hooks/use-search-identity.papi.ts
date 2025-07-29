@@ -10,21 +10,7 @@ import {
   hasPositiveIdentityJudgement,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
 import { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
-
-export interface FormattedIdentity {
-  display?: string;
-  email?: string;
-  legal?: string;
-  matrix?: string;
-  twitter?: string;
-  web?: string;
-  verified?: boolean;
-}
-
-export interface IdentitySearchResult {
-  address: string;
-  identity: FormattedIdentity;
-}
+import type { IdentitySearchResult } from "@/registry/dot-ui/lib/types.dot-ui";
 
 export function useIdentityByDisplayName(
   displayName: string | null | undefined,
@@ -34,7 +20,7 @@ export function useIdentityByDisplayName(
   const peopleApi = usePolkadotApi(identityChain);
 
   return useQuery({
-    queryKey: ["identity-search", displayName, identityChain],
+    queryKey: ["identity-search-papi", displayName, identityChain],
     queryFn: async (): Promise<IdentitySearchResult[]> => {
       if (
         !peopleApi ||

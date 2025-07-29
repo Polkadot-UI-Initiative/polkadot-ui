@@ -8,14 +8,7 @@ import {
   hasPositiveIdentityJudgement,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
 import { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
-
-export interface PolkadotIdentity {
-  display?: string;
-  legal?: string;
-  email?: string;
-  twitter?: string;
-  verified: boolean;
-}
+import type { PolkadotIdentity } from "@/registry/dot-ui/lib/types.dot-ui";
 
 export function usePolkadotIdentity(
   address: string,
@@ -25,7 +18,7 @@ export function usePolkadotIdentity(
   const peopleApi = usePolkadotApi(identityChain);
 
   return useQuery({
-    queryKey: ["polkadot-identity", address, identityChain],
+    queryKey: ["polkadot-identity-papi", address, identityChain],
     queryFn: async (): Promise<PolkadotIdentity | null> => {
       if (
         !peopleApi ||

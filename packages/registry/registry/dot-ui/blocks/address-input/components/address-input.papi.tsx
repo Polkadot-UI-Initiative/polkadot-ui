@@ -25,6 +25,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
 import { SubstrateExplorer } from "@/registry/dot-ui/lib/types.dot-ui";
 import Link from "next/link";
+import type { IdentityResult } from "@/registry/dot-ui/lib/types.dot-ui";
 
 export interface AddressInputProps {
   value?: string;
@@ -46,16 +47,7 @@ export interface AddressInputProps {
   identityChain?: ChainId;
 }
 
-export interface IdentityResult {
-  type: "polkadot" | "ens";
-  data: {
-    display?: string;
-    legal?: string;
-    email?: string;
-    twitter?: string;
-    verified?: boolean;
-  };
-}
+
 
 export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
   (

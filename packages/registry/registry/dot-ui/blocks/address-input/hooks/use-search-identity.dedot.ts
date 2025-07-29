@@ -1,24 +1,31 @@
 import { useQuery } from "@tanstack/react-query";
 import { useDedot, useDedotApi } from "@/registry/dot-ui/providers/dedot-provider";
 import {
-  extractText,
   hasPositiveIdentityJudgement,
+  extractDedotText,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
 import { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
+import type {
+  FormattedIdentity,
+  IdentitySearchResult,
+} from "@/registry/dot-ui/lib/types.dot-ui";
 
-export interface FormattedIdentity {
-  display?: string;
-  email?: string;
-  legal?: string;
-  matrix?: string;
-  twitter?: string;
-  web?: string;
-  verified?: boolean;
-}
-
-export interface IdentitySearchResult {
-  address: string;
-  identity: FormattedIdentity;
+function extractDedotIdentityInfo(info: {
+  display?: unknown;
+  email?: unknown;
+  legal?: unknown;
+  riot?: unknown;
+  twitter?: unknown;
+  web?: unknown;
+}): FormattedIdentity {
+  return {
+    display: extractDedotText(info?.display),
+    email: extractDedotText(info?.email),
+    legal: extractDedotText(info?.legal),
+    matrix: extractDedotText(info?.riot), // Dedot uses 'riot' instead of 'matrix'
+    twitter: extractDedotText(info?.twitter),
+    web: extractDedotText(info?.web),
+  };
 }
 
 export function useIdentityByDisplayName(
@@ -26,15 +33,12 @@ export function useIdentityByDisplayName(
   identityChain: ChainId = "paseo_people"
 ) {
   const { isLoading, isConnected } = useDedot();
-  
-  const peopleApi = useDedotApi(identityChain);
-  
 
+  const peopleApi = useDedotApi(identityChain);
 
   return useQuery({
-    queryKey: ["identity-search", displayName, identityChain],
+    queryKey: ["identity-search-dedot", displayName, identityChain],
     queryFn: async (): Promise<IdentitySearchResult[]> => {
-      console.log(`🔍 DEDOT Search starting for: "${displayName}" on chain: ${identityChain}`);
       if (
         !peopleApi ||
         !displayName ||
@@ -46,15 +50,19 @@ export function useIdentityByDisplayName(
       }
 
       try {
-          const entries = await peopleApi.query.identity.identityOf.entries();
+        const entries = await peopleApi.query.identity.identityOf.entries();
 
-          const MAX_RESULTS = 10;
-          const matches: IdentitySearchResult[] = [];
+        const MAX_RESULTS = 10;
+        const matches: IdentitySearchResult[] = [];
 
-        for (const [keyArgs, value] of entries) {
+        for (const entry of entries) {
+          // dedot data format is [AccountId32, PalletIdentityRegistration]
+          const [key, value] = entry;
+
           if (!value || !value.info?.display) continue;
 
-          const display = extractText(value.info.display);
+          const identityInfo = extractDedotIdentityInfo(value.info);
+          const display = identityInfo.display;
 
           if (
             display &&
@@ -64,15 +72,12 @@ export function useIdentityByDisplayName(
               value.judgements
             );
 
+            const address = key.address();
+
             matches.push({
-              address: keyArgs.toString(),
+              address,
               identity: {
-                display,
-                email: extractText(value.info?.email),
-                legal: extractText(value.info?.legal),
-                matrix: extractText(value.info?.riot), // Dedot uses 'riot' instead of 'matrix'
-                twitter: extractText(value.info?.twitter),
-                web: extractText(value.info?.web),
+                ...identityInfo,
                 verified: hasPositiveJudgement || false,
               },
             });
@@ -82,7 +87,6 @@ export function useIdentityByDisplayName(
             }
           }
         }
-
         return matches;
       } catch (error) {
         console.error("Identity search failed:", error);

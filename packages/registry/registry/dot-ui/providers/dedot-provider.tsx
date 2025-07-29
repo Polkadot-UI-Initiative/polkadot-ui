@@ -201,10 +201,10 @@ export function useDedot(): DedotContextValue {
 }
 
 export function useDedotApi(chainId: ChainId): DedotClient | null {
-  const { apis, initializeChain } = useDedot();
+  const { apis, initializeChain, isLoading } = useDedot();
 
   useEffect(() => {
-    if (!apis[chainId]) {
+    if (!apis[chainId] && !isLoading(chainId)) {
       initializeChain(chainId);
     }
   }, [apis, initializeChain, chainId]);

@@ -159,3 +159,43 @@ export function hasPositiveIdentityJudgement(
     return judgementType === "Reasonable" || judgementType === "KnownGood";
   });
 }
+
+/**
+ * Extract text from Dedot's Raw type fields (info.display.value, etc.)
+ * @param rawField The raw field from Dedot's PalletIdentityRegistration
+ * @returns {string | undefined} The extracted text or undefined
+ */
+export function extractDedotText(rawField: unknown): string | undefined {
+  if (!rawField) return undefined;
+  
+  // Dedot format: { value: Raw }
+  if (typeof rawField === 'object' && rawField !== null && 'value' in rawField) {
+    const value = (rawField as { value: unknown }).value;
+    return value?.toString();
+  }
+  
+  // Fallback for other types
+  return rawField?.toString();
+}
+
+/**
+ * Convert AccountId32 to Substrate SS58 address
+ * @param accountId The AccountId32 (hexadecimal format) usually appears in Dedot
+ * @param ss58Prefix The SS58 prefix to use (default: 42 for Substrate)
+ * @returns {string} The SS58 encoded address
+ */
+export function convertDedotAccountIdToAddress(accountId: unknown, ss58Prefix: number = 42): string {
+  if (!accountId) return '';
+  
+  try {
+    if (typeof accountId === 'string') {
+      return encodeAddress(accountId, ss58Prefix);
+    }
+    
+    const hexString = accountId.toString();
+    return encodeAddress(hexString, ss58Prefix);
+  } catch (error) {
+    console.error('Failed to convert AccountId32 to address:', error);
+    return accountId.toString();
+  }
+}
