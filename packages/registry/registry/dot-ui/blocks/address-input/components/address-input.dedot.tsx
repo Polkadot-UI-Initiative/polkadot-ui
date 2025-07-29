@@ -19,10 +19,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
 import { SubstrateExplorer } from "@/registry/dot-ui/lib/types.dot-ui";
 import Link from "next/link";
-import type {
-  IdentityHookInterface,
-  IdentityResult,
-} from "@/registry/dot-ui/lib/types.dot-ui";
+import type { IdentityResult } from "@/registry/dot-ui/lib/types.dot-ui";
+
+// Dedot-specific imports
+import { useDedot, DedotProvider } from "@/registry/dot-ui/providers/dedot-provider";
+import { usePolkadotIdentity } from "@/registry/dot-ui/blocks/address-input/hooks/use-identity.dedot";
+import { useIdentityByDisplayName } from "@/registry/dot-ui/blocks/address-input/hooks/use-search-identity.dedot";
 
 export interface AddressInputProps {
   value?: string;
@@ -42,14 +44,9 @@ export interface AddressInputProps {
   identiconTheme?: IconTheme;
   className?: string;
   identityChain?: ChainId;
-  libraryName?: "papi" | "dedot";
 }
 
-interface AddressInputHookProps
-  extends IdentityHookInterface,
-    AddressInputProps {}
-
-const AddressInputBase = forwardRef<HTMLInputElement, AddressInputHookProps>(
+export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
   (
     {
       value = "",
@@ -64,9 +61,6 @@ const AddressInputBase = forwardRef<HTMLInputElement, AddressInputHookProps>(
       showIdenticon = true,
       identiconTheme = "polkadot",
       className,
-      usePolkadotIdentity,
-      useIdentityByDisplayName,
-      useProvider,
       ...props
     },
     _ref
@@ -83,7 +77,7 @@ const AddressInputBase = forwardRef<HTMLInputElement, AddressInputHookProps>(
     const [selectedFromSearch, setSelectedFromSearch] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const { isLoading, currentChain, isConnected } = useProvider();
+    const { isLoading, currentChain, isConnected } = useDedot();
 
     const identityLookupParams =
       withIdentityLookup &&
@@ -574,100 +568,6 @@ const AddressInputBase = forwardRef<HTMLInputElement, AddressInputHookProps>(
   }
 );
 
-AddressInputBase.displayName = "AddressInputBase";
-
-export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
-  (props, ref) => {
-    const { libraryName = "papi" } = props;
-    const [hooks, setHooks] = useState<Partial<IdentityHookInterface>>({});
-
-    const memoizedLibraryName = useMemo(() => libraryName, [libraryName]);
-
-    useEffect(() => {
-      let isMounted = true;
-
-      const loadHooks = async () => {
-        try {
-          if (memoizedLibraryName === "papi") {
-            const [identityModule, searchModule, providerModule] =
-              await Promise.all([
-                import(
-                  "@/registry/dot-ui/blocks/address-input/hooks/use-identity.papi"
-                ),
-                import(
-                  "@/registry/dot-ui/blocks/address-input/hooks/use-search-identity.papi"
-                ),
-                import("@/registry/dot-ui/providers/papi-provider"),
-              ]);
-
-            if (isMounted) {
-              setHooks({
-                usePolkadotIdentity: identityModule.usePolkadotIdentity,
-                useIdentityByDisplayName: searchModule.useIdentityByDisplayName,
-                useProvider: providerModule.usePapi,
-              });
-            }
-          } else {
-            const [identityModule, searchModule, providerModule] =
-              await Promise.all([
-                import(
-                  "@/registry/dot-ui/blocks/address-input/hooks/use-identity.dedot"
-                ),
-                import(
-                  "@/registry/dot-ui/blocks/address-input/hooks/use-search-identity.dedot"
-                ),
-                import("@/registry/dot-ui/providers/dedot-provider"),
-              ]);
-
-            if (isMounted) {
-              setHooks({
-                usePolkadotIdentity: identityModule.usePolkadotIdentity,
-                useIdentityByDisplayName: searchModule.useIdentityByDisplayName,
-                useProvider: providerModule.useDedot,
-              });
-            }
-          }
-        } catch (error) {
-          console.error(
-            `❌ Failed to load ${memoizedLibraryName} hooks:`,
-            error
-          );
-        }
-      };
-
-      loadHooks();
-
-      return () => {
-        isMounted = false;
-      };
-    }, [memoizedLibraryName]);
-
-    // Show loading state until hooks are loaded
-    if (
-      !hooks.usePolkadotIdentity ||
-      !hooks.useIdentityByDisplayName ||
-      !hooks.useProvider
-    ) {
-      return (
-        <div className="space-y-1 w-full">
-          {props.label && <Label>{props.label}</Label>}
-          <Input disabled placeholder="Loading provider..." className="mb-2" />
-        </div>
-      );
-    }
-
-    return (
-      <AddressInputBase
-        {...props}
-        ref={ref}
-        usePolkadotIdentity={hooks.usePolkadotIdentity}
-        useIdentityByDisplayName={hooks.useIdentityByDisplayName}
-        useProvider={hooks.useProvider}
-      />
-    );
-  }
-);
-
 AddressInput.displayName = "AddressInput";
 
 export const AddressInputWithProvider = forwardRef<
@@ -686,48 +586,12 @@ export const AddressInputWithProvider = forwardRef<
     []
   );
 
-  const { libraryName = "papi", ...otherProps } = props;
-  const [Provider, setProvider] = useState<React.ComponentType<{
-    children: React.ReactNode;
-  }> | null>(null);
-
-  useEffect(() => {
-    const loadProvider = async () => {
-      try {
-        if (libraryName === "papi") {
-          const providerModule = await import(
-            "@/registry/dot-ui/providers/papi-provider"
-          );
-          setProvider(() => providerModule.PolkadotProvider);
-        } else {
-          const providerModule = await import(
-            "@/registry/dot-ui/providers/dedot-provider"
-          );
-          setProvider(() => providerModule.DedotProvider);
-        }
-      } catch (error) {
-        console.error(`Failed to load ${libraryName} provider:`, error);
-      }
-    };
-
-    loadProvider();
-  }, [libraryName]);
-
-  if (!Provider) {
-    return (
-      <div className="space-y-1 w-full">
-        {props.label && <Label>{props.label}</Label>}
-        <Input disabled placeholder="Loading provider..." />
-      </div>
-    );
-  }
-
   return (
-    <Provider>
+    <DedotProvider>
       <QueryClientProvider client={queryClient}>
-        <AddressInput {...otherProps} libraryName={libraryName} ref={ref} />
+        <AddressInput {...props} ref={ref} />
       </QueryClientProvider>
-    </Provider>
+    </DedotProvider>
   );
 });
 

@@ -9,7 +9,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { AddressInputWithProvider } from "@/registry/dot-ui/blocks/address-input/components/address-input";
+import { AddressInputWithProvider as AddressInputWithProviderDedot } from "@/registry/dot-ui/blocks/address-input/components/address-input.dedot";
+import { AddressInputWithProvider as AddressInputWithProviderPapi } from "@/registry/dot-ui/blocks/address-input/components/address-input.papi";
 import { OpenInV0Button } from "../open-in-v0-button";
 import { Button } from "@/components/ui/button";
 import { BookText } from "lucide-react";
@@ -26,11 +27,10 @@ const examples = [
     component: (
       <div className="flex flex-col gap-2 w-full">
         <Label>Address</Label>
-        <AddressInputWithProvider
+        <AddressInputWithProviderDedot
           className="w-full"
           truncate={8}
           format="both"
-          libraryName="dedot"
         />
       </div>
     ),
@@ -44,11 +44,10 @@ const examples = [
     component: (
       <div className="flex flex-col gap-2 w-full">
         <Label>Address</Label>
-        <AddressInputWithProvider
+        <AddressInputWithProviderPapi
           className="w-full"
           truncate={8}
           format="both"
-          libraryName="papi"
         />
       </div>
     ),

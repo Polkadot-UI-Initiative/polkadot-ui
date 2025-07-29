@@ -8,12 +8,19 @@
       "type": "registry:component",
       "title": "Address Input",
       "description": "A type-safe unified address input component that supports both PAPI and Dedot libraries with identity lookup and search capabilities.",
-      "dependencies": ["dedot"],
+      "dependencies": [
+        "dedot",
+        "ethers",
+        "@tanstack/react-query",
+        "@polkadot/react-identicon",
+        "@polkadot/keyring",
+        "@polkadot/util"
+      ],
       "requiresPolkadotApi": true,
       "registryDependencies": ["button", "input", "label"],
       "files": [
         {
-          "path": "registry/dot-ui/blocks/address-input/components/address-input.tsx",
+          "path": "registry/dot-ui/blocks/address-input/components/address-input.dedot.tsx",
           "type": "registry:component"
         },
         {
