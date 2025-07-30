@@ -16,7 +16,7 @@ export interface DotUiConfig {
 }
 
 export interface PolkadotConfig<
-  TChains extends Readonly<Record<string, ChainConfig>> = Readonly<
+  TChains extends Readonly<Record<ChainId, ChainConfig>> = Readonly<
     Record<string, ChainConfig>
   >,
 > {
@@ -25,7 +25,7 @@ export interface PolkadotConfig<
 }
 
 export function definePolkadotConfig<
-  const TChains extends Readonly<Record<string, ChainConfig>>,
+  const TChains extends Readonly<Record<ChainId, ChainConfig>>,
 >(config: PolkadotConfig<TChains>) {
   return config;
 }
@@ -42,7 +42,7 @@ export enum JsonRpcApi {
 }
 
 // Base interface that both providers share
-export interface BasePolkadotContextValue<TApi, TApis, TChainId = string> {
+export interface BasePolkadotContextValue<TApi, TApis, TChainId = ChainId> {
   // Current active chain and its API
   currentChain: TChainId;
   api: TApi | null;
@@ -66,13 +66,13 @@ export interface BasePolkadotContextValue<TApi, TApis, TChainId = string> {
 }
 
 // Common provider props interface
-export interface BasePolkadotProviderProps<TChainId = string> {
+export interface BasePolkadotProviderProps<TChainId = ChainId> {
   children: React.ReactNode;
   defaultChain?: TChainId;
 }
 
 // Common hook interface for getting specific chain APIs
-export interface BasePolkadotHooks<TApi, TChainId = string> {
+export interface BasePolkadotHooks<TApi, TChainId = ChainId> {
   useTypedPolkadotApi: () => TApi | null;
   usePolkadotApi: (chainId: TChainId) => TApi | null;
 }

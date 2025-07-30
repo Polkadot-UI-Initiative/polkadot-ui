@@ -33,7 +33,7 @@ export function PolkadotProvider({
   defaultChain,
 }: BasePolkadotProviderProps<ChainId>) {
   const [currentChain, setCurrentChain] = useState<ChainId>(
-    defaultChain || dotUiConfig.defaultChain
+    defaultChain || (dotUiConfig.defaultChain as ChainId)
   );
   const [apis, setApis] = useState<Partial<Record<ChainId, DedotClient>>>({});
   const [clients, setClients] = useState<Map<ChainId, DedotClient>>(new Map());
@@ -43,12 +43,6 @@ export function PolkadotProvider({
   const [errorStates, setErrorStates] = useState<Map<ChainId, string | null>>(
     new Map()
   );
-
-  // Initialize the default chain on mount
-  useEffect(() => {
-    initializeChain(defaultChain || dotUiConfig.defaultChain);
-    console.log("DedotProvider initialized");
-  }, [defaultChain]);
 
   const initializeChain = useCallback(
     async (chainId: ChainId) => {
@@ -106,6 +100,12 @@ export function PolkadotProvider({
     [apis, setLoadingStates, setErrorStates, setClients, setApis]
   );
 
+  // Initialize the default chain on mount
+  useEffect(() => {
+    initializeChain(defaultChain || (dotUiConfig.defaultChain as ChainId));
+    console.log("DedotProvider initialized");
+  }, [defaultChain, initializeChain]);
+
   const setApi = (chainId: ChainId) => {
     if (!isValidChainId(dotUiConfig.chains, chainId)) {
       console.error(`Invalid chain ID: ${chainId}`);
@@ -142,7 +142,7 @@ export function PolkadotProvider({
     setApis({});
     setLoadingStates(new Map());
     setErrorStates(new Map());
-    setCurrentChain(defaultChain || dotUiConfig.defaultChain);
+    setCurrentChain(defaultChain || (dotUiConfig.defaultChain as ChainId));
   };
 
   const isConnected = (chainId: ChainId): boolean => {

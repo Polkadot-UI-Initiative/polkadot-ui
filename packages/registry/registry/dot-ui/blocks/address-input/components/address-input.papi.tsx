@@ -12,36 +12,26 @@ import {
 } from "./address-input.base";
 
 // Import PAPI-specific hooks
-import { usePolkadotIdentity } from "@/registry/dot-ui/blocks/address-input/hooks/use-identity.papi";
+import { useIdentity } from "@/registry/dot-ui/blocks/address-input/hooks/use-identity.papi";
 import { useIdentitySearch } from "@/registry/dot-ui/blocks/address-input/hooks/use-search-identity.papi";
 
 // Props type - removes services prop since we inject it
 export type AddressInputProps = Omit<AddressInputBaseProps, "services">;
 
-// Identity chain for PAPI
-const IDENTITY_CHAIN = "paseo_people" as const;
-
 export function AddressInput(props: AddressInputProps) {
-  const papiContext = usePapi();
+  const { isLoading, isConnected } = usePapi();
 
-  // Create elegant services object with proper typing
+  // Simple services object with type-compatible wrappers
   const services = useMemo(
     () => ({
-      useIdentity: (address: string) =>
-        usePolkadotIdentity(address, IDENTITY_CHAIN),
-
-      useIdentitySearch: (displayName: string | null) =>
-        useIdentitySearch(displayName, IDENTITY_CHAIN),
-
+      useIdentity,
+      useIdentitySearch,
       useProvider: () => ({
-        isLoading: (chainId: string) =>
-          papiContext.isLoading(chainId as typeof IDENTITY_CHAIN),
-        currentChain: papiContext.currentChain,
-        isConnected: (chainId: string) =>
-          papiContext.isConnected(chainId as typeof IDENTITY_CHAIN),
+        isLoading,
+        isConnected,
       }),
     }),
-    [papiContext]
+    [isLoading, isConnected]
   );
 
   return <AddressInputBase {...props} services={services} />;
