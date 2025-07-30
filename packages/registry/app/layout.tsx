@@ -8,6 +8,8 @@ import { ThemeProvider } from "@/components/theme/theme-provider";
 import { MouseFollower } from "@/components/mouse-follower";
 import { RootProvider as FumadocsRootProvider } from "fumadocs-ui/provider";
 import { PolkadotLogo } from "@/components/polkadot-logo";
+import { Toaster } from "@/components/ui/sonner";
+import { FeedbackToast } from "@/components/feedback-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,6 +49,12 @@ export default function RootLayout({
               </footer>
               <MouseFollower />
             </div>
+            <Toaster
+              position="bottom-right"
+              closeButton
+              className="bg-background flex flex-row items-center gap-3"
+            />
+            <FeedbackToast />
           </ThemeProvider>
         </FumadocsRootProvider>
         <Analytics />
