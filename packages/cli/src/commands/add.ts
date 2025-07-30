@@ -3,11 +3,7 @@ import execa from "execa";
 import inquirer from "inquirer";
 import { ProjectDetector } from "../utils/project-detector.js";
 import { PolkadotDetector } from "../utils/polkadot-detector.js";
-import {
-  Registry,
-  isValidComponentName,
-  formatComponentName,
-} from "../utils/registry.js";
+import { Registry, isValidComponentName } from "../utils/registry.js";
 import { logger } from "../utils/logger.js";
 import { Telemetry } from "../utils/telemetry.js";
 import {
@@ -838,10 +834,9 @@ export class AddCommand {
     componentInfo: ComponentInfo,
     polkadotConfig: PolkadotApiConfig
   ): void {
-    const formattedName = formatComponentName(componentInfo.name);
     const hasDedot = componentInfo.dependencies?.includes("dedot") || false;
 
-    logger.showNextSteps(formattedName, hasDedot);
+    logger.showNextSteps(componentInfo.name, hasDedot);
   }
 
   /**
