@@ -10,23 +10,9 @@ import {
   hasPositiveIdentityJudgement,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
 import { ChainIdWithIdentity } from "@/registry/dot-ui/lib/types.papi";
+import { IdentitySearchResult } from "@/registry/dot-ui/lib/types.dot-ui";
 
-export interface FormattedIdentity {
-  display?: string;
-  email?: string;
-  legal?: string;
-  matrix?: string;
-  twitter?: string;
-  web?: string;
-  verified?: boolean;
-}
-
-export interface IdentitySearchResult {
-  address: string;
-  identity: FormattedIdentity;
-}
-
-export function useIdentityByDisplayName(
+export function useIdentitySearch(
   displayName: string | null | undefined,
   identityChain: ChainIdWithIdentity = "paseo_people"
 ) {

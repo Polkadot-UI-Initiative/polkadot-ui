@@ -155,7 +155,8 @@ export function hasPositiveIdentityJudgement(
   return judgements.some((judgement: [number, unknown]) => {
     // Judgement types: Unknown, FeePaid, Reasonable, KnownGood, OutOfDate, LowQuality, Erroneous
     // More info: https://wiki.polkadot.network/learn/learn-identity/#judgements
-    const judgementType = (judgement[1] as { type?: string })?.type || judgement[1];
+    const judgementType =
+      (judgement[1] as { type?: string })?.type || judgement[1];
     return judgementType === "Reasonable" || judgementType === "KnownGood";
   });
 }

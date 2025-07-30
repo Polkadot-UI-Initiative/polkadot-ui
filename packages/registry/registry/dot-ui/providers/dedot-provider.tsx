@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import { ChainId, dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
 import {
   getChainIds,
@@ -8,38 +14,26 @@ import {
   isValidChainId,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
 import { DedotClient, WsProvider } from "dedot";
+import {
+  BasePolkadotContextValue,
+  BasePolkadotProviderProps,
+} from "@/registry/dot-ui/lib/types.dot-ui";
 
-interface DedotContextValue {
-  // Current active chain and its API
-  currentChain: ChainId;
-  api: DedotClient | null;
-  isLoading: (chainId: ChainId) => boolean;
-  error: string | null;
-
-  // All APIs for all registered chains
-  apis: Partial<Record<ChainId, DedotClient>>;
-
-  // Function to switch active chain (type-safe)
-  setApi: (chainId: ChainId) => void;
-
-  // Connection management
-  disconnect: () => void;
-  isConnected: (chainId: ChainId) => boolean;
-
-  // Chain information
-  chainName: string | null;
-  availableChains: ChainId[];
-}
+// Dedot-specific context type extending the base
+type DedotContextValue = BasePolkadotContextValue<
+  DedotClient,
+  Partial<Record<ChainId, DedotClient>>,
+  ChainId
+>;
 
 const DedotContext = createContext<DedotContextValue | undefined>(undefined);
 
-interface DedotProviderProps {
-  children: React.ReactNode;
-}
-
-export function PolkadotProvider({ children }: DedotProviderProps) {
+export function PolkadotProvider({
+  children,
+  defaultChain,
+}: BasePolkadotProviderProps<ChainId>) {
   const [currentChain, setCurrentChain] = useState<ChainId>(
-    dotUiConfig.defaultChain
+    defaultChain || dotUiConfig.defaultChain
   );
   const [apis, setApis] = useState<Partial<Record<ChainId, DedotClient>>>({});
   const [clients, setClients] = useState<Map<ChainId, DedotClient>>(new Map());
@@ -52,61 +46,65 @@ export function PolkadotProvider({ children }: DedotProviderProps) {
 
   // Initialize the default chain on mount
   useEffect(() => {
-    initializeChain(dotUiConfig.defaultChain);
-  }, []);
+    initializeChain(defaultChain || dotUiConfig.defaultChain);
+    console.log("DedotProvider initialized");
+  }, [defaultChain]);
 
-  const initializeChain = async (chainId: ChainId) => {
-    // Don't initialize if already connected
-    if (apis[chainId]) return;
+  const initializeChain = useCallback(
+    async (chainId: ChainId) => {
+      // Don't initialize if already connected
+      if (apis[chainId]) return;
 
-    setLoadingStates((prev) => new Map(prev).set(chainId, true));
-    setErrorStates((prev) => new Map(prev).set(chainId, null));
+      setLoadingStates((prev) => new Map(prev).set(chainId, true));
+      setErrorStates((prev) => new Map(prev).set(chainId, null));
 
-    try {
-      const chainConfig = getChainConfig(dotUiConfig.chains, chainId);
+      try {
+        const chainConfig = getChainConfig(dotUiConfig.chains, chainId);
 
-      // Validate that endpoints array exists and has at least one element
-      if (!chainConfig.endpoints || !chainConfig.endpoints[0]) {
-        throw new Error(
-          `Chain ${chainId} (${chainConfig.displayName}) has no endpoints configured. Please add at least one endpoint to the chain configuration.`
+        // Validate that endpoints array exists and has at least one element
+        if (!chainConfig.endpoints || !chainConfig.endpoints[0]) {
+          throw new Error(
+            `Chain ${chainId} (${chainConfig.displayName}) has no endpoints configured. Please add at least one endpoint to the chain configuration.`
+          );
+        }
+
+        console.log(`Connecting to ${chainConfig.displayName} using dedot`);
+
+        const provider = new WsProvider(chainConfig.endpoints);
+        provider.on("connected", (endpoint: string) => {
+          console.log("Connected Endpoint", endpoint);
+        });
+
+        await provider.connect();
+
+        const client = await DedotClient.new({
+          provider,
+          cacheMetadata: true,
+        });
+
+        setClients((prev) => new Map(prev).set(chainId, client));
+        setApis((prev: Partial<Record<ChainId, DedotClient>>) => ({
+          ...prev,
+          [chainId]: client,
+        }));
+
+        console.log(`Successfully connected to ${chainConfig.displayName}`);
+      } catch (err) {
+        console.error(`Failed to initialize ${chainId}:`, err);
+        setErrorStates((prev) =>
+          new Map(prev).set(
+            chainId,
+            err instanceof Error
+              ? err.message
+              : "Failed to initialize Polkadot API"
+          )
         );
+      } finally {
+        setLoadingStates((prev) => new Map(prev).set(chainId, false));
       }
-
-      console.log(`Connecting to ${chainConfig.displayName} using dedot`);
-
-      const provider = new WsProvider(chainConfig.endpoints);
-      provider.on("connected", (endpoint: string) => {
-        console.log("Connected Endpoint", endpoint);
-      });
-
-      await provider.connect();
-
-      const client = await DedotClient.new({
-        provider,
-        cacheMetadata: true,
-      });
-
-      setClients((prev) => new Map(prev).set(chainId, client));
-      setApis((prev: Partial<Record<ChainId, DedotClient>>) => ({
-        ...prev,
-        [chainId]: client,
-      }));
-
-      console.log(`Successfully connected to ${chainConfig.displayName}`);
-    } catch (err) {
-      console.error(`Failed to initialize ${chainId}:`, err);
-      setErrorStates((prev) =>
-        new Map(prev).set(
-          chainId,
-          err instanceof Error
-            ? err.message
-            : "Failed to initialize Polkadot API"
-        )
-      );
-    } finally {
-      setLoadingStates((prev) => new Map(prev).set(chainId, false));
-    }
-  };
+    },
+    [apis, setLoadingStates, setErrorStates, setClients, setApis]
+  );
 
   const setApi = (chainId: ChainId) => {
     if (!isValidChainId(dotUiConfig.chains, chainId)) {
@@ -144,7 +142,7 @@ export function PolkadotProvider({ children }: DedotProviderProps) {
     setApis({});
     setLoadingStates(new Map());
     setErrorStates(new Map());
-    setCurrentChain(dotUiConfig.defaultChain);
+    setCurrentChain(defaultChain || dotUiConfig.defaultChain);
   };
 
   const isConnected = (chainId: ChainId): boolean => {
@@ -166,6 +164,7 @@ export function PolkadotProvider({ children }: DedotProviderProps) {
     disconnect,
     isConnected,
     isLoading,
+    initializeChain,
     chainName: currentChainConfig.displayName,
     availableChains: getChainIds(dotUiConfig.chains),
   };
@@ -181,6 +180,26 @@ export function useDedot(): DedotContextValue {
     throw new Error("useDedot must be used within a DedotProvider");
   }
   return context;
+}
+
+// Helper to get properly typed API (maintains backward compatibility)
+export function useTypedPolkadotApi(): DedotClient | null {
+  const { api } = useDedot();
+  return api;
+}
+
+// Helper to get a specific chain's API (type-safe) - similar to papi-provider
+export function usePolkadotApi(chainId: ChainId): DedotClient | null {
+  const { apis, initializeChain } = useDedot();
+
+  // Auto-initialize the chain if not connected
+  useEffect(() => {
+    if (!apis[chainId]) {
+      initializeChain(chainId);
+    }
+  }, [chainId, apis, initializeChain]);
+
+  return apis[chainId] || null;
 }
 
 // Type exports (matching polkadot provider)

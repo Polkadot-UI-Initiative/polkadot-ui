@@ -17,51 +17,32 @@ import {
   isValidChainId,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
 import { ChainDescriptor, ChainId } from "@/registry/dot-ui/lib/types.papi";
+import {
+  BasePolkadotContextValue,
+  BasePolkadotProviderProps,
+} from "@/registry/dot-ui/lib/types.dot-ui";
 
-// Type for the API based on configured chains
+// PAPI-specific types
 type ConfiguredChainApi<T extends ChainId> = TypedApi<ChainDescriptor<T>>;
 
-// Create a composite API typse that includes all registered chains
+// Create a composite API types that includes all registered chains
 type CompositeApi = {
   [K in ChainId]: ConfiguredChainApi<K>;
 };
 
-interface PolkadotContextValue {
-  // Current active chain and its API
-  currentChain: ChainId;
-  api: ConfiguredChainApi<ChainId> | null;
-  isLoading: (chainId: ChainId) => boolean;
-  error: string | null;
+// PAPI-specific context type extending the base
+type PapiContextValue = BasePolkadotContextValue<
+  ConfiguredChainApi<ChainId>,
+  Partial<CompositeApi>,
+  ChainId
+>;
 
-  // All APIs for all registered chainsp
-  apis: Partial<CompositeApi>;
-
-  // Function to switch active chain (type-safe)
-  setApi: (chainId: ChainId) => void;
-
-  // Connection management
-  disconnect: () => void;
-  isConnected: (chainId: ChainId) => boolean;
-  initializeChain: (chainId: ChainId) => Promise<void>;
-
-  // Chain information
-  chainName: string | null;
-  availableChains: ChainId[];
-}
-
-const PolkadotContext = createContext<PolkadotContextValue | undefined>(
-  undefined
-);
-
-interface PolkadotProviderProps {
-  children: React.ReactNode;
-  defaultChain?: ChainId;
-}
+const PolkadotContext = createContext<PapiContextValue | undefined>(undefined);
 
 export function PolkadotProvider({
   children,
   defaultChain,
-}: PolkadotProviderProps) {
+}: BasePolkadotProviderProps<ChainId>) {
   const [currentChain, setCurrentChain] = useState<ChainId>(
     defaultChain || polkadotConfig.defaultChain
   );
@@ -168,7 +149,7 @@ export function PolkadotProvider({
     currentChain
   );
 
-  const value: PolkadotContextValue = {
+  const value: PapiContextValue = {
     currentChain,
     api: apis[currentChain] || null,
     error: errorStates.get(currentChain) || null,
@@ -189,7 +170,7 @@ export function PolkadotProvider({
   );
 }
 
-export function usePapi(): PolkadotContextValue {
+export function usePapi(): PapiContextValue {
   const context = useContext(PolkadotContext);
 
   if (context === undefined) {

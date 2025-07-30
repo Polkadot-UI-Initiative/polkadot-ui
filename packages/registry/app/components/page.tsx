@@ -1,3 +1,9 @@
+import AddressInputPage from "@/registry/dot-ui/blocks/address-input/demo/page.dedot";
+
 export default function Docs() {
-  return <div>Components</div>;
+  return (
+    <div className="flex flex-col gap-4 max-w-md mx-auto p-4">
+      <AddressInputPage />
+    </div>
+  );
 }

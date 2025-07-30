@@ -163,6 +163,12 @@ export class Logger {
   showNextSteps(componentName: string, hasDedot: boolean = false) {
     this.section("🎉 Component installed successfully!");
 
+    this.subsection("Check out the demo page");
+    this.detail(
+      `Run the dev server and access the demo page at http://localhost:3000/demo/dot-ui/${componentName}`,
+      true
+    );
+
     this.subsection("Next steps:");
     this.detail("1. Use the component in your project:", true);
     this.code(

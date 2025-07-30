@@ -1,4 +1,7 @@
-import { DotUiConfig, SubstrateExplorer } from "./types.dot-ui";
+import {
+  type DotUiConfig,
+  SubstrateExplorer,
+} from "@/registry/dot-ui/lib/types.dot-ui";
 
 export const dotUiConfig: DotUiConfig = {
   chains: {

@@ -1,6 +1,6 @@
-import { ChainDefinition, TypedApi } from "polkadot-api";
-import { polkadotConfig } from "./config.papi";
-import { ChainConfig } from "./config.dot-ui";
+import { type ChainDefinition, type TypedApi } from "polkadot-api";
+import { polkadotConfig } from "@/registry/dot-ui/lib/config.papi";
+import { type ChainConfig } from "@/registry/dot-ui/lib/config.dot-ui";
 
 // types/interfaces related to papi
 export type ChainId = keyof typeof polkadotConfig.chains;

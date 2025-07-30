@@ -25,7 +25,7 @@ export function usePolkadotIdentity(
   const peopleApi = usePolkadotApi(identityChain);
 
   return useQuery({
-    queryKey: ["polkadot-identity", address, identityChain],
+    queryKey: ["polkadot-identity-papi", address, identityChain],
     queryFn: async (): Promise<PolkadotIdentity | null> => {
       if (
         !peopleApi ||
