@@ -9,7 +9,7 @@ const packageManagers = [
   {
     name: "npm",
     value: "npm",
-    command: "npx dot-ui add",
+    command: "npx polka-ui add",
     icon: (
       <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <title>npm</title>
@@ -23,7 +23,7 @@ const packageManagers = [
   {
     name: "pnpm",
     value: "pnpm",
-    command: "pnpm dlx dot-ui add",
+    command: "pnpm dlx polka-ui add",
     icon: (
       <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <title>pnpm</title>
@@ -37,7 +37,7 @@ const packageManagers = [
   {
     name: "bun",
     value: "bun",
-    command: "bunx dot-ui add",
+    command: "bunx polka-ui add",
     icon: (
       <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <title>Bun</title>
@@ -51,7 +51,7 @@ const packageManagers = [
   {
     name: "yarn",
     value: "yarn",
-    command: "yarn dlx dot-ui add",
+    command: "yarn dlx polka-ui add",
     icon: (
       <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <title>Yarn</title>
