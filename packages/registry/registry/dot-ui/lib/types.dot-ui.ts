@@ -6,7 +6,9 @@ export interface ChainConfig {
   readonly displayName: string;
   readonly isTestnet: boolean;
   readonly icon?: string;
-  readonly explorerUrls?: Partial<Record<SubstrateExplorer, string>>;
+  readonly explorerUrls?: Partial<
+    Record<keyof typeof SubstrateExplorer, string>
+  >;
   readonly faucetUrls?: string[];
 }
 
@@ -25,16 +27,16 @@ export interface PolkadotConfig<
 }
 
 export function definePolkadotConfig<
-  const TChains extends Readonly<Record<ChainId, ChainConfig>>,
+  TChains extends Readonly<Record<ChainId, ChainConfig>>,
 >(config: PolkadotConfig<TChains>) {
   return config;
 }
 
-export enum SubstrateExplorer {
-  Subscan = "subscan",
-  PolkadotJs = "polkadot-js",
-  PapiExplorer = "papi-explorer",
-}
+export const SubstrateExplorer = {
+  Subscan: "Subscan",
+  PolkadotJs: "PolkadotJs",
+  PapiExplorer: "PapiExplorer",
+} as const;
 
 export enum JsonRpcApi {
   LEGACY = "legacy",

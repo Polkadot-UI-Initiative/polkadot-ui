@@ -9,8 +9,8 @@ import {
   extractText,
   hasPositiveIdentityJudgement,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
-import { ChainIdWithIdentity } from "@/registry/dot-ui/lib/types.papi";
-import { IdentitySearchResult } from "@/registry/dot-ui/lib/types.dot-ui";
+import { type ChainIdWithIdentity } from "@/registry/dot-ui/lib/types.papi";
+import { type IdentitySearchResult } from "@/registry/dot-ui/lib/types.dot-ui";
 
 export function useIdentitySearch(
   displayName: string | null | undefined,

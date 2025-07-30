@@ -7,7 +7,7 @@ import {
   useState,
   useCallback,
 } from "react";
-import { ChainId, dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
+import { type ChainId, dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
 import {
   getChainIds,
   getChainConfig,
@@ -15,8 +15,8 @@ import {
 } from "@/registry/dot-ui/lib/utils.dot-ui";
 import { DedotClient, WsProvider } from "dedot";
 import {
-  BasePolkadotContextValue,
-  BasePolkadotProviderProps,
+  type BasePolkadotContextValue,
+  type BasePolkadotProviderProps,
 } from "@/registry/dot-ui/lib/types.dot-ui";
 
 // Dedot-specific context type extending the base
@@ -201,6 +201,3 @@ export function usePolkadotApi(chainId: ChainId): DedotClient | null {
 
   return apis[chainId] || null;
 }
-
-// Type exports (matching polkadot provider)
-export type { ChainId };

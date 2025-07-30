@@ -1,6 +1,6 @@
 "use client";
 
-import { createClient, TypedApi } from "polkadot-api";
+import { createClient, type TypedApi } from "polkadot-api";
 import { getWsProvider } from "polkadot-api/ws-provider/web";
 import { withPolkadotSdkCompat } from "polkadot-api/polkadot-sdk-compat";
 import {
@@ -16,11 +16,11 @@ import {
   getChainConfig,
   isValidChainId,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
-import { ChainDescriptor } from "@/registry/dot-ui/lib/types.papi";
-import { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
+import { type ChainDescriptor } from "@/registry/dot-ui/lib/types.papi";
+import { type ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 import {
-  BasePolkadotContextValue,
-  BasePolkadotProviderProps,
+  type BasePolkadotContextValue,
+  type BasePolkadotProviderProps,
 } from "@/registry/dot-ui/lib/types.dot-ui";
 
 // PAPI-specific types

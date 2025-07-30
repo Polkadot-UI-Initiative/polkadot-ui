@@ -1,6 +1,6 @@
 import { type TypedApi } from "polkadot-api";
 import { polkadotConfig } from "@/registry/dot-ui/lib/config.papi";
-import { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
+import { type ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 
 export type ChainDescriptor<T extends ChainId> =
   (typeof polkadotConfig.chains)[T]["descriptor"];
