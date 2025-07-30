@@ -4,20 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useDedot } from "@/registry/dot-ui/providers/dedot-provider";
 import { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 import { hasPositiveIdentityJudgement } from "@/registry/dot-ui/lib/utils.dot-ui";
-
-export interface FormattedIdentity {
-  display?: string;
-  email?: string;
-  legal?: string;
-  twitter?: string;
-  web?: string;
-  verified?: boolean;
-}
-
-export interface IdentitySearchResult {
-  address: string;
-  identity: FormattedIdentity;
-}
+import { IdentitySearchResult } from "@/registry/dot-ui/lib/types.dot-ui";
 
 export function useIdentitySearch(
   displayName: string | null | undefined,
