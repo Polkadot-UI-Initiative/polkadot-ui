@@ -10,9 +10,10 @@ import {
 } from "@/components/ui/card";
 
 import { AddressInputWithProvider } from "@/registry/dot-ui/blocks/address-input/components/address-input.dedot";
+import { RequireConnectionWithProvider } from "@/registry/dot-ui/blocks/require-connection/components/require-connection.dedot";
 import { OpenInV0Button } from "../open-in-v0-button";
 import { Button } from "@/components/ui/button";
-import { BookText } from "lucide-react";
+import { BookText, Wifi, WifiOff } from "lucide-react";
 import { Label } from "@/registry/dot-ui/ui/label";
 import { cn } from "@/lib/utils";
 
@@ -31,6 +32,31 @@ const examples = [
           truncate={8}
           format="both"
         />
+      </div>
+    ),
+  },
+  {
+    name: "Require Connection",
+    href: "/docs/components/require-connection",
+    code: "require-connection",
+    description:
+      "Conditionally render content based on blockchain connection status",
+    component: (
+      <div className="w-full space-y-3">
+        <RequireConnectionWithProvider
+          chainId="paseo"
+          fallback={
+            <div className="flex items-center gap-2 text-muted-foreground text-sm">
+              <WifiOff className="w-4 h-4" />
+              <span>Connect to Paseo</span>
+            </div>
+          }
+        >
+          <div className="flex items-center gap-2 text-green-600 text-sm">
+            <Wifi className="w-4 h-4" />
+            <span>Connected to Paseo</span>
+          </div>
+        </RequireConnectionWithProvider>
       </div>
     ),
   },
