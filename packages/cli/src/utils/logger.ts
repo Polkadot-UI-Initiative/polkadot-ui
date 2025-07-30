@@ -8,6 +8,16 @@ export class Logger {
   }
 
   /**
+   * Helper function to format component name for display
+   */
+  formatComponentName(name: string) {
+    return name
+      .split("-")
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join("");
+  }
+
+  /**
    * General information message
    */
   info(message: string) {
@@ -161,6 +171,8 @@ export class Logger {
    * Show next steps after component installation
    */
   showNextSteps(componentName: string, hasDedot: boolean = false) {
+    const formattedName = this.formatComponentName(componentName);
+
     this.section("🎉 Component installed successfully!");
 
     this.subsection("Check out the demo page");
@@ -172,10 +184,10 @@ export class Logger {
     this.subsection("Next steps:");
     this.detail("1. Use the component in your project:", true);
     this.code(
-      `import { ${componentName}WithProvider } from '@/components/${componentName}.${hasDedot ? "dedot" : "papi"}'`
+      `import { ${formattedName}WithProvider } from '@/components/${componentName}.${hasDedot ? "dedot" : "papi"}'`
     );
     this.code("// ...");
-    this.code(`<${componentName}WithProvider />`);
+    this.code(`<${formattedName}WithProvider />`);
     this.newline();
 
     this.detail("2. Read the component documentation:", true);
@@ -187,7 +199,7 @@ export class Logger {
       true
     );
     this.code(
-      `Use <${componentName} /> instead of <${componentName}WithProvider /> and wrap your app in <PolkadotProvider>`
+      `Use <${formattedName} /> instead of <${formattedName}WithProvider /> and wrap your app in <PolkadotProvider>`
     );
     this.newline();
     this.code("Read more at https://dot-ui.com/docs#add-your-first-component");
