@@ -23,11 +23,7 @@
           "type": "registry:page",
           "target": "app/demo/dot-ui/address-input/page.tsx"
         },
-        {
-          "path": "registry/dot-ui/blocks/address-input/demo/address-input-demo.tsx",
-          "type": "registry:page",
-          "target": "app/demo/dot-ui/address-input/address-input-demo.tsx"
-        },
+
         {
           "path": "registry/dot-ui/blocks/address-input/components/address-input.papi.tsx",
           "type": "registry:component"
