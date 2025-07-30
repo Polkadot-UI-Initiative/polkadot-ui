@@ -64,7 +64,7 @@ const packageManagers = [
   },
 ];
 
-const blocks = ["address-input"];
+const blocks = ["address-input", "require-connection"];
 
 export function AnimatedCodeBlock() {
   const [activeTab, setActiveTab] = useState("npm");
