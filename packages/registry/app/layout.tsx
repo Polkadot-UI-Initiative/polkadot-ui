@@ -7,6 +7,7 @@ import { Navigation } from "@/components/layout/navigation";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { MouseFollower } from "@/components/mouse-follower";
 import { RootProvider as FumadocsRootProvider } from "fumadocs-ui/provider";
+import { PolkadotLogo } from "@/components/polkadot-logo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,6 +42,9 @@ export default function RootLayout({
               <PolkadotProvider>
                 <main className="flex-1">{children}</main>
               </PolkadotProvider>
+              <footer className="flex justify-center items-center mt-12 mb-4 p-4">
+                <PolkadotLogo withPoweredBy />
+              </footer>
               <MouseFollower />
             </div>
           </ThemeProvider>
