@@ -16,7 +16,8 @@ import {
   getChainConfig,
   isValidChainId,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
-import { ChainDescriptor, ChainId } from "@/registry/dot-ui/lib/types.papi";
+import { ChainDescriptor } from "@/registry/dot-ui/lib/types.papi";
+import { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 import {
   BasePolkadotContextValue,
   BasePolkadotProviderProps,
@@ -56,11 +57,6 @@ export function PolkadotProvider({
   const [errorStates, setErrorStates] = useState<Map<ChainId, string | null>>(
     new Map()
   );
-
-  // Initialize the default chain on mount
-  useEffect(() => {
-    initializeChain(defaultChain || polkadotConfig.defaultChain);
-  }, [defaultChain]);
 
   const initializeChain = useCallback(
     async (chainId: ChainId) => {
@@ -113,6 +109,11 @@ export function PolkadotProvider({
     },
     [apis, setLoadingStates, setErrorStates, setClients, setApis]
   );
+
+  // Initialize the default chain on mount
+  useEffect(() => {
+    initializeChain(defaultChain || polkadotConfig.defaultChain);
+  }, [defaultChain, initializeChain]);
 
   const setApi = (chainId: ChainId) => {
     if (!isValidChainId(polkadotConfig.chains, chainId)) {

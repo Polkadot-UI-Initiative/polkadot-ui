@@ -19,7 +19,7 @@ export interface PolkadotIdentity {
 
 export function useIdentity(
   address: string,
-  identityChain: ChainIdWithIdentity = "paseo_people"
+  identityChain: ChainIdWithIdentity | undefined = "paseo_people"
 ) {
   const { isLoading, isConnected } = usePapi();
   const peopleApi = usePolkadotApi(identityChain);

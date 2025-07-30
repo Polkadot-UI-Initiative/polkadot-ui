@@ -1,9 +1,6 @@
-import {
-  type DotUiConfig,
-  SubstrateExplorer,
-} from "@/registry/dot-ui/lib/types.dot-ui";
+import { SubstrateExplorer } from "@/registry/dot-ui/lib/types.dot-ui";
 
-export const dotUiConfig: DotUiConfig = {
+export const dotUiConfig = {
   chains: {
     paseo: {
       endpoints: ["wss://sys.ibp.network/paseo", "wss://paseo.dotters.network"],
@@ -28,5 +25,8 @@ export const dotUiConfig: DotUiConfig = {
 };
 
 // Simple type aliases for type safety
+export type DotUiConfig = typeof dotUiConfig & {
+  defaultChain: ChainId;
+};
 export type ChainId = keyof typeof dotUiConfig.chains;
 export type ChainConfig<T extends ChainId> = (typeof dotUiConfig.chains)[T];

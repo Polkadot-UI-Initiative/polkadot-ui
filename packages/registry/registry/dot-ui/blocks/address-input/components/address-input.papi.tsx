@@ -5,7 +5,6 @@ import {
   PolkadotProvider,
   usePapi,
 } from "@/registry/dot-ui/providers/papi-provider";
-import { ChainIdWithIdentity } from "@/registry/dot-ui/lib/types.papi";
 import {
   AddressInputBase,
   AddressInputProvider,
@@ -20,24 +19,19 @@ import { useIdentitySearch } from "@/registry/dot-ui/blocks/address-input/hooks/
 export type AddressInputProps = Omit<AddressInputBaseProps, "services">;
 
 export function AddressInput(props: AddressInputProps) {
-  const papiContext = usePapi();
+  const { isLoading, isConnected } = usePapi();
 
   // Simple services object with type-compatible wrappers
   const services = useMemo(
     () => ({
-      useIdentity: (address: string, identityChain?: string) =>
-        useIdentity(address, identityChain as ChainIdWithIdentity),
-      useIdentitySearch: (displayName: string | null, identityChain?: string) =>
-        useIdentitySearch(displayName, identityChain as ChainIdWithIdentity),
+      useIdentity,
+      useIdentitySearch,
       useProvider: () => ({
-        isLoading: (chainId: string) =>
-          papiContext.isLoading(chainId as ChainIdWithIdentity),
-        currentChain: papiContext.currentChain,
-        isConnected: (chainId: string) =>
-          papiContext.isConnected(chainId as ChainIdWithIdentity),
+        isLoading,
+        isConnected,
       }),
     }),
-    [papiContext]
+    [isLoading, isConnected]
   );
 
   return <AddressInputBase {...props} services={services} />;

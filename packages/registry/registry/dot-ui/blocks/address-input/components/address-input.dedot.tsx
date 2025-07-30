@@ -4,7 +4,6 @@ import { useMemo } from "react";
 import {
   PolkadotProvider,
   useDedot,
-  type ChainId,
 } from "@/registry/dot-ui/providers/dedot-provider";
 import {
   AddressInputBase,
@@ -13,7 +12,7 @@ import {
 } from "@/registry/dot-ui/blocks/address-input/components/address-input.base";
 
 // Import Dedot-specific hooks
-import { usePolkadotIdentity } from "@/registry/dot-ui/blocks/address-input/hooks/use-identity.dedot";
+import { useIdentity } from "@/registry/dot-ui/blocks/address-input/hooks/use-identity.dedot";
 import { useIdentitySearch } from "@/registry/dot-ui/blocks/address-input/hooks/use-search-identity.dedot";
 
 // Props type - removes services prop since we inject it
@@ -25,16 +24,11 @@ export function AddressInput(props: AddressInputProps) {
   // Simple services object with type-compatible wrappers
   const services = useMemo(
     () => ({
-      useIdentity: (address: string, identityChain?: string) =>
-        usePolkadotIdentity(address, identityChain as ChainId),
-      useIdentitySearch: (displayName: string | null, identityChain?: string) =>
-        useIdentitySearch(displayName, identityChain as ChainId),
+      useIdentity,
+      useIdentitySearch,
       useProvider: () => ({
-        isLoading: (chainId: string) =>
-          dedotContext.isLoading(chainId as ChainId),
-        currentChain: dedotContext.currentChain,
-        isConnected: (chainId: string) =>
-          dedotContext.isConnected(chainId as ChainId),
+        isLoading: dedotContext.isLoading,
+        isConnected: dedotContext.isConnected,
       }),
     }),
     [dedotContext]

@@ -16,31 +16,31 @@ import {
   type ValidationResult,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
 import { Button } from "@/registry/dot-ui/ui/button";
-import { ChainId, dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
+import { dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
 import { SubstrateExplorer } from "@/registry/dot-ui/lib/types.dot-ui";
 import {
   IdentitySearchResult,
   PolkadotIdentity,
 } from "@/registry/dot-ui/lib/types.dot-ui";
 import Link from "next/link";
+import { ChainIdWithIdentity } from "@/registry/dot-ui/lib/types.papi";
 
 // Services interface for dependency injection
 export interface AddressInputServices {
   // Hook for fetching identity by address
   useIdentity: (
     address: string,
-    identityChain?: ChainId
+    identityChain?: ChainIdWithIdentity
   ) => UseQueryResult<PolkadotIdentity | null, Error>;
   // Hook for searching identities by display name
   useIdentitySearch: (
     displayName: string | null,
-    identityChain?: ChainId
+    identityChain?: ChainIdWithIdentity
   ) => UseQueryResult<IdentitySearchResult[], Error>;
   // Provider context hook for chain state
   useProvider: () => {
-    isLoading: (chainId: string) => boolean;
-    currentChain: string;
-    isConnected: (chainId: string) => boolean;
+    isLoading: (chainId: ChainIdWithIdentity) => boolean;
+    isConnected: (chainId: ChainIdWithIdentity) => boolean;
   };
 }
 
@@ -61,7 +61,7 @@ export interface AddressInputBaseProps {
   showIdenticon?: boolean;
   identiconTheme?: IconTheme;
   className?: string;
-  identityChain?: ChainId;
+  identityChain?: ChainIdWithIdentity;
   // Injected services - this makes it reusable
   services: AddressInputServices;
 }
@@ -130,7 +130,7 @@ export const AddressInputBase = forwardRef<
   ) => {
     // Extract services
     const { useIdentity, useIdentitySearch, useProvider } = services;
-    const { isLoading, currentChain, isConnected } = useProvider();
+    const { isLoading, isConnected } = useProvider();
 
     const [inputValue, setInputValue] = useState(value);
     const [validationResult, setValidationResult] =
@@ -235,7 +235,7 @@ export const AddressInputBase = forwardRef<
     // Loading states
     const isIdentityLoading = polkadotIdentity.isLoading;
     const isIdentitySearching = identitySearch.isLoading;
-    const isApiLoading = isLoading(currentChain);
+    const isApiLoading = isLoading(identityChain);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(e.target.value);
@@ -560,7 +560,7 @@ export const AddressInputBase = forwardRef<
         {/* Fixed height when status messages are shown to prevent layout shift */}
         <div className="min-h-[60px] space-y-1">
           {/* Connection status */}
-          {validationResult?.type === "ss58" && !isConnected(currentChain) && (
+          {validationResult?.type === "ss58" && !isConnected(identityChain) && (
             <div className="flex items-center gap-2 text-sm text-yellow-600">
               <span>Not connected to chain. Identity lookup unavailable.</span>
             </div>
@@ -602,7 +602,7 @@ export const AddressInputBase = forwardRef<
           {currentIdentity?.verified && (
             <div className="flex items-center gap-1 text-sm">
               <CircleCheck className="h-5 w-5 text-background fill-green-600 stroke-background" />
-              {dotUiConfig.chains[currentChain].explorerUrls?.[
+              {dotUiConfig.chains[identityChain].explorerUrls?.[
                 SubstrateExplorer.Subscan
               ] ? (
                 <Link
