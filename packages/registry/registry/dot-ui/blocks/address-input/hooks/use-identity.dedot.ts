@@ -5,8 +5,9 @@ import {
   useDedot,
   usePolkadotApi,
 } from "@/registry/dot-ui/providers/dedot-provider";
-import { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
+
 import { hasPositiveIdentityJudgement } from "@/registry/dot-ui/lib/utils.dot-ui";
+import { type ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 
 export interface PolkadotIdentity {
   display?: string;

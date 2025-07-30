@@ -8,7 +8,6 @@ import { Identicon } from "@polkadot/react-identicon";
 import { type IconTheme } from "@polkadot/react-identicon/types";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
 import { cn } from "@/registry/dot-ui/lib/utils";
 import {
   validateAddress,
@@ -19,11 +18,10 @@ import { Button } from "@/registry/dot-ui/ui/button";
 import { dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
 import { SubstrateExplorer } from "@/registry/dot-ui/lib/types.dot-ui";
 import {
-  IdentitySearchResult,
-  PolkadotIdentity,
+  type IdentitySearchResult,
+  type PolkadotIdentity,
 } from "@/registry/dot-ui/lib/types.dot-ui";
-import Link from "next/link";
-import { ChainIdWithIdentity } from "@/registry/dot-ui/lib/types.papi";
+import { type ChainIdWithIdentity } from "@/registry/dot-ui/lib/types.papi";
 
 // Services interface for dependency injection
 export interface AddressInputServices {
@@ -605,7 +603,7 @@ export const AddressInputBase = forwardRef<
               {dotUiConfig.chains[identityChain].explorerUrls?.[
                 SubstrateExplorer.Subscan
               ] ? (
-                <Link
+                <a
                   href={`${dotUiConfig.chains[identityChain as keyof typeof dotUiConfig.chains]?.explorerUrls?.[SubstrateExplorer.Subscan]}account/${inputValue}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -614,7 +612,7 @@ export const AddressInputBase = forwardRef<
                   {currentIdentity.display
                     ? `${currentIdentity.display}`
                     : "No identity defined"}
-                </Link>
+                </a>
               ) : (
                 <span>
                   {currentIdentity.display

@@ -7,7 +7,7 @@ import {
   extractText,
   hasPositiveIdentityJudgement,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
-import { ChainIdWithIdentity } from "@/registry/dot-ui/lib/types.papi";
+import { type ChainIdWithIdentity } from "@/registry/dot-ui/lib/types.papi";
 
 export interface PolkadotIdentity {
   display?: string;

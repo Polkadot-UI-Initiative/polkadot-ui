@@ -2,9 +2,9 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useDedot } from "@/registry/dot-ui/providers/dedot-provider";
-import { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 import { hasPositiveIdentityJudgement } from "@/registry/dot-ui/lib/utils.dot-ui";
-import { IdentitySearchResult } from "@/registry/dot-ui/lib/types.dot-ui";
+import { type IdentitySearchResult } from "@/registry/dot-ui/lib/types.dot-ui";
+import { type ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 
 export function useIdentitySearch(
   displayName: string | null | undefined,
