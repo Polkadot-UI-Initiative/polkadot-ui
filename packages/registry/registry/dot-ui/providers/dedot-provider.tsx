@@ -113,8 +113,8 @@ export function PolkadotProvider({
     }
 
     setCurrentChain(chainId);
-    // Initialize the chain if not already connected
-    if (!apis[chainId]) {
+    // Initialize the chain if not already connected and not already initializing
+    if (!apis[chainId] && !loadingStates.get(chainId)) {
       initializeChain(chainId);
     }
   };
@@ -190,14 +190,14 @@ export function useTypedPolkadotApi(): DedotClient | null {
 
 // Helper to get a specific chain's API (type-safe) - similar to papi-provider
 export function usePolkadotApi(chainId: ChainId): DedotClient | null {
-  const { apis, initializeChain } = useDedot();
+  const { apis, initializeChain, isLoading } = useDedot();
 
-  // Auto-initialize the chain if not connected
+  // Auto-initialize the chain if not connected and not already initializing
   useEffect(() => {
-    if (!apis[chainId]) {
+    if (!apis[chainId] && !isLoading(chainId)) {
       initializeChain(chainId);
     }
-  }, [chainId, apis, initializeChain]);
+  }, [chainId, apis, initializeChain, isLoading]);
 
   return apis[chainId] || null;
 }

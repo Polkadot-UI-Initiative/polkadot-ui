@@ -17,7 +17,7 @@ export interface PolkadotIdentity {
   verified: boolean;
 }
 
-export function usePolkadotIdentity(
+export function useIdentity(
   address: string,
   identityChain: ChainIdWithIdentity = "paseo_people"
 ) {

@@ -16,7 +16,7 @@ import {
   type ValidationResult,
 } from "@/registry/dot-ui/lib/utils.dot-ui";
 import { Button } from "@/registry/dot-ui/ui/button";
-import { dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
+import { ChainId, dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
 import { SubstrateExplorer } from "@/registry/dot-ui/lib/types.dot-ui";
 import Link from "next/link";
 
@@ -47,12 +47,12 @@ export interface AddressInputServices {
   // Hook for fetching identity by address
   useIdentity: (
     address: string,
-    identityChain?: unknown
+    identityChain?: ChainId
   ) => UseQueryResult<PolkadotIdentity | null, Error>;
   // Hook for searching identities by display name
   useIdentitySearch: (
     displayName: string | null,
-    identityChain?: unknown
+    identityChain?: ChainId
   ) => UseQueryResult<IdentitySearchResult[], Error>;
   // Provider context hook for chain state
   useProvider: () => {
@@ -79,7 +79,7 @@ export interface AddressInputBaseProps {
   showIdenticon?: boolean;
   identiconTheme?: IconTheme;
   className?: string;
-  identityChain?: string;
+  identityChain?: ChainId;
   // Injected services - this makes it reusable
   services: AddressInputServices;
 }
@@ -626,6 +626,7 @@ export const AddressInputBase = forwardRef<
                 <Link
                   href={`${dotUiConfig.chains[identityChain as keyof typeof dotUiConfig.chains]?.explorerUrls?.[SubstrateExplorer.Subscan]}account/${inputValue}`}
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="hover:underline hover:after:content-['_↗']"
                 >
                   {currentIdentity.display
