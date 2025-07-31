@@ -408,6 +408,50 @@ const handler = createMcpHandler(
           description: "Add a Polkadot UI component to your project",
           parameters: z.object({
             component: z.string().describe("The component name to add"),
+            dev: z.boolean().optional().describe("Use development registry"),
+            verbose: z.boolean().optional().describe("Show detailed output"),
+            force: z
+              .boolean()
+              .optional()
+              .describe("Force installation even if files exist"),
+            interactive: z
+              .boolean()
+              .optional()
+              .describe("Show detailed prompts for configuration"),
+          }),
+        },
+        list_components: {
+          description: "List all available Polkadot UI components",
+          parameters: z.object({
+            dev: z.boolean().optional().describe("Use development registry"),
+            verbose: z.boolean().optional().describe("Show detailed output"),
+          }),
+        },
+        init_project: {
+          description: "Initialize a new project with Polkadot UI components",
+          parameters: z.object({
+            dev: z.boolean().optional().describe("Use development registry"),
+            verbose: z.boolean().optional().describe("Show detailed output"),
+            force: z
+              .boolean()
+              .optional()
+              .describe("Force installation even if files exist"),
+            interactive: z
+              .boolean()
+              .optional()
+              .describe("Show detailed prompts for configuration"),
+          }),
+        },
+        manage_telemetry: {
+          description:
+            "Manage telemetry settings and display privacy information",
+          parameters: z.object({
+            action: z
+              .enum(["status", "enable", "disable", "info"])
+              .optional()
+              .describe("Telemetry action to perform"),
+            dev: z.boolean().optional().describe("Use development registry"),
+            verbose: z.boolean().optional().describe("Show detailed output"),
           }),
         },
       },
