@@ -27,6 +27,20 @@ export class Registry {
   }
 
   /**
+   * Get the detected library (exposed for external use)
+   */
+  async getDetectedLibrary(): Promise<"papi" | "dedot" | "none"> {
+    return await this.getDetectedApi();
+  }
+
+  /**
+   * Get the base URL (exposed for external use)
+   */
+  getBaseUrl(): string {
+    return this.baseUrl;
+  }
+
+  /**
    * Get the detected Polkadot API library with caching
    */
   private async getDetectedApi(): Promise<"papi" | "dedot" | "none"> {
@@ -151,6 +165,45 @@ export class Registry {
       title: component.title,
       description: component.description,
     }));
+  }
+
+  /**
+   * Get available components for a specific library
+   */
+  async getAvailableComponentsForLibrary(
+    library: "papi" | "dedot"
+  ): Promise<Array<{ name: string; title: string; description: string }>> {
+    try {
+      const registryFile =
+        library === "dedot" ? "registry-dedot.json" : "registry-papi.json";
+      const registryUrl = `${this.baseUrl}/${registryFile}`;
+
+      const response = await fetch(registryUrl);
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch ${library} registry: ${response.status} ${response.statusText}`
+        );
+      }
+
+      const data = await response.json();
+      const components = data.items || [];
+
+      return components.map((component: any) => ({
+        name: component.name,
+        title: component.title,
+        description: component.description,
+      }));
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(
+          `${library.toUpperCase()} registry fetch failed: ${error.message}`
+        );
+      }
+      throw new Error(
+        `Unknown error occurred while fetching ${library} registry`
+      );
+    }
   }
 
   /**
