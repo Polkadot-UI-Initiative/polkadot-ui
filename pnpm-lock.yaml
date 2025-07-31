@@ -36,11 +36,19 @@ importers:
         specifier: ^5.4.1
         version: 5.4.1
       posthog-node:
+<<<<<<< HEAD
         specifier: ^5.6.0
         version: 5.6.0
       zod:
         specifier: ^4.0.0
         version: 4.0.5
+=======
+        specifier: ^4.18.0
+        version: 4.18.0
+      zod:
+        specifier: ~3.25.76
+        version: 3.25.76
+>>>>>>> main
     devDependencies:
       '@jest/globals':
         specifier: ^30.0.4
@@ -1114,6 +1122,9 @@ packages:
 
   '@mdx-js/mdx@3.1.0':
     resolution: {integrity: sha512-/QxEhPAvGwbQmy1Px8F899L5Uc2KZ6JtXwlCgJmjSTBedwOZkByYcBG4GceIGPXRDsmfxhHazuS+hlOShRLeDw==}
+
+  '@modelcontextprotocol/sdk@0.5.0':
+    resolution: {integrity: sha512-RXgulUX6ewvxjAG0kOpLMEdXXWkzWgaoCGaA2CwNW7cQCIphjpJhjpHSiaPdVCnisjRF/0Cm9KWHUuIoeiAblQ==}
 
   '@modelcontextprotocol/sdk@1.15.1':
     resolution: {integrity: sha512-W/XlN9c528yYn+9MQkVjxiTPgPxoxt+oczfjHBDsJx0+59+O7B75Zhsp0B16Xbwbz8ANISDajh6+V7nIcPMc5w==}
@@ -7242,6 +7253,12 @@ snapshots:
     transitivePeerDependencies:
       - acorn
       - supports-color
+
+  '@modelcontextprotocol/sdk@0.5.0':
+    dependencies:
+      content-type: 1.0.5
+      raw-body: 3.0.0
+      zod: 3.25.76
 
   '@modelcontextprotocol/sdk@1.15.1':
     dependencies:
