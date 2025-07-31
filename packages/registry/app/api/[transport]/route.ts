@@ -63,12 +63,28 @@ async function loadRegistry(
     };
 
     const filename = getRegistryFilename(registryType);
-    const basePath = getRegistryBasePath();
-    const registryPath = dev
-      ? path.join(basePath, filename)
-      : path.join(basePath, "public", filename);
+    let registryContent: string;
 
-    const registryContent = await fs.readFile(registryPath, "utf-8");
+    if (dev) {
+      // Development: Read from filesystem
+      const basePath = getRegistryBasePath();
+      const registryPath = path.join(basePath, filename);
+      registryContent = await fs.readFile(registryPath, "utf-8");
+    } else {
+      // Production: Fetch from static URL (Vercel serves these from root)
+      const registryUrl = process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}/${filename}`
+        : `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/${filename}`;
+
+      const response = await fetch(registryUrl);
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch registry: ${response.status} ${response.statusText}`
+        );
+      }
+      registryContent = await response.text();
+    }
+
     return JSON.parse(registryContent) as Registry;
   } catch (error) {
     console.error(`Failed to load ${registryType} registry:`, error);
