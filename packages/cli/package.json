@@ -5,8 +5,7 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "polkadot-ui": "./bin/dot-ui.mjs",
-    "polkadot-ui-mcp": "./bin/dot-ui-mcp.mjs"
+    "polkadot-ui": "./bin/dot-ui.mjs"
   },
   "files": [
     "bin/**/*",
