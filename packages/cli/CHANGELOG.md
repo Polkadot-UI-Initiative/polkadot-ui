@@ -100,8 +100,8 @@ and this project adheres to
 
 ### Changed
 
-- Updated documentation to use "polka-ui" branding consistently
-- Updated all CLI command examples to use `polka-ui` instead of `dot-ui`
+- Updated documentation to use "polkadot-ui" branding consistently
+- Updated all CLI command examples to use `polkadot-ui` instead of `dot-ui`
 - Updated registry URLs to use dot-ui.com (production domain)
 - Maintained internal references to dot-ui for consistency
 

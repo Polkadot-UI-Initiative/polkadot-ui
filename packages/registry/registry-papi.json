@@ -65,6 +65,54 @@
           "type": "registry:lib"
         }
       ]
+    },
+    {
+      "name": "require-connection",
+      "type": "registry:component",
+      "title": "Require Connection (papi)",
+      "description": "A smart wrapper component that conditionally renders content based on chain connection status, with loading states and fallback UI support using polkadot-api.",
+      "dependencies": ["polkadot-api"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "registry/dot-ui/blocks/require-connection/demo/page.papi.tsx",
+          "type": "registry:page",
+          "target": "app/demo/dot-ui/require-connection/page.tsx"
+        },
+
+        {
+          "path": "registry/dot-ui/blocks/require-connection/components/require-connection.papi.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/dot-ui/blocks/require-connection/components/require-connection.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/dot-ui/providers/papi-provider.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/types.papi.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/config.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/config.papi.ts",
+          "type": "registry:lib"
+        }
+      ]
     }
   ]
 }

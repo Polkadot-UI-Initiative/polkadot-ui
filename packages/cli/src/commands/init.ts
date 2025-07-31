@@ -715,7 +715,7 @@ export default defineConfig({
         `${config.framework === "nextjs" ? "npm run dev" : "npm run dev"}`
       );
       this.logger.detail("2. Add Polkadot UI components:", true);
-      this.logger.code("polka-ui add block-number");
+      this.logger.code("polkadot-ui add block-number");
       this.logger.detail("3. Check out the documentation:", true);
       this.logger.code("https://dot-ui.com/docs");
     } else {

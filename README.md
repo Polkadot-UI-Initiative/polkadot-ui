@@ -9,7 +9,7 @@ development. For a list of available components visit
 
 This project consists of two main packages:
 
-- **CLI** (`packages/cli`) - The `polka-ui` command-line tool for installing
+- **CLI** (`packages/cli`) - The `polkadot-ui` command-line tool for installing
   components
 - **Registry** (`packages/registry`) - Next.js server that hosts the component
   registry and documentation
@@ -22,14 +22,14 @@ Install Polkadot components in your project:
 
 ```bash
 # List available components
-npx polka-ui list
+npx polkadot-ui list
 
 # Add a component to your project
-npx polka-ui add block-number
+npx polkadot-ui add block-number
 
 # You can also use pnpm or bun
-pnpm dlx polka-ui add block-number
-bunx polka-ui add block-number
+pnpm dlx polkadot-ui add block-number
+bunx polkadot-ui add block-number
 ```
 
 ## Development
@@ -64,8 +64,8 @@ bunx polka-ui add block-number
 dot-ui/
 ├── packages/
 │   ├── cli/                    # CLI package
-│   │   ├── bin/polka-ui.js    # CLI executable
-│   │   └── package.json       # Published to npm as "polka-ui"
+│   │   ├── bin/polkadot-ui.js    # CLI executable
+│   │   └── package.json       # Published to npm as "polkadot-ui"
 │   └── registry/              # Registry server (@dot-ui/registry)
 │       ├── app/               # Next.js app directory
 │       ├── registry/          # Component definitions
@@ -181,7 +181,7 @@ Components are defined in `/registry/polkadot-ui/` with:
 
 ### CLI Package
 
-The CLI is published to npm as `polka-ui`:
+The CLI is published to npm as `polkadot-ui`:
 
 ```bash
 cd packages/cli
@@ -244,7 +244,7 @@ export POLKA_UI_DISABLE_TELEMETRY=true
 **Per-command using dev flag:**
 
 ```bash
-npx polka-ui add button --dev
+npx polkadot-ui add button --dev
 ```
 
 **Permanently in your shell profile:**
