@@ -22,27 +22,48 @@ interface Registry {
   items: RegistryComponent[];
 }
 
+type RegistryType = "papi" | "dedot" | "default";
+
 // Helper function to load registry data
-async function loadRegistry(dev: boolean = false): Promise<Registry> {
+async function loadRegistry(
+  registryType: RegistryType = "papi",
+  dev: boolean = false
+): Promise<Registry> {
   try {
+    // Construct filename based on registry type
+    const getRegistryFilename = (type: RegistryType): string => {
+      switch (type) {
+        case "papi":
+          return "registry-papi.json";
+        case "dedot":
+          return "registry-dedot.json";
+        case "default":
+          return "registry.json";
+        default:
+          return "registry-papi.json"; // fallback to papi
+      }
+    };
+
+    const filename = getRegistryFilename(registryType);
     const registryPath = dev
-      ? path.join(process.cwd(), "registry-papi.json")
-      : path.join(process.cwd(), "public", "registry-papi.json");
+      ? path.join(process.cwd(), filename)
+      : path.join(process.cwd(), "public", filename);
 
     const registryContent = await fs.readFile(registryPath, "utf-8");
     return JSON.parse(registryContent) as Registry;
   } catch (error) {
-    console.error("Failed to load registry:", error);
-    throw new Error("Unable to load component registry");
+    console.error(`Failed to load ${registryType} registry:`, error);
+    throw new Error(`Unable to load ${registryType} component registry`);
   }
 }
 
 // Helper function to get component details
 async function getComponentDetails(
   componentName: string,
+  registryType: RegistryType = "papi",
   dev: boolean = false
 ): Promise<RegistryComponent | null> {
-  const registry = await loadRegistry(dev);
+  const registry = await loadRegistry(registryType, dev);
   return registry.items.find((item) => item.name === componentName) || null;
 }
 
@@ -73,10 +94,14 @@ const handler = createMcpHandler(
       }) => {
         try {
           // Get component details
-          const componentDetails = await getComponentDetails(component, dev);
+          const componentDetails = await getComponentDetails(
+            component,
+            "papi",
+            dev
+          );
 
           if (!componentDetails) {
-            const registry = await loadRegistry(dev);
+            const registry = await loadRegistry("papi", dev);
             const availableComponents = registry.items
               .map((item) => `• ${item.name}: ${item.description}`)
               .join("\n");
@@ -110,7 +135,7 @@ const handler = createMcpHandler(
             "",
             "## Installation Command",
             "```bash",
-            `npx polka-ui add ${component}${dev ? " --dev" : ""}${force ? " --force" : ""}${!interactive ? " --no-interactive" : ""}`,
+            `npx polkadot-ui add ${component}${dev ? " --dev" : ""}${force ? " --force" : ""}${!interactive ? " --no-interactive" : ""}`,
             "```",
             "",
             "## Manual Installation",
@@ -148,7 +173,7 @@ const handler = createMcpHandler(
       },
       async ({ dev = false, verbose = false }) => {
         try {
-          const registry = await loadRegistry(dev);
+          const registry = await loadRegistry("papi", dev);
 
           const componentList = [
             `# Available Components (${registry.items.length} total)`,
@@ -174,7 +199,7 @@ const handler = createMcpHandler(
             "## Usage",
             "Add a component to your project:",
             "```bash",
-            "npx polka-ui add <component-name>",
+            "npx polkadot-ui add <component-name>",
             "```",
             "",
             `**Registry Source:** ${dev ? "Development" : "Production"}`,
@@ -220,7 +245,7 @@ const handler = createMcpHandler(
       },
       async ({ dev = false, force = false, interactive = false }) => {
         try {
-          const registry = await loadRegistry(dev);
+          const registry = await loadRegistry("papi", dev);
 
           const initInstructions = [
             "# Initialize Polkadot UI Project",
@@ -228,7 +253,7 @@ const handler = createMcpHandler(
             "To initialize a new project with Polkadot UI components, run:",
             "",
             "```bash",
-            `npx polka-ui init${dev ? " --dev" : ""}${force ? " --force" : ""}${!interactive ? " --no-interactive" : ""}`,
+            `npx polkadot-ui init${dev ? " --dev" : ""}${force ? " --force" : ""}${!interactive ? " --no-interactive" : ""}`,
             "```",
             "",
             "## What this does:",
@@ -246,7 +271,7 @@ const handler = createMcpHandler(
             "## Next Steps:",
             "1. Run the init command above",
             "2. Follow the interactive prompts",
-            "3. Add components with `npx polka-ui add <component-name>`",
+            "3. Add components with `npx polkadot-ui add <component-name>`",
             "4. Start building your Polkadot application!",
             "",
             `**Registry:** ${dev ? "Development" : "Production"} (${registry.homepage})`,
@@ -307,10 +332,10 @@ const handler = createMcpHandler(
           "",
           "## Telemetry Controls:",
           "```bash",
-          "npx polka-ui telemetry status   # Check current status",
-          "npx polka-ui telemetry enable   # Enable telemetry",
-          "npx polka-ui telemetry disable  # Disable telemetry",
-          "npx polka-ui telemetry info     # Show this information",
+          "npx polkadot-ui telemetry status   # Check current status",
+          "npx polkadot-ui telemetry enable   # Enable telemetry",
+          "npx polkadot-ui telemetry disable  # Disable telemetry",
+          "npx polkadot-ui telemetry info     # Show this information",
           "```",
           "",
           `**Current Action:** ${action}`,
@@ -318,7 +343,7 @@ const handler = createMcpHandler(
           "",
           "## Opt-out Options:",
           "- Set environment variable: `DOT_UI_DISABLE_TELEMETRY=1`",
-          "- Run: `npx polka-ui telemetry disable`",
+          "- Run: `npx polkadot-ui telemetry disable`",
           "- Telemetry is automatically disabled in CI environments",
         ].join("\n");
 
@@ -342,7 +367,7 @@ const handler = createMcpHandler(
         mimeType: "application/json",
       },
       async () => {
-        const registry = await loadRegistry(false);
+        const registry = await loadRegistry("papi", false);
         return {
           contents: [
             {
@@ -363,7 +388,7 @@ const handler = createMcpHandler(
         mimeType: "application/json",
       },
       async () => {
-        const registry = await loadRegistry(true);
+        const registry = await loadRegistry("papi", true);
         return {
           contents: [
             {

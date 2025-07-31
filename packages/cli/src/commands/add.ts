@@ -112,11 +112,11 @@ export class AddCommand {
   private validateComponentName(componentName: string): boolean {
     if (!componentName) {
       logger.error("Component name is required");
-      logger.info("Usage: polka-ui add <component-name>");
+      logger.info("Usage: polkadot-ui add <component-name>");
       logger.newline();
       logger.subsection("Examples:");
-      logger.detail("polka-ui add block-number", true);
-      logger.detail("polka-ui add wallet-connect", true);
+      logger.detail("polkadot-ui add block-number", true);
+      logger.detail("polkadot-ui add wallet-connect", true);
       return false;
     }
 
@@ -900,7 +900,7 @@ export class AddCommand {
       logger.subsection("General recovery:");
       logger.detail("• Ensure project has valid package.json", true);
       logger.detail("• Check if React is properly installed", true);
-      logger.detail("• Try running: polka-ui list", true);
+      logger.detail("• Try running: polkadot-ui list", true);
       logger.detail("• Use --verbose flag for detailed output", true);
     }
 
@@ -928,14 +928,14 @@ export class AddCommand {
           logger.detail(`• ${component.name} - ${component.description}`, true);
         });
         logger.newline();
-        logger.info("To see all available components, run: polka-ui list");
+        logger.info("To see all available components, run: polkadot-ui list");
       } else {
         logger.newline();
-        logger.info("To see all available components, run: polka-ui list");
+        logger.info("To see all available components, run: polkadot-ui list");
       }
     } catch {
       // Ignore errors in suggestions
-      logger.info("To see all available components, run: polka-ui list");
+      logger.info("To see all available components, run: polkadot-ui list");
     }
   }
 }
