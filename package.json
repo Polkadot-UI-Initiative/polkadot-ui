@@ -6,16 +6,16 @@
   "scripts": {
     "dev": "pnpm --filter @dot-ui/registry dev",
     "build": "pnpm -r build",
-    "build:cli": "pnpm --filter polka-ui build",
+    "build:cli": "pnpm --filter polkadot-ui build",
     "build:registry": "pnpm --filter @dot-ui/registry build",
     "test": "pnpm -r test",
     "lint": "pnpm -r lint",
     "clean": "pnpm -r clean",
-    "cli": "pnpm --filter polka-ui dev",
-    "publish:cli": "pnpm --filter polka-ui publish --tag latest",
-    "publish:cli:patch": "cd packages/cli && npm version patch && cd ../.. && pnpm --filter polka-ui publish --tag latest --no-git-checks",
-    "publish:cli:minor": "cd packages/cli && npm version minor && cd ../.. && pnpm --filter polka-ui publish --tag latest --no-git-checks",
-    "publish:cli:major": "cd packages/cli && npm version major && cd ../.. && pnpm --filter polka-ui publish --tag latest --no-git-checks"
+    "cli": "pnpm --filter polkadot-ui dev",
+    "publish:cli": "pnpm --filter polkadot-ui publish --tag latest",
+    "publish:cli:patch": "cd packages/cli && npm version patch && cd ../.. && pnpm --filter polkadot-ui publish --tag latest --no-git-checks",
+    "publish:cli:minor": "cd packages/cli && npm version minor && cd ../.. && pnpm --filter polkadot-ui publish --tag latest --no-git-checks",
+    "publish:cli:major": "cd packages/cli && npm version major && cd ../.. && pnpm --filter polkadot-ui publish --tag latest --no-git-checks"
   },
   "keywords": [
     "polkadot",
