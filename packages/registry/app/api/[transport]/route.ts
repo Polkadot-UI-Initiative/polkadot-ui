@@ -349,7 +349,7 @@ const handler = createMcpHandler(
       },
       async ({ action = "status", dev = false }) => {
         const telemetryInfo = [
-          "# Polka UI Telemetry Information",
+          "# Polkadot UI Telemetry Information",
           "",
           "## Privacy First Approach",
           "Polka UI collects minimal, anonymous usage data to improve the CLI experience.",
