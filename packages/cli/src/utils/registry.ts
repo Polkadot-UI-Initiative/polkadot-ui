@@ -93,16 +93,18 @@ export class Registry {
   }
 
   /**
-   * Fetch the registry index
+   * Private helper method for fetching and parsing registry data from a URL
    */
-  async fetchRegistry(): Promise<ComponentInfo[]> {
+  private async fetchRegistryFromUrl(
+    url: string,
+    errorContext: string
+  ): Promise<ComponentInfo[]> {
     try {
-      const registryUrl = await this.getRegistryUrl();
-      const response = await fetch(registryUrl);
+      const response = await fetch(url);
 
       if (!response.ok) {
         throw new Error(
-          `Failed to fetch registry: ${response.status} ${response.statusText}`
+          `Failed to fetch ${errorContext}: ${response.status} ${response.statusText}`
         );
       }
 
@@ -110,10 +112,18 @@ export class Registry {
       return data.items || [];
     } catch (error) {
       if (error instanceof Error) {
-        throw new Error(`Registry fetch failed: ${error.message}`);
+        throw new Error(`${errorContext} fetch failed: ${error.message}`);
       }
-      throw new Error("Unknown error occurred while fetching registry");
+      throw new Error(`Unknown error occurred while fetching ${errorContext}`);
     }
+  }
+
+  /**
+   * Fetch the registry index
+   */
+  async fetchRegistry(): Promise<ComponentInfo[]> {
+    const registryUrl = await this.getRegistryUrl();
+    return this.fetchRegistryFromUrl(registryUrl, "registry");
   }
 
   /**
@@ -160,7 +170,7 @@ export class Registry {
   > {
     const components = await this.fetchRegistry();
 
-    return components.map((component) => ({
+    return components.map((component: ComponentInfo) => ({
       name: component.name,
       title: component.title,
       description: component.description,
@@ -173,37 +183,21 @@ export class Registry {
   async getAvailableComponentsForLibrary(
     library: "papi" | "dedot"
   ): Promise<Array<{ name: string; title: string; description: string }>> {
-    try {
-      const registryFile =
-        library === "dedot" ? "registry-dedot.json" : "registry-papi.json";
-      const registryUrl = `${this.baseUrl}/${registryFile}`;
+    const registryFile =
+      library === "dedot" ? "registry-dedot.json" : "registry-papi.json";
+    const registryUrl = `${this.baseUrl}/${registryFile}`;
+    const errorContext = `${library.toUpperCase()} registry`;
 
-      const response = await fetch(registryUrl);
+    const components = await this.fetchRegistryFromUrl(
+      registryUrl,
+      errorContext
+    );
 
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch ${library} registry: ${response.status} ${response.statusText}`
-        );
-      }
-
-      const data = await response.json();
-      const components = data.items || [];
-
-      return components.map((component: any) => ({
-        name: component.name,
-        title: component.title,
-        description: component.description,
-      }));
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(
-          `${library.toUpperCase()} registry fetch failed: ${error.message}`
-        );
-      }
-      throw new Error(
-        `Unknown error occurred while fetching ${library} registry`
-      );
-    }
+    return components.map((component: ComponentInfo) => ({
+      name: component.name,
+      title: component.title,
+      description: component.description,
+    }));
   }
 
   /**

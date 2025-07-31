@@ -262,7 +262,7 @@ export class ListCommand {
     });
 
     logger.subsection("Usage:");
-    logger.command("dot-ui add <component-name>");
+    logger.command("polkadot-ui add <component-name>");
     logger.detail(
       "The CLI will automatically detect or prompt for the library type when adding components"
     );
