@@ -2,6 +2,8 @@ import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
 import fs from "fs/promises";
 import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
 interface RegistryComponent {
   name: string;
@@ -24,6 +26,22 @@ interface Registry {
 
 type RegistryType = "papi" | "dedot" | "default";
 
+// Helper function to get the base path for registry files
+function getRegistryBasePath(): string {
+  // Use environment variable if available
+  if (process.env.REGISTRY_BASE_PATH) {
+    return process.env.REGISTRY_BASE_PATH;
+  }
+
+  // Fallback to directory containing this file
+  const currentFileUrl = import.meta.url;
+  const currentFilePath = fileURLToPath(currentFileUrl);
+  const currentDir = dirname(currentFilePath);
+
+  // Navigate to the registry root (assuming this file is in app/api/mcp/)
+  return path.resolve(currentDir, "../../../");
+}
+
 // Helper function to load registry data
 async function loadRegistry(
   registryType: RegistryType = "papi",
@@ -45,9 +63,10 @@ async function loadRegistry(
     };
 
     const filename = getRegistryFilename(registryType);
+    const basePath = getRegistryBasePath();
     const registryPath = dev
-      ? path.join(process.cwd(), filename)
-      : path.join(process.cwd(), "public", filename);
+      ? path.join(basePath, filename)
+      : path.join(basePath, "public", filename);
 
     const registryContent = await fs.readFile(registryPath, "utf-8");
     return JSON.parse(registryContent) as Registry;
@@ -75,6 +94,10 @@ const handler = createMcpHandler(
       "Add a Polkadot UI component to your project",
       {
         component: z.string().describe("The component name to add"),
+        registryType: z
+          .enum(["papi", "dedot", "default"])
+          .optional()
+          .describe("Registry type to use (papi, dedot, or default)"),
         dev: z.boolean().optional().describe("Use development registry"),
         verbose: z.boolean().optional().describe("Show detailed output"),
         force: z
@@ -88,6 +111,7 @@ const handler = createMcpHandler(
       },
       async ({
         component,
+        registryType = "papi",
         dev = false,
         force = false,
         interactive = false,
@@ -96,12 +120,12 @@ const handler = createMcpHandler(
           // Get component details
           const componentDetails = await getComponentDetails(
             component,
-            "papi",
+            registryType,
             dev
           );
 
           if (!componentDetails) {
-            const registry = await loadRegistry("papi", dev);
+            const registry = await loadRegistry(registryType, dev);
             const availableComponents = registry.items
               .map((item) => `• ${item.name}: ${item.description}`)
               .join("\n");
@@ -168,12 +192,16 @@ const handler = createMcpHandler(
       "list_components",
       "List all available Polkadot UI components",
       {
+        registryType: z
+          .enum(["papi", "dedot", "default"])
+          .optional()
+          .describe("Registry type to use (papi, dedot, or default)"),
         dev: z.boolean().optional().describe("Use development registry"),
         verbose: z.boolean().optional().describe("Show detailed output"),
       },
-      async ({ dev = false, verbose = false }) => {
+      async ({ registryType = "papi", dev = false, verbose = false }) => {
         try {
-          const registry = await loadRegistry("papi", dev);
+          const registry = await loadRegistry(registryType, dev);
 
           const componentList = [
             `# Available Components (${registry.items.length} total)`,
@@ -232,6 +260,10 @@ const handler = createMcpHandler(
       "init_project",
       "Initialize a new project with Polkadot UI components",
       {
+        registryType: z
+          .enum(["papi", "dedot", "default"])
+          .optional()
+          .describe("Registry type to use (papi, dedot, or default)"),
         dev: z.boolean().optional().describe("Use development registry"),
         verbose: z.boolean().optional().describe("Show detailed output"),
         force: z
@@ -243,9 +275,14 @@ const handler = createMcpHandler(
           .optional()
           .describe("Show detailed prompts for configuration"),
       },
-      async ({ dev = false, force = false, interactive = false }) => {
+      async ({
+        registryType = "papi",
+        dev = false,
+        force = false,
+        interactive = false,
+      }) => {
         try {
-          const registry = await loadRegistry("papi", dev);
+          const registry = await loadRegistry(registryType, dev);
 
           const initInstructions = [
             "# Initialize Polkadot UI Project",
@@ -401,7 +438,74 @@ const handler = createMcpHandler(
       }
     );
   },
-  {},
+  {
+    capabilities: {
+      tools: {
+        add_component: {
+          description: "Add a Polkadot UI component to your project",
+          parameters: z.object({
+            component: z.string().describe("The component name to add"),
+            registryType: z
+              .enum(["papi", "dedot", "default"])
+              .optional()
+              .describe("Registry type to use (papi, dedot, or default)"),
+            dev: z.boolean().optional().describe("Use development registry"),
+            verbose: z.boolean().optional().describe("Show detailed output"),
+            force: z
+              .boolean()
+              .optional()
+              .describe("Force installation even if files exist"),
+            interactive: z
+              .boolean()
+              .optional()
+              .describe("Show detailed prompts for configuration"),
+          }),
+        },
+        list_components: {
+          description: "List all available Polkadot UI components",
+          parameters: z.object({
+            registryType: z
+              .enum(["papi", "dedot", "default"])
+              .optional()
+              .describe("Registry type to use (papi, dedot, or default)"),
+            dev: z.boolean().optional().describe("Use development registry"),
+            verbose: z.boolean().optional().describe("Show detailed output"),
+          }),
+        },
+        init_project: {
+          description: "Initialize a new project with Polkadot UI components",
+          parameters: z.object({
+            registryType: z
+              .enum(["papi", "dedot", "default"])
+              .optional()
+              .describe("Registry type to use (papi, dedot, or default)"),
+            dev: z.boolean().optional().describe("Use development registry"),
+            verbose: z.boolean().optional().describe("Show detailed output"),
+            force: z
+              .boolean()
+              .optional()
+              .describe("Force installation even if files exist"),
+            interactive: z
+              .boolean()
+              .optional()
+              .describe("Show detailed prompts for configuration"),
+          }),
+        },
+        manage_telemetry: {
+          description:
+            "Manage telemetry settings and display privacy information",
+          parameters: z.object({
+            action: z
+              .enum(["status", "enable", "disable", "info"])
+              .optional()
+              .describe("Telemetry action to perform"),
+            dev: z.boolean().optional().describe("Use development registry"),
+            verbose: z.boolean().optional().describe("Show detailed output"),
+          }),
+        },
+      },
+    },
+  },
   {
     // Handler options
     redisUrl: process.env.REDIS_URL,
