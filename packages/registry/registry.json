@@ -1,30 +1,35 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
-  "name": "dot-ui-dedot",
+  "name": "dot-ui-papi",
   "homepage": "https://dot-ui.com",
   "items": [
     {
       "name": "address-input",
       "type": "registry:component",
-      "title": "Address Input (dedot)",
-      "description": "A comprehensive address input component with SS58/Ethereum validation, identity lookup using dedot, and customizable identicon themes (polkadot, substrate, beachball, jdenticon).",
+      "title": "Address Input (papi)",
+      "description": "A comprehensive address input component with SS58/Ethereum validation, identity lookup using polkadot-api, and customizable identicon themes (polkadot, substrate, beachball, jdenticon).",
       "dependencies": [
         "@polkadot/keyring",
         "@polkadot/util",
         "ethers",
         "@tanstack/react-query",
         "@polkadot/react-identicon",
-        "dedot"
+        "polkadot-api"
       ],
       "registryDependencies": ["input", "label", "badge", "button"],
       "files": [
         {
-          "path": "registry/dot-ui/blocks/address-input/demo/page.dedot.tsx",
+          "path": "registry/dot-ui/blocks/address-input/demo/page.papi.tsx",
           "type": "registry:page",
           "target": "app/demo/dot-ui/address-input/page.tsx"
         },
         {
-          "path": "registry/dot-ui/blocks/address-input/components/address-input.dedot.tsx",
+          "path": "registry/dot-ui/blocks/address-input/demo/address-input-demo.tsx",
+          "type": "registry:page"
+        },
+
+        {
+          "path": "registry/dot-ui/blocks/address-input/components/address-input.papi.tsx",
           "type": "registry:component"
         },
         {
@@ -32,15 +37,15 @@
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/blocks/address-input/hooks/use-identity.dedot.ts",
+          "path": "registry/dot-ui/blocks/address-input/hooks/use-identity.papi.ts",
           "type": "registry:hook"
         },
         {
-          "path": "registry/dot-ui/blocks/address-input/hooks/use-search-identity.dedot.ts",
+          "path": "registry/dot-ui/blocks/address-input/hooks/use-search-identity.papi.ts",
           "type": "registry:hook"
         },
         {
-          "path": "registry/dot-ui/providers/dedot-provider.tsx",
+          "path": "registry/dot-ui/providers/papi-provider.tsx",
           "type": "registry:lib"
         },
         {
@@ -52,7 +57,15 @@
           "type": "registry:lib"
         },
         {
+          "path": "registry/dot-ui/lib/types.papi.ts",
+          "type": "registry:lib"
+        },
+        {
           "path": "registry/dot-ui/lib/config.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/config.papi.ts",
           "type": "registry:lib"
         }
       ]
@@ -60,22 +73,19 @@
     {
       "name": "require-connection",
       "type": "registry:component",
-      "title": "Require Connection (dedot)",
-      "description": "A smart wrapper component that conditionally renders content based on chain connection status, with loading states and fallback UI support using dedot.",
-      "dependencies": ["dedot"],
+      "title": "Require Connection (papi)",
+      "description": "A smart wrapper component that conditionally renders content based on chain connection status, with loading states and fallback UI support using polkadot-api.",
+      "dependencies": ["polkadot-api"],
       "registryDependencies": [],
       "files": [
         {
-          "path": "registry/dot-ui/blocks/require-connection/demo/page.dedot.tsx",
+          "path": "registry/dot-ui/blocks/require-connection/demo/page.papi.tsx",
           "type": "registry:page",
           "target": "app/demo/dot-ui/require-connection/page.tsx"
         },
+
         {
-          "path": "registry/dot-ui/blocks/require-connection/demo/require-connection-demo.tsx",
-          "type": "registry:page"
-        },
-        {
-          "path": "registry/dot-ui/blocks/require-connection/components/require-connection.dedot.tsx",
+          "path": "registry/dot-ui/blocks/require-connection/components/require-connection.papi.tsx",
           "type": "registry:component"
         },
         {
@@ -83,7 +93,7 @@
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/providers/dedot-provider.tsx",
+          "path": "registry/dot-ui/providers/papi-provider.tsx",
           "type": "registry:lib"
         },
         {
@@ -95,7 +105,15 @@
           "type": "registry:lib"
         },
         {
+          "path": "registry/dot-ui/lib/types.papi.ts",
+          "type": "registry:lib"
+        },
+        {
           "path": "registry/dot-ui/lib/config.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/config.papi.ts",
           "type": "registry:lib"
         }
       ]

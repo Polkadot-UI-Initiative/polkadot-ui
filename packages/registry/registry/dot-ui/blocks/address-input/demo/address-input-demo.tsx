@@ -25,7 +25,7 @@ interface AddressInputDemoProps {
   libraryName: string;
 }
 
-export default function AddressInputDemo({
+export function AddressInputDemo({
   Provider,
   AddressInput,
   libraryName,
