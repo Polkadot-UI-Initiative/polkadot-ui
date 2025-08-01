@@ -132,12 +132,12 @@ export function ComponentsSection() {
                   <BookText /> Docs →
                 </Button>
               </Link>
-              <OpenInV0Button
+              {/* <OpenInV0Button
                 name={example.code}
                 title={example.name}
                 prompt={example.description}
                 variant="ghost"
-              />
+              /> */}
             </CardFooter>
           </Card>
         ))}
