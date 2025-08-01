@@ -11,7 +11,6 @@ import {
 
 import { AddressInputWithProvider } from "@/registry/dot-ui/blocks/address-input/components/address-input.dedot";
 import { RequireConnectionWithProvider } from "@/registry/dot-ui/blocks/require-connection/components/require-connection.dedot";
-import { OpenInV0Button } from "../open-in-v0-button";
 import { Button } from "@/components/ui/button";
 import { BookText, Wifi, WifiOff } from "lucide-react";
 import { Label } from "@/registry/dot-ui/ui/label";
