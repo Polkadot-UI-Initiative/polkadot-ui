@@ -1,9 +1,8 @@
-# WORK IN PROGRESS - NOT RELEASED YET - Dot UI - Polkadot Components
+# Polkadot UI (beta) - Polkadot Components
 
 A monorepo containing a CLI tool and registry server for Polkadot UI components,
-similar to shadcn/ui but specifically designed for Polkadot ecosystem
-development. For a list of available components visit
-[dot-ui.com](https://dot-ui.com)
+similar to shadcn/ui but specifically designed for Web3 development. For a list
+of available components visit [dot-ui.com](https://dot-ui.com)
 
 ## Architecture
 
