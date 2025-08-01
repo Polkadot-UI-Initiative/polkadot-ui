@@ -224,7 +224,7 @@ export class Logger {
     });
 
     this.subsection("Usage:");
-    this.command("dot-ui add <component-name>");
+    this.command("polkadot-ui add <component-name>");
     this.newline();
   }
 }
