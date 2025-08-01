@@ -24,11 +24,11 @@ Install Polkadot components in your project:
 npx polkadot-ui list
 
 # Add a component to your project
-npx polkadot-ui add block-number
+npx polkadot-ui add address-input
 
 # You can also use pnpm or bun
-pnpm dlx polkadot-ui add block-number
-bunx polkadot-ui add block-number
+pnpm dlx polkadot-ui add address-input
+bunx polkadot-ui add address-input
 ```
 
 ## Development
@@ -54,7 +54,7 @@ bunx polkadot-ui add block-number
    ```bash
    cd <some_random_project>
    npm run dev -- list --dev
-   npm run dev -- add block-number --dev
+   npm run dev -- add address-input --dev
    ```
 
 ### Project Structure
@@ -93,7 +93,7 @@ cd packages/cli
 npm run dev -- --help          # Show CLI help
 npm run dev -- list            # List from production registry
 npm run dev -- list --dev      # List from localhost:3000
-npm run dev -- add block-number --dev  # Install from local registry
+npm run dev -- add address-input --dev  # Install from local registry
 ```
 
 **Registry development:**
