@@ -30,7 +30,6 @@ export function useIdentitySearch(
 
       try {
         // Get all identity entries using Dedot API
-        // const entries = await api.query.identity.identityOf.entries();
         const storageQuery = api.query.identity.identityOf as unknown as {
           entries(): Promise<[AccountId32, PalletIdentityRegistration][]>;
         };
