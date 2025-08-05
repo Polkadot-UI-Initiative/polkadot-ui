@@ -7,10 +7,10 @@ export function HeroSection() {
   return (
     <section className="container relative">
       <div className="mx-auto flex max-w-[980px] flex-col items-center gap-2 py-8 md:py-12 md:pb-8 lg:py-24 lg:pb-20">
-        <Link href="/blocks/block-number">
+        <Link href="/components">
           <Button variant="outline" size="sm" className="group">
             🎉
-            <span className="ml-2">New Block Number Component</span>
+            <span className="ml-2">New Components</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
           </Button>
         </Link>
