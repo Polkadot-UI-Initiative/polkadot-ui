@@ -10,7 +10,7 @@ export function HeroSection() {
         <Button variant="outline" size="sm" className="group">
           <Link href="/components" className="flex items-center gap-2">
             🎉
-            <span className="ml-2">New Components</span>
+            <span>New Components</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
           </Link>
         </Button>
