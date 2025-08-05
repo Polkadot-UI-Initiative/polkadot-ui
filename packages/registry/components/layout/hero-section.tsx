@@ -8,7 +8,7 @@ export function HeroSection() {
     <section className="container relative">
       <div className="mx-auto flex max-w-[980px] flex-col items-center gap-2 py-8 md:py-12 md:pb-8 lg:py-24 lg:pb-20">
         <Button variant="outline" size="sm" className="group">
-          <Link href="/components">
+          <Link href="/components" className="flex items-center gap-2">
             🎉
             <span className="ml-2">New Components</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
