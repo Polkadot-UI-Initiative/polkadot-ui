@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { BookText, Wifi, WifiOff } from "lucide-react";
 import { Label } from "@/registry/dot-ui/ui/label";
 import { cn } from "@/lib/utils";
-import { WalletSelectionWithProvider } from "@/registry/dot-ui/ui/wallet-connect.typink";
+import { WalletSelectionWithProvider } from "@/registry/dot-ui/blocks/wallet-connect/components/wallet-connect.dedot";
 
 const examples = [
   {

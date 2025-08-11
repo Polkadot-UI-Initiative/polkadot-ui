@@ -3,7 +3,7 @@
 import { useState, ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Button } from "@/registry/dot-ui/ui/button";
-import { WalletSelection } from "@/registry/dot-ui/ui/wallet-connect.dedot";
+import { WalletSelectionWithProvider } from "@/registry/dot-ui/blocks/wallet-connect/components/wallet-connect.dedot";
 
 const queryClient = new QueryClient();
 
@@ -54,7 +54,7 @@ export function AddressInputDemo({
           </div>
 
           <div className="text-center mb-12">
-            <WalletSelection />
+            <WalletSelectionWithProvider />
           </div>
 
           {/* Header */}

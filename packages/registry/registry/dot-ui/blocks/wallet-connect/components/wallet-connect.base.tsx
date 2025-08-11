@@ -16,8 +16,8 @@ import {
 import {
   AccountSelectionBase,
   type AccountSelectionServices,
-} from "./account-selection.base";
-import { truncateAddress } from "../lib/utils.dot-ui";
+} from "@/registry/dot-ui/blocks/account-selection/components/account-selection.base";
+import { truncateAddress } from "@/registry/dot-ui/lib/utils.dot-ui";
 
 // Services interface for dependency injection
 export interface WalletConnectServices {

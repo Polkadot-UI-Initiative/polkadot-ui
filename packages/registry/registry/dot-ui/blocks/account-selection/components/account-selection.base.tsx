@@ -10,7 +10,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { truncateAddress } from "../lib/utils.dot-ui";
+import { truncateAddress } from "@/registry/dot-ui/lib/utils.dot-ui";
 import { NetworkInfo, InjectedAccount } from "typink";
 
 // Balance data interface
