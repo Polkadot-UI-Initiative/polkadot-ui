@@ -100,6 +100,44 @@
           "type": "registry:lib"
         }
       ]
+    },
+    {
+      "name": "wallet-connect",
+      "type": "registry:component",
+      "title": "Wallet Connect (Typink)",
+      "description": "A wallet connection component provided by Typink.",
+      "dependencies": ["typink"],
+      "registryDependencies": ["button", "dialog"],
+      "files": [
+        {
+          "path": "registry/dot-ui/blocks/wallet-connect/components/wallet-connect.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/dot-ui/blocks/wallet-connect/components/wallet-connect.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/dot-ui/blocks/account-selection/components/account-selection.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/dot-ui/providers/dedot-provider.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/providers/typink-provider.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        }
+      ]
     }
   ]
 }
