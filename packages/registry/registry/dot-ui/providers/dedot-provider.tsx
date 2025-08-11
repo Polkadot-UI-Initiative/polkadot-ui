@@ -24,6 +24,8 @@ import {
   type CompositeApi,
   type AnyChainApi,
 } from "@/registry/dot-ui/lib/types.dedot";
+import { TypinkProvider } from "./typink-provider";
+import { popTestnet } from "typink";
 
 // Dedot-specific context type extending the base
 type DedotContextValue = BasePolkadotContextValue<
@@ -34,7 +36,7 @@ type DedotContextValue = BasePolkadotContextValue<
 
 const DedotContext = createContext<DedotContextValue | undefined>(undefined);
 
-export function PolkadotProvider({
+export function DedotProvider({
   children,
   defaultChain,
 }: BasePolkadotProviderProps<ChainId>) {
@@ -181,6 +183,16 @@ export function PolkadotProvider({
 
   return (
     <DedotContext.Provider value={value}>{children}</DedotContext.Provider>
+  );
+}
+
+export function PolkadotProvider({ children }: { children: React.ReactNode }) {
+  return (
+    <DedotProvider>
+      <TypinkProvider appName="Dot UI" defaultNetworkId={popTestnet.id}>
+        {children}
+      </TypinkProvider>
+    </DedotProvider>
   );
 }
 
