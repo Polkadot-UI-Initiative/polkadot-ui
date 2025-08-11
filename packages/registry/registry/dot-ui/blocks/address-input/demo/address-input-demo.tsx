@@ -3,7 +3,7 @@
 import { useState, ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Button } from "@/registry/dot-ui/ui/button";
-import { WalletSelection } from "@/registry/dot-ui/ui/wallet-connect.typink";
+import { WalletSelection } from "@/registry/dot-ui/ui/wallet-connect.dedot";
 
 const queryClient = new QueryClient();
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { useTypink, useBalances } from "typink";
+import { useBalances } from "typink";
 import {
   TypinkProvider,
   usePolkadotWallet,
@@ -16,34 +16,33 @@ export type WalletSelectionProps = Omit<WalletSelectionBaseProps, "services">;
 
 export function WalletSelection(props: WalletSelectionProps) {
   const typinkContext = usePolkadotWallet();
-  const typinkAccountContext = useTypink();
 
   // Simple services object with type-compatible wrappers
   const services = useMemo(
     () => ({
       useWallet: () => ({
         wallets: typinkContext.wallets,
-        activeSigner: typinkContext.activeSigner,
-        activeAccount: typinkContext.activeAccount
+        activeSigner: typinkContext.signer,
+        activeAccount: typinkContext.connectedAccount
           ? {
-              name: typinkContext.activeAccount.name,
-              address: typinkContext.activeAccount.address,
+              name: typinkContext.connectedAccount.name,
+              address: typinkContext.connectedAccount.address,
             }
           : null,
         connectWallet: typinkContext.connectWallet,
       }),
       accountServices: {
         useAccountManagement: () => ({
-          accounts: typinkAccountContext.accounts,
-          connectedAccount: typinkAccountContext.connectedAccount || null,
-          setConnectedAccount: typinkAccountContext.setConnectedAccount,
-          disconnect: typinkAccountContext.disconnect,
-          network: typinkAccountContext.network,
+          accounts: typinkContext.accounts,
+          activeAccount: typinkContext.connectedAccount,
+          setActiveAccount: typinkContext.setConnectedAccount,
+          disconnect: typinkContext.disconnect,
+          network: typinkContext.network,
         }),
         useBalances,
       },
     }),
-    [typinkContext, typinkAccountContext]
+    [typinkContext]
   );
 
   return <WalletSelectionBase {...props} services={services} />;

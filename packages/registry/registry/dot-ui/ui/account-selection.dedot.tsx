@@ -1,10 +1,9 @@
 "use client";
 
 import { useMemo } from "react";
-import { useTypink, useBalances } from "typink";
-import {
-  PolkadotProvider,
-} from "@/registry/dot-ui/providers/dedot-provider";
+import { useBalances } from "typink";
+import { PolkadotProvider } from "@/registry/dot-ui/providers/dedot-provider";
+import { usePolkadotWallet } from "@/registry/dot-ui/providers/typink-provider";
 import {
   AccountSelectionBase,
   type AccountSelectionBaseProps,
@@ -14,21 +13,21 @@ import {
 export type AccountSelectionProps = Omit<AccountSelectionBaseProps, "services">;
 
 export function AccountSelection(props: AccountSelectionProps) {
-  const typinkContext = useTypink();
+  const walletContext = usePolkadotWallet();
 
   // Simple services object with type-compatible wrappers
   const services = useMemo(
     () => ({
       useAccountManagement: () => ({
-        accounts: typinkContext.accounts || [],
-        connectedAccount: typinkContext.connectedAccount || null,
-        setConnectedAccount: typinkContext.setConnectedAccount,
-        disconnect: typinkContext.disconnect,
-        network: typinkContext.network,
+        accounts: walletContext.accounts,
+        setActiveAccount: walletContext.setConnectedAccount,
+        disconnect: walletContext.disconnect,
+        network: walletContext.network,
+        activeAccount: walletContext.connectedAccount,
       }),
       useBalances,
     }),
-    [typinkContext]
+    [walletContext]
   );
 
   return <AccountSelectionBase {...props} services={services} />;

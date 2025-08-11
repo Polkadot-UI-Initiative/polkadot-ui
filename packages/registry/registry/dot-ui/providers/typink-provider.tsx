@@ -112,18 +112,5 @@ export function usePolkadotWallet() {
         throw new Error("usePolkadotWallet must be used within a TypinkProvider");
     }
 
-    const { accounts, connectedAccount, setConnectedAccount, client, network, connectedWallet, connectWallet, disconnect, wallets, signer } = context;
-
-    return {
-        accounts,
-        client,
-        connectedWallet,
-        connectWallet,
-        disconnect,
-        wallets,
-        network,
-        activeAccount: connectedAccount,
-        setActiveAccount: setConnectedAccount,
-        activeSigner: signer,
-    }
+    return context;
 }

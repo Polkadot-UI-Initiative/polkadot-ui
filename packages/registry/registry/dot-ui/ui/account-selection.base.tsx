@@ -23,10 +23,10 @@ export interface AccountSelectionServices {
   // Hook for account management
   useAccountManagement: () => {
     accounts: InjectedAccount[];
-    connectedAccount: InjectedAccount | null;
-    setConnectedAccount: (account: InjectedAccount) => void;
+    setActiveAccount: (account: InjectedAccount) => void;
     disconnect: () => void;
     network: NetworkInfo;
+    activeAccount?: InjectedAccount;
   };
   // Hook for balance queries
   useBalances: (addresses: string[]) => Record<string, BalanceData>;
@@ -45,34 +45,31 @@ export interface AccountSelectionProviderProps {
 export function AccountSelectionBase({ services }: AccountSelectionBaseProps) {
   // Extract services
   const { useAccountManagement, useBalances } = services;
-  const { accounts, connectedAccount, setConnectedAccount, disconnect, network } =
+  const { accounts, activeAccount, setActiveAccount, disconnect, network } =
     useAccountManagement();
 
   const addresses = useMemo(
-    () => accounts?.map((account) => account.address) || [],
+    () => accounts.map((account) => account.address),
     [accounts]
   );
   const balances = useBalances(addresses);
 
   useEffect(() => {
     if (
-      connectedAccount &&
-      accounts &&
-      accounts
-        .map((account) => account.address)
-        .includes(connectedAccount.address)
+      activeAccount &&
+      accounts.map((account) => account.address).includes(activeAccount.address)
     ) {
       return;
     }
 
-    if (accounts && accounts[0]) {
-      setConnectedAccount(accounts[0]);
+    if (accounts[0]) {
+      setActiveAccount(accounts[0]);
     }
-  }, [accounts, connectedAccount, setConnectedAccount]);
+  }, [accounts, activeAccount, setActiveAccount]);
 
-  if (!connectedAccount || !accounts) return null;
+  if (!activeAccount) return null;
 
-  const { name, address } = connectedAccount;
+  const { name, address } = activeAccount;
 
   return (
     <>
@@ -85,14 +82,11 @@ export function AccountSelectionBase({ services }: AccountSelectionBaseProps) {
         </DialogDescription>
         {accounts?.map((account) => (
           <DialogClose asChild key={account.address}>
-            <Button onClick={() => setConnectedAccount(account)}>
+            <Button onClick={() => setActiveAccount(account)}>
               <span>{account.name}</span>
               <span>{truncateAddress(account.address)}</span>
               <span>
-                {formatBalance(
-                  balances[account.address]?.free || 0,
-                  network
-                )}
+                {formatBalance(balances[account.address]?.free || 0, network)}
               </span>
             </Button>
           </DialogClose>
