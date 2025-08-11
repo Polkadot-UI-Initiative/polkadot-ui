@@ -7,7 +7,7 @@ import { usePolkadotWallet } from "@/registry/dot-ui/providers/typink-provider";
 import {
   AccountSelectionBase,
   type AccountSelectionBaseProps,
-} from "@/registry/dot-ui/ui/account-selection.base";
+} from "@/registry/dot-ui/blocks/account-selection/components/account-selection.base";
 
 // Props type - removes services prop since we inject it
 export type AccountSelectionProps = Omit<AccountSelectionBaseProps, "services">;
