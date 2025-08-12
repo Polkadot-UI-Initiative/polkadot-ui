@@ -82,7 +82,10 @@ export function AccountSelectionBase({ services }: AccountSelectionBaseProps) {
         </DialogDescription>
         {accounts?.map((account) => (
           <DialogClose asChild key={account.address}>
-            <Button onClick={() => setActiveAccount(account)}>
+            <Button
+              onClick={() => setActiveAccount(account)}
+              aria-label={`Select account ${account.name} with address ${truncateAddress(account.address)}`}
+            >
               <span>{account.name}</span>
               <span>{truncateAddress(account.address)}</span>
               <span>
