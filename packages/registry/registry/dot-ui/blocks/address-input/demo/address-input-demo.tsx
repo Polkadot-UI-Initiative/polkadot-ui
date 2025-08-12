@@ -3,7 +3,6 @@
 import { useState, ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Button } from "@/registry/dot-ui/ui/button";
-import { WalletSelectionWithProvider } from "@/registry/dot-ui/blocks/connect-wallet/components/connect-wallet.dedot";
 
 const queryClient = new QueryClient();
 
@@ -41,22 +40,6 @@ export function AddressInputDemo({
     <QueryClientProvider client={queryClient}>
       <Provider>
         <div className="max-w-2xl mx-auto px-6 py-12">
-          <div className="text-center mb-12">
-            <h1 className="text-3xl font-bold text-primary mb-4">
-              Connect Wallet
-            </h1>
-            <p className="text-gray-600 text-lg">
-              A wallet connection component provided by Typink.
-            </p>
-            <p className="text-sm text-primary mt-2">
-              Using Typink and its provider.
-            </p>
-          </div>
-
-          <div className="text-center mb-12">
-            <WalletSelectionWithProvider />
-          </div>
-
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-3xl font-bold text-primary mb-4">

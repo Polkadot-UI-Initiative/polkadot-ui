@@ -7,14 +7,14 @@ import {
   usePolkadotWallet,
 } from "@/registry/dot-ui/providers/typink-provider";
 import {
-  WalletSelectionBase,
-  type WalletSelectionBaseProps,
+  ConnectWalletBase,
+  type ConnectWalletBaseProps,
 } from "@/registry/dot-ui/blocks/connect-wallet/components/connect-wallet.base";
 
 // Props type - removes services prop since we inject it
-export type WalletSelectionProps = Omit<WalletSelectionBaseProps, "services">;
+export type ConnectWalletProps = Omit<ConnectWalletBaseProps, "services">;
 
-export function WalletSelection(props: WalletSelectionProps) {
+export function ConnectWallet(props: ConnectWalletProps) {
   const typinkContext = usePolkadotWallet();
 
   // Simple services object with type-compatible wrappers
@@ -45,16 +45,16 @@ export function WalletSelection(props: WalletSelectionProps) {
     [typinkContext]
   );
 
-  return <WalletSelectionBase {...props} services={services} />;
+  return <ConnectWalletBase {...props} services={services} />;
 }
 
 // Wrapped version with provider for drop-in usage
-export function WalletSelectionWithProvider(props: WalletSelectionProps) {
+export function ConnectWalletWithProvider(props: ConnectWalletProps) {
   return (
     <TypinkProvider appName="dot-ui">
-      <WalletSelection {...props} />
+      <ConnectWallet {...props} />
     </TypinkProvider>
   );
 }
 
-WalletSelectionWithProvider.displayName = "WalletSelectionWithProvider";
+ConnectWalletWithProvider.displayName = "ConnectWalletWithProvider";

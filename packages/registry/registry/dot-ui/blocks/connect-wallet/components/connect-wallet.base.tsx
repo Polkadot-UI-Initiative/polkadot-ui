@@ -20,7 +20,7 @@ import {
 import { truncateAddress } from "@/registry/dot-ui/lib/utils.dot-ui";
 
 // Services interface for dependency injection
-export interface WalletConnectServices {
+export interface ConnectWalletServices {
   // Hook for wallet management
   useWallet: () => {
     wallets: Wallet[];
@@ -35,7 +35,7 @@ export interface WalletConnectServices {
 interface WalletButtonProps {
   walletInfo: Wallet;
   afterSelectWallet?: () => void;
-  services: WalletConnectServices;
+  services: ConnectWalletServices;
 }
 
 function WalletButton({
@@ -79,13 +79,13 @@ function WalletButton({
   );
 }
 
-export interface WalletSelectionBaseProps {
+export interface ConnectWalletBaseProps {
   buttonLabel?: string;
   // Injected services - this makes it reusable
-  services: WalletConnectServices;
+  services: ConnectWalletServices;
 }
 
-function WalletOption({ services }: { services: WalletConnectServices }) {
+function WalletOption({ services }: { services: ConnectWalletServices }) {
   const { wallets } = services.useWallet();
   return (
     <>
@@ -102,10 +102,10 @@ function WalletOption({ services }: { services: WalletConnectServices }) {
   );
 }
 
-export function WalletSelectionBase({
+export function ConnectWalletBase({
   buttonLabel = "Connect Wallet",
   services,
-}: WalletSelectionBaseProps) {
+}: ConnectWalletBaseProps) {
   const { activeSigner, activeAccount } = services.useWallet();
 
   return (
