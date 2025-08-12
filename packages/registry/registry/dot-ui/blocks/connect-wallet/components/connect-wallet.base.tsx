@@ -15,21 +15,18 @@ import {
 } from "@/components/ui/dialog";
 import {
   AccountSelectionBase,
-  type AccountSelectionServices,
+  AccountSelectionServices,
 } from "@/registry/dot-ui/blocks/account-selection/components/account-selection.base";
 import { truncateAddress } from "@/registry/dot-ui/lib/utils.dot-ui";
+import {
+  AccountManagementHookProps,
+  WalletManagementHookProps,
+} from "@/registry/dot-ui/lib/types.dedot";
 
 // Services interface for dependency injection
 export interface ConnectWalletServices {
-  // Hook for wallet management
-  useWallet: () => {
-    wallets: Wallet[];
-    activeSigner: unknown;
-    activeAccount: { name?: string; address: string } | null;
-    connectWallet: (walletId: string) => void;
-  };
-  // Account selection services
-  accountServices: AccountSelectionServices;
+  useWalletManagement: () => WalletManagementHookProps;
+  useAccountManagement: () => AccountManagementHookProps;
 }
 
 interface WalletButtonProps {
@@ -44,7 +41,7 @@ function WalletButton({
   services,
 }: WalletButtonProps) {
   const { name, id, logo, ready, installed } = walletInfo;
-  const { connectWallet } = services.useWallet();
+  const { connectWallet } = services.useWalletManagement();
 
   const doConnectWallet = () => {
     if (!installed) {
@@ -86,11 +83,11 @@ function WalletButton({
 export interface ConnectWalletBaseProps {
   buttonLabel?: string;
   // Injected services - this makes it reusable
-  services: ConnectWalletServices;
+  services: AccountSelectionServices;
 }
 
-function WalletOption({ services }: { services: ConnectWalletServices }) {
-  const { wallets } = services.useWallet();
+function WalletOption({ services }: { services: AccountSelectionServices }) {
+  const { wallets } = services.useWalletManagement();
   return (
     <>
       <DialogHeader>
@@ -110,7 +107,8 @@ export function ConnectWalletBase({
   buttonLabel = "Connect Wallet",
   services,
 }: ConnectWalletBaseProps) {
-  const { activeSigner, activeAccount } = services.useWallet();
+  const { activeSigner } = services.useWalletManagement();
+  const { activeAccount } = services.useAccountManagement();
 
   return (
     <Dialog>
@@ -130,7 +128,7 @@ export function ConnectWalletBase({
       </DialogTrigger>
       <DialogContent>
         {activeSigner ? (
-          <AccountSelectionBase services={services.accountServices} />
+          <AccountSelectionBase services={services} />
         ) : (
           <WalletOption services={services} />
         )}

@@ -1,57 +1,34 @@
 "use client";
 
 import { useMemo } from "react";
-import { useBalances } from "typink";
-import {
-  TypinkProvider,
-  usePolkadotWallet,
-} from "@/registry/dot-ui/providers/typink-provider";
 import {
   ConnectWalletBase,
   type ConnectWalletBaseProps,
 } from "@/registry/dot-ui/blocks/connect-wallet/components/connect-wallet.base";
+import {
+  useAccountManagement,
+  usePolkadotBalances,
+  useWalletManagement,
+} from "@/registry/dot-ui/blocks/connect-wallet/hooks/use-polkadot-hooks";
+import {
+  ConfiguredTypinkProvider,
+  useConfiguredTypink,
+} from "@/registry/dot-ui/providers/dedot-provider";
 
 // Props type - removes services prop since we inject it
 export type ConnectWalletProps = Omit<ConnectWalletBaseProps, "services">;
 
 export function ConnectWallet(props: ConnectWalletProps) {
-  const {
-    wallets,
-    signer: activeSigner,
-    accounts,
-    connectedAccount: activeAccount,
-    setConnectedAccount: setActiveAccount,
-    disconnect,
-    connectWallet,
-    network,
-  } = usePolkadotWallet();
+  const typinkContext = useConfiguredTypink();
 
   // Simple services object with type-compatible wrappers
   const services = useMemo(
     () => ({
-      useWallet: () => ({
-        wallets,
-        activeSigner,
-        activeAccount: activeAccount
-          ? {
-              name: activeAccount.name,
-              address: activeAccount.address,
-            }
-          : null,
-        connectWallet,
-      }),
-      accountServices: {
-        useAccountManagement: () => ({
-          accounts,
-          activeAccount,
-          setActiveAccount,
-          disconnect,
-          network,
-        }),
-        useBalances,
-      },
+      useWalletManagement,
+      useAccountManagement,
+      usePolkadotBalances,
     }),
-    [wallets, activeSigner, accounts, activeAccount, disconnect, network]
+    [typinkContext]
   );
 
   return <ConnectWalletBase {...props} services={services} />;
@@ -60,9 +37,9 @@ export function ConnectWallet(props: ConnectWalletProps) {
 // Wrapped version with provider for drop-in usage
 export function ConnectWalletWithProvider(props: ConnectWalletProps) {
   return (
-    <TypinkProvider appName="dot-ui">
+    <ConfiguredTypinkProvider>
       <ConnectWallet {...props} />
-    </TypinkProvider>
+    </ConfiguredTypinkProvider>
   );
 }
 

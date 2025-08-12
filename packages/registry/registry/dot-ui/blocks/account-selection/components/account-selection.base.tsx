@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode, useMemo, useEffect } from "react";
-import { formatBalance } from "typink";
+import { Balances, formatBalance } from "typink";
 import {
   DialogClose,
   DialogHeader,
@@ -11,25 +11,20 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { truncateAddress } from "@/registry/dot-ui/lib/utils.dot-ui";
-import { NetworkInfo, InjectedAccount } from "typink";
-
-// Balance data interface
-export interface BalanceData {
-  free: string | number | bigint;
-}
+import {
+  AccountManagementHookProps,
+  WalletManagementHookProps,
+} from "@/registry/dot-ui/lib/types.dedot";
+import {
+  useActiveChain,
+  useWalletManagement,
+} from "../../connect-wallet/hooks/use-polkadot-hooks";
 
 // Services interface for dependency injection
 export interface AccountSelectionServices {
-  // Hook for account management
-  useAccountManagement: () => {
-    accounts: InjectedAccount[];
-    setActiveAccount: (account: InjectedAccount) => void;
-    disconnect: () => void;
-    network: NetworkInfo;
-    activeAccount?: InjectedAccount;
-  };
-  // Hook for balance queries
-  useBalances: (addresses: string[]) => Record<string, BalanceData>;
+  useAccountManagement: () => AccountManagementHookProps;
+  useWalletManagement: () => WalletManagementHookProps;
+  usePolkadotBalances: (addresses: string[]) => Balances;
 }
 
 export interface AccountSelectionBaseProps {
@@ -44,15 +39,16 @@ export interface AccountSelectionProviderProps {
 
 export function AccountSelectionBase({ services }: AccountSelectionBaseProps) {
   // Extract services
-  const { useAccountManagement, useBalances } = services;
-  const { accounts, activeAccount, setActiveAccount, disconnect, network } =
-    useAccountManagement();
+  const { useAccountManagement, usePolkadotBalances } = services;
+  const { accounts, activeAccount, setActiveAccount } = useAccountManagement();
+  const { disconnect } = useWalletManagement();
+  const activeChain = useActiveChain();
 
   const addresses = useMemo(
     () => accounts.map((account) => account.address),
     [accounts]
   );
-  const balances = useBalances(addresses);
+  const balances = usePolkadotBalances(addresses);
 
   useEffect(() => {
     if (
@@ -78,7 +74,7 @@ export function AccountSelectionBase({ services }: AccountSelectionBaseProps) {
         <DialogDescription>
           <span>Connected account: {name}</span>
           <span className="ml-2">{truncateAddress(address)}</span>
-          <div>connected network: {network.name}</div>
+          <div>connected network: {activeChain.name}</div>
         </DialogDescription>
         {accounts?.map((account) => (
           <DialogClose asChild key={account.address}>
@@ -89,7 +85,10 @@ export function AccountSelectionBase({ services }: AccountSelectionBaseProps) {
               <span>{account.name}</span>
               <span>{truncateAddress(account.address)}</span>
               <span>
-                {formatBalance(balances[account.address]?.free || 0, network)}
+                {formatBalance(
+                  balances[account.address]?.free || 0,
+                  activeChain
+                )}
               </span>
             </Button>
           </DialogClose>

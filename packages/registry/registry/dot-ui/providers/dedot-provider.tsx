@@ -24,8 +24,18 @@ import {
   type CompositeApi,
   type AnyChainApi,
 } from "@/registry/dot-ui/lib/types.dedot";
-import { TypinkProvider } from "./typink-provider";
-import { popTestnet } from "typink";
+import {
+  TypinkContext,
+  TypinkContextProps,
+  TypinkProvider,
+  popTestnet,
+  shibuyaTestnet,
+} from "typink";
+
+// TODO: this should be optional after next release of typink
+const DEFAULT_CALLER = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"; // Alice
+const SUPPORTED_NETWORKS = [popTestnet, shibuyaTestnet];
+const cacheMetadata = true;
 
 // Dedot-specific context type extending the base
 type DedotContextValue = BasePolkadotContextValue<
@@ -186,14 +196,41 @@ export function DedotProvider({
   );
 }
 
+export function ConfiguredTypinkProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <TypinkProvider
+      appName="Polkadot UI"
+      defaultNetworkId={popTestnet.id}
+      deployments={[]}
+      defaultCaller={DEFAULT_CALLER}
+      supportedNetworks={SUPPORTED_NETWORKS}
+      cacheMetadata={cacheMetadata}
+    >
+      {children}
+    </TypinkProvider>
+  );
+}
+
 export function PolkadotProvider({ children }: { children: React.ReactNode }) {
   return (
     <DedotProvider>
-      <TypinkProvider appName="Dot UI" defaultNetworkId={popTestnet.id}>
-        {children}
-      </TypinkProvider>
+      <ConfiguredTypinkProvider>{children}</ConfiguredTypinkProvider>
     </DedotProvider>
   );
+}
+
+export function useConfiguredTypink(): TypinkContextProps {
+  const context = useContext(TypinkContext);
+  if (!context) {
+    throw new Error(
+      "useConfiguredTypink must be used within a ConfiguredTypinkProvider"
+    );
+  }
+  return context;
 }
 
 export function useDedot(): DedotContextValue {
