@@ -60,7 +60,13 @@ function WalletButton({
 
   const isLoading = installed && !ready;
 
-  if (isLoading) return <Button>Loading...</Button>;
+  if (isLoading) {
+    return (
+      <Button disabled aria-busy="true" variant="outline">
+        Loading{typeof name === "string" ? ` ${name}` : ""}...
+      </Button>
+    );
+  }
 
   return (
     <Button onClick={doConnectWallet} className="group">
