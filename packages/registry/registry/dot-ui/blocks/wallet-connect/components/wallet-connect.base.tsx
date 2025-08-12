@@ -113,7 +113,9 @@ export function WalletSelectionBase({
       <DialogTrigger asChild>
         <Button variant="outline">
           <div className="flex items-center gap-2">
-            <span>{activeAccount ? `(${activeAccount.name})` : ""}</span>
+            <span>
+              {activeAccount?.name ? `(${activeAccount.name})` : null}
+            </span>
             <span>
               {activeAccount
                 ? truncateAddress(activeAccount.address)
