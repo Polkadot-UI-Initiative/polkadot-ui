@@ -1,7 +1,7 @@
 "use client";
 
 import { Wallet, ExtensionWallet } from "typink";
-import { Button } from "@/registry/dot-ui/ui/button";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { ChevronDown } from "lucide-react";
 import {
