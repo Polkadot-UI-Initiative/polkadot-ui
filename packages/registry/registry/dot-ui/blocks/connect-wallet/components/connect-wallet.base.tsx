@@ -49,7 +49,11 @@ function WalletButton({
   const doConnectWallet = () => {
     if (!installed) {
       if (walletInfo instanceof ExtensionWallet) {
-        const newWindow = window.open(walletInfo.installUrl, "_blank");
+        const newWindow = window.open(
+          walletInfo.installUrl,
+          "_blank",
+          "noopener,noreferrer"
+        );
         if (newWindow) newWindow.opener = null;
       }
       return;
