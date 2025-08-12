@@ -23,7 +23,7 @@ export function AccountSelection(props: AccountSelectionProps) {
         setActiveAccount: walletContext.setConnectedAccount,
         disconnect: walletContext.disconnect,
         network: walletContext.network,
-        activeAccount: walletContext.connectedAccount,
+        activeAccount: walletContext.connectedAccount || undefined,
       }),
       useBalances,
     }),
