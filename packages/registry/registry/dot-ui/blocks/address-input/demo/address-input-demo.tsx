@@ -3,7 +3,7 @@
 import { useState, ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Button } from "@/registry/dot-ui/ui/button";
-import { WalletSelectionWithProvider } from "@/registry/dot-ui/blocks/wallet-connect/components/wallet-connect.dedot";
+import { WalletSelectionWithProvider } from "@/registry/dot-ui/blocks/connect-wallet/components/connect-wallet.dedot";
 
 const queryClient = new QueryClient();
 

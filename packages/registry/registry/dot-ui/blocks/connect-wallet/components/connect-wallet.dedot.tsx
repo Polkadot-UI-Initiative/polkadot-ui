@@ -9,7 +9,7 @@ import {
 import {
   WalletSelectionBase,
   type WalletSelectionBaseProps,
-} from "@/registry/dot-ui/blocks/wallet-connect/components/wallet-connect.base";
+} from "@/registry/dot-ui/blocks/connect-wallet/components/connect-wallet.base";
 
 // Props type - removes services prop since we inject it
 export type WalletSelectionProps = Omit<WalletSelectionBaseProps, "services">;
