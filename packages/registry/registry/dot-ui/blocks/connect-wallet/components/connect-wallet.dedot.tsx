@@ -15,34 +15,43 @@ import {
 export type ConnectWalletProps = Omit<ConnectWalletBaseProps, "services">;
 
 export function ConnectWallet(props: ConnectWalletProps) {
-  const typinkContext = usePolkadotWallet();
+  const {
+    wallets,
+    signer: activeSigner,
+    accounts,
+    connectedAccount: activeAccount,
+    setConnectedAccount: setActiveAccount,
+    disconnect,
+    connectWallet,
+    network,
+  } = usePolkadotWallet();
 
   // Simple services object with type-compatible wrappers
   const services = useMemo(
     () => ({
       useWallet: () => ({
-        wallets: typinkContext.wallets,
-        activeSigner: typinkContext.signer,
-        activeAccount: typinkContext.connectedAccount
+        wallets,
+        activeSigner,
+        activeAccount: activeAccount
           ? {
-              name: typinkContext.connectedAccount.name,
-              address: typinkContext.connectedAccount.address,
+              name: activeAccount.name,
+              address: activeAccount.address,
             }
           : null,
-        connectWallet: typinkContext.connectWallet,
+        connectWallet,
       }),
       accountServices: {
         useAccountManagement: () => ({
-          accounts: typinkContext.accounts,
-          activeAccount: typinkContext.connectedAccount,
-          setActiveAccount: typinkContext.setConnectedAccount,
-          disconnect: typinkContext.disconnect,
-          network: typinkContext.network,
+          accounts,
+          activeAccount,
+          setActiveAccount,
+          disconnect,
+          network,
         }),
         useBalances,
       },
     }),
-    [typinkContext]
+    [wallets, activeSigner, accounts, activeAccount, disconnect, network]
   );
 
   return <ConnectWalletBase {...props} services={services} />;

@@ -13,21 +13,27 @@ import {
 export type AccountSelectionProps = Omit<AccountSelectionBaseProps, "services">;
 
 export function AccountSelection(props: AccountSelectionProps) {
-  const walletContext = usePolkadotWallet();
+  const {
+    accounts,
+    setConnectedAccount: setActiveAccount,
+    disconnect,
+    network,
+    connectedAccount: activeAccount,
+  } = usePolkadotWallet();
 
   // Simple services object with type-compatible wrappers
   const services = useMemo(
     () => ({
       useAccountManagement: () => ({
-        accounts: walletContext.accounts,
-        setActiveAccount: walletContext.setConnectedAccount,
-        disconnect: walletContext.disconnect,
-        network: walletContext.network,
-        activeAccount: walletContext.connectedAccount || undefined,
+        accounts,
+        setActiveAccount,
+        disconnect,
+        network,
+        activeAccount: activeAccount || undefined,
       }),
       useBalances,
     }),
-    [walletContext]
+    [accounts, disconnect, network, activeAccount]
   );
 
   return <AccountSelectionBase {...props} services={services} />;
