@@ -46,7 +46,6 @@ type DedotContextValue = BasePolkadotContextValue<
 
 const DedotContext = createContext<DedotContextValue | undefined>(undefined);
 
-
 export function DedotProvider({
   children,
   defaultChain,

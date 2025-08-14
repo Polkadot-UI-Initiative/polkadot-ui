@@ -24,7 +24,7 @@ export interface TxButtonServices {
   useIsConnected: () => boolean;
 }
 
-export interface TxButtonProps
+export interface TxButtonBaseProps
   extends React.ComponentProps<"button">,
     VariantProps<typeof buttonVariants> {
   children: React.ReactNode;
@@ -43,7 +43,7 @@ export interface TxButtonProps
   services: TxButtonServices;
 }
 
-export function TxButton({
+export function TxButtonBase({
   children,
   tx,
   className,
@@ -60,7 +60,7 @@ export function TxButton({
   },
   services,
   ...props
-}: TxButtonProps) {
+}: TxButtonBaseProps) {
   const selectedAccount = services.useSelectedAccount();
   const activeChain = services.useActiveChain();
   const isConnected = services.useIsConnected();
@@ -249,7 +249,7 @@ export function TxButtonSkeleton({
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     children: React.ReactNode;
-    icons?: TxButtonProps["icons"];
+    icons?: TxButtonBaseProps["icons"];
   }) {
   return (
     <div className="inline-flex flex-col gap-1">
