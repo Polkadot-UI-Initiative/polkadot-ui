@@ -84,6 +84,9 @@ importers:
       '@polkadot/util':
         specifier: ^13.5.3
         version: 13.5.3
+      '@polkadot/util-crypto':
+        specifier: ^13.5.3
+        version: 13.5.3(@polkadot/util@13.5.3)
       '@radix-ui/react-accordion':
         specifier: ^1.2.11
         version: 1.2.11(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)

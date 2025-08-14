@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { BookText, Wifi, WifiOff } from "lucide-react";
 import { Label } from "@/registry/dot-ui/ui/label";
 import { cn } from "@/lib/utils";
+import { SimpleTxButtonWithProvider } from "@/registry/dot-ui/blocks/tx-notification/components/simple-tx-button";
 import { ConnectWalletWithProvider } from "@/registry/dot-ui/blocks/connect-wallet/components/connect-wallet.dedot";
 
 const examples = [
@@ -57,6 +58,17 @@ const examples = [
             <span>Connected to Paseo</span>
           </div>
         </RequireConnectionWithProvider>
+      </div>
+    ),
+  },
+  {
+    name: "Tx Button with Tx Notification",
+    href: "/docs/components/tx-notification",
+    code: "simple-tx-button with tx-notification",
+    description: "Simple tx button with tx notification",
+    component: (
+      <div className="flex flex-col gap-2 w-full">
+        <SimpleTxButtonWithProvider />
       </div>
     ),
   },
