@@ -193,54 +193,8 @@ export function DedotProvider({
   };
 
   return (
-    <TypinkProvider
-      appName="Dot UI"
-      deployments={[]}
-      defaultCaller={DEFAULT_CALLER}
-      defaultNetworkId={popTestnet.id}
-      cacheMetadata={false}
-      supportedNetworks={[popTestnet, shibuyaTestnet]}
-    >
-      <DedotContext.Provider value={value}>{children}</DedotContext.Provider>
-    </TypinkProvider>
+    <DedotContext.Provider value={value}>{children}</DedotContext.Provider>
   );
-}
-
-export function ConfiguredTypinkProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <TypinkProvider
-      appName="Polkadot UI"
-      defaultNetworkId={popTestnet.id}
-      deployments={[]}
-      defaultCaller={DEFAULT_CALLER}
-      supportedNetworks={SUPPORTED_NETWORKS}
-      cacheMetadata={cacheMetadata}
-    >
-      {children}
-    </TypinkProvider>
-  );
-}
-
-export function PolkadotProvider({ children }: { children: React.ReactNode }) {
-  return (
-    <DedotProvider>
-      <ConfiguredTypinkProvider>{children}</ConfiguredTypinkProvider>
-    </DedotProvider>
-  );
-}
-
-export function useConfiguredTypink(): TypinkContextProps {
-  const context = useContext(TypinkContext);
-  if (!context) {
-    throw new Error(
-      "useConfiguredTypink must be used within a ConfiguredTypinkProvider"
-    );
-  }
-  return context;
 }
 
 export function ConfiguredTypinkProvider({
