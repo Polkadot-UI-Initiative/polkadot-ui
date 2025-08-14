@@ -1,7 +1,8 @@
-import React, { useMemo } from 'react';
-import { toast } from 'sonner';
-import { ISubmittableResult, TxStatus } from 'dedot/types';
-import { NetworkInfo } from 'typink';
+import React, { useMemo } from "react";
+import { toast } from "sonner";
+import { ISubmittableResult, TxStatus } from "dedot/types";
+import { ChainConfig, ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
+import { SubstrateExplorer } from "@/registry/dot-ui/lib/types.dot-ui";
 
 export type TxNotificationProps = {
   onTxProgress: (progress: ISubmittableResult) => void;
@@ -9,50 +10,70 @@ export type TxNotificationProps = {
 };
 
 export function txNotification(
-  initialMessage: string = 'Signing Transaction...',
-  network?: NetworkInfo
+  initialMessage: string = "Signing Transaction...",
+  currentChainConfig: ChainConfig<ChainId>
 ): TxNotificationProps {
-  let toastId = toast.loading(initialMessage, {
+  const toastId = "tx-notification";
+
+  toast.loading(initialMessage, {
+    id: toastId,
     duration: 5000,
     closeButton: true,
   });
 
   const onTxProgress = (progress: ISubmittableResult) => {
-    let toastType: 'success' | 'error' | 'info' | 'default' = 'default';
+    let toastType: "success" | "error" | "info" | "default" = "default";
     let duration: number = Infinity;
-    let toastMessage: string = 'Transaction In Progress...';
+    let toastMessage: string = "Transaction In Progress...";
 
     const { status, dispatchError } = progress;
     const succeeded = !dispatchError;
 
-    if (status.type === 'Finalized') {
+    if (status.type === "Finalized") {
       duration = 5_000;
-      toastType = succeeded ? 'success' : 'error';
-      toastMessage = succeeded ? 'Transaction Successful' : 'Transaction Failed';
+      toastType = succeeded ? "success" : "error";
+      toastMessage = succeeded
+        ? "Transaction Successful"
+        : "Transaction Failed";
       // TODO: show dispatchError detailed error when Transaction Failed
-    } else if (status.type === 'Invalid' || status.type === 'Drop') {
+    } else if (status.type === "Invalid" || status.type === "Drop") {
       duration = 5_000;
-      toastType = 'error';
-      toastMessage = 'Transaction Failed';
+      toastType = "error";
+      toastMessage = "Transaction Failed";
     }
 
-    // Dismiss current toast and create a new one
-    toast.dismiss(toastId);
-    
-    const toastComponent = <TxProgress message={toastMessage} status={status} network={network} />;
-    
-    if (toastType === 'success') {
-      toastId = toast.success(toastComponent, { duration, closeButton: true });
-    } else if (toastType === 'error') {
-      toastId = toast.error(toastComponent, { duration, closeButton: true });
+    const toastComponent = (
+      <TxProgress
+        message={toastMessage}
+        status={status}
+        currentChainConfig={currentChainConfig}
+      />
+    );
+
+    if (toastType === "success") {
+      toast.success(toastComponent, {
+        id: toastId,
+        duration,
+        closeButton: true,
+      });
+    } else if (toastType === "error") {
+      toast.error(toastComponent, {
+        id: toastId,
+        duration,
+        closeButton: true,
+      });
     } else {
-      toastId = toast.info(toastComponent, { duration, closeButton: true });
+      toast.info(toastComponent, {
+        id: toastId,
+        duration,
+        closeButton: true,
+      });
     }
   };
 
   const onTxError = (e: Error) => {
-    toast.dismiss(toastId);
-    toastId = toast.error(<p>{e.message}</p>, {
+    toast.error(<p>{e.message}</p>, {
+      id: toastId,
       duration: 5_000,
       dismissible: true,
     });
@@ -64,63 +85,72 @@ export function txNotification(
   };
 }
 
-const getBlockInfo = (status: TxStatus) => {
-  if (status.type === 'BestChainBlockIncluded' || status.type === 'Finalized') {
+const getBlockInfo = (status: TxStatus): string | null => {
+  if (status.type === "BestChainBlockIncluded" || status.type === "Finalized") {
     return `(#${status.value.blockNumber} / ${status.value.txIndex})`;
   }
 
-  if ((status.type === 'Invalid' || status.type === 'Drop') && status.value.error) {
+  if (
+    (status.type === "Invalid" || status.type === "Drop") &&
+    status.value.error
+  ) {
     return `(${status.value.error})`;
   }
 
-  return '';
+  return null;
 };
 
 interface TxProgressProps {
   message: string;
   status: TxStatus;
-  network?: NetworkInfo;
+  currentChainConfig?: ChainConfig<ChainId>;
 }
 
-function TxProgress({ message, status, network }: TxProgressProps) {
-    console.log({network});
+function TxProgress({ message, status, currentChainConfig }: TxProgressProps) {
+  const { label: viewOnExplorer, url: explorerUrl } = useMemo(() => {
+    if (
+      (status.type === "BestChainBlockIncluded" ||
+        status.type === "Finalized") &&
+      currentChainConfig
+    ) {
+      const { explorerUrls } = currentChainConfig;
+      const subscanUrl = explorerUrls?.[SubstrateExplorer.Subscan];
+      const pjsUrl = explorerUrls?.[SubstrateExplorer.PolkadotJs];
 
-    const { label: viewOnExplorer, url: explorerUrl } = useMemo(() => {
-        if ((status.type === 'BestChainBlockIncluded' || status.type === 'Finalized') && network) {
-          const { subscanUrl, pjsUrl } = network;
+      if (subscanUrl) {
+        return {
+          label: "View transaction on Subscan",
+          url: `${subscanUrl}/extrinsic/${status.value.blockNumber}-${status.value.txIndex}`,
+        };
+      }
 
-          if (subscanUrl) {
-            return {
-              label: 'View transaction on Subscan',
-              url: `${subscanUrl}/extrinsic/${status.value.blockNumber}-${status.value.txIndex}`,
-            };
-          }
+      if (pjsUrl) {
+        return {
+          label: "View transaction on Polkadot.js",
+          url: `${pjsUrl}#/explorer/query/${status.value.blockHash}`,
+        };
+      }
+    }
 
-          if (pjsUrl) {
-            return {
-              label: 'View transaction on Polkadot.js',
-              url: `${pjsUrl}#/explorer/query/${status.value.blockHash}`,
-            };
-          }
-        }
-
-        return { label: null, url: '' };
-  }, [status, network]);
-
+    return { label: null, url: "" };
+  }, [status, currentChainConfig]);
 
   return (
-    <div>
-      <p>{message}</p>
-      <p style={{ fontSize: 12 }}>
+    <div className="flex flex-col gap-1">
+      <p className="font-medium">{message}</p>
+      <p className="text-xs text-muted-foreground">
         {status.type} {getBlockInfo(status)}
       </p>
 
       {viewOnExplorer && (
-        <p style={{ fontSize: 12, marginTop: '0.5rem' }}>
-          <a style={{ textDecoration: 'underline' }} href={explorerUrl} target='_blank'>
-            👉 {viewOnExplorer}
-          </a>
-        </p>
+        <a
+          href={explorerUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs text-primary hover:underline flex items-center gap-1 mt-1"
+        >
+          👉 {viewOnExplorer}
+        </a>
       )}
     </div>
   );

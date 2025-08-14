@@ -12,7 +12,9 @@ import { Keyring } from "@polkadot/keyring";
 import { cryptoWaitReady } from "@polkadot/util-crypto";
 import { ISubmittableResult } from "dedot/types";
 import type { KeyringPair } from "@polkadot/keyring/types";
-import { useTypink } from "typink";
+import { useDedot } from "@/registry/dot-ui/providers/dedot-provider";
+import { dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
+import { getChainConfig } from "@/registry/dot-ui/lib/utils.dot-ui";
 
 interface SimpleTxButtonProps {
   defaultMessage?: string;
@@ -20,32 +22,30 @@ interface SimpleTxButtonProps {
   placeholder?: string;
 }
 
-export function SimpleTxButton({ 
-  defaultMessage = "", 
+export function SimpleTxButton({
+  defaultMessage = "",
   buttonText = "Send Remark",
-  placeholder = "Enter your remark message..."
+  placeholder = "Enter your remark message...",
 }: SimpleTxButtonProps) {
   const [message, setMessage] = useState(defaultMessage);
   const [isLoading, setIsLoading] = useState(false);
   const [demoKeypair, setDemoKeypair] = useState<KeyringPair | null>(null);
   const [cryptoReady, setCryptoReady] = useState(false);
   const api = useTypedPolkadotApi();
+  const { currentChain } = useDedot();
+  const currentChainConfig = getChainConfig(dotUiConfig.chains, currentChain);
 
-  const {network} = useTypink();
-  console.log({network});
-
-  // Initialize crypto and create demo keypair
   useEffect(() => {
     const initCrypto = async () => {
       try {
         await cryptoWaitReady();
         setCryptoReady(true);
-        
-        const keyring = new Keyring({ type: 'sr25519' });
-        const keypair = keyring.addFromUri('//Alice', { name: 'Alice' });
+
+        const keyring = new Keyring({ type: "sr25519" });
+        const keypair = keyring.addFromUri("//Alice", { name: "Alice" });
         setDemoKeypair(keypair);
       } catch (error) {
-        console.error('Failed to initialize crypto:', error);
+        console.error("Failed to initialize crypto:", error);
       }
     };
 
@@ -58,24 +58,25 @@ export function SimpleTxButton({
     }
 
     setIsLoading(true);
-    const toaster = txNotification('Signing Transaction...', network);
+    const toaster = txNotification(
+      "Signing Transaction...",
+      currentChainConfig
+    );
 
     try {
-      // Create the remark transaction
       const remarkTx = api.tx.system.remark(message);
 
       await remarkTx.signAndSend(demoKeypair, (result: ISubmittableResult) => {
         const { status } = result;
-        console.log(status);
 
-        if (status.type === 'BestChainBlockIncluded') {
-          setMessage('');
+        if (status.type === "BestChainBlockIncluded") {
+          setMessage("");
         }
 
         toaster.onTxProgress(result);
       });
     } catch (e: unknown) {
-      const error = e instanceof Error ? e : new Error('Transaction failed');
+      const error = e instanceof Error ? e : new Error("Transaction failed");
       toaster.onTxError(error);
     } finally {
       setIsLoading(false);
@@ -101,15 +102,17 @@ export function SimpleTxButton({
             : "Initializing crypto..."}
         </p>
       </div>
-      <Button 
+      <Button
         onClick={handleSubmit}
-        disabled={!api || !message.trim() || isLoading || !cryptoReady || !demoKeypair}
+        disabled={
+          !api || !message.trim() || isLoading || !cryptoReady || !demoKeypair
+        }
         className="w-full"
       >
-        {!cryptoReady 
-          ? "Initializing..." 
-          : isLoading 
-            ? "Sending..." 
+        {!cryptoReady
+          ? "Initializing..."
+          : isLoading
+            ? "Sending..."
             : buttonText}
       </Button>
     </div>

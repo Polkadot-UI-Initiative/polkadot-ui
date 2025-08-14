@@ -7,7 +7,7 @@ export const dotUiConfig = {
       displayName: "Paseo Relay Chain",
       explorerUrls: {
         [SubstrateExplorer.PolkadotJs]: `https://polkadot.js.org/apps/?rpc=${encodeURIComponent("wss://sys.ibp.network/paseo")}#/explorer`,
-        [SubstrateExplorer.Subscan]: `https://paseo.subscan.io/`,
+        [SubstrateExplorer.Subscan]: `https://paseo.subscan.io`,
       },
       isTestnet: true,
     },
@@ -16,7 +16,7 @@ export const dotUiConfig = {
       displayName: "Paseo People",
       explorerUrls: {
         [SubstrateExplorer.PolkadotJs]: `https://polkadot.js.org/apps/?rpc=${encodeURIComponent("wss://sys.ibp.network/people-paseo")}#/explorer`,
-        [SubstrateExplorer.Subscan]: `https://people-paseo.subscan.io/`,
+        [SubstrateExplorer.Subscan]: `https://people-paseo.subscan.io`,
       },
       isTestnet: true,
     },
