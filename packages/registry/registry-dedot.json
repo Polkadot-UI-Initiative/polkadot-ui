@@ -100,6 +100,54 @@
           "type": "registry:lib"
         }
       ]
+    },
+    {
+      "name": "connect-wallet",
+      "type": "registry:component",
+      "title": "Connect Wallet (Typink)",
+      "description": "A wallet connection component provided by Typink.",
+      "dependencies": ["typink", "lucide-react", "dedot"],
+      "registryDependencies": ["button", "dialog"],
+      "files": [
+        {
+          "path": "registry/dot-ui/blocks/connect-wallet/demo/page.dedot.tsx",
+          "type": "registry:page",
+          "target": "app/demo/dot-ui/connect-wallet/page.tsx"
+        },
+        {
+          "path": "registry/dot-ui/blocks/connect-wallet/components/connect-wallet.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/dot-ui/blocks/connect-wallet/components/connect-wallet.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/dot-ui/blocks/connect-wallet/demo/connect-wallet-demo.tsx",
+          "type": "registry:component",
+          "target": "app/demo/dot-ui/connect-wallet/connect-wallet-demo.tsx"
+        },
+        {
+          "path": "registry/dot-ui/blocks/account-selection/components/account-selection.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/dot-ui/providers/dedot-provider.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/config.dot-ui.ts",
+          "type": "registry:lib"
+        }
+      ]
     }
   ]
 }

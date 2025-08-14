@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { BookText, Wifi, WifiOff } from "lucide-react";
 import { Label } from "@/registry/dot-ui/ui/label";
 import { cn } from "@/lib/utils";
+import { ConnectWalletWithProvider } from "@/registry/dot-ui/blocks/connect-wallet/components/connect-wallet.dedot";
 
 const examples = [
   {
@@ -56,6 +57,17 @@ const examples = [
             <span>Connected to Paseo</span>
           </div>
         </RequireConnectionWithProvider>
+      </div>
+    ),
+  },
+  {
+    name: "Wallet Selection",
+    href: "/docs/components/wallet-selection",
+    code: "wallet-selection",
+    description: "Wallet connection and account selection",
+    component: (
+      <div className="flex flex-col gap-2 w-full">
+        <ConnectWalletWithProvider />
       </div>
     ),
   },
