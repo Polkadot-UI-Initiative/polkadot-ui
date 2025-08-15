@@ -74,10 +74,10 @@ export function AccountSelectionBase({ services }: AccountSelectionBaseProps) {
         <DialogDescription>
           <span>Connected account: {name}</span>
           <span className="ml-2">{truncateAddress(address)}</span>
-          <div>connected network: {activeChain.name}</div>
+          <span>connected network: {activeChain.name}</span>
         </DialogDescription>
         {accounts?.map((account) => (
-          <DialogClose asChild key={account.address}>
+          <DialogClose asChild key={`${account.address}-${account.source}`}>
             <Button
               onClick={() => setActiveAccount(account)}
               aria-label={`Select account ${account.name} with address ${truncateAddress(account.address)}`}
@@ -94,11 +94,6 @@ export function AccountSelectionBase({ services }: AccountSelectionBaseProps) {
           </DialogClose>
         ))}
       </DialogHeader>
-      <DialogFooter>
-        <Button variant="outline" onClick={() => disconnect()}>
-          Disconnect
-        </Button>
-      </DialogFooter>
     </>
   );
 }
