@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 import { truncateAddress } from "@/registry/dot-ui/lib/utils.dot-ui";
 import {
@@ -43,6 +44,7 @@ interface AccountItemProps {
   isSelected: boolean;
   onSelect: () => void;
   services: AccountSelectionServices;
+  identiconSize?: number;
 }
 
 function AccountItem({
@@ -51,6 +53,7 @@ function AccountItem({
   isSelected,
   onSelect,
   services,
+  identiconSize = 24,
 }: AccountItemProps) {
   const { address, name, source } = account;
   const { wallets } = services.useWalletManagement();
@@ -60,50 +63,48 @@ function AccountItem({
 
   const wallet = getWalletBySource(source);
 
+  const handleSelect = () => {
+    onSelect();
+  };
+
+  // Badge size is 40% of the identicon size with minimum size 16px
+  const badgeSize = Math.max(Math.floor(identiconSize * 0.4), 16);
+
   return (
     <DialogClose asChild>
-      <div
-        onClick={onSelect}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            onSelect();
-          }
-        }}
-        aria-label={`Select account ${name} with address ${truncateAddress(address)}`}
-        className={`flex items-center gap-6 w-full p-6 rounded-lg border cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
+      <Button
+        onClick={handleSelect}
+        variant="outline"
+        className={`flex items-center justify-start gap-6 w-full h-auto rounded-lg border cursor-pointer hover:bg-muted hover:text-muted-foreground hover:border-muted-foreground transition-colors [&_svg]:!w-auto [&_svg]:!h-auto ${
           isSelected
             ? "bg-muted text-muted-foreground border-muted-foreground shadow-sm"
-            : "bg-background border-border hover:bg-muted hover:text-muted-foreground hover:border-muted-foreground"
+            : "bg-background border-border"
         }`}
+        aria-label={`Select account ${name} with address ${truncateAddress(address)}`}
       >
         {/* Identicon with wallet badge */}
         <div className="relative">
           <Identicon
             value={address}
             theme="polkadot"
-            size={32}
+            size={identiconSize}
             className="rounded-full"
           />
           {wallet && wallet.logo && (
             <Image
               src={wallet.logo}
               alt={wallet.name}
-              width={20}
-              height={20}
-              className="absolute -bottom-1 -right-1 rounded-full border-2 border-background"
+              width={badgeSize}
+              height={badgeSize}
+              className="rounded-full border-2 border-background absolute -bottom-1 -right-1"
             />
           )}
         </div>
 
         {/* Account info */}
-        <div className="flex flex-col items-start flex-1 min-w-0">
+        <div className="flex flex-col items-start">
           <div className="flex items-center gap-2 w-full">
-            <span className="text-lg font-medium truncate">
-              {name || "Unknown"}
-            </span>
+            <span className="text-lg font-medium truncate">{name || " "}</span>
             {isSelected && (
               <Badge variant="default" className="text-xs">
                 Active
@@ -115,7 +116,7 @@ function AccountItem({
           </span>
           <span className="text-sm text-muted-foreground">{balance}</span>
         </div>
-      </div>
+      </Button>
     </DialogClose>
   );
 }
@@ -145,25 +146,11 @@ export function AccountSelectionBase({ services }: AccountSelectionBaseProps) {
     }
   }, [accounts, activeAccount, setActiveAccount]);
 
-  const { name, address } = activeAccount || {};
-
   return (
     <>
       <DialogHeader>
         <DialogTitle>Select Account</DialogTitle>
-        <DialogDescription>
-          {activeAccount ? (
-            <div className="flex flex-col gap-1">
-              <span>Current: {name}</span>
-              <span className="font-mono text-sm">
-                {truncateAddress(address!)}
-              </span>
-              <span>Network: {activeChain.name}</span>
-            </div>
-          ) : (
-            "Choose an account to connect"
-          )}
-        </DialogDescription>
+        <DialogDescription>Choose an account to connect</DialogDescription>
       </DialogHeader>
 
       <div className="space-y-2 max-h-96 overflow-y-auto">
