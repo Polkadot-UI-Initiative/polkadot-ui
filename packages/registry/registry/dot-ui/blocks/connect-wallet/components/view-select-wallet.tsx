@@ -20,7 +20,7 @@ export const ViewSelectWallet = ({ next }: ViewNavigationProps) => {
 
   return (
     <div className="flex flex-col gap-2">
-      {sortedWallets.map((wallet, index) => {
+      {sortedWallets.map((wallet) => {
         const isConnected = connectedWallets.find((w) => w.id === wallet.id);
 
         const accountCount = accounts.filter(
@@ -29,7 +29,7 @@ export const ViewSelectWallet = ({ next }: ViewNavigationProps) => {
 
         return (
           <Button
-            key={index}
+            key={wallet.id}
             variant="ghost"
             className="relative w-full flex flex-row items-center justify-between [&_svg]:size-auto gap-2 h-14"
             onClick={() => {

@@ -97,6 +97,7 @@ export interface BasePolkadotContextValue<
   accounts: TAccount[];
   setActiveAccount: (account: TAccount) => void;
   activeAccount?: TAccount;
+  defaultCaller: string;
 }
 
 // Common provider props interface

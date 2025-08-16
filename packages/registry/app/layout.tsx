@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { PolkadotProvider } from "@/registry/dot-ui/providers/papi-provider";
 import { Navigation } from "@/components/layout/navigation";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { MouseFollower } from "@/components/mouse-follower";
@@ -10,6 +9,7 @@ import { RootProvider as FumadocsRootProvider } from "fumadocs-ui/provider";
 import { PolkadotLogo } from "@/components/polkadot-logo";
 import { Toaster } from "@/components/ui/sonner";
 import { FeedbackToast } from "@/components/feedback-toast";
+import { Providers } from "@/components/providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,9 +41,9 @@ export default function RootLayout({
           <ThemeProvider>
             <div className="relative flex min-h-screen flex-col">
               <Navigation />
-              <PolkadotProvider>
+              <Providers>
                 <main className="flex-1">{children}</main>
-              </PolkadotProvider>
+              </Providers>
               <footer className="flex justify-center items-center mt-12 mb-4 p-4">
                 <PolkadotLogo withPoweredBy />
               </footer>

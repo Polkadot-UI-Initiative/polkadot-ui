@@ -17,9 +17,9 @@ import { Button } from "@/components/ui/button";
 import { BookText, Wifi, WifiOff } from "lucide-react";
 import { Label } from "@/registry/dot-ui/ui/label";
 import { cn } from "@/lib/utils";
-import { ConnectWalletWithProvider } from "@/registry/dot-ui/blocks/connect-wallet/components/connect-wallet.dedot";
 import { useClient } from "@/registry/dot-ui/hooks/polkadot-hooks.dedot";
 import { TxButtonWithProvider } from "@/registry/dot-ui/blocks/tx-button/components/tx-button.dedot";
+import { WalletSelect } from "@/registry/dot-ui/blocks/connect-wallet/components/wallet-select";
 
 const examples = [
   {
@@ -65,13 +65,13 @@ const examples = [
     ),
   },
   {
-    name: "Wallet Selection",
-    href: "/docs/components/wallet-selection",
-    code: "wallet-selection",
+    name: "Wallet & Account Selection",
+    href: "/docs/components/wallet-select",
+    code: "wallet-select",
     description: "Wallet connection and account selection",
     component: (
       <div className="flex flex-col gap-2 w-full">
-        <ConnectWalletWithProvider />
+        <WalletSelect />
       </div>
     ),
   },

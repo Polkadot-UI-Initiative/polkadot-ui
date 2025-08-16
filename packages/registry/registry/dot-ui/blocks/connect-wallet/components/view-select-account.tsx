@@ -24,7 +24,7 @@ export function ViewSelectAccount({ previous }: ViewNavigationProps) {
           const wallet = wallets.find((w) => w.id === account.source);
 
           return (
-            <div key={wallet?.id}>
+            <div key={`${account.address}-${account.source}`}>
               <DialogClose asChild>
                 <Button
                   variant={

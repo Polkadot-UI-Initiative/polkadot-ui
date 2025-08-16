@@ -16,7 +16,7 @@ export type SupportedChainId = (typeof supportedChains)[number]["id"];
 interface ChainApiKindMap {
   paseo: PaseoApi;
   pop_testnet: PaseoApi; // POP Network uses Paseo-compatible API
-  paseo_people: PaseoPeopleApi;
+  paseoPeople: PaseoPeopleApi;
   // polkadot: PolkadotApi;
 }
 

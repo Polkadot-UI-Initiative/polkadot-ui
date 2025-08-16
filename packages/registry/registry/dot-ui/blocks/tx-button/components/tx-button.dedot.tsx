@@ -3,29 +3,30 @@
 import { useMemo } from "react";
 import { PolkadotProvider } from "@/registry/dot-ui/providers/dedot-provider";
 import { TxButtonBase, type TxButtonBaseProps } from "./tx-button.base";
-import {
-  useActiveChain,
-  useIsConnected,
-  useSelectedAccount,
-} from "@/registry/dot-ui/hooks/polkadot-hooks.dedot";
+import { useDedot } from "@/registry/dot-ui/providers/dedot-provider";
 
 // Props type - removes services prop since we inject it
 export type TxButtonProps = Omit<TxButtonBaseProps, "services">;
 
 export function TxButton(props: TxButtonProps) {
+  const { availableChains, currentChain, activeAccount } = useDedot();
   // Simple services object with type-compatible wrappers
   const services = useMemo(
     () => ({
       useSelectedAccount: () => ({
-        address: useSelectedAccount()?.address ?? "",
+        address: activeAccount?.address ?? "",
       }),
       useActiveChain: () => ({
-        decimals: useActiveChain()?.decimals ?? 0,
-        symbol: useActiveChain()?.name ?? "",
+        decimals:
+          availableChains.find((chain) => chain?.id === currentChain?.id)
+            ?.decimals ?? 0,
+        symbol:
+          availableChains.find((chain) => chain?.id === currentChain?.id)
+            ?.symbol ?? "",
       }),
-      useIsConnected: () => useIsConnected(),
+      useIsConnected: () => !!activeAccount?.address,
     }),
-    []
+    [availableChains, currentChain, activeAccount]
   );
 
   return <TxButtonBase {...props} services={services} />;

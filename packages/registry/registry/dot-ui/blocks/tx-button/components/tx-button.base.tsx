@@ -7,9 +7,14 @@ import { cn } from "@/registry/dot-ui/lib/utils";
 import { type VariantProps } from "class-variance-authority";
 import { Loader2, PenLine, CheckCheck, Check, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { useClient, useTypink } from "typink";
-import type { TxStatus, ISubmittableExtrinsic } from "dedot/types";
+import type {
+  TxStatus,
+  ISubmittableExtrinsic,
+  ISubmittableResult,
+} from "dedot/types";
 import { useDedot } from "@/registry/dot-ui/providers/dedot-provider";
+import { useClient } from "typink";
+import { txNotification } from "../../tx-notification/components/tx-notification.base";
 
 type ClientType = NonNullable<ReturnType<typeof useClient>["client"]>;
 type ChainTx = ClientType["tx"];
@@ -42,6 +47,8 @@ export interface TxButtonBaseProps
     error?: React.ReactNode;
   };
   services?: TxButtonServices;
+  onStatusChange?: (payload: ISubmittableResult) => void;
+  withNotification?: boolean;
 }
 
 export function TxButtonBase({
@@ -60,26 +67,48 @@ export function TxButtonBase({
     error: <X className="w-4 h-4 text-red-500" />,
   },
   services,
+  onStatusChange,
+  withNotification = true,
   ...props
 }: TxButtonBaseProps) {
   const selectedAccount = services?.useSelectedAccount();
   const activeChain = services?.useActiveChain();
   const isConnected = services?.useIsConnected();
-  const { client, defaultCaller } = useTypink();
-  const { apis, activeSigner } = useDedot();
-  console.log("activeSigner", activeSigner);
+
+  const { apis, activeSigner, defaultCaller, availableChains } = useDedot();
 
   const extrinsic = useMemo(() => {
     if (!tx) return null;
     if (typeof tx !== "function") return tx;
-    if (!client) return null;
-    try {
-      return tx(client.tx) ?? null;
-    } catch (e) {
-      console.error("Failed to build extrinsic", e);
-      return null;
-    }
-  }, [client, tx]);
+    return null;
+  }, [tx]);
+
+  // infer chain id from passed extrinsic
+  const inferredChainId = useMemo(() => {
+    if (!extrinsic) return null;
+    console.log("extrinsic", extrinsic);
+    const anyExtrinsic = extrinsic as unknown as {
+      client?: unknown;
+      api?: unknown;
+    };
+    const txClient = anyExtrinsic?.client ?? anyExtrinsic?.api ?? null;
+    if (!txClient) return null;
+    const entry = Object.entries(apis).find(([, api]) => api === txClient);
+    return (entry?.[0] as unknown as string) ?? null;
+  }, [extrinsic, apis]);
+
+  const inferredNetwork = useMemo(() => {
+    if (!inferredChainId) return null;
+    const list = availableChains ?? [];
+    const match = list.find(
+      (n): n is NonNullable<typeof n> => !!n && n.id === inferredChainId
+    );
+    return match ?? null;
+  }, [inferredChainId, availableChains]);
+
+  const decimalsToUse =
+    inferredNetwork?.decimals ?? activeChain?.decimals ?? 10;
+  const symbolToUse = inferredNetwork?.symbol ?? activeChain?.symbol ?? "UNIT";
 
   const [submitError] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -143,12 +172,19 @@ export function TxButtonBase({
     if (!extrinsic || !selectedAccount?.address || !activeSigner) return;
     try {
       setIsAwaitingSignature(true);
+      if (withNotification) {
+        const { onTxProgress, onTxError } = txNotification(
+          "Signing Transaction...",
+          inferredNetwork
+        );
+        onTxProgress(result);
+      }
       const result = await extrinsic.signAndSend(
         selectedAccount.address,
         { signer: activeSigner },
-        async ({ status }) => {
-          console.log("status", status);
-          setTxStatus(status);
+        async (payload) => {
+          setTxStatus(payload.status);
+          onStatusChange?.(payload);
         }
       );
 
@@ -166,7 +202,6 @@ export function TxButtonBase({
     disabled ||
     isLoading ||
     !isConnected ||
-    !client ||
     !activeSigner ||
     !selectedAccount?.address ||
     isEstimating ||
@@ -177,7 +212,9 @@ export function TxButtonBase({
       <div className="text-xs text-muted-foreground font-medium h-4 flex gap-2 items-center">
         <div>apis: {Object.keys(apis).join(", ")}</div>
         <div>
-          activeChain: {activeChain?.decimals} {activeChain?.symbol}
+          activeChain: {decimalsToUse} {symbolToUse}
+          inferredChainId: {inferredChainId}
+          inferredNetwork: {inferredNetwork?.id}
         </div>
       </div>
       <Button
@@ -228,8 +265,8 @@ export function TxButtonBase({
             Fee:{" "}
             {formatBalance({
               value: estimatedFees,
-              decimals: activeChain?.decimals ?? 10,
-              unit: activeChain?.symbol ?? "UNIT",
+              decimals: decimalsToUse,
+              unit: symbolToUse,
               nDecimals: 4,
             })}
           </span>

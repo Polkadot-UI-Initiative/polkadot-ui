@@ -45,6 +45,7 @@ function MultiClientManager({ children }: { children: React.ReactNode }) {
     setConnectedAccount,
     connectedAccount,
     signer,
+    defaultCaller,
   } = useTypink();
 
   const [apis, setApis] = useState<CompositeApi>({} as CompositeApi);
@@ -173,6 +174,7 @@ function MultiClientManager({ children }: { children: React.ReactNode }) {
     setActiveAccount: setConnectedAccount,
     activeAccount: connectedAccount,
     activeSigner: signer,
+    defaultCaller,
   };
 
   return (
@@ -185,12 +187,17 @@ function MultiClientManager({ children }: { children: React.ReactNode }) {
 export function PolkadotProvider({
   children,
   availableChains,
+  defaultCaller = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
 }: {
   children: React.ReactNode;
   availableChains?: NetworkInfo[];
+  defaultCaller?: string;
 }) {
   return (
-    <TypinkProvider supportedNetworks={availableChains || supportedChains}>
+    <TypinkProvider
+      supportedNetworks={availableChains || supportedChains}
+      defaultCaller={defaultCaller}
+    >
       <MultiClientManager>{children}</MultiClientManager>
     </TypinkProvider>
   );

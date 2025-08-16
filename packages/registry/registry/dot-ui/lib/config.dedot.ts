@@ -1,3 +1,3 @@
-import { popTestnet, paseo } from "typink";
+import { paseo, paseoPeople } from "typink";
 
-export const supportedChains = [paseo, popTestnet];
+export const supportedChains = [paseo, paseoPeople];
