@@ -136,10 +136,6 @@
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/providers/typink-provider.tsx",
-          "type": "registry:lib"
-        },
-        {
           "path": "registry/dot-ui/lib/utils.dot-ui.ts",
           "type": "registry:lib"
         },
