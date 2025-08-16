@@ -1,4 +1,11 @@
 import { type ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
+import {
+  InjectedSigner,
+  NetworkId,
+  NetworkInfo,
+  TypinkAccount,
+  Wallet,
+} from "typink";
 
 // interfaces related to dot-ui will be used by papi + dedot
 export interface ChainConfig {
@@ -44,9 +51,19 @@ export enum JsonRpcApi {
 }
 
 // Base interface that both providers share
-export interface BasePolkadotContextValue<TApi, TApis, TChainId = ChainId> {
+// TODO: uses the types from typink for now but should be replaced with our own generic types
+export interface BasePolkadotContextValue<
+  TApi,
+  TApis = Partial<Record<NetworkId, TApi>>,
+  TNetwork = NetworkInfo,
+  TChainId = NetworkId,
+  TWallet = Wallet,
+  TAccount = TypinkAccount,
+  TSigner = InjectedSigner,
+> {
   // Current active chain and its API
-  currentChain: TChainId;
+  currentChain: TNetwork;
+  currentChainId: TChainId;
   api: TApi | null;
   isLoading: (chainId: TChainId) => boolean;
   error: string | null;
@@ -64,13 +81,29 @@ export interface BasePolkadotContextValue<TApi, TApis, TChainId = ChainId> {
 
   // Chain information (same for both)
   chainName: string | null;
-  availableChains: TChainId[];
+  availableChainIds: TChainId[];
+  // TODO: remove this once we have a generic type for the chains
+  availableChains: TNetwork[];
+  // TODO: remove this once we have a generic type for the chains
+
+  /*
+   Wallet Connection Values + types 
+   */
+  wallets: TWallet[];
+  connectWallet: (walletId: string) => void;
+  connectedWalletIds?: string[];
+  activeSigner?: TSigner;
+
+  accounts: TAccount[];
+  setActiveAccount: (account: TAccount) => void;
+  activeAccount?: TAccount;
 }
 
 // Common provider props interface
 export interface BasePolkadotProviderProps<TChainId = ChainId> {
   children: React.ReactNode;
   defaultChain?: TChainId;
+  availableChains?: NetworkInfo[];
 }
 
 // Common hook interface for getting specific chain APIs

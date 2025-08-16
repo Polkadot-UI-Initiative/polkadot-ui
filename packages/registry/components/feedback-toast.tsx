@@ -7,7 +7,7 @@ import { ExternalLink, Heart } from "lucide-react";
 export function FeedbackToast() {
   useEffect(() => {
     // Check if feedback toast has already been shown in this session
-    const hasShownFeedbackToast = sessionStorage.getItem(
+    const hasShownFeedbackToast = localStorage.getItem(
       "dot-ui-feedback-toast-shown"
     );
 
@@ -48,18 +48,18 @@ export function FeedbackToast() {
                 "_blank"
               );
               // Mark as clicked so we don't show it again
-              sessionStorage.setItem("dot-ui-feedback-toast-shown", "true");
+              localStorage.setItem("dot-ui-feedback-toast-shown", "true");
             },
           },
           onDismiss: () => {
             // Mark as dismissed so we don't show it again in this session
-            sessionStorage.setItem("dot-ui-feedback-toast-shown", "true");
+            localStorage.setItem("dot-ui-feedback-toast-shown", "true");
           },
         }
       );
 
       // Mark as shown (regardless of user action)
-      sessionStorage.setItem("dot-ui-feedback-toast-shown", "true");
+      localStorage.setItem("dot-ui-feedback-toast-shown", "true");
     }, 3000); // 5 seconds delay
 
     // Cleanup timer on unmount

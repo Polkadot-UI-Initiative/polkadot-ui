@@ -1,46 +1,45 @@
-import { type ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 import { PaseoApi, PaseoPeopleApi } from "@dedot/chaintypes";
-import { DedotClient, WsProvider } from "dedot";
-import { InjectedAccount, InjectedSigner, useTypink, Wallet } from "typink";
+import { DedotClient } from "dedot";
+import {
+  InjectedSigner,
+  NetworkId,
+  TypinkAccount,
+  useTypink,
+  Wallet,
+} from "typink";
+import { supportedChains } from "../lib/config.dedot";
 
-// Dedot relies on ChainApi in the form of interfaces
-// to generate the types and APIs suggestions,
-// so we can simply add more chains below:
-// 1. import { PolkadotApi } from "@dedot/chaintypes";
-// 2. add the chain to the type below
-export type ChainApiMap = {
+// Supported chain id type derived from the configured supported networks
+export type SupportedChainId = (typeof supportedChains)[number]["id"];
+
+// Map from network IDs to their corresponding chain APIs
+interface ChainApiKindMap {
   paseo: PaseoApi;
+  pop_testnet: PaseoApi; // POP Network uses Paseo-compatible API
   paseo_people: PaseoPeopleApi;
   // polkadot: PolkadotApi;
-};
-
-export type ChainApiType<T extends ChainId> = T extends keyof ChainApiMap
-  ? ChainApiMap[T]
-  : never;
-
-export type AnyChainApi = ChainApiMap[keyof ChainApiMap];
-
-export type ConfiguredChainApi = DedotClient<AnyChainApi>;
-
-export type CompositeApi = {
-  [K in ChainId]: DedotClient<ChainApiType<K>>;
-};
-
-export async function createTypedClient<T extends ChainId>(
-  chainId: T,
-  provider: WsProvider
-): Promise<DedotClient<ChainApiType<T>>> {
-  const client = await DedotClient.new<ChainApiType<T>>({
-    provider,
-    cacheMetadata: true,
-  });
-  return client;
 }
 
+type KnownTypedChainId = keyof ChainApiKindMap & SupportedChainId;
+
+export type ChainApiType<T extends NetworkId> = T extends KnownTypedChainId
+  ? ChainApiKindMap[T]
+  : AnyChainApi; // Fallback to generic API for unknown/test ids
+
+export type AnyChainApi = ChainApiKindMap[keyof ChainApiKindMap];
+
+export type ConfiguredChainApi<T extends NetworkId = NetworkId> = DedotClient<
+  ChainApiType<T>
+>;
+
+export type CompositeApi = {
+  [K in SupportedChainId]: ConfiguredChainApi<K>;
+};
+
 export interface AccountManagementHookProps {
-  accounts: InjectedAccount[];
-  setActiveAccount: (account: InjectedAccount) => void;
-  activeAccount?: InjectedAccount;
+  accounts: TypinkAccount[];
+  setActiveAccount: (account: TypinkAccount) => void;
+  activeAccount?: TypinkAccount;
 }
 
 export interface WalletManagementHookProps {

@@ -1,3 +1,4 @@
+"use client";
 import { TxButton } from "@/registry/dot-ui/blocks/tx-button/components/tx-button.dedot";
 import { useClient } from "@/registry/dot-ui/hooks/polkadot-hooks.dedot";
 

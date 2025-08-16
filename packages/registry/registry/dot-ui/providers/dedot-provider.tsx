@@ -6,105 +6,112 @@ import {
   useEffect,
   useState,
   useCallback,
+  useRef,
+  useMemo,
 } from "react";
 import { type ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
-import { dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
-import {
-  getChainIds,
-  getChainConfig,
-  isValidChainId,
-} from "@/registry/dot-ui/lib/utils.dot-ui";
 import { DedotClient, WsProvider } from "dedot";
-import {
-  type BasePolkadotContextValue,
-  type BasePolkadotProviderProps,
-} from "@/registry/dot-ui/lib/types.dot-ui";
+import { type BasePolkadotContextValue } from "@/registry/dot-ui/lib/types.dot-ui";
 import {
   type ConfiguredChainApi,
   type CompositeApi,
-  type AnyChainApi,
+  type ChainApiType,
 } from "@/registry/dot-ui/lib/types.dedot";
-import {
-  TypinkContext,
-  TypinkContextProps,
-  TypinkProvider,
-  popTestnet,
-  shibuyaTestnet,
-} from "typink";
+import { TypinkProvider, NetworkInfo, useTypink, NetworkId } from "typink";
+import { supportedChains } from "../lib/config.dedot";
 
-// TODO: this should be optional after next release of typink
-const DEFAULT_CALLER = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"; // Alice
-const SUPPORTED_NETWORKS = [popTestnet, shibuyaTestnet];
-const cacheMetadata = true;
-
-// Dedot-specific context type extending the base
-type DedotContextValue = BasePolkadotContextValue<
+type MultiClientContextValue = BasePolkadotContextValue<
   ConfiguredChainApi,
-  Partial<CompositeApi>,
-  ChainId
+  CompositeApi,
+  NetworkInfo | null,
+  NetworkId
 >;
 
-const DedotContext = createContext<DedotContextValue | undefined>(undefined);
+const MultiClientContext = createContext<MultiClientContextValue | undefined>(
+  undefined
+);
 
-export function DedotProvider({
-  children,
-  defaultChain,
-}: BasePolkadotProviderProps<ChainId>) {
-  const [currentChain, setCurrentChain] = useState<ChainId>(
-    defaultChain || (dotUiConfig.defaultChain as ChainId)
-  );
-  const [apis, setApis] = useState<Partial<CompositeApi>>({});
-  const [clients, setClients] = useState<Map<ChainId, ConfiguredChainApi>>(
+function MultiClientManager({ children }: { children: React.ReactNode }) {
+  const {
+    client: activeClient,
+    ready,
+    supportedNetworks,
+    network,
+    networkId,
+    setNetworkId,
+    wallets,
+    connectWallet,
+    accounts,
+    setConnectedAccount,
+    connectedAccount,
+    signer,
+  } = useTypink();
+
+  const [apis, setApis] = useState<CompositeApi>({} as CompositeApi);
+  const [loadingStates, setLoadingStates] = useState<Map<NetworkId, boolean>>(
     new Map()
   );
-  const [loadingStates, setLoadingStates] = useState<Map<ChainId, boolean>>(
+  const [errorStates, setErrorStates] = useState<Map<NetworkId, string | null>>(
     new Map()
   );
-  const [errorStates, setErrorStates] = useState<Map<ChainId, string | null>>(
-    new Map()
+
+  // Use refs to get current state without triggering re-renders
+  const apisRef = useRef(apis);
+  apisRef.current = apis;
+
+  // Create stable initializeChain function
+  const initializeChainRef = useRef<(chainId: NetworkId) => Promise<void>>(() =>
+    Promise.resolve()
   );
+
+  // Keep Typink's active client inside our map for the current network
+  useEffect(() => {
+    if (!ready || !activeClient) return;
+    setApis((prev) => ({
+      ...prev,
+      [networkId]: activeClient as unknown as ConfiguredChainApi<
+        typeof networkId
+      >,
+    }));
+  }, [ready, activeClient, networkId]);
 
   const initializeChain = useCallback(
-    async (chainId: ChainId) => {
-      // Don't initialize if already connected
-      if (apis[chainId]) return;
+    async (chainId: NetworkId) => {
+      if (typeof window === "undefined") return;
+      if (apisRef.current[chainId]) return;
 
+      console.log(`Initializing chain: ${chainId}`);
       setLoadingStates((prev) => new Map(prev).set(chainId, true));
       setErrorStates((prev) => new Map(prev).set(chainId, null));
 
       try {
-        const chainConfig = getChainConfig(dotUiConfig.chains, chainId);
+        const info = supportedNetworks.find((n) => n.id === chainId);
+        if (!info) {
+          throw new Error(`Unsupported network: ${chainId}`);
+        }
 
-        // Validate that endpoints array exists and has at least one element
-        if (!chainConfig.endpoints || !chainConfig.endpoints[0]) {
+        if (!info.providers || info.providers.length < 1) {
           throw new Error(
-            `Chain ${chainId} (${chainConfig.displayName}) has no endpoints configured. Please add at least one endpoint to the chain configuration.`
+            `Network ${chainId} (${info.name}) has no providers configured.`
           );
         }
 
-        console.log(`Connecting to ${chainConfig.displayName} using dedot`);
-
-        const provider = new WsProvider(chainConfig.endpoints);
+        const provider = new WsProvider(info.providers);
         provider.on("connected", (endpoint: string) => {
           console.log("Connected Endpoint", endpoint);
         });
 
         await provider.connect();
 
-        const client = await DedotClient.new<AnyChainApi>({
+        const client = await DedotClient.new<ChainApiType<typeof chainId>>({
           provider,
           cacheMetadata: true,
         });
 
-        setClients((prev) =>
-          new Map(prev).set(chainId, client as ConfiguredChainApi)
-        );
-        setApis((prev: Partial<CompositeApi>) => ({
+        setApis((prev: CompositeApi) => ({
           ...prev,
-          [chainId]: client as CompositeApi[typeof chainId],
+          [chainId]: client as ConfiguredChainApi<typeof chainId>,
         }));
-
-        console.log(`Successfully connected to ${chainConfig.displayName}`);
       } catch (err) {
         console.error(`Failed to initialize ${chainId}:`, err);
         setErrorStates((prev) =>
@@ -119,144 +126,106 @@ export function DedotProvider({
         setLoadingStates((prev) => new Map(prev).set(chainId, false));
       }
     },
-    [apis, setLoadingStates, setErrorStates, setClients, setApis]
+    [supportedNetworks]
   );
 
-  // Initialize the default chain on mount
-  useEffect(() => {
-    initializeChain(defaultChain || (dotUiConfig.defaultChain as ChainId));
-    console.log("DedotProvider initialized");
-  }, [defaultChain, initializeChain]);
+  // Update the ref whenever the function changes
+  initializeChainRef.current = initializeChain;
 
-  const setApi = (chainId: ChainId) => {
-    if (!isValidChainId(dotUiConfig.chains, chainId)) {
-      console.error(`Invalid chain ID: ${chainId}`);
-      return;
-    }
-
-    setCurrentChain(chainId);
-    // Initialize the chain if not already connected
-    if (!apis[chainId]) {
-      initializeChain(chainId);
-    }
+  const setApi = (chainId: NetworkId) => {
+    setNetworkId(chainId);
+    if (!apisRef.current[chainId]) initializeChain(chainId);
   };
 
   const disconnect = () => {
-    // Handle async disconnect operations properly
-    Promise.all(
-      Array.from(clients.values()).map(async (client) => {
-        try {
-          await client.disconnect();
-        } catch (error) {
-          console.error("Error disconnecting client:", error);
-        }
-      })
-    )
-      .then(() => {
-        console.log("All clients disconnected successfully");
-      })
-      .catch((error) => {
-        console.error("Error during disconnect:", error);
-      });
-
-    // Clear state immediately to maintain synchronous interface
-    setClients(new Map());
-    setApis({});
+    const currentId = networkId as ChainId;
+    setApis((prev) => ({ [currentId]: prev[currentId]! }));
     setLoadingStates(new Map());
     setErrorStates(new Map());
-    setCurrentChain(defaultChain || (dotUiConfig.defaultChain as ChainId));
   };
 
-  const isConnected = (chainId: ChainId): boolean => {
-    return !!apis[chainId];
-  };
+  const isConnected = (chainId: NetworkId): boolean => !!apis[chainId];
+  const isLoading = (chainId: NetworkId): boolean =>
+    loadingStates.get(chainId) || false;
 
-  const isLoading = (chainId: ChainId): boolean => {
-    return loadingStates.get(chainId) || false;
-  };
-
-  const currentChainConfig = getChainConfig(dotUiConfig.chains, currentChain);
-
-  const value: DedotContextValue = {
-    currentChain,
-    api: apis[currentChain] as ConfiguredChainApi | null,
-    error: errorStates.get(currentChain) || null,
+  const value: MultiClientContextValue = {
+    currentChain: supportedNetworks.find((n) => n.id === networkId) || null,
+    currentChainId: networkId,
+    api: apis[networkId] || null,
+    error: errorStates.get(networkId) || null,
     apis,
     setApi,
     disconnect,
     isConnected,
     isLoading,
-    initializeChain,
-    chainName: currentChainConfig.displayName,
-    availableChains: getChainIds(dotUiConfig.chains),
+    initializeChain: useCallback((chainId: NetworkId) => {
+      return initializeChainRef.current?.(chainId) || Promise.resolve();
+    }, []),
+    chainName: network?.name || null,
+    availableChainIds: useMemo(
+      () => supportedNetworks.map((n) => n.id),
+      [supportedNetworks]
+    ),
+    availableChains: supportedNetworks,
+    wallets,
+    connectWallet,
+    accounts,
+    setActiveAccount: setConnectedAccount,
+    activeAccount: connectedAccount,
+    activeSigner: signer,
   };
 
   return (
-    <DedotContext.Provider value={value}>{children}</DedotContext.Provider>
+    <MultiClientContext.Provider value={value}>
+      {children}
+    </MultiClientContext.Provider>
   );
 }
 
-export function ConfiguredTypinkProvider({
+export function PolkadotProvider({
   children,
+  availableChains,
 }: {
   children: React.ReactNode;
+  availableChains?: NetworkInfo[];
 }) {
   return (
-    <TypinkProvider
-      appName="Polkadot UI"
-      defaultNetworkId={popTestnet.id}
-      deployments={[]}
-      defaultCaller={DEFAULT_CALLER}
-      supportedNetworks={SUPPORTED_NETWORKS}
-      cacheMetadata={cacheMetadata}
-    >
-      {children}
+    <TypinkProvider supportedNetworks={availableChains || supportedChains}>
+      <MultiClientManager>{children}</MultiClientManager>
     </TypinkProvider>
   );
 }
 
-export function PolkadotProvider({ children }: { children: React.ReactNode }) {
-  return (
-    <DedotProvider>
-      <ConfiguredTypinkProvider>{children}</ConfiguredTypinkProvider>
-    </DedotProvider>
-  );
-}
-
-export function useConfiguredTypink(): TypinkContextProps {
-  const context = useContext(TypinkContext);
-  if (!context) {
-    throw new Error(
-      "useConfiguredTypink must be used within a ConfiguredTypinkProvider"
-    );
-  }
+export function useDedot(): MultiClientContextValue {
+  const context = useContext(MultiClientContext);
+  if (!context)
+    throw new Error("useDedot must be used within PolkadotProvider");
   return context;
 }
 
-export function useDedot(): DedotContextValue {
-  const context = useContext(DedotContext);
-  if (!context) {
-    throw new Error("useDedot must be used within a DedotProvider");
-  }
-  return context;
-}
+export function usePolkadotApi<T extends NetworkId>(
+  chainId: T
+): ConfiguredChainApi<T> | null {
+  const context = useContext(MultiClientContext);
+  if (!context)
+    throw new Error("usePolkadotApi must be used within PolkadotProvider");
 
-// Helper to get properly typed API (maintains backward compatibility)
-export function useTypedPolkadotApi(): ConfiguredChainApi | null {
-  const { api } = useDedot();
-  return api;
-}
-
-// Helper to get a specific chain's API (type-safe) - similar to papi-provider
-export function usePolkadotApi(chainId: ChainId): ConfiguredChainApi | null {
   const { apis, initializeChain } = useDedot();
+  const initializeCalledRef = useRef<Set<string>>(new Set());
 
-  // Auto-initialize the chain if not connected
   useEffect(() => {
-    if (!apis[chainId]) {
-      initializeChain(chainId);
-    }
-  }, [chainId, apis, initializeChain]);
+    // Only initialize on client side
+    if (typeof window === "undefined") return;
 
-  return (apis[chainId] as ConfiguredChainApi) || null;
+    if (!initializeCalledRef.current.has(chainId)) {
+      initializeCalledRef.current.add(chainId);
+      initializeChain(chainId).catch((error) => {
+        console.error(`Failed to initialize ${chainId}:`, error);
+        // Remove from set so it can be retried
+        initializeCalledRef.current.delete(chainId);
+      });
+    }
+  }, [chainId, initializeChain]);
+
+  return apis[chainId] as unknown as ConfiguredChainApi<T> | null;
 }

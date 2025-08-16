@@ -1,13 +1,18 @@
-import AddressInputPage from "@/registry/dot-ui/blocks/address-input/demo/page.dedot";
-import RequireConnectionPage from "@/registry/dot-ui/blocks/require-connection/demo/page.papi";
-import TxButtonPage from "@/registry/dot-ui/blocks/tx-button/demo/page.dedot";
+"use client";
 
-export default function Docs() {
+import { DemoHooks } from "@/components/demo-hooks";
+import { PolkadotProvider } from "@/registry/dot-ui/providers/dedot-provider";
+import { supportedChains } from "@/registry/dot-ui/lib/config.dedot";
+import { polkadot } from "typink";
+import { BtnRemark } from "./btn-remark";
+import { WalletSelect } from "@/registry/dot-ui/blocks/connect-wallet/components/wallet-select";
+
+export default function Components() {
   return (
-    <div className="flex flex-col gap-4 max-w-md mx-auto p-4">
-      <TxButtonPage />
-      <AddressInputPage />
-      <RequireConnectionPage />
-    </div>
+    <PolkadotProvider availableChains={[...supportedChains, polkadot]}>
+      <DemoHooks />
+      <WalletSelect />
+      <BtnRemark />
+    </PolkadotProvider>
   );
 }

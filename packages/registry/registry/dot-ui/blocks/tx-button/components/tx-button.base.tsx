@@ -9,6 +9,7 @@ import { Loader2, PenLine, CheckCheck, Check, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useClient, useTypink } from "typink";
 import type { TxStatus, ISubmittableExtrinsic } from "dedot/types";
+import { useDedot } from "@/registry/dot-ui/providers/dedot-provider";
 
 type ClientType = NonNullable<ReturnType<typeof useClient>["client"]>;
 type ChainTx = ClientType["tx"];
@@ -40,7 +41,7 @@ export interface TxButtonBaseProps
     inBestBlock?: React.ReactNode;
     error?: React.ReactNode;
   };
-  services: TxButtonServices;
+  services?: TxButtonServices;
 }
 
 export function TxButtonBase({
@@ -61,10 +62,12 @@ export function TxButtonBase({
   services,
   ...props
 }: TxButtonBaseProps) {
-  const selectedAccount = services.useSelectedAccount();
-  const activeChain = services.useActiveChain();
-  const isConnected = services.useIsConnected();
+  const selectedAccount = services?.useSelectedAccount();
+  const activeChain = services?.useActiveChain();
+  const isConnected = services?.useIsConnected();
   const { client, defaultCaller } = useTypink();
+  const { apis, activeSigner } = useDedot();
+  console.log("activeSigner", activeSigner);
 
   const extrinsic = useMemo(() => {
     if (!tx) return null;
@@ -108,7 +111,7 @@ export function TxButtonBase({
   const [feesError, setFeesError] = useState<string | null>(null);
 
   useEffect(() => {
-    const estimateAddress = selectedAccount?.address ?? defaultCaller;
+    const estimateAddress = defaultCaller;
     if (!extrinsic || !estimateAddress) return;
     let cancelled = false;
     setIsEstimating(true);
@@ -134,14 +137,15 @@ export function TxButtonBase({
     return () => {
       cancelled = true;
     };
-  }, [extrinsic, selectedAccount?.address, defaultCaller]);
+  }, [extrinsic, selectedAccount, defaultCaller]);
 
   async function onExecute() {
-    if (!extrinsic || !selectedAccount?.address) return;
+    if (!extrinsic || !selectedAccount?.address || !activeSigner) return;
     try {
       setIsAwaitingSignature(true);
       const result = await extrinsic.signAndSend(
         selectedAccount.address,
+        { signer: activeSigner },
         async ({ status }) => {
           console.log("status", status);
           setTxStatus(status);
@@ -158,16 +162,24 @@ export function TxButtonBase({
   }
 
   const isButtonDisabled =
+    !services ||
     disabled ||
     isLoading ||
     !isConnected ||
     !client ||
+    !activeSigner ||
     !selectedAccount?.address ||
     isEstimating ||
     !!feesError;
 
   return (
     <div className="inline-flex flex-col gap-1">
+      <div className="text-xs text-muted-foreground font-medium h-4 flex gap-2 items-center">
+        <div>apis: {Object.keys(apis).join(", ")}</div>
+        <div>
+          activeChain: {activeChain?.decimals} {activeChain?.symbol}
+        </div>
+      </div>
       <Button
         onClick={onExecute}
         variant={variant}
@@ -203,8 +215,10 @@ export function TxButtonBase({
           </>
         )}
       </Button>
-
       <div className="text-xs text-muted-foreground font-medium h-4 flex items-center">
+        {/* connected: {isConnected ? "true" : "false"}
+        address: {selectedAccount?.address ?? "null"}
+        defaultCaller: {defaultCaller ?? "null"} */}
         {!isConnected ? (
           <span className="text-muted-foreground">Connect to chain</span>
         ) : !selectedAccount?.address && !defaultCaller ? (
