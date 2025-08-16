@@ -1,8 +1,7 @@
 import React, { useMemo } from "react";
 import { toast } from "sonner";
 import { ISubmittableResult, TxStatus } from "dedot/types";
-import { ChainConfig, ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
-import { SubstrateExplorer } from "@/registry/dot-ui/lib/types.dot-ui";
+import { NetworkInfo } from "typink";
 
 export type TxNotificationProps = {
   onTxProgress: (progress: ISubmittableResult) => void;
@@ -11,7 +10,7 @@ export type TxNotificationProps = {
 
 export function txNotification(
   initialMessage: string = "Signing Transaction...",
-  currentChainConfig: ChainConfig<ChainId>
+  currentChainConfig?: NetworkInfo | null
 ): TxNotificationProps {
   const toastId = "tx-notification";
 
@@ -46,7 +45,7 @@ export function txNotification(
       <TxProgress
         message={toastMessage}
         status={status}
-        currentChainConfig={currentChainConfig}
+        currentChainConfig={currentChainConfig ?? undefined}
       />
     );
 
@@ -103,7 +102,7 @@ const getBlockInfo = (status: TxStatus): string | null => {
 interface TxProgressProps {
   message: string;
   status: TxStatus;
-  currentChainConfig?: ChainConfig<ChainId>;
+  currentChainConfig?: NetworkInfo | null;
 }
 
 function TxProgress({ message, status, currentChainConfig }: TxProgressProps) {
@@ -113,9 +112,7 @@ function TxProgress({ message, status, currentChainConfig }: TxProgressProps) {
         status.type === "Finalized") &&
       currentChainConfig
     ) {
-      const { explorerUrls } = currentChainConfig;
-      const subscanUrl = explorerUrls?.[SubstrateExplorer.Subscan];
-      const pjsUrl = explorerUrls?.[SubstrateExplorer.PolkadotJs];
+      const { subscanUrl, pjsUrl } = currentChainConfig;
 
       if (subscanUrl) {
         return {

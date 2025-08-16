@@ -17,9 +17,8 @@ import { Button } from "@/components/ui/button";
 import { BookText, Wifi, WifiOff } from "lucide-react";
 import { Label } from "@/registry/dot-ui/ui/label";
 import { cn } from "@/lib/utils";
-import { useClient } from "@/registry/dot-ui/hooks/polkadot-hooks.dedot";
-import { TxButtonWithProvider } from "@/registry/dot-ui/blocks/tx-button/components/tx-button.dedot";
 import { WalletSelect } from "@/registry/dot-ui/blocks/connect-wallet/components/wallet-select";
+import { RemarkButton } from "@/components/remark-button";
 
 const examples = [
   {
@@ -75,79 +74,21 @@ const examples = [
       </div>
     ),
   },
-  // {
-  //   name: "Block Number DEMO",
-  //   href: "/docs/components/block-number",
-  //   code: "block-number",
-  //   description: "Will not be part of the library",
-  //   component: <BlockNumber />,
-  // },
+  {
+    name: "Remark Button",
+    href: "/docs/components/remark-button",
+    code: "remark-button",
+    description: "Button component for sending remarks",
+    component: <RemarkButton />,
+  },
 ];
 
-// const categories = [
-//   {
-//     name: "Featured",
-//     href: "/examples",
-//     description: "Most popular Polkadot components",
-//     className: "text-primary border-primary",
-//   },
-//   {
-//     name: "Blockchain",
-//     href: "/examples/blockchain",
-//     description: "Core blockchain interactions",
-//     className:
-//       "text-muted-foreground border-transparent hover:border-muted-foreground",
-//   },
-//   {
-//     name: "Wallet",
-//     href: "/examples/wallet",
-//     description: "Wallet connection and management",
-//     className:
-//       "text-muted-foreground border-transparent hover:border-muted-foreground",
-//   },
-//   {
-//     name: "DeFi",
-//     href: "/examples/defi",
-//     description: "Decentralized finance components",
-//     className:
-//       "text-muted-foreground border-transparent hover:border-muted-foreground",
-//   },
-//   {
-//     name: "Governance",
-//     href: "/examples/governance",
-//     description: "On-chain governance tools",
-//     className:
-//       "text-muted-foreground border-transparent hover:border-muted-foreground",
-//   },
-// ];
-
 export function ComponentsSection() {
-  const client = useClient();
-
-  const tx = client?.tx.system.remarkWithEvent(
-    "Hello, World from Polkadot Next.js Starter!"
-  );
-
-  const allExamples = [
-    ...examples,
-    {
-      name: "Tx Button",
-      href: "/docs/components/tx-button",
-      code: "tx-button",
-      description: "Button component for sending transactions",
-      component: (
-        <div className="flex flex-col gap-2 w-full">
-          <TxButtonWithProvider tx={tx}>Send Remark</TxButtonWithProvider>
-        </div>
-      ),
-    },
-  ];
-
   return (
     <section className="container space-y-6 py-8 md:py-8 lg:py-12">
       {/* Examples grid */}
       <div className="mx-auto grid justify-center gap-4 sm:grid-cols-1 md:max-w-[64rem] md:grid-cols-2 2xl:grid-cols-3">
-        {allExamples.map((example) => (
+        {examples.map((example) => (
           <Card
             key={example.name}
             className="relative overflow-hidden flex flex-col justify-between"

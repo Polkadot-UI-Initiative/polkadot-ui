@@ -46,6 +46,10 @@ export interface TxButtonBaseProps
     inBestBlock?: React.ReactNode;
     error?: React.ReactNode;
   };
+  classNames?: {
+    button?: string;
+    info?: string;
+  };
   services?: TxButtonServices;
   onStatusChange?: (payload: ISubmittableResult) => void;
   withNotification?: boolean;
@@ -65,6 +69,10 @@ export function TxButtonBase({
     finalized: <CheckCheck className="w-4 h-4 text-green-500" />,
     inBestBlock: <Check className="w-4 h-4 text-green-500 animate-pulse" />,
     error: <X className="w-4 h-4 text-red-500" />,
+  },
+  classNames = {
+    button: "",
+    info: "",
   },
   services,
   onStatusChange,
@@ -172,21 +180,27 @@ export function TxButtonBase({
     if (!extrinsic || !selectedAccount?.address || !activeSigner) return;
     try {
       setIsAwaitingSignature(true);
+      let toaster: ReturnType<typeof txNotification> | null = null;
       if (withNotification) {
-        const { onTxProgress, onTxError } = txNotification(
-          "Signing Transaction...",
-          inferredNetwork
-        );
-        onTxProgress(result);
+        toaster = txNotification("Signing Transaction...", inferredNetwork);
       }
-      const result = await extrinsic.signAndSend(
-        selectedAccount.address,
-        { signer: activeSigner },
-        async (payload) => {
-          setTxStatus(payload.status);
-          onStatusChange?.(payload);
-        }
-      );
+      const result = await extrinsic
+        .signAndSend(
+          selectedAccount.address,
+          { signer: activeSigner },
+          async (payload) => {
+            setTxStatus(payload.status);
+            onStatusChange?.(payload);
+            if (withNotification && toaster) {
+              toaster.onTxProgress(payload);
+            }
+          }
+        )
+        .catch((e) => {
+          if (withNotification && toaster) {
+            toaster.onTxError(e);
+          }
+        });
 
       console.log("result", result);
     } catch (e) {
@@ -208,21 +222,13 @@ export function TxButtonBase({
     !!feesError;
 
   return (
-    <div className="inline-flex flex-col gap-1">
-      <div className="text-xs text-muted-foreground font-medium h-4 flex gap-2 items-center">
-        <div>apis: {Object.keys(apis).join(", ")}</div>
-        <div>
-          activeChain: {decimalsToUse} {symbolToUse}
-          inferredChainId: {inferredChainId}
-          inferredNetwork: {inferredNetwork?.id}
-        </div>
-      </div>
+    <div className={cn("inline-flex flex-col gap-1", className)}>
       <Button
         onClick={onExecute}
         variant={variant}
         size={size}
         disabled={isButtonDisabled}
-        className={cn(isLoading && "cursor-not-allowed", className)}
+        className={cn(isLoading && "cursor-not-allowed", classNames.button)}
         {...props}
       >
         {isLoading ? (
@@ -252,7 +258,12 @@ export function TxButtonBase({
           </>
         )}
       </Button>
-      <div className="text-xs text-muted-foreground font-medium h-4 flex items-center">
+      <div
+        className={cn(
+          "text-xs text-muted-foreground font-medium h-4 flex items-center",
+          classNames.info
+        )}
+      >
         {/* connected: {isConnected ? "true" : "false"}
         address: {selectedAccount?.address ?? "null"}
         defaultCaller: {defaultCaller ?? "null"} */}
