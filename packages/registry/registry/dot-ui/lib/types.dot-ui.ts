@@ -19,6 +19,9 @@ export interface ChainConfig {
   readonly faucetUrls?: string[];
 }
 
+// Base config chain type (used by base config and helpers)
+export interface BaseChainConfig extends ChainConfig {}
+
 export interface DotUiConfig {
   readonly chains: Record<string, ChainConfig>;
   readonly defaultChain: ChainId;

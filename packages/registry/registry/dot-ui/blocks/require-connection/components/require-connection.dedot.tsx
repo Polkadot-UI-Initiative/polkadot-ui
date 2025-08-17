@@ -5,6 +5,8 @@ import {
   PolkadotProvider,
   useDedot,
 } from "@/registry/dot-ui/providers/dedot-provider";
+// NetworkId intentionally not used here; using SupportedChainId for autocomplete
+import { type ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 import {
   RequireConnectionBase,
   type RequireConnectionBaseProps,
@@ -12,7 +14,7 @@ import {
 
 // Props type - removes services prop since we inject it
 export type RequireConnectionProps = Omit<
-  RequireConnectionBaseProps,
+  RequireConnectionBaseProps<ChainId>,
   "services"
 >;
 
@@ -30,7 +32,7 @@ export function RequireConnection(props: RequireConnectionProps) {
     [dedotContext]
   );
 
-  return <RequireConnectionBase {...props} services={services} />;
+  return <RequireConnectionBase<ChainId> {...props} services={services} />;
 }
 
 // Wrapped version with provider for drop-in usage

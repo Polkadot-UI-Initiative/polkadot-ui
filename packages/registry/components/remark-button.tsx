@@ -2,7 +2,7 @@ import { TxButton } from "@/registry/dot-ui/blocks/tx-button/components/tx-butto
 import { usePolkadotApi } from "@/registry/dot-ui/providers/dedot-provider";
 
 export function RemarkButton() {
-  const paseoTestnetApi = usePolkadotApi("paseo_testnet");
+  const paseoTestnetApi = usePolkadotApi("paseo");
 
   const tx = paseoTestnetApi?.tx.system.remarkWithEvent(
     "Hello, World from Polkadot Next.js Starter!"
@@ -10,7 +10,7 @@ export function RemarkButton() {
 
   return (
     <TxButton tx={tx} className="w-full">
-      Send Remark
+      Remark on chain message
     </TxButton>
   );
 }

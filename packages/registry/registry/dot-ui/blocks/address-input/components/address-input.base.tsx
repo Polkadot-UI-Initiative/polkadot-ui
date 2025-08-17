@@ -1,27 +1,27 @@
 "use client";
 
-import { forwardRef, useState, useEffect, useRef, ReactNode } from "react";
-import { Input } from "@/registry/dot-ui/ui/input";
-import { Label } from "@/registry/dot-ui/ui/label";
-import { Loader2, Copy, Check, CircleCheck } from "lucide-react";
-import { Identicon } from "@polkadot/react-identicon";
-import { type IconTheme } from "@polkadot/react-identicon/types";
-import type { UseQueryResult } from "@tanstack/react-query";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { cn } from "@/registry/dot-ui/lib/utils";
-import {
-  validateAddress,
-  truncateAddress,
-  type ValidationResult,
-} from "@/registry/dot-ui/lib/utils.dot-ui";
-import { Button } from "@/registry/dot-ui/ui/button";
 import { dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
-import { SubstrateExplorer } from "@/registry/dot-ui/lib/types.dot-ui";
 import {
+  SubstrateExplorer,
   type IdentitySearchResult,
   type PolkadotIdentity,
 } from "@/registry/dot-ui/lib/types.dot-ui";
 import { type ChainIdWithIdentity } from "@/registry/dot-ui/lib/types.papi";
+import { cn } from "@/registry/dot-ui/lib/utils";
+import {
+  truncateAddress,
+  validateAddress,
+  type ValidationResult,
+} from "@/registry/dot-ui/lib/utils.dot-ui";
+import { Button } from "@/registry/dot-ui/ui/button";
+import { Input } from "@/registry/dot-ui/ui/input";
+import { Label } from "@/registry/dot-ui/ui/label";
+import { Identicon } from "@polkadot/react-identicon";
+import { type IconTheme } from "@polkadot/react-identicon/types";
+import type { UseQueryResult } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Check, CircleCheck, Copy, Loader2 } from "lucide-react";
+import { forwardRef, ReactNode, useEffect, useRef, useState } from "react";
 
 // Services interface for dependency injection
 export interface AddressInputServices {

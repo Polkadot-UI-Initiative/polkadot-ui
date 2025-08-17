@@ -13,6 +13,8 @@ import type {
   ISubmittableResult,
 } from "dedot/types";
 import { useDedot } from "@/registry/dot-ui/providers/dedot-provider";
+import { toTypinkId } from "@/registry/dot-ui/lib/config.dedot";
+import type { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 import { useClient } from "typink";
 import { txNotification } from "../../tx-notification/components/tx-notification.base";
 
@@ -102,14 +104,15 @@ export function TxButtonBase({
     const txClient = anyExtrinsic?.client ?? anyExtrinsic?.api ?? null;
     if (!txClient) return null;
     const entry = Object.entries(apis).find(([, api]) => api === txClient);
-    return (entry?.[0] as unknown as string) ?? null;
+    return (entry?.[0] as ChainId | undefined) ?? null;
   }, [extrinsic, apis]);
 
   const inferredNetwork = useMemo(() => {
     if (!inferredChainId) return null;
     const list = availableChains ?? [];
+    const typinkId = toTypinkId(inferredChainId);
     const match = list.find(
-      (n): n is NonNullable<typeof n> => !!n && n.id === inferredChainId
+      (n): n is NonNullable<typeof n> => !!n && n.id === typinkId
     );
     return match ?? null;
   }, [inferredChainId, availableChains]);
@@ -148,7 +151,7 @@ export function TxButtonBase({
   const [feesError, setFeesError] = useState<string | null>(null);
 
   useEffect(() => {
-    const estimateAddress = defaultCaller;
+    const estimateAddress = selectedAccount?.address || defaultCaller;
     if (!extrinsic || !estimateAddress) return;
     let cancelled = false;
     setIsEstimating(true);
@@ -157,10 +160,13 @@ export function TxButtonBase({
     async function estimateFees() {
       if (!extrinsic || !estimateAddress || cancelled) return;
       try {
-        const { partialFee } = await extrinsic.paymentInfo(estimateAddress);
+        const info = await extrinsic.paymentInfo(estimateAddress);
+        const fee =
+          typeof info === "bigint"
+            ? info
+            : (info as { partialFee: bigint }).partialFee;
 
-        console.log("partialFee", partialFee);
-        setEstimatedFees(partialFee);
+        setEstimatedFees(fee);
       } catch (e) {
         console.error(e, "Failed to estimate fees");
         setFeesError("Failed to estimate fees");

@@ -1,22 +1,21 @@
 "use client";
 
 import { type ReactNode } from "react";
-import { type ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 
 // Services interface for dependency injection
-export interface RequireConnectionServices {
+export interface RequireConnectionServices<TChainId extends string = string> {
   // Provider context hook for chain state
   useProvider: () => {
-    isLoading: (chainId: ChainId) => boolean;
-    isConnected: (chainId: ChainId) => boolean;
+    isLoading: (chainId: TChainId) => boolean;
+    isConnected: (chainId: TChainId) => boolean;
   };
 }
 
-export interface RequireConnectionBaseProps {
+export interface RequireConnectionBaseProps<TChainId extends string = string> {
   /**
    * The chain ID that must be connected
    */
-  chainId: ChainId;
+  chainId: TChainId;
   /**
    * Content to render when the connection is available
    */
@@ -32,16 +31,16 @@ export interface RequireConnectionBaseProps {
   /**
    * Services for dependency injection
    */
-  services: RequireConnectionServices;
+  services: RequireConnectionServices<TChainId>;
 }
 
-export function RequireConnectionBase({
+export function RequireConnectionBase<TChainId extends string = string>({
   chainId,
   children,
   fallback,
   loadingFallback,
   services,
-}: RequireConnectionBaseProps) {
+}: RequireConnectionBaseProps<TChainId>) {
   const { isLoading, isConnected } = services.useProvider();
 
   const loading = isLoading(chainId);

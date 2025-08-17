@@ -41,7 +41,10 @@ export function WalletSelect({
       trigger={
         <Button
           variant="outline"
-          className={cn("transition-[min-width] duration-300", className)}
+          className={cn(
+            "inline-flex items-center gap-2 transition-[min-width] duration-300",
+            className
+          )}
         >
           <Wallet className="w-4 h-4" /> {placeholder}
           {connectedAccount?.name && (

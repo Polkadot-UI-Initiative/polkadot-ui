@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 
 import { AddressInputWithProvider } from "@/registry/dot-ui/blocks/address-input/components/address-input.dedot";
-import { RequireConnectionWithProvider } from "@/registry/dot-ui/blocks/require-connection/components/require-connection.dedot";
+import { RequireConnection } from "@/registry/dot-ui/blocks/require-connection/components/require-connection.dedot";
 import { Button } from "@/components/ui/button";
 import { BookText, Wifi, WifiOff } from "lucide-react";
 import { Label } from "@/registry/dot-ui/ui/label";
@@ -46,7 +46,7 @@ const examples = [
       "Conditionally render content based on blockchain connection status",
     component: (
       <div className="w-full space-y-3">
-        <RequireConnectionWithProvider
+        <RequireConnection
           chainId="paseo"
           fallback={
             <div className="flex items-center gap-2 text-muted-foreground text-sm">
@@ -59,7 +59,7 @@ const examples = [
             <Wifi className="w-4 h-4" />
             <span>Connected to Paseo</span>
           </div>
-        </RequireConnectionWithProvider>
+        </RequireConnection>
       </div>
     ),
   },
@@ -75,10 +75,11 @@ const examples = [
     ),
   },
   {
-    name: "Remark Button",
-    href: "/docs/components/remark-button",
-    code: "remark-button",
-    description: "Button component for sending remarks",
+    name: "Tx Button",
+    href: "/docs/components/tx-button",
+    code: "tx-button",
+    description:
+      "Button component for sending arbitrary transactions. Supports all chains, all signers with default notification.",
     component: <RemarkButton />,
   },
 ];

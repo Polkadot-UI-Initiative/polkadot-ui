@@ -9,22 +9,28 @@ import {
   useRef,
   useMemo,
 } from "react";
-import { type ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 import { DedotClient, WsProvider } from "dedot";
 import { type BasePolkadotContextValue } from "@/registry/dot-ui/lib/types.dot-ui";
 import {
   type ConfiguredChainApi,
   type CompositeApi,
   type ChainApiType,
+  type ConfiguredAnyChainApi,
 } from "@/registry/dot-ui/lib/types.dedot";
-import { TypinkProvider, NetworkInfo, useTypink, NetworkId } from "typink";
-import { supportedChains } from "../lib/config.dedot";
+import { TypinkProvider, NetworkInfo, useTypink } from "typink";
+import {
+  dedotSupportedNetworks,
+  toTypinkId,
+  fromTypinkId,
+  dedotConfig,
+} from "../lib/config.dedot";
+import { type ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 
 type MultiClientContextValue = BasePolkadotContextValue<
   ConfiguredChainApi,
   CompositeApi,
   NetworkInfo | null,
-  NetworkId
+  ChainId
 >;
 
 const MultiClientContext = createContext<MultiClientContextValue | undefined>(
@@ -49,10 +55,10 @@ function MultiClientManager({ children }: { children: React.ReactNode }) {
   } = useTypink();
 
   const [apis, setApis] = useState<CompositeApi>({} as CompositeApi);
-  const [loadingStates, setLoadingStates] = useState<Map<NetworkId, boolean>>(
+  const [loadingStates, setLoadingStates] = useState<Map<ChainId, boolean>>(
     new Map()
   );
-  const [errorStates, setErrorStates] = useState<Map<NetworkId, string | null>>(
+  const [errorStates, setErrorStates] = useState<Map<ChainId, string | null>>(
     new Map()
   );
 
@@ -61,23 +67,25 @@ function MultiClientManager({ children }: { children: React.ReactNode }) {
   apisRef.current = apis;
 
   // Create stable initializeChain function
-  const initializeChainRef = useRef<(chainId: NetworkId) => Promise<void>>(() =>
+  const initializeChainRef = useRef<(chainId: ChainId) => Promise<void>>(() =>
     Promise.resolve()
   );
+
+  // Mapping helpers provided by config
 
   // Keep Typink's active client inside our map for the current network
   useEffect(() => {
     if (!ready || !activeClient) return;
+    const mappedChainId = fromTypinkId(networkId);
+    if (!mappedChainId) return;
     setApis((prev) => ({
       ...prev,
-      [networkId]: activeClient as unknown as ConfiguredChainApi<
-        typeof networkId
-      >,
+      [mappedChainId]: activeClient as unknown as ConfiguredAnyChainApi,
     }));
   }, [ready, activeClient, networkId]);
 
   const initializeChain = useCallback(
-    async (chainId: NetworkId) => {
+    async (chainId: ChainId) => {
       if (typeof window === "undefined") return;
       if (apisRef.current[chainId]) return;
 
@@ -86,7 +94,9 @@ function MultiClientManager({ children }: { children: React.ReactNode }) {
       setErrorStates((prev) => new Map(prev).set(chainId, null));
 
       try {
-        const info = supportedNetworks.find((n) => n.id === chainId);
+        const info = supportedNetworks.find(
+          (n) => n.id === toTypinkId(chainId)
+        );
         if (!info) {
           throw new Error(`Unsupported network: ${chainId}`);
         }
@@ -133,39 +143,56 @@ function MultiClientManager({ children }: { children: React.ReactNode }) {
   // Update the ref whenever the function changes
   initializeChainRef.current = initializeChain;
 
-  const setApi = (chainId: NetworkId) => {
-    setNetworkId(chainId);
+  const setApi = (chainId: ChainId) => {
+    const id = toTypinkId(chainId);
+    if (!id) return;
+    setNetworkId(id);
     if (!apisRef.current[chainId]) initializeChain(chainId);
   };
 
   const disconnect = () => {
-    const currentId = networkId as ChainId;
-    setApis((prev) => ({ [currentId]: prev[currentId]! }));
+    const currentId = supportedNetworks.find((n) => n.id === networkId)?.id as
+      | ChainId
+      | undefined;
+    if (!currentId) {
+      setApis({} as CompositeApi);
+      setLoadingStates(new Map());
+      setErrorStates(new Map());
+      return;
+    }
+    setApis((prev) => ({ [currentId]: prev[currentId]! }) as CompositeApi);
     setLoadingStates(new Map());
     setErrorStates(new Map());
   };
 
-  const isConnected = (chainId: NetworkId): boolean => !!apis[chainId];
-  const isLoading = (chainId: NetworkId): boolean =>
+  const isConnected = (chainId: ChainId): boolean => !!apis[chainId];
+  const isLoading = (chainId: ChainId): boolean =>
     loadingStates.get(chainId) || false;
 
+  const narrowedNetworkId =
+    fromTypinkId(
+      (supportedNetworks.find((n) => n.id === networkId)?.id ||
+        dedotSupportedNetworks[0].id) as string
+    ) || (Object.keys(dedotConfig.chains)[0] as ChainId);
+
   const value: MultiClientContextValue = {
-    currentChain: supportedNetworks.find((n) => n.id === networkId) || null,
-    currentChainId: networkId,
-    api: apis[networkId] || null,
-    error: errorStates.get(networkId) || null,
+    currentChain:
+      supportedNetworks.find((n) => n.id === narrowedNetworkId) || null,
+    currentChainId: narrowedNetworkId,
+    api: (apis[narrowedNetworkId] as ConfiguredAnyChainApi) || null,
+    error: errorStates.get(narrowedNetworkId) || null,
     apis,
     setApi,
     disconnect,
     isConnected,
     isLoading,
-    initializeChain: useCallback((chainId: NetworkId) => {
+    initializeChain: useCallback((chainId: ChainId) => {
       return initializeChainRef.current?.(chainId) || Promise.resolve();
     }, []),
     chainName: network?.name || null,
     availableChainIds: useMemo(
-      () => supportedNetworks.map((n) => n.id),
-      [supportedNetworks]
+      () => Object.keys(dedotConfig.chains) as ChainId[],
+      []
     ),
     availableChains: supportedNetworks,
     wallets,
@@ -195,7 +222,9 @@ export function PolkadotProvider({
 }) {
   return (
     <TypinkProvider
-      supportedNetworks={availableChains || supportedChains}
+      supportedNetworks={
+        availableChains ? [...availableChains] : [...dedotSupportedNetworks]
+      }
       defaultCaller={defaultCaller}
     >
       <MultiClientManager>{children}</MultiClientManager>
@@ -210,7 +239,7 @@ export function useDedot(): MultiClientContextValue {
   return context;
 }
 
-export function usePolkadotApi<T extends NetworkId>(
+export function usePolkadotApi<T extends ChainId>(
   chainId: T
 ): ConfiguredChainApi<T> | null {
   const context = useContext(MultiClientContext);

@@ -1,4 +1,7 @@
-import type { ChainConfig } from "@/registry/dot-ui/lib/types.dot-ui";
+import type {
+  ChainConfig,
+  BaseChainConfig,
+} from "@/registry/dot-ui/lib/types.dot-ui";
 import { decodeAddress, encodeAddress } from "@polkadot/keyring";
 import { ethers } from "ethers";
 
@@ -21,6 +24,43 @@ export function isValidChainId<T extends Record<string, ChainConfig>>(
   chainId: string
 ): chainId is string & keyof T {
   return chainId in chains;
+}
+
+// Helpers for config extension and merging used by configs
+export function defineDotUiConfig<
+  const TChains extends Record<string, BaseChainConfig>,
+  const TDefault extends keyof TChains,
+>(config: { chains: TChains; defaultChain: TDefault }) {
+  return config as Readonly<{
+    chains: { readonly [K in keyof TChains]: Readonly<TChains[K]> };
+    defaultChain: TDefault;
+  }>;
+}
+
+export function extendDotUiConfig<
+  const Base extends {
+    chains: Record<string, BaseChainConfig>;
+    defaultChain: string | number | symbol;
+  },
+  const ExtChains extends {
+    [K in keyof Base["chains"]]: Record<string, unknown>;
+  },
+>(base: Base, extension: { chains: ExtChains }) {
+  const mergedChains = Object.fromEntries(
+    Object.entries(base.chains).map(([key, value]) => [
+      key,
+      {
+        ...(value as object),
+        ...(extension.chains as Record<string, object>)[key],
+      },
+    ])
+  ) as { [K in keyof Base["chains"]]: Base["chains"][K] & ExtChains[K] };
+
+  return {
+    ...base,
+    chains: mergedChains,
+    defaultChain: base.defaultChain,
+  } as const;
 }
 
 // Helper function to safely extract text from papi encoded types

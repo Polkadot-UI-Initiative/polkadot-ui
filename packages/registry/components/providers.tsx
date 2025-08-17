@@ -1,12 +1,11 @@
 "use client";
 
 import { PolkadotProvider } from "@/registry/dot-ui/providers/dedot-provider";
-import { supportedChains } from "@/registry/dot-ui/lib/config.dedot";
-import { polkadot } from "typink";
+import { dedotSupportedNetworks } from "@/registry/dot-ui/lib/config.dedot";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <PolkadotProvider availableChains={[...supportedChains, polkadot]}>
+    <PolkadotProvider availableChains={[...dedotSupportedNetworks]}>
       {children}
     </PolkadotProvider>
   );

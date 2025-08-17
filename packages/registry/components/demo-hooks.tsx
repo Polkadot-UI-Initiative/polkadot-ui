@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
+import { fromTypinkId } from "@/registry/dot-ui/lib/config.dedot";
 import { useDedot } from "@/registry/dot-ui/providers/dedot-provider";
 
 export function DemoHooks() {
@@ -40,20 +42,31 @@ export function DemoHooks() {
             .filter((chain): chain is NonNullable<typeof chain> =>
               Boolean(chain)
             )
+            // Only show networks that map to our base ChainId
+            .filter((chain) => Boolean(fromTypinkId(chain.id)))
             .map((chain) => (
               <div key={chain.id} className="flex items-center justify-between">
                 <span className="text-xs ">
                   {chain.name}:{" "}
-                  {apis[chain.id] ? (
-                    <>
-                      <span className="inline-block rounded-full bg-green-500 text-green-600 w-2 h-2 animate-pulse"></span>{" "}
-                      connected
-                    </>
-                  ) : (
-                    <span className="rounded-full bg-red-100 p-1">
-                      Disconnected
-                    </span>
-                  )}
+                  {(() => {
+                    const mappedId = fromTypinkId(chain.id);
+                    if (!mappedId)
+                      return (
+                        <span className="rounded-full bg-red-100 p-1">
+                          Disconnected
+                        </span>
+                      );
+                    return apis[mappedId as ChainId] ? (
+                      <>
+                        <span className="inline-block rounded-full bg-green-500 text-green-600 w-2 h-2 animate-pulse"></span>{" "}
+                        connected
+                      </>
+                    ) : (
+                      <span className="rounded-full bg-red-100 p-1">
+                        Disconnected
+                      </span>
+                    );
+                  })()}
                 </span>
                 <span className="text-xs text-gray-500">{chain.id}</span>
               </div>

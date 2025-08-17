@@ -1,53 +1,40 @@
 import { PaseoApi, PaseoPeopleApi } from "@dedot/chaintypes";
 import { DedotClient } from "dedot";
-import {
-  InjectedSigner,
-  NetworkId,
-  TypinkAccount,
-  useTypink,
-  Wallet,
-} from "typink";
-import { supportedChains } from "../lib/config.dedot";
-
-// Supported chain id type derived from the configured supported networks
-export type SupportedChainId = (typeof supportedChains)[number]["id"];
+import { useTypink } from "typink";
+import { type ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 
 // Map from network IDs to their corresponding chain APIs
 interface ChainApiKindMap {
   paseo: PaseoApi;
-  pop_testnet: PaseoApi; // POP Network uses Paseo-compatible API
-  paseoPeople: PaseoPeopleApi;
-  // polkadot: PolkadotApi;
+  paseo_people: PaseoPeopleApi;
 }
 
-type KnownTypedChainId = keyof ChainApiKindMap & SupportedChainId;
-
-export type ChainApiType<T extends NetworkId> = T extends KnownTypedChainId
-  ? ChainApiKindMap[T]
-  : AnyChainApi; // Fallback to generic API for unknown/test ids
+export type ChainApiType<T extends ChainId> = ChainApiKindMap[T];
 
 export type AnyChainApi = ChainApiKindMap[keyof ChainApiKindMap];
 
-export type ConfiguredChainApi<T extends NetworkId = NetworkId> = DedotClient<
+export type ConfiguredChainApi<T extends ChainId = ChainId> = DedotClient<
   ChainApiType<T>
 >;
 
+export type ConfiguredAnyChainApi = DedotClient<AnyChainApi>;
+
 export type CompositeApi = {
-  [K in SupportedChainId]: ConfiguredChainApi<K>;
+  [K in ChainId]: ConfiguredChainApi<K>;
 };
 
 export interface AccountManagementHookProps {
-  accounts: TypinkAccount[];
-  setActiveAccount: (account: TypinkAccount) => void;
-  activeAccount?: TypinkAccount;
+  accounts: import("typink").TypinkAccount[];
+  setActiveAccount: (account: import("typink").TypinkAccount) => void;
+  activeAccount?: import("typink").TypinkAccount;
 }
 
 export interface WalletManagementHookProps {
-  wallets: Wallet[];
+  wallets: import("typink").Wallet[];
   connectWallet: (walletId: string) => void;
   disconnect: () => void;
   connectedWalletId?: string;
-  activeSigner?: InjectedSigner;
+  activeSigner?: import("typink").InjectedSigner;
 }
 
 export interface ClientHookProps {
