@@ -15,11 +15,7 @@ import type {
 import { useDedot } from "@/registry/dot-ui/providers/dedot-provider";
 import { toTypinkId } from "@/registry/dot-ui/lib/config.dedot";
 import type { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
-import { useClient } from "typink";
 import { txNotification } from "../../tx-notification/components/tx-notification.base";
-
-type ClientType = NonNullable<ReturnType<typeof useClient>["client"]>;
-type ChainTx = ClientType["tx"];
 
 export interface TxButtonServices {
   useSelectedAccount: () => {
@@ -36,10 +32,7 @@ export interface TxButtonBaseProps
   extends React.ComponentProps<"button">,
     VariantProps<typeof buttonVariants> {
   children: React.ReactNode;
-  tx:
-    | ISubmittableExtrinsic
-    | ((tx: ChainTx) => ISubmittableExtrinsic | undefined)
-    | undefined;
+  tx?: ISubmittableExtrinsic | undefined;
   resultDisplayDuration?: number;
   icons?: {
     default?: React.ReactNode;
@@ -55,6 +48,7 @@ export interface TxButtonBaseProps
   services?: TxButtonServices;
   onStatusChange?: (payload: ISubmittableResult) => void;
   withNotification?: boolean;
+  chainId?: ChainId;
 }
 
 export function TxButtonBase({
@@ -79,24 +73,40 @@ export function TxButtonBase({
   services,
   onStatusChange,
   withNotification = true,
+  chainId,
   ...props
 }: TxButtonBaseProps) {
   const selectedAccount = services?.useSelectedAccount();
   const activeChain = services?.useActiveChain();
   const isConnected = services?.useIsConnected();
 
-  const { apis, activeSigner, defaultCaller, availableChains } = useDedot();
+  const {
+    apis,
+    activeSigner,
+    defaultCaller,
+    availableChains,
+    initializeChain,
+  } = useDedot();
+
+  // Ensure target chain is initialized if explicitly provided
+  useEffect(() => {
+    if (!chainId) return;
+    initializeChain(chainId).catch(() => {});
+  }, [chainId, initializeChain]);
+
+  const targetChainId = useMemo<ChainId | null>(() => {
+    if (chainId) return chainId;
+    return null;
+  }, [chainId]);
 
   const extrinsic = useMemo(() => {
-    if (!tx) return null;
-    if (typeof tx !== "function") return tx;
-    return null;
+    return tx ?? null;
   }, [tx]);
 
   // infer chain id from passed extrinsic
   const inferredChainId = useMemo(() => {
+    if (targetChainId) return targetChainId;
     if (!extrinsic) return null;
-    console.log("extrinsic", extrinsic);
     const anyExtrinsic = extrinsic as unknown as {
       client?: unknown;
       api?: unknown;
@@ -105,7 +115,7 @@ export function TxButtonBase({
     if (!txClient) return null;
     const entry = Object.entries(apis).find(([, api]) => api === txClient);
     return (entry?.[0] as ChainId | undefined) ?? null;
-  }, [extrinsic, apis]);
+  }, [extrinsic, apis, targetChainId]);
 
   const inferredNetwork = useMemo(() => {
     if (!inferredChainId) return null;

@@ -9,13 +9,21 @@ import { TestTx } from "@/components/test-tx";
 
 export default function Components() {
   const defaultChain: ChainId = dotUiConfig.defaultChain;
-  const polkadotApi = usePolkadotApi(defaultChain);
-  const tx = polkadotApi?.tx.system.remark("Hello, World from polkadot-ui!");
+  const api = usePolkadotApi(defaultChain);
+  const tx = api?.tx.system.remark("Hello, World from polkadot-ui!");
+
+  const peopleApi = usePolkadotApi("paseo_people");
+  const tx2 = peopleApi?.tx.system.remarkWithEvent(
+    "Hello, World from polkadot-ui via paseo_people"
+  );
 
   return (
     <>
       <DemoHooks />
-      <TxButton tx={tx}>Send Remark</TxButton>
+      <div className="flex flex-col gap-4 max-w-md">
+        <TxButton tx={tx}>Send Remark (defaultChain)</TxButton>
+        <TxButton tx={tx2}>Send Remark (paseo_people)</TxButton>
+      </div>
       <WalletSelect />
       <TestTx />
     </>
