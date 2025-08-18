@@ -496,23 +496,23 @@ interface CustomTxMonitor {
     </h3>
     <ul className="text-sm text-muted-foreground space-y-1">
       <li className="flex items-center gap-2">
-        <Clock className="w-3 h-3 text-blue-600" />
+        <Clock className="w-4 h-4 text-blue-500" />
         <span>Awaiting Signature - User action required</span>
       </li>
       <li className="flex items-center gap-2">
-        <Loader2 className="w-3 h-3 text-yellow-600 animate-spin" />
+        <Loader2 className="w-4 h-4 text-primary animate-spin" />
         <span>Submitted - Processing on network</span>
       </li>
       <li className="flex items-center gap-2">
-        <Check className="w-3 h-3 text-green-600" />
+        <Loader2 className="w-4 h-4 text-primary animate-spin" />
         <span>Included - Transaction in block</span>
       </li>
       <li className="flex items-center gap-2">
-        <Check className="w-3 h-3 text-green-700" />
+        <CircleCheck className="w-4 h-4 text-green-500" />
         <span>Finalized - Transaction confirmed</span>
       </li>
       <li className="flex items-center gap-2">
-        <AlertCircle className="w-3 h-3 text-red-600" />
+        <AlertCircle className="w-4 h-4 text-red-500" />
         <span>Error - Transaction failed</span>
       </li>
     </ul>

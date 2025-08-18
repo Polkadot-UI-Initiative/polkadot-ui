@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { ISubmittableResult, TxStatus } from "dedot/types";
 import { ChainConfig, ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 import { SubstrateExplorer } from "@/registry/dot-ui/lib/types.dot-ui";
-import { CircleCheck, CircleX, Loader2 } from "lucide-react";
+import { AlertCircle, CircleCheck, Clock, Loader2 } from "lucide-react";
 
 export type TxNotificationProps = {
   onTxProgress: (progress: ISubmittableResult) => void;
@@ -19,7 +19,7 @@ export function txNotification(
   toast(initialMessage, {
     id: toastId,
     closeButton: true,
-    icon: <Loader2 className="w-4 h-4 text-white animate-spin" />,
+    icon: <Clock className="w-4 h-4 text-blue-500" />,
   });
 
   const onTxProgress = (progress: ISubmittableResult) => {
@@ -69,7 +69,7 @@ export function txNotification(
         id: toastId,
         duration,
         closeButton: true,
-        icon: <Loader2 className="w-4 h-4 text-white animate-spin" />,
+        icon: <Loader2 className="w-4 h-4 text-primary animate-spin" />,
       });
     }
   };
@@ -79,7 +79,7 @@ export function txNotification(
       id: toastId,
       duration: 5_000,
       dismissible: true,
-      icon: <CircleX className="w-4 h-4 text-red-500" />,
+      icon: <AlertCircle className="w-4 h-4 text-red-500" />,
     });
   };
 
