@@ -226,7 +226,7 @@ The txNotification system tracks transactions through these comprehensive states
 </div>
 ```
 - Transaction has been included in a block
-- Shows success checkmark
+- Shows loader to indicate processing
 - Provides link to block explorer
 - Displays block number for reference
 
@@ -245,7 +245,7 @@ The txNotification system tracks transactions through these comprehensive states
 
 ### 5. Error States
 ```tsx
-<div className="flex items-center gap-2 text-red-600">
+<div className="flex items-center gap-2 text-red-500">
   <AlertCircle className="w-4 h-4" />
   <span>Transaction failed: {errorMessage}</span>
 </div>
@@ -287,7 +287,7 @@ The component automatically generates appropriate links based on transaction sta
 
 ```tsx
 // Transaction hash links
-const txUrl = `${explorerUrls.subscan}/extrinsic/${txHash}`;
+const txUrl = `${explorerUrls.subscan}/extrinsic/${blockNumber}-${txIndex}`;
 
 // Block number links  
 const blockUrl = `${explorerUrls.subscan}/block/${blockNumber}`;
@@ -380,9 +380,9 @@ const handleStatusChange = (status: TxStatus) => {
 
 ## Provider Integration
 
-### TypinkProvider Setup
+### PolkadotProvider Setup
 ```tsx
-import { PolkadotProvider } from "@/providers/polkadot-provider";
+import { PolkadotProvider } from "@/providers/dedot-provider";
 
 function App() {
   return (
