@@ -125,6 +125,7 @@ export function AccountSelectionBase({ services }: AccountSelectionBaseProps) {
   // Extract services
   const { useAccountManagement, usePolkadotBalances } = services;
   const { accounts, activeAccount, setActiveAccount } = useAccountManagement();
+  const readyAccounts = accounts ?? [];
   const activeChain = useActiveChain();
 
   const addresses = useMemo(
@@ -154,7 +155,7 @@ export function AccountSelectionBase({ services }: AccountSelectionBaseProps) {
       </DialogHeader>
 
       <div className="space-y-2 max-h-96 overflow-y-auto">
-        {accounts?.map((account) => (
+        {readyAccounts.map((account) => (
           <AccountItem
             key={`${account.address}-${account.source}`}
             account={account}
