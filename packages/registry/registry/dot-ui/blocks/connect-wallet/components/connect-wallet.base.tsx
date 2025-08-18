@@ -135,13 +135,12 @@ function WalletManagement({
 }: {
   services: AccountSelectionServices;
 }) {
-  const { wallets, disconnect } = services.useWalletManagement();
+  const { wallets, disconnect, connectedWalletIds } =
+    services.useWalletManagement();
   const { accounts } = services.useAccountManagement();
   const [showAccountSelection, setShowAccountSelection] = useState(false);
 
-  const connectedWalletCount = wallets.filter((wallet) =>
-    services.useWalletManagement().connectedWalletIds.includes(wallet.id)
-  ).length;
+  const connectedWalletCount = connectedWalletIds.length;
 
   const totalAccountCount = accounts.length;
 
