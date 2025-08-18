@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { ISubmittableResult, TxStatus } from "dedot/types";
 import { ChainConfig, ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 import { SubstrateExplorer } from "@/registry/dot-ui/lib/types.dot-ui";
+import { CircleCheck, CircleX, Loader2 } from "lucide-react";
 
 export type TxNotificationProps = {
   onTxProgress: (progress: ISubmittableResult) => void;
@@ -15,10 +16,10 @@ export function txNotification(
 ): TxNotificationProps {
   const toastId = "tx-notification";
 
-  toast.loading(initialMessage, {
+  toast(initialMessage, {
     id: toastId,
-    duration: 5000,
     closeButton: true,
+    icon: <Loader2 className="w-4 h-4 text-white animate-spin" />,
   });
 
   const onTxProgress = (progress: ISubmittableResult) => {
@@ -55,6 +56,7 @@ export function txNotification(
         id: toastId,
         duration,
         closeButton: true,
+        icon: <CircleCheck className="w-4 h-4 text-green-500" />,
       });
     } else if (toastType === "error") {
       toast.error(toastComponent, {
@@ -63,10 +65,11 @@ export function txNotification(
         closeButton: true,
       });
     } else {
-      toast.info(toastComponent, {
+      toast(toastComponent, {
         id: toastId,
         duration,
         closeButton: true,
+        icon: <Loader2 className="w-4 h-4 text-white animate-spin" />,
       });
     }
   };
@@ -76,6 +79,7 @@ export function txNotification(
       id: toastId,
       duration: 5_000,
       dismissible: true,
+      icon: <CircleX className="w-4 h-4 text-red-500" />,
     });
   };
 
