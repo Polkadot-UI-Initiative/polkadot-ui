@@ -5,7 +5,7 @@ description: A comprehensive transaction lifecycle component with real-time stat
 
 import { SimpleTxButtonWithProvider } from "@/registry/dot-ui/blocks/tx-notification/components/simple-tx-button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Check, Clock, AlertCircle, ExternalLink, Loader2 } from "lucide-react";
+import { CircleCheck, Clock, AlertCircle, ExternalLink, Loader2 } from "lucide-react";
 
 ## Introduction
 
@@ -197,8 +197,8 @@ The txNotification system tracks transactions through these comprehensive states
 
 ### 1. Awaiting Signature
 ```tsx
-<div className="flex items-center gap-2 text-blue-600">
-  <Clock className="w-4 h-4 animate-pulse" />
+<div className="flex items-center gap-2 text-blue-500">
+  <Clock className="w-4 h-4" />
   <span>Awaiting signature...</span>
 </div>
 ```
@@ -208,7 +208,7 @@ The txNotification system tracks transactions through these comprehensive states
 
 ### 2. Submitted to Network
 ```tsx
-<div className="flex items-center gap-2 text-yellow-600">
+<div className="flex items-center gap-2 text-primary">
   <Loader2 className="w-4 h-4 animate-spin" />
   <span>Transaction submitted</span>
 </div>
@@ -219,10 +219,10 @@ The txNotification system tracks transactions through these comprehensive states
 
 ### 3. Included in Block
 ```tsx
-<div className="flex items-center gap-2 text-green-600">
-  <Check className="w-4 h-4" />
+<div className="flex items-center gap-2 text-green-500">
+  <Loader2 className="w-4 h-4" />
   <span>Included in block #{blockNumber}</span>
-  <ExternalLink className="w-3 h-3" />
+  <ExternalLink className="w-4 h-4" />
 </div>
 ```
 - Transaction has been included in a block
@@ -232,10 +232,10 @@ The txNotification system tracks transactions through these comprehensive states
 
 ### 4. Finalized
 ```tsx
-<div className="flex items-center gap-2 text-green-700">
-  <Check className="w-4 h-4" />
+<div className="flex items-center gap-2 text-green-500">
+  <CircleCheck className="w-4 h-4" />
   <span>Transaction finalized</span>
-  <ExternalLink className="w-3 h-3" />
+  <ExternalLink className="w-4 h-4" />
 </div>
 ```
 - Transaction has been finalized on the blockchain
@@ -437,47 +437,53 @@ const getErrorMessage = (error: string) => {
 
 ### 3. Explorer Integration
 ```tsx
-// Always provide links for transaction verification
-<TxNotification
-  explorerUrls={{
+// Explorer URLs are configured in chain config
+const chainConfig = {
+  explorerUrls: {
     subscan: process.env.NEXT_PUBLIC_SUBSCAN_URL,
     polkadotJs: process.env.NEXT_PUBLIC_POLKADOT_APPS_URL
-  }}
-/>
+  }
+};
+
+// Pass to txNotification function
+const toaster = txNotification("Signing Transaction...", chainConfig);
 ```
 
 ## Advanced Usage
 
 ### Custom Transaction Monitoring
 ```tsx
-interface CustomTxMonitor {
-  onSignatureRequest: () => void;
-  onTransactionSubmitted: (hash: string) => void;
-  onBlockInclusion: (blockHash: string, blockNumber: number) => void;
-  onFinalization: (txHash: string) => void;
-  onError: (error: Error) => void;
+import { txNotification } from "@/components/ui/tx-notification";
+
+function CustomTransactionHandler() {
+  const handleTransaction = async () => {
+    const toaster = txNotification("Processing Transaction...", chainConfig);
+    
+    try {
+      const tx = api.tx.system.remark("Custom transaction");
+      
+      await tx.signAndSend(keypair, (result) => {
+        const { status } = result;
+        
+        // Custom monitoring for different states
+        if (status.type === "Ready") {
+          console.log("Transaction ready for signing");
+        } else if (status.type === "BestChainBlockIncluded") {
+          console.log("Transaction included in block");
+        } else if (status.type === "Finalized") {
+          console.log("Transaction finalized");
+        }
+        
+        // Pass to notification system
+        toaster.onTxProgress(result);
+      });
+    } catch (error) {
+      toaster.onTxError(error);
+    }
+  };
+  
+  return <Button onClick={handleTransaction}>Send Transaction</Button>;
 }
-
-<TxNotification
-  onTxStatusChange={(status) => {
-    // Custom monitoring logic
-    customMonitor.handleStatusChange(status);
-  }}
-/>
-```
-
-### Integration with Analytics
-```tsx
-<TxNotification
-  onTxStatusChange={(status) => {
-    // Track transaction lifecycle events
-    analytics.track('transaction_status_change', {
-      state: status.state,
-      txHash: status.txHash,
-      timestamp: status.timestamp
-    });
-  }}
-/>
 ```
 
 ## Examples
