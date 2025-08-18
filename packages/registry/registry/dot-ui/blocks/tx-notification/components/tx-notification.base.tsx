@@ -18,6 +18,7 @@ export function txNotification(
 
   toast(initialMessage, {
     id: toastId,
+    duration: Infinity,
     closeButton: true,
     icon: <Clock className="w-4 h-4 text-blue-500" />,
   });

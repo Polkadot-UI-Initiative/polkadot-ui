@@ -263,7 +263,7 @@ The txNotification system tracks transactions through these comprehensive states
 
 #### Subscan (Primary)
 - **Features**: Comprehensive transaction details, block information, account history
-- **URL Format**: `https://{chain}.subscan.io/extrinsic/{txHash}`
+- **URL Format**: `https://{chain}.subscan.io/extrinsic/{blockNumber}-{txIndex}`
 - **Coverage**: Most Polkadot ecosystem chains
 
 #### Polkadot.js Apps
@@ -382,13 +382,13 @@ const handleStatusChange = (status: TxStatus) => {
 
 ### TypinkProvider Setup
 ```tsx
-import { TypinkProvider } from "typink";
+import { PolkadotProvider } from "@/providers/polkadot-provider";
 
 function App() {
   return (
-    <TypinkProvider config={dotUiConfig}>
-      <TxNotification />
-    </TypinkProvider>
+    <PolkadotProvider config={dotUiConfig}>
+      <YourTxButton />
+    </PolkadotProvider>
   );
 }
 ```

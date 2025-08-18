@@ -142,7 +142,7 @@ function WalletManagement({
 
   const connectedWalletCount = connectedWalletIds.length;
 
-  const totalAccountCount = accounts.length;
+  const totalAccountCount = accounts?.length ?? 0;
 
   const handleDisconnectAllWallets = useCallback(() => {
     disconnect();
