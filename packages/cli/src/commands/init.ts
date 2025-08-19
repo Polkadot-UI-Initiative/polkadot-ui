@@ -228,6 +228,9 @@ export class InitCommand {
     const spinner = ora(`Creating ${config.framework} project...`).start();
 
     try {
+      // Handle project directory creation
+      await this.ensureProjectDirectory(config);
+
       if (config.framework === "nextjs") {
         this.logger.detail("⚛️ [DEBUG] Creating Next.js project...");
         await this.createNextJsProject(config);
@@ -254,6 +257,71 @@ export class InitCommand {
         }`
       );
     }
+  }
+
+  /**
+   * Ensure project directory exists and set up working directory
+   */
+  private async ensureProjectDirectory(
+    config: ProjectSetupConfig
+  ): Promise<void> {
+    this.logger.detail(
+      "📁 [DEBUG] ensureProjectDirectory() - Checking project directory setup"
+    );
+
+    const currentDir = process.cwd();
+    const projectPath = path.join(currentDir, config.projectName);
+
+    this.logger.detail(`📁 [DEBUG] Current directory: ${currentDir}`);
+    this.logger.detail(`📁 [DEBUG] Target project path: ${projectPath}`);
+
+    try {
+      // Check if directory already exists
+      const stats = await fs.stat(projectPath);
+      if (stats.isDirectory()) {
+        // Directory exists, check if it's empty
+        const files = await fs.readdir(projectPath);
+        if (files.length > 0) {
+          throw new Error(
+            `Directory "${projectPath}" already exists and is not empty. Please choose a different path or remove the existing directory.`
+          );
+        }
+        this.logger.detail(
+          `📁 [DEBUG] Project directory exists and is empty: ${projectPath}`
+        );
+      } else {
+        throw new Error(
+          `"${projectPath}" exists but is not a directory. Please choose a different path.`
+        );
+      }
+    } catch (error: any) {
+      if (error.code === "ENOENT") {
+        // Directory doesn't exist, create it
+        this.logger.detail(
+          `📁 [DEBUG] Creating project directory: ${projectPath}`
+        );
+        await fs.mkdir(projectPath, { recursive: true });
+        this.logger.detail(`📁 [DEBUG] Project directory created successfully`);
+      } else if (
+        error.message.includes("already exists") ||
+        error.message.includes("not a directory")
+      ) {
+        // Re-throw our custom error message
+        throw error;
+      } else {
+        // Some other error occurred
+        throw new Error(`Failed to access project directory: ${error.message}`);
+      }
+    }
+
+    // Always change to the project directory
+    this.logger.detail(
+      `📁 [DEBUG] Changing to project directory: ${projectPath}`
+    );
+    process.chdir(projectPath);
+    this.logger.detail(
+      `📁 [DEBUG] Working directory changed to: ${process.cwd()}`
+    );
   }
 
   /**
