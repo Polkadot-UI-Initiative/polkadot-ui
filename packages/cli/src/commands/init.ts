@@ -158,7 +158,8 @@ export class InitCommand {
       {
         type: "input",
         name: "projectName",
-        message: "What is your project named?",
+        message:
+          "What is your project name? Specify a path to create a new directory. (leave blank for current directory)",
         default: currentDir,
         validate: (input: string) => {
           if (!input.trim()) return "Project name cannot be empty";
@@ -778,13 +779,15 @@ export default defineConfig({
     // Only show next steps when running standalone init, not when called from add command
     if (this.context === "standalone") {
       this.logger.subsection("Next steps:");
-      this.logger.detail("1. Start development server:", true);
+      this.logger.detail("Go to your project directory:", true);
+      this.logger.code(`cd ${config.projectName}`);
+      this.logger.detail("Start development server:", true);
       this.logger.code(
         `${config.framework === "nextjs" ? "npm run dev" : "npm run dev"}`
       );
-      this.logger.detail("2. Add Polkadot UI components:", true);
+      this.logger.detail("Add Polkadot UI components:", true);
       this.logger.code("polkadot-ui add block-number");
-      this.logger.detail("3. Check out the documentation:", true);
+      this.logger.detail("Check out the documentation:", true);
       this.logger.code("https://dot-ui.com/docs");
     } else {
       this.logger.detail(
