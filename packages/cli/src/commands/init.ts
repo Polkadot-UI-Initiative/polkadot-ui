@@ -160,11 +160,15 @@ export class InitCommand {
         name: "projectName",
         message:
           "What is your project name? Specify a path to create a new directory. (leave blank for current directory)",
-        default: currentDir,
+        default: ".",
+        filter: (input: string) => (input.trim() === "" ? "." : input.trim()),
         validate: (input: string) => {
-          if (!input.trim()) return "Project name cannot be empty";
-          if (!/^[a-zA-Z0-9-_]+$/.test(input.trim())) {
-            return "Project name can only contain letters, numbers, hyphens, and underscores";
+          const val = input.trim();
+          // Allow current dir or relative/absolute paths. Disallow common invalid characters.
+          if (val === ".") return true;
+          const invalidChars = /[<>"|?*]/; // keep colon allowed for Windows drive letters
+          if (invalidChars.test(val)) {
+            return 'Path contains invalid characters: < > " | ? *';
           }
           return true;
         },
@@ -271,7 +275,7 @@ export class InitCommand {
     );
 
     const currentDir = process.cwd();
-    const projectPath = path.join(currentDir, config.projectName);
+    const projectPath = path.resolve(currentDir, config.projectName);
 
     this.logger.detail(`📁 [DEBUG] Current directory: ${currentDir}`);
     this.logger.detail(`📁 [DEBUG] Target project path: ${projectPath}`);
@@ -296,7 +300,12 @@ export class InitCommand {
         );
       }
     } catch (error: any) {
-      if (error.code === "ENOENT") {
+      if (
+        error &&
+        typeof error === "object" &&
+        "code" in error &&
+        (error as NodeJS.ErrnoException).code === "ENOENT"
+      ) {
         // Directory doesn't exist, create it
         this.logger.detail(
           `📁 [DEBUG] Creating project directory: ${projectPath}`
