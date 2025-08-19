@@ -158,12 +158,17 @@ export class InitCommand {
       {
         type: "input",
         name: "projectName",
-        message: "What is your project named?",
-        default: currentDir,
+        message:
+          "What is your project name? Specify a path to create a new directory. (leave blank for current directory)",
+        default: ".",
+        filter: (input: string) => (input.trim() === "" ? "." : input.trim()),
         validate: (input: string) => {
-          if (!input.trim()) return "Project name cannot be empty";
-          if (!/^[a-zA-Z0-9-_]+$/.test(input.trim())) {
-            return "Project name can only contain letters, numbers, hyphens, and underscores";
+          const val = input.trim();
+          // Allow current dir or relative/absolute paths. Disallow common invalid characters.
+          if (val === ".") return true;
+          const invalidChars = /[<>"|?*]/; // keep colon allowed for Windows drive letters
+          if (invalidChars.test(val)) {
+            return 'Path contains invalid characters: < > " | ? *';
           }
           return true;
         },
@@ -228,6 +233,9 @@ export class InitCommand {
     const spinner = ora(`Creating ${config.framework} project...`).start();
 
     try {
+      // Handle project directory creation
+      await this.ensureProjectDirectory(config);
+
       if (config.framework === "nextjs") {
         this.logger.detail("⚛️ [DEBUG] Creating Next.js project...");
         await this.createNextJsProject(config);
@@ -254,6 +262,76 @@ export class InitCommand {
         }`
       );
     }
+  }
+
+  /**
+   * Ensure project directory exists and set up working directory
+   */
+  private async ensureProjectDirectory(
+    config: ProjectSetupConfig
+  ): Promise<void> {
+    this.logger.detail(
+      "📁 [DEBUG] ensureProjectDirectory() - Checking project directory setup"
+    );
+
+    const currentDir = process.cwd();
+    const projectPath = path.resolve(currentDir, config.projectName);
+
+    this.logger.detail(`📁 [DEBUG] Current directory: ${currentDir}`);
+    this.logger.detail(`📁 [DEBUG] Target project path: ${projectPath}`);
+
+    try {
+      // Check if directory already exists
+      const stats = await fs.stat(projectPath);
+      if (stats.isDirectory()) {
+        // Directory exists, check if it's empty
+        const files = await fs.readdir(projectPath);
+        if (files.length > 0) {
+          throw new Error(
+            `Directory "${projectPath}" already exists and is not empty. Please choose a different path or remove the existing directory.`
+          );
+        }
+        this.logger.detail(
+          `📁 [DEBUG] Project directory exists and is empty: ${projectPath}`
+        );
+      } else {
+        throw new Error(
+          `"${projectPath}" exists but is not a directory. Please choose a different path.`
+        );
+      }
+    } catch (error: any) {
+      if (
+        error &&
+        typeof error === "object" &&
+        "code" in error &&
+        (error as NodeJS.ErrnoException).code === "ENOENT"
+      ) {
+        // Directory doesn't exist, create it
+        this.logger.detail(
+          `📁 [DEBUG] Creating project directory: ${projectPath}`
+        );
+        await fs.mkdir(projectPath, { recursive: true });
+        this.logger.detail(`📁 [DEBUG] Project directory created successfully`);
+      } else if (
+        error.message.includes("already exists") ||
+        error.message.includes("not a directory")
+      ) {
+        // Re-throw our custom error message
+        throw error;
+      } else {
+        // Some other error occurred
+        throw new Error(`Failed to access project directory: ${error.message}`);
+      }
+    }
+
+    // Always change to the project directory
+    this.logger.detail(
+      `📁 [DEBUG] Changing to project directory: ${projectPath}`
+    );
+    process.chdir(projectPath);
+    this.logger.detail(
+      `📁 [DEBUG] Working directory changed to: ${process.cwd()}`
+    );
   }
 
   /**
@@ -710,13 +788,15 @@ export default defineConfig({
     // Only show next steps when running standalone init, not when called from add command
     if (this.context === "standalone") {
       this.logger.subsection("Next steps:");
-      this.logger.detail("1. Start development server:", true);
+      this.logger.detail("Go to your project directory:", true);
+      this.logger.code(`cd ${config.projectName}`);
+      this.logger.detail("Start development server:", true);
       this.logger.code(
         `${config.framework === "nextjs" ? "npm run dev" : "npm run dev"}`
       );
-      this.logger.detail("2. Add Polkadot UI components:", true);
+      this.logger.detail("Add Polkadot UI components:", true);
       this.logger.code("polkadot-ui add block-number");
-      this.logger.detail("3. Check out the documentation:", true);
+      this.logger.detail("Check out the documentation:", true);
       this.logger.code("https://dot-ui.com/docs");
     } else {
       this.logger.detail(
