@@ -70,7 +70,7 @@ const examples = [
   },
   {
     name: "Wallet Selection",
-    href: "/docs/components/wallet-selection",
+    href: "/docs/components/connect-wallet",
     code: "wallet-selection",
     description: "Wallet connection and account selection",
     component: (

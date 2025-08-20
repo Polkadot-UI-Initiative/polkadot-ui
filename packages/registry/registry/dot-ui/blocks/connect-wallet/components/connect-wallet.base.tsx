@@ -17,7 +17,10 @@ import {
   AccountSelectionBase,
   AccountSelectionServices,
 } from "@/registry/dot-ui/blocks/account-selection/components/account-selection.base";
-import { truncateAddress } from "@/registry/dot-ui/lib/utils.dot-ui";
+import {
+  shortenName,
+  truncateAddress,
+} from "@/registry/dot-ui/lib/utils.dot-ui";
 import {
   AccountManagementHookProps,
   WalletManagementHookProps,
@@ -225,9 +228,11 @@ export function ConnectWalletBase({
             {activeAccount ? (
               <div className="flex items-center gap-2">
                 <span className="text-sm text-muted-foreground">
-                  {activeAccount.name ? `${activeAccount.name}:` : ""}
+                  {activeAccount.name
+                    ? `${shortenName(activeAccount.name, 5)}:`
+                    : ""}
                 </span>
-                <span>{truncateAddress(activeAccount.address)}</span>
+                <span>{truncateAddress(activeAccount.address, 4)}</span>
               </div>
             ) : hasConnectedWallets ? (
               <div className="flex items-center gap-1">
