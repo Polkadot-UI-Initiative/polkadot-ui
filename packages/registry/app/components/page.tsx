@@ -1,6 +1,7 @@
 import AddressInputPage from "@/registry/dot-ui/blocks/address-input/demo/page.dedot";
 import RequireConnectionPage from "@/registry/dot-ui/blocks/require-connection/demo/page.papi";
 import ConnectWalletPage from "@/registry/dot-ui/blocks/connect-wallet/demo/page.dedot";
+import TxNotificationPage from "@/registry/dot-ui/blocks/tx-notification/demo/page.dedot";
 
 export default function Docs() {
   return (
@@ -8,6 +9,7 @@ export default function Docs() {
       <AddressInputPage />
       <RequireConnectionPage />
       <ConnectWalletPage />
+      <TxNotificationPage />
     </div>
   );
 }

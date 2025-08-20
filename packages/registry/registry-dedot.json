@@ -152,6 +152,36 @@
           "type": "registry:lib"
         }
       ]
+    },
+    {
+      "name": "tx-notification",
+      "type": "registry:component",
+      "title": "Tx Notification (dedot)",
+      "description": "A notification component that displays transaction status and progress.",
+      "dependencies": ["dedot", "sonner"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "registry/dot-ui/blocks/tx-notification/components/tx-notification.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/dot-ui/blocks/tx-notification/components/tx-notification.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/dot-ui/providers/dedot-provider.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        }
+      ]
     }
   ]
 }
