@@ -162,8 +162,14 @@
       "registryDependencies": [],
       "files": [
         {
-          "path": "registry/dot-ui/blocks/tx-notification/components/tx-notification.dedot.tsx",
-          "type": "registry:component"
+          "path": "registry/dot-ui/blocks/tx-notification/demo/page.dedot.tsx",
+          "type": "registry:page",
+          "target": "app/demo/dot-ui/tx-notification/page.tsx"
+        },
+        {
+          "path": "registry/dot-ui/blocks/tx-notification/demo/tx-notification-demo.tsx",
+          "type": "registry:component",
+          "target": "app/demo/dot-ui/tx-notification/tx-notification-demo.tsx"
         },
         {
           "path": "registry/dot-ui/blocks/tx-notification/components/tx-notification.base.tsx",
