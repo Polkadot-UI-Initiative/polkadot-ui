@@ -152,6 +152,54 @@
           "type": "registry:lib"
         }
       ]
+    },
+    {
+      "name": "tx-notification",
+      "type": "registry:component",
+      "title": "Tx Notification (dedot)",
+      "description": "A notification component that displays transaction status and progress.",
+      "dependencies": ["dedot", "sonner", "lucide-react"],
+      "registryDependencies": ["button", "input"],
+      "files": [
+        {
+          "path": "registry/dot-ui/blocks/tx-notification/demo/page.dedot.tsx",
+          "type": "registry:page",
+          "target": "app/demo/dot-ui/tx-notification/page.tsx"
+        },
+        {
+          "path": "registry/dot-ui/blocks/tx-notification/demo/tx-notification-demo.tsx",
+          "type": "registry:component",
+          "target": "app/demo/dot-ui/tx-notification/tx-notification-demo.tsx"
+        },
+        {
+          "path": "registry/dot-ui/blocks/tx-notification/components/tx-button-with-tx-notification.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/dot-ui/blocks/tx-notification/components/simple-tx-button.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/dot-ui/blocks/tx-notification/components/tx-notification.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/dot-ui/providers/dedot-provider.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/config.dot-ui.ts",
+          "type": "registry:lib"
+        }
+      ]
     }
   ]
 }
