@@ -158,8 +158,8 @@
       "type": "registry:component",
       "title": "Tx Notification (dedot)",
       "description": "A notification component that displays transaction status and progress.",
-      "dependencies": ["dedot", "sonner"],
-      "registryDependencies": [],
+      "dependencies": ["dedot", "sonner", "lucide-react"],
+      "registryDependencies": ["button"],
       "files": [
         {
           "path": "registry/dot-ui/blocks/tx-notification/demo/page.dedot.tsx",
@@ -193,6 +193,10 @@
         },
         {
           "path": "registry/dot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/config.dot-ui.ts",
           "type": "registry:lib"
         }
       ]
