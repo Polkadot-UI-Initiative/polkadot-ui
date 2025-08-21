@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/registry/dot-ui/ui/button";
 import {
   PolkadotProvider,
@@ -18,7 +17,8 @@ interface SimpleTxButtonProps {
   isDisabled: boolean;
   keypair: KeyringPair | null;
   onSendingTx: (isLoading: boolean) => void;
-  defaultMessage?: string;
+  message?: string;
+  onMessageClear: (message: string) => void;
   buttonText?: string;
 }
 
@@ -27,10 +27,10 @@ export function SimpleTxButton({
   isDisabled,
   keypair,
   onSendingTx,
-  defaultMessage = "",
+  message = "",
+  onMessageClear,
   buttonText = "Send Remark",
 }: SimpleTxButtonProps) {
-  const [message, setMessage] = useState(defaultMessage);
   const api = useTypedPolkadotApi();
   const { currentChain } = useDedot();
   const currentChainConfig = getChainConfig(dotUiConfig.chains, currentChain);
@@ -57,7 +57,7 @@ export function SimpleTxButton({
           const { status } = result;
 
           if (status.type === "BestChainBlockIncluded") {
-            setMessage("");
+            onMessageClear("");
           }
 
           if (

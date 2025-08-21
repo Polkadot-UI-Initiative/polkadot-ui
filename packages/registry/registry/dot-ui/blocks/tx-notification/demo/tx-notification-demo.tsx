@@ -43,32 +43,34 @@ export function TxNotificationDemo({
   const isInitializing = !cryptoReady || !demoKeypair;
 
     return (
-        <Provider>
-            <div className="space-y-4">
-                <div className="space-y-2">
-                    <label htmlFor="remark-input" className="text-sm font-medium">
-                    Remark Message
-                    </label>
-                    <Input
-                    id="remark-input"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder={placeholder}
-                    disabled={isLoading}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                    {cryptoReady && demoKeypair
-                        ? `Demo using Alice test account: ${demoKeypair.address}`
-                        : "Initializing crypto..."}
-                    </p>
-                </div>
-                <SimpleTxButton
-                    isLoading={isLoading}
-                    isDisabled={isInitializing}
-                    keypair={demoKeypair}
-                    onSendingTx={setIsLoading}
-                />
-            </div>
-        </Provider>
+      <Provider>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <label htmlFor="remark-input" className="text-sm font-medium">
+              Remark Message
+            </label>
+            <Input
+              id="remark-input"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder={placeholder}
+              disabled={isLoading || isInitializing}
+            />
+            <p className="text-xs text-muted-foreground">
+              {cryptoReady && demoKeypair
+                ? `Demo using Alice test account: ${demoKeypair.address}`
+                : "Initializing crypto..."}
+            </p>
+          </div>
+          <SimpleTxButton
+            isLoading={isLoading}
+            isDisabled={isInitializing}
+            keypair={demoKeypair}
+            onSendingTx={setIsLoading}
+            message={message}
+            onMessageClear={setMessage}
+          />
+        </div>
+      </Provider>
     );
 }
