@@ -141,7 +141,7 @@ function TxNotificationWithTxButtonInner() {
   );
 }
 
-export function TxNotificationWithTxButton() {
+export function TxButtonWithTxNotification() {
   return (
     <PolkadotProvider>
       <TxNotificationWithTxButtonInner />
@@ -149,4 +149,4 @@ export function TxNotificationWithTxButton() {
   );
 }
 
-TxNotificationWithTxButton.displayName = "TxNotificationWithTxButton";
+TxButtonWithTxNotification.displayName = "TxButtonWithTxNotification";
