@@ -16,7 +16,7 @@ import { BookText, Wifi, WifiOff } from "lucide-react";
 import { Label } from "@/registry/dot-ui/ui/label";
 import { cn } from "@/lib/utils";
 import { ConnectWalletWithProvider } from "@/registry/dot-ui/blocks/connect-wallet/components/connect-wallet.dedot";
-import { TxNotificationWithTxButton } from "@/registry/dot-ui/blocks/tx-notification/components/tx-notification-with-tx-button";
+import { TxNotificationWithTxButton } from "@/registry/dot-ui/blocks/tx-notification/components/tx-button-with-tx-notification";
 
 const examples = [
   {

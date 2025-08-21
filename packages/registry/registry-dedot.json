@@ -172,7 +172,7 @@
           "target": "app/demo/dot-ui/tx-notification/tx-notification-demo.tsx"
         },
         {
-          "path": "registry/dot-ui/blocks/tx-notification/components/tx-notification-with-tx-button.tsx",
+          "path": "registry/dot-ui/blocks/tx-notification/components/tx-button-with-tx-notification.tsx",
           "type": "registry:component"
         },
         {

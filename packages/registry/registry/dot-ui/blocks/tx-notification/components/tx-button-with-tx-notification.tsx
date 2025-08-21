@@ -15,22 +15,17 @@ import { txNotification } from "./tx-notification.base";
 import { ISubmittableResult } from "dedot/types";
 import { dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
 import { getChainConfig, truncateAddress } from "@/registry/dot-ui/lib/utils.dot-ui";
+import { SimpleTxButtonProps } from "./simple-tx-button";
 
-interface TxButtonProps {
-  message: string;
-  isLoading: boolean;
-  isDisabled: boolean;
-  keypair: KeyringPair | null;
-  onSendingTx: (isLoading: boolean) => void;
-}
-
-function TxButton({
-  message,
+function SimpleTxButton({
   isLoading,
   isDisabled,
   keypair,
   onSendingTx,
-}: TxButtonProps) {
+  message = "",
+  onMessageClear,
+  buttonText = "Send Remark",
+}: SimpleTxButtonProps) {
   const api = useTypedPolkadotApi();
   const { currentChain } = useDedot();
   const currentChainConfig = getChainConfig(dotUiConfig.chains, currentChain);
@@ -49,19 +44,29 @@ function TxButton({
     try {
       const remarkTx = api.tx.system.remark(message);
 
-      await remarkTx.signAndSend(keypair, (result: ISubmittableResult) => {
-        const { status } = result;
+      let unsub: (() => void) | undefined;
+      await remarkTx.signAndSend(
+        keypair,
+        (result: ISubmittableResult, unsubscribe: () => void) => {
+          unsub = unsubscribe;
+          const { status } = result;
 
-        if (status.type === "BestChainBlockIncluded") {
-          // Transaction successful, could clear form here if needed
+          if (status.type === "BestChainBlockIncluded") {
+            onMessageClear("");
+          }
+
+          if (
+            status.type === "Finalized" ||
+            status.type === "Invalid" ||
+            status.type === "Drop"
+          ) {
+            onSendingTx(false);
+            unsub?.();
+          }
+
+          toaster.onTxProgress(result);
         }
-
-        if (status.type === "Finalized" || status.type === "Invalid") {
-          onSendingTx(false);
-        }
-
-        toaster.onTxProgress(result);
-      });
+      );
     } catch (e: unknown) {
       const error = e instanceof Error ? e : new Error("Transaction failed");
       toaster.onTxError(error);
@@ -75,7 +80,7 @@ function TxButton({
       disabled={!api || !message.trim() || isLoading || isDisabled}
       className="w-full"
     >
-      {isDisabled ? "Initializing..." : isLoading ? "Sending..." : "Send Remark"}
+      {isDisabled ? "Initializing..." : isLoading ? "Sending..." : buttonText}
     </Button>
   );
 }
@@ -124,12 +129,13 @@ function TxNotificationWithTxButtonInner() {
             : "Initializing crypto..."}
         </p>
       </div>
-      <TxButton
-        message={message}
+      <SimpleTxButton
         isLoading={isLoading}
         isDisabled={isInitializing}
         keypair={demoKeypair}
         onSendingTx={setIsLoading}
+        message={message}
+        onMessageClear={setMessage}
       />
     </div>
   );

@@ -12,13 +12,13 @@ import { dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
 import { getChainConfig } from "@/registry/dot-ui/lib/utils.dot-ui";
 import type { KeyringPair } from "@polkadot/keyring/types";
 
-interface SimpleTxButtonProps {
+export interface SimpleTxButtonProps {
   isLoading: boolean;
   isDisabled: boolean;
   keypair: KeyringPair | null;
   onSendingTx: (isLoading: boolean) => void;
-  message?: string;
   onMessageClear: (message: string) => void;
+  message?: string;
   buttonText?: string;
 }
 
