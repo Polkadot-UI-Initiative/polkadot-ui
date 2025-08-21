@@ -11,7 +11,7 @@ import { ISubmittableResult } from "dedot/types";
 import { useDedot } from "@/registry/dot-ui/providers/dedot-provider";
 import { dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
 import { getChainConfig } from "@/registry/dot-ui/lib/utils.dot-ui";
-import { KeyringPair } from "@polkadot/keyring/types";
+import type { KeyringPair } from "@polkadot/keyring/types";
 
 interface SimpleTxButtonProps {
   isLoading: boolean;
@@ -49,19 +49,29 @@ export function SimpleTxButton({
     try {
       const remarkTx = api.tx.system.remark(message);
 
-      await remarkTx.signAndSend(keypair, (result: ISubmittableResult) => {
-        const { status } = result;
+      let unsub: (() => void) | undefined;
+      await remarkTx.signAndSend(
+        keypair,
+        (result: ISubmittableResult, unsubscribe: () => void) => {
+          unsub = unsubscribe;
+          const { status } = result;
 
-        if (status.type === "BestChainBlockIncluded") {
-          setMessage("");
+          if (status.type === "BestChainBlockIncluded") {
+            setMessage("");
+          }
+
+          if (
+            status.type === "Finalized" ||
+            status.type === "Invalid" ||
+            status.type === "Drop"
+          ) {
+            onSendingTx(false);
+            unsub?.();
+          }
+
+          toaster.onTxProgress(result);
         }
-
-        if (status.type === "Finalized" || status.type === "Invalid") {
-          onSendingTx(false);
-        }
-
-        toaster.onTxProgress(result);
-      });
+      );
     } catch (e: unknown) {
       const error = e instanceof Error ? e : new Error("Transaction failed");
       toaster.onTxError(error);
