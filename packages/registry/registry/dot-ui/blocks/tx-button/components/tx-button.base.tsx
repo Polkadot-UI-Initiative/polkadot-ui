@@ -26,11 +26,8 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { useBalance, useTx, useTxFee, useTypink } from "typink";
-import type {
-  UseTxReturnType,
-  TxSignAndSendParameters,
-} from "typink/hooks/useTx";
+import { useBalance, useTxFee, useTypink } from "typink";
+import type { UseTxReturnType } from "typink/hooks/useTx";
 import type { Args, NetworkId } from "typink/types";
 
 export interface TxButtonIcons {
@@ -82,7 +79,7 @@ export function TxButtonBase<
   withNotification = true,
   resultDisplayDuration = 5000,
   icons = {
-    default: <PenLine className="w-4 h-4" />,
+    default: null,
     loading: <Loader2 className="w-4 h-4 animate-spin" />,
     finalized: <CheckCheck className="w-4 h-4" />,
     inBestBlock: <CheckCircle className="w-4 h-4" />,
@@ -155,24 +152,18 @@ export function TxButtonBase<
       : undefined;
 
     try {
-      const params = {
-        networkId,
-        callback: (result: ISubmittableResult) => {
-          setTxStatus(result.status);
-          console.log("tx status", result);
-          if (withNotification) {
-            txStatusNotification(result, toastId as string, targetNetwork);
-          }
-        },
-        args: (args ?? ([] as [])) as Parameters<ExtractTxFn<TTx>>,
-      } as unknown as TxSignAndSendParameters<ExtractTxFn<TTx>>;
       await tx.signAndSend({
         args: ["test"],
         callback: (result: ISubmittableResult) => {
           setTxStatus(result.status);
           console.log("tx status", result);
           if (withNotification) {
-            txStatusNotification(result, toastId as string, targetNetwork);
+            txStatusNotification({
+              result,
+              toastId: toastId as string,
+              network: targetNetwork,
+              successDuration: resultDisplayDuration,
+            });
           }
         },
       });
@@ -198,19 +189,6 @@ export function TxButtonBase<
 
   return (
     <div className="inline-flex flex-col gap-1">
-      <div className="text-xs text-muted-foreground font-medium flex justify-start flex-wrap gap-1 flex-col">
-        <div>account: {connectedAccount?.address}</div>
-        <div>
-          accountBalance:{" "}
-          {formatBalance({
-            value: balance?.free,
-            decimals: targetNetwork?.decimals ?? 10,
-            unit: targetNetwork?.symbol ?? "UNIT",
-            nDecimals: 4,
-          })}
-        </div>
-        <div>network: {targetNetwork?.id}</div>
-      </div>
       <div className="text-xs text-muted-foreground font-medium h-4 flex items-center justify-start">
         {fee !== null ? (
           <span className="flex items-center gap-1">

@@ -56,6 +56,7 @@ export interface AddressInputBaseProps {
   identiconTheme?: IconTheme;
   className?: string;
   identityChain?: NetworkId;
+  required?: boolean;
   // Injected services - this makes it reusable
   services: AddressInputServices;
 }
@@ -134,6 +135,7 @@ export const AddressInputBase = forwardRef<
     const [isCopied, setIsCopied] = useState(false);
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
     const [selectedFromSearch, setSelectedFromSearch] = useState(false);
+    const [hasInteracted, setHasInteracted] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -238,6 +240,7 @@ export const AddressInputBase = forwardRef<
 
     const handleFocus = () => {
       setIsEditing(true);
+      if (!hasInteracted) setHasInteracted(true);
       if (
         !validationResult?.isValid &&
         debouncedSearch.length > 2 &&
@@ -405,6 +408,7 @@ export const AddressInputBase = forwardRef<
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             autoComplete="off"
+            required={props.required} // TODO: Add required prop
             aria-expanded={
               showDropdown &&
               withIdentitySearch &&
@@ -562,8 +566,8 @@ export const AddressInputBase = forwardRef<
               </div>
             )}
 
-          {/* Validation error display */}
-          {validationResult?.error && (
+          {/* Validation error display (only after user interaction and when blurred) */}
+          {validationResult?.error && hasInteracted && !isEditing && (
             <div className="flex items-center gap-2 text-sm text-red-600">
               <span>{validationResult.error}</span>
             </div>

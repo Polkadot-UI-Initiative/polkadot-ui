@@ -1,19 +1,25 @@
-import { TxButtonBase } from "@/registry/dot-ui/blocks/tx-button/components/tx-button.base";
-import { paseoPeople, polkadot, useTx } from "typink";
+"use client";
 
-export function RemarkButton() {
+import { TxButtonBase } from "@/registry/dot-ui/blocks/tx-button/components/tx-button.base";
+import { NetworkId, useTx, useTypink } from "typink";
+
+export function RemarkButton({ networkId }: { networkId: NetworkId }) {
+  const { supportedNetworks } = useTypink();
+  const network = supportedNetworks.find((n) => n.id === networkId);
   const tx = useTx((tx) => tx.system.remark, {
-    networkId: polkadot.id,
+    networkId,
   });
 
   return (
     <TxButtonBase
       tx={tx}
       args={["Hello World from polkadot-ui"]}
-      networkId={polkadot.id}
+      networkId={networkId}
       className="w-full"
     >
-      Write a message on chain
+      Remark a message on{" "}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={network?.logo} alt={network?.name} className="w-4 h-4" />
     </TxButtonBase>
   );
 }

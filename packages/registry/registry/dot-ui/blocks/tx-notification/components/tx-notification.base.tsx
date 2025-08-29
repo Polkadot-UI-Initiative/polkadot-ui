@@ -10,9 +10,28 @@ function ChainLogo({ network }: { network: NetworkInfo | undefined }) {
     <img
       src={network.logo}
       alt={network.name}
-      className="absolute -right-1 -top-1 w-4 h-4 shadow-md"
+      className="absolute -right-2 -top-2 w-5 h-5 shadow-md"
     />
   );
+}
+
+export interface TxStatusNotificationProps {
+  result: ISubmittableResult;
+  toastId: string;
+  network: NetworkInfo | undefined;
+  successDuration: number;
+  titles?: {
+    submitting?: string;
+    included?: string;
+    finalized?: string;
+    error?: string;
+  };
+  descriptions?: {
+    submitting?: string;
+    included?: string;
+    finalized?: string;
+    error?: string;
+  };
 }
 
 export function beginTxStatusNotification(
@@ -50,42 +69,33 @@ export function cancelTxStatusNotification(
   );
 }
 
-export function txStatusNotification(
-  result: ISubmittableResult,
-  toastId: string = "tx-status-notification",
-  network: NetworkInfo | undefined,
-  titles: {
-    submitting: string;
-    included: string;
-    finalized: string;
-    error: string;
-  } = {
+export function txStatusNotification({
+  result,
+  toastId = "tx-status-notification",
+  network,
+  successDuration = 10000,
+  titles = {
+    submitting: "Waiting for confirmation...",
+    included: "Waiting for finalization...",
+    finalized: "",
+    error: "",
+  },
+  descriptions = {
     submitting: "Transaction submitted",
     included: "Transaction included in block",
     finalized: "Transaction finalized",
     error: "Transaction failed",
   },
-  descriptions: {
-    submitting: string;
-    included: string;
-    finalized: string;
-    error: string;
-  } = {
-    submitting: "Waiting for confirmation...",
-    included: "Waiting for finalization...",
-    finalized: "",
-    error: "",
-  }
-) {
-  const { status } = result;
+}: TxStatusNotificationProps) {
+  const { status, txHash } = result;
   const explorerUrl = network?.subscanUrl ?? network?.pjsUrl;
 
   const action =
-    result.txHash && explorerUrl
+    txHash && explorerUrl
       ? {
           label: "View on explorer",
           onClick: () => {
-            window.open(`${explorerUrl}/tx/${result.txHash}`, "_blank");
+            window.open(`${explorerUrl}/tx/${txHash}`, "_blank");
           },
         }
       : undefined;
@@ -127,7 +137,7 @@ export function txStatusNotification(
           icon: <CheckCheck className="w-5 h-5" />,
           action,
           description: descriptions.finalized,
-          duration: 10000,
+          duration: successDuration,
           closeButton: true,
         }
       );

@@ -1,0 +1,86 @@
+---
+title: Tx Button
+description: A configurable transaction button with fee preview, progress states, and notifications.
+---
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
+## Introduction
+
+`TxButton` provides a simple way to submit Substrate transactions with fee estimation, disabled states, and status notifications. It works with `typink`'s `useTx` and can be adapted to other APIs via a thin wrapper.
+
+## Quick start
+
+### With typink `useTx`
+
+<Tabs defaultValue="code" className="max-w-[720px]">
+  <TabsList>
+    <TabsTrigger value="code">Code</TabsTrigger>
+  </TabsList>
+  <TabsContent value="code" className="my-0">
+```tsx
+import { useTx } from "typink"
+import { TxButtonBase } from "@/registry/dot-ui/blocks/tx-button/components/tx-button.base"
+
+function RemarkExample() {
+  const tx = useTx((tx) => tx.system.remark)
+  return (
+    <TxButtonBase tx={tx} args={["hello"]} networkId="paseo">
+      Write a message on chain
+    </TxButtonBase>
+  )
+}
+```
+  </TabsContent>
+</Tabs>
+
+### With provider wrapper
+
+If you prefer an all-in-one component with provider, use the registry wrapper:
+
+<Tabs defaultValue="code" className="max-w-[720px]">
+  <TabsList>
+    <TabsTrigger value="code">Code</TabsTrigger>
+  </TabsList>
+  <TabsContent value="code" className="my-0">
+```tsx
+import { useTx } from "typink"
+import { TxButtonWithProvider } from "@/registry/dot-ui/blocks/tx-button/components/tx-button.dedot"
+
+function App() {
+  const tx = useTx((tx) => tx.system.remark)
+  return (
+    <TxButtonWithProvider tx={tx} args={["hello"]} networkId="paseo">
+      Write a message on chain
+    </TxButtonWithProvider>
+  )
+}
+```
+  </TabsContent>
+</Tabs>
+
+## Behavior
+
+- **Fee preview**: Fetches and displays the estimated fee before submission
+- **Disabled states**: Button disables when not connected, wrong network, fee error, or insufficient balance
+- **Progress states**: Shows loading, best-block, finalized, and error icons
+- **Notifications**: Emits toasts for status updates
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `tx` | `UseTxReturnType` | — | Transaction returned by `useTx` |
+| `args` | `unknown[]` | `[]` | Arguments for the transaction function |
+| `networkId` | `string` | first supported | Target network for fee/submit |
+| `withNotification` | `boolean` | `true` | Show toast notifications |
+| `resultDisplayDuration` | `number` | `5000` | How long to show result icon |
+| `icons` | `{ default, loading, finalized, inBestBlock, error }` | built-in | Slot to override status icons |
+| `className` | `string` | — | Additional classes for the button |
+
+## Notes
+
+- Args are validated by the chain at runtime; pass the exact parameters the selected extrinsic expects (e.g., `system.remark` expects a bytes-like string)
+- For more details on `useTx` and the underlying flow, see the reference implementation [`useTx.ts`](https://github.com/dedotdev/typink/blob/main/packages/typink/src/hooks/useTx.ts)
+
+
