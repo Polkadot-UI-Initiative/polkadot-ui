@@ -204,12 +204,12 @@ export function hasPositiveIdentityJudgement(
 // original source: https://github.com/polkadot-api/react-teleport-example/blob/main/src/lib/utils.ts
 export const formatBalance = ({
   value,
-  decimals,
+  decimals = 0,
   unit,
   nDecimals,
 }: {
   value: bigint | null | undefined;
-  decimals: number;
+  decimals?: number;
   unit?: string;
   nDecimals?: number;
   padToDecimals?: boolean;

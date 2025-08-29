@@ -38,50 +38,50 @@ const examples = [
       </div>
     ),
   },
-  // {
-  //   name: "Require Connection",
-  //   href: "/docs/components/require-connection",
-  //   code: "require-connection",
-  //   description:
-  //     "Conditionally render content based on blockchain connection status",
-  //   component: (
-  //     <div className="w-full space-y-3">
-  //       <RequireConnection
-  //         chainId="paseo"
-  //         fallback={
-  //           <div className="flex items-center gap-2 text-muted-foreground text-sm">
-  //             <WifiOff className="w-4 h-4" />
-  //             <span>Connect to Paseo</span>
-  //           </div>
-  //         }
-  //       >
-  //         <div className="flex items-center gap-2 text-green-600 text-sm">
-  //           <Wifi className="w-4 h-4" />
-  //           <span>Connected to Paseo</span>
-  //         </div>
-  //       </RequireConnection>
-  //     </div>
-  //   ),
-  // },
-  // {
-  //   name: "Wallet & Account Selection",
-  //   href: "/docs/components/wallet-select",
-  //   code: "wallet-select",
-  //   description: "Wallet connection and account selection",
-  //   component: (
-  //     <div className="flex flex-col gap-2 w-full">
-  //       <WalletSelect />
-  //     </div>
-  //   ),
-  // },
-  // {
-  //   name: "Tx Button",
-  //   href: "/docs/components/tx-button",
-  //   code: "tx-button",
-  //   description:
-  //     "Button component for sending arbitrary transactions. Supports all chains, all signers with default notification.",
-  //   component: <RemarkButton />,
-  // },
+  {
+    name: "Require Connection",
+    href: "/docs/components/require-connection",
+    code: "require-connection",
+    description:
+      "Conditionally render content based on blockchain connection status",
+    component: (
+      <div className="w-full space-y-3">
+        <RequireConnection
+          chainId="paseo"
+          fallback={
+            <div className="flex items-center gap-2 text-muted-foreground text-sm">
+              <WifiOff className="w-4 h-4" />
+              <span>Connect to Paseo</span>
+            </div>
+          }
+        >
+          <div className="flex items-center gap-2 text-green-600 text-sm">
+            <Wifi className="w-4 h-4" />
+            <span>Connected to Paseo</span>
+          </div>
+        </RequireConnection>
+      </div>
+    ),
+  },
+  {
+    name: "Wallet & Account Selection",
+    href: "/docs/components/wallet-select",
+    code: "wallet-select",
+    description: "Wallet connection and account selection",
+    component: (
+      <div className="flex flex-col gap-2">
+        <WalletSelect variant="default" />
+      </div>
+    ),
+  },
+  {
+    name: "Tx Button",
+    href: "/docs/components/tx-button",
+    code: "tx-button",
+    description:
+      "Button component for sending arbitrary transactions. Supports all chains, all signers with default notification.",
+    component: <RemarkButton />,
+  },
 ];
 
 export function ComponentsSection() {

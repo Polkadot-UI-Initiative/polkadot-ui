@@ -17,9 +17,7 @@ import { ClientOnly } from "@/components/client-only";
 export type AddressInputProps = Omit<AddressInputBaseProps, "services">;
 
 export function AddressInput(props: AddressInputProps) {
-  const { status, network } = usePolkadotClient(
-    props.identityChain || paseoPeople.id
-  );
+  const { status } = usePolkadotClient(props.identityChain || paseoPeople.id);
 
   // Simple services object with type-compatible wrappers
   const services = {

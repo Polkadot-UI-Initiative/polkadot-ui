@@ -3,10 +3,10 @@
 import { useMemo } from "react";
 import { PolkadotProvider } from "@/registry/dot-ui/providers/dedot-provider";
 import { TxButtonBase, type TxButtonBaseProps } from "./tx-button.base";
-import { useDedot } from "@/registry/dot-ui/providers/dedot-provider";
 import type { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 import type { ConfiguredChainApi } from "@/registry/dot-ui/lib/types.dedot";
 import type { ISubmittableExtrinsic, ISubmittableResult } from "dedot/types";
+import { useTypink } from "typink";
 
 // Strongly-typed builders for better autocomplete
 export interface TxBuilderForChain<T extends ChainId> {
@@ -59,30 +59,23 @@ export type TxButtonProps<T extends ChainId = ChainId> =
   | TxButtonPropsDefault;
 
 export function TxButton<T extends ChainId>(props: TxButtonProps<T>) {
-  const { availableChains, currentChain, activeAccount } = useDedot();
+  const { connectedAccount } = useTypink();
+
   // Simple services object with type-compatible wrappers
   const services = useMemo(
     () => ({
-      useSelectedAccount: () => ({
-        address: activeAccount?.address ?? "",
-      }),
-      useActiveChain: () => ({
-        decimals:
-          availableChains.find((chain) => chain?.id === currentChain?.id)
-            ?.decimals ?? 0,
-        symbol:
-          availableChains.find((chain) => chain?.id === currentChain?.id)
-            ?.symbol ?? "",
-      }),
-      useIsConnected: () => !!activeAccount?.address,
+      connectedAccount,
+      isConnected: !!connectedAccount?.address,
+      decimals: 0,
+      symbol: "",
     }),
-    [availableChains, currentChain, activeAccount]
+    [connectedAccount]
   );
 
   return (
     <TxButtonBase
       {...(props as unknown as TxButtonBaseProps)}
-      services={services}
+      // services={services}
     />
   );
 }

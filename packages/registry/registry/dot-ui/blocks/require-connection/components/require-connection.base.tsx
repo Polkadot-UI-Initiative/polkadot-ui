@@ -3,11 +3,11 @@
 import { type ReactNode } from "react";
 
 // Services interface for dependency injection
-export interface RequireConnectionServices<TChainId extends string = string> {
+export interface RequireConnectionServices {
   // Provider context hook for chain state
   useProvider: () => {
-    isLoading: (chainId: TChainId) => boolean;
-    isConnected: (chainId: TChainId) => boolean;
+    isLoading: boolean;
+    isConnected: boolean;
   };
 }
 
@@ -29,13 +29,12 @@ export interface RequireConnectionBaseProps<TChainId extends string = string> {
    */
   loadingFallback?: ReactNode;
   /**
-   * Services for dependency injection
+   * Services fo  r dependency injection
    */
-  services: RequireConnectionServices<TChainId>;
+  services: RequireConnectionServices;
 }
 
 export function RequireConnectionBase<TChainId extends string = string>({
-  chainId,
   children,
   fallback,
   loadingFallback,
@@ -43,8 +42,8 @@ export function RequireConnectionBase<TChainId extends string = string>({
 }: RequireConnectionBaseProps<TChainId>) {
   const { isLoading, isConnected } = services.useProvider();
 
-  const loading = isLoading(chainId);
-  const connected = isConnected(chainId);
+  const loading = isLoading;
+  const connected = isConnected;
 
   // Show loading state if provided and currently loading
   if (loading && loadingFallback) {

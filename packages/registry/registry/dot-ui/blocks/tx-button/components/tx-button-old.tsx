@@ -22,40 +22,29 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { useBalance, useTxFee, useTypink } from "typink";
 import type {
-  UseTxReturnType,
   TxSignAndSendParameters,
+  useTx,
+  UseTxReturnType,
 } from "typink/hooks/useTx";
-import type { Args, NetworkId } from "typink/types";
+import type { NetworkId } from "typink/types";
 
-export interface TxButtonIcons {
-  default?: React.ReactNode;
-  loading?: React.ReactNode;
-  finalized?: React.ReactNode;
-  inBestBlock?: React.ReactNode;
-  error?: React.ReactNode;
+interface TxButtonProps extends ButtonProps {
+  children: React.ReactNode;
+  tx: UseTxReturnType;
+  args?: Parameters<typeof useTx>;
+  networkId?: NetworkId;
+  resultDisplayDuration?: number;
+  withNotification?: boolean;
+  icons?: {
+    default?: React.ReactNode;
+    loading?: React.ReactNode;
+    finalized?: React.ReactNode;
+    inBestBlock?: React.ReactNode;
+    error?: React.ReactNode;
+  };
 }
 
-type AnyFn = (...args: any[]) => any;
-type ArgsProp<TxFn extends AnyFn> =
-  Parameters<TxFn> extends [] ? { args?: [] } : { args: Parameters<TxFn> };
-
-type ExtractTxFn<TTx> = TTx extends UseTxReturnType<infer U> ? U : never;
-
-export type TxButtonBaseProps<
-  TTx extends UseTxReturnType<any> = UseTxReturnType<any>,
-> = ButtonProps &
-  ArgsProp<ExtractTxFn<TTx>> & {
-    children: React.ReactNode;
-    tx: TTx;
-    networkId?: NetworkId;
-    resultDisplayDuration?: number;
-    withNotification?: boolean;
-    icons?: TxButtonIcons;
-  };
-
-export function TxButtonBase<
-  TTx extends UseTxReturnType<AnyFn> = UseTxReturnType<AnyFn>,
->({
+export function TxButton({
   children,
   tx,
   args,
@@ -74,7 +63,7 @@ export function TxButtonBase<
     error: <X className="w-4 h-4" />,
   },
   ...props
-}: TxButtonBaseProps<TTx>) {
+}: TxButtonProps) {
   const { connectedAccount, supportedNetworks } = useTypink();
 
   const isValidNetwork = useMemo(() => {
@@ -87,22 +76,14 @@ export function TxButtonBase<
     return supportedNetworks[0];
   }, [networkId, supportedNetworks]);
 
-  const feeInputForHook = {
-    tx: tx as UseTxReturnType<ExtractTxFn<TTx>>,
+  const feeInput: Parameters<typeof useTxFee>[0] = {
+    tx,
+    args: args || [],
     enabled: true,
     networkId,
-    ...(args !== undefined ? { args } : {}),
-  } as unknown as Args<Parameters<ExtractTxFn<TTx>>> & {
-    tx: UseTxReturnType<ExtractTxFn<TTx>>;
-    enabled?: boolean;
-    networkId?: NetworkId;
   };
 
-  const {
-    fee,
-    isLoading: isFeeLoading,
-    error: feeError,
-  } = useTxFee<ExtractTxFn<TTx>>(feeInputForHook);
+  const { fee, isLoading: isFeeLoading, error: feeError } = useTxFee(feeInput);
 
   const balance = useBalance(connectedAccount?.address, {
     networkId,
@@ -140,7 +121,8 @@ export function TxButtonBase<
       : undefined;
 
     try {
-      const paramsBase = {
+      const params: TxSignAndSendParameters = {
+        args: args || [],
         networkId,
         callback: (result: ISubmittableResult) => {
           setTxStatus(result.status);
@@ -150,9 +132,6 @@ export function TxButtonBase<
           }
         },
       };
-      const params = (
-        args !== undefined ? { ...paramsBase, args } : paramsBase
-      ) as TxSignAndSendParameters<ExtractTxFn<TTx>>;
       await tx.signAndSend(params);
     } catch (e) {
       if (withNotification && toastId)
@@ -261,7 +240,7 @@ export function TxButtonSkeleton({
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     children: React.ReactNode;
-    icons?: TxButtonBaseProps["icons"];
+    icons?: TxButtonProps["icons"];
   }) {
   return (
     <div className="inline-flex flex-col gap-1">

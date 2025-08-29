@@ -1,16 +1,12 @@
-import { TxButton } from "@/registry/dot-ui/blocks/tx-button/components/tx-button.dedot";
-import { usePolkadotApi } from "@/registry/dot-ui/providers/dedot-provider";
+import { TxButtonBase } from "@/registry/dot-ui/blocks/tx-button/components/tx-button.base";
+import { useTx } from "typink";
 
 export function RemarkButton() {
-  const paseoTestnetApi = usePolkadotApi("paseo");
-
-  const tx = paseoTestnetApi?.tx.system.remarkWithEvent(
-    "Hello, World from Polkadot Next.js Starter!"
-  );
+  const tx = useTx((tx) => tx.system.remark);
 
   return (
-    <TxButton tx={tx} className="w-full">
-      Remark on chain message
-    </TxButton>
+    <TxButtonBase tx={tx} args={[2]} networkId="paseo" className="w-full">
+      Write a message on chain
+    </TxButtonBase>
   );
 }

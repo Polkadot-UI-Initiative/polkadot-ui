@@ -1,154 +1,150 @@
-import React, { useMemo } from "react";
+import { ISubmittableResult } from "dedot/types";
+import { CheckCheck } from "lucide-react";
 import { toast } from "sonner";
-import { ISubmittableResult, TxStatus } from "dedot/types";
 import { NetworkInfo } from "typink";
 
-export type TxNotificationProps = {
-  onTxProgress: (progress: ISubmittableResult) => void;
-  onTxError: (e: Error) => void;
-};
-
-export function txNotification(
-  initialMessage: string = "Signing Transaction...",
-  currentChainConfig?: NetworkInfo | null
-): TxNotificationProps {
-  const toastId = "tx-notification";
-
-  toast.loading(initialMessage, {
-    id: toastId,
-    duration: 5000,
-    closeButton: true,
-  });
-
-  const onTxProgress = (progress: ISubmittableResult) => {
-    let toastType: "success" | "error" | "info" | "default" = "default";
-    let duration: number = Infinity;
-    let toastMessage: string = "Transaction In Progress...";
-
-    const { status, dispatchError } = progress;
-    const succeeded = !dispatchError;
-
-    if (status.type === "Finalized") {
-      duration = 5_000;
-      toastType = succeeded ? "success" : "error";
-      toastMessage = succeeded
-        ? "Transaction Successful"
-        : "Transaction Failed";
-      // TODO: show dispatchError detailed error when Transaction Failed
-    } else if (status.type === "Invalid" || status.type === "Drop") {
-      duration = 5_000;
-      toastType = "error";
-      toastMessage = "Transaction Failed";
-    }
-
-    const toastComponent = (
-      <TxProgress
-        message={toastMessage}
-        status={status}
-        currentChainConfig={currentChainConfig ?? undefined}
-      />
-    );
-
-    if (toastType === "success") {
-      toast.success(toastComponent, {
-        id: toastId,
-        duration,
-        closeButton: true,
-      });
-    } else if (toastType === "error") {
-      toast.error(toastComponent, {
-        id: toastId,
-        duration,
-        closeButton: true,
-      });
-    } else {
-      toast.info(toastComponent, {
-        id: toastId,
-        duration,
-        closeButton: true,
-      });
-    }
-  };
-
-  const onTxError = (e: Error) => {
-    toast.error(<p>{e.message}</p>, {
-      id: toastId,
-      duration: 5_000,
-      dismissible: true,
-    });
-  };
-
-  return {
-    onTxProgress,
-    onTxError,
-  };
-}
-
-const getBlockInfo = (status: TxStatus): string | null => {
-  if (status.type === "BestChainBlockIncluded" || status.type === "Finalized") {
-    return `(#${status.value.blockNumber} / ${status.value.txIndex})`;
-  }
-
-  if (
-    (status.type === "Invalid" || status.type === "Drop") &&
-    status.value.error
-  ) {
-    return `(${status.value.error})`;
-  }
-
-  return null;
-};
-
-interface TxProgressProps {
-  message: string;
-  status: TxStatus;
-  currentChainConfig?: NetworkInfo | null;
-}
-
-function TxProgress({ message, status, currentChainConfig }: TxProgressProps) {
-  const { label: viewOnExplorer, url: explorerUrl } = useMemo(() => {
-    if (
-      (status.type === "BestChainBlockIncluded" ||
-        status.type === "Finalized") &&
-      currentChainConfig
-    ) {
-      const { subscanUrl, pjsUrl } = currentChainConfig;
-
-      if (subscanUrl) {
-        return {
-          label: "View transaction on Subscan",
-          url: `${subscanUrl}/extrinsic/${status.value.blockNumber}-${status.value.txIndex}`,
-        };
-      }
-
-      if (pjsUrl) {
-        return {
-          label: "View transaction on Polkadot.js",
-          url: `${pjsUrl}#/explorer/query/${status.value.blockHash}`,
-        };
-      }
-    }
-
-    return { label: null, url: "" };
-  }, [status, currentChainConfig]);
-
+function ChainLogo({ network }: { network: NetworkInfo | undefined }) {
+  if (!network?.logo) return null;
   return (
-    <div className="flex flex-col gap-1">
-      <p className="font-medium">{message}</p>
-      <p className="text-xs text-muted-foreground">
-        {status.type} {getBlockInfo(status)}
-      </p>
-
-      {viewOnExplorer && (
-        <a
-          href={explorerUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xs text-primary hover:underline flex items-center gap-1 mt-1"
-        >
-          👉 {viewOnExplorer}
-        </a>
-      )}
-    </div>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={network.logo}
+      alt={network.name}
+      className="absolute -right-1 -top-1 w-4 h-4 shadow-md"
+    />
   );
+}
+
+export function beginTxStatusNotification(
+  toastId: string | undefined,
+  network: NetworkInfo | undefined,
+  title: string = "Waiting for signature...",
+  description: string = "Please sign the transaction in your wallet"
+) {
+  const id = toast.loading(
+    <>
+      <ChainLogo network={network} /> {title}
+    </>,
+    {
+      id: toastId,
+      description,
+    }
+  );
+  return id as string;
+}
+
+export function cancelTxStatusNotification(
+  toastId: string,
+  network: NetworkInfo | undefined,
+  title: string = "Transaction cancelled",
+  description: string = ""
+) {
+  toast.info(
+    <>
+      <ChainLogo network={network} /> {title}
+    </>,
+    {
+      id: toastId,
+      description,
+    }
+  );
+}
+
+export function txStatusNotification(
+  result: ISubmittableResult,
+  toastId: string = "tx-status-notification",
+  network: NetworkInfo | undefined,
+  titles: {
+    submitting: string;
+    included: string;
+    finalized: string;
+    error: string;
+  } = {
+    submitting: "Transaction submitted",
+    included: "Transaction included in block",
+    finalized: "Transaction finalized",
+    error: "Transaction failed",
+  },
+  descriptions: {
+    submitting: string;
+    included: string;
+    finalized: string;
+    error: string;
+  } = {
+    submitting: "Waiting for confirmation...",
+    included: "Waiting for finalization...",
+    finalized: "",
+    error: "",
+  }
+) {
+  const { status } = result;
+  const explorerUrl = network?.subscanUrl ?? network?.pjsUrl;
+
+  const action =
+    result.txHash && explorerUrl
+      ? {
+          label: "View on explorer",
+          onClick: () => {
+            window.open(`${explorerUrl}/tx/${result.txHash}`, "_blank");
+          },
+        }
+      : undefined;
+
+  const chainLogo = <ChainLogo network={network} />;
+
+  switch (status.type) {
+    case "Broadcasting":
+    case "Validated":
+      toast.loading(
+        <>
+          {chainLogo} {titles.submitting}
+        </>,
+        {
+          id: toastId,
+          description: descriptions.submitting,
+        }
+      );
+      break;
+    case "BestChainBlockIncluded":
+      toast.loading(
+        <>
+          {chainLogo} {titles.included}
+        </>,
+        {
+          id: toastId,
+          action,
+          description: descriptions.included,
+        }
+      );
+      break;
+    case "Finalized":
+      toast.success(
+        <>
+          {chainLogo} {titles.finalized}
+        </>,
+        {
+          id: toastId,
+          icon: <CheckCheck className="w-5 h-5" />,
+          action,
+          description: descriptions.finalized,
+          duration: 10000,
+          closeButton: true,
+        }
+      );
+      break;
+    case "Invalid":
+    case "Drop":
+      toast.error(
+        <>
+          {chainLogo} {titles.error}
+        </>,
+        {
+          id: toastId,
+          description: descriptions.error,
+        }
+      );
+      break;
+    default:
+      break;
+  }
 }

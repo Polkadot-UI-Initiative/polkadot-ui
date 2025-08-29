@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button, type ButtonProps } from "@/components/ui/button";
 import { Wallet } from "lucide-react";
 import { Identicon } from "@polkadot/react-identicon";
 import { MultiViewDialog, DialogView } from "./multi-view-dialog";
@@ -10,13 +10,15 @@ import { ViewSelectAccount } from "./view-select-account";
 import { useTypink } from "typink";
 import { cn } from "@/lib/utils";
 
+interface WalletSelectProps extends Omit<ButtonProps, "children"> {
+  placeholder?: string;
+}
+
 export function WalletSelect({
   className,
   placeholder,
-}: {
-  className?: string;
-  placeholder?: string;
-}) {
+  ...buttonProps
+}: WalletSelectProps) {
   const { wallets, connectedWallets, connectedAccount } = useTypink();
 
   const views: DialogView[] = [
@@ -40,11 +42,11 @@ export function WalletSelect({
       initialView={connectedWallets.length > 0 ? 1 : 0}
       trigger={
         <Button
-          variant="outline"
           className={cn(
             "inline-flex items-center gap-2 transition-[min-width] duration-300",
             className
           )}
+          {...buttonProps}
         >
           <Wallet className="w-4 h-4" /> {placeholder}
           {connectedAccount?.name && (
