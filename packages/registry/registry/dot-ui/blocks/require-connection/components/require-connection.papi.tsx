@@ -5,6 +5,7 @@ import {
   PolkadotProvider,
   usePapi,
 } from "@/registry/dot-ui/providers/papi-provider";
+import type { ChainId } from "@/registry/dot-ui/providers/papi-provider";
 import {
   RequireConnectionBase,
   type RequireConnectionBaseProps,
@@ -12,7 +13,7 @@ import {
 
 // Props type - removes services prop since we inject it
 export type RequireConnectionProps = Omit<
-  RequireConnectionBaseProps,
+  RequireConnectionBaseProps<ChainId>,
   "services"
 >;
 
@@ -23,14 +24,14 @@ export function RequireConnection(props: RequireConnectionProps) {
   const services = useMemo(
     () => ({
       useProvider: () => ({
-        isLoading,
-        isConnected,
+        isLoading: isLoading(props.chainId),
+        isConnected: isConnected(props.chainId),
       }),
     }),
-    [isLoading, isConnected]
+    [isLoading, isConnected, props.chainId]
   );
 
-  return <RequireConnectionBase {...props} services={services} />;
+  return <RequireConnectionBase<ChainId> {...props} services={services} />;
 }
 
 // Wrapped version with provider for drop-in usage
