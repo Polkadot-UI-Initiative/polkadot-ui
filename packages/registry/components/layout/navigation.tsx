@@ -7,6 +7,7 @@ import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { GitHubStars } from "@/components/github-stars";
 import { Search } from "lucide-react";
 import { useSearchContext } from "fumadocs-ui/provider";
+import Image from "next/image";
 
 export function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -23,7 +24,7 @@ export function Navigation() {
       <div className="flex h-14 items-center px-4">
         <div className="mr-4 hidden md:flex">
           <Link className="mr-6 flex items-center space-x-2" href="/">
-            <div className="h-6 w-6 rounded bg-primary" />
+            <Image src="/logo.svg" alt="dot-ui" width={24} height={24} />
             <span className="hidden font-bold sm:inline-block">dot-ui</span>
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
@@ -81,7 +82,13 @@ export function Navigation() {
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <div className="w-full flex-1 md:w-auto md:flex-none">
             <Link className="flex items-center space-x-2 md:hidden" href="/">
-              <div className="h-6 w-6 rounded bg-primary" />
+              <Image
+                src="/logo.svg"
+                alt="dot-ui"
+                width={24}
+                height={24}
+                className="h-6 w-6 rounded bg-primary"
+              />
               <span className="font-bold">dot-ui</span>
             </Link>
           </div>

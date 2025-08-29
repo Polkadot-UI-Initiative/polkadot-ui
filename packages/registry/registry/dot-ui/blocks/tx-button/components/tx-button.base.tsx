@@ -13,7 +13,9 @@ import type {
   ISubmittableResult,
 } from "dedot/types";
 import { useDedot } from "@/registry/dot-ui/providers/dedot-provider";
-import { toTypinkId } from "@/registry/dot-ui/lib/config.dedot";
+import { toTypinkId } from "@/registry/dot-ui/lib/utils.dedot";
+import { getChainIdForClient } from "@/registry/dot-ui/lib/client-map.dedot";
+import { dedotConfig } from "@/registry/dot-ui/lib/config.dedot";
 import type { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 import { txNotification } from "../../tx-notification/components/tx-notification.base";
 
@@ -100,6 +102,7 @@ export function TxButtonBase({
   }, [chainId]);
 
   const extrinsic = useMemo(() => {
+    console.log("aaatx", tx);
     return tx ?? null;
   }, [tx]);
 
@@ -118,14 +121,35 @@ export function TxButtonBase({
   }, [extrinsic, apis, targetChainId]);
 
   const inferredNetwork = useMemo(() => {
-    if (!inferredChainId) return null;
-    const list = availableChains ?? [];
-    const typinkId = toTypinkId(inferredChainId);
-    const match = list.find(
-      (n): n is NonNullable<typeof n> => !!n && n.id === typinkId
-    );
-    return match ?? null;
-  }, [inferredChainId, availableChains]);
+    // Prefer dedotConfig as source of truth for decimals/symbol when possible
+    if (inferredChainId) {
+      const cfg = dedotConfig.chains[inferredChainId];
+      if (cfg?.network) return cfg.network;
+    }
+    // Fallback: try to read from extrinsic's client via WeakMap
+    if (extrinsic) {
+      const anyExtrinsic = extrinsic as unknown as {
+        client?: unknown;
+        api?: unknown;
+      };
+      const client = anyExtrinsic?.client ?? anyExtrinsic?.api ?? null;
+      const chainId = getChainIdForClient(client);
+      if (chainId) {
+        const cfg = dedotConfig.chains[chainId];
+        if (cfg?.network) return cfg.network;
+      }
+    }
+    // Last resort: use availableChains by mapping chainId -> typinkId
+    if (inferredChainId) {
+      const list = availableChains ?? [];
+      const typinkId = toTypinkId(inferredChainId);
+      const match = list.find(
+        (n): n is NonNullable<typeof n> => !!n && n.id === typinkId
+      );
+      if (match) return match;
+    }
+    return null;
+  }, [inferredChainId, extrinsic, availableChains]);
 
   const decimalsToUse =
     inferredNetwork?.decimals ?? activeChain?.decimals ?? 10;

@@ -1,12 +1,9 @@
 "use client";
 
-import { dotUiConfig } from "@/registry/dot-ui/lib/config.dot-ui";
 import {
-  SubstrateExplorer,
   type IdentitySearchResult,
   type PolkadotIdentity,
 } from "@/registry/dot-ui/lib/types.dot-ui";
-import { type ChainIdWithIdentity } from "@/registry/dot-ui/lib/types.papi";
 import { cn } from "@/registry/dot-ui/lib/utils";
 import {
   truncateAddress,
@@ -20,26 +17,25 @@ import { Identicon } from "@polkadot/react-identicon";
 import { type IconTheme } from "@polkadot/react-identicon/types";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ClientConnectionStatus, NetworkId, paseoPeople } from "typink";
 import { Check, CircleCheck, Copy, Loader2 } from "lucide-react";
 import { forwardRef, ReactNode, useEffect, useRef, useState } from "react";
 
 // Services interface for dependency injection
+//TODO this has dedot dependencies, we need generic service types
 export interface AddressInputServices {
   // Hook for fetching identity by address
   useIdentity: (
     address: string,
-    identityChain?: ChainIdWithIdentity
+    identityChain?: NetworkId
   ) => UseQueryResult<PolkadotIdentity | null, Error>;
   // Hook for searching identities by display name
   useIdentitySearch: (
     displayName: string | null,
-    identityChain?: ChainIdWithIdentity
+    identityChain?: NetworkId
   ) => UseQueryResult<IdentitySearchResult[], Error>;
-  // Provider context hook for chain state
-  useProvider: () => {
-    isLoading: (chainId: ChainIdWithIdentity) => boolean;
-    isConnected: (chainId: ChainIdWithIdentity) => boolean;
-  };
+  clientStatus: ClientConnectionStatus;
+  explorerUrl: string;
 }
 
 export interface AddressInputBaseProps {
@@ -59,7 +55,7 @@ export interface AddressInputBaseProps {
   showIdenticon?: boolean;
   identiconTheme?: IconTheme;
   className?: string;
-  identityChain?: ChainIdWithIdentity;
+  identityChain?: NetworkId;
   // Injected services - this makes it reusable
   services: AddressInputServices;
 }
@@ -110,7 +106,7 @@ export const AddressInputBase = forwardRef<
       value = "",
       onChange,
       format = "ss58",
-      identityChain = "paseo_people",
+      identityChain = paseoPeople.id,
       withIdentityLookup = true,
       withIdentitySearch = true,
       withCopyButton = true,
@@ -121,14 +117,12 @@ export const AddressInputBase = forwardRef<
       showIdenticon = true,
       identiconTheme = "polkadot",
       className,
-      services, // Injected services
+      services, // Injected services - this makes it reusable for papi + dedot
       ...props
     },
     _ref
   ) => {
-    // Extract services
-    const { useIdentity, useIdentitySearch, useProvider } = services;
-    const { isLoading, isConnected } = useProvider();
+    const { useIdentity, useIdentitySearch, clientStatus } = services;
 
     const [inputValue, setInputValue] = useState(value);
     const [validationResult, setValidationResult] =
@@ -233,7 +227,7 @@ export const AddressInputBase = forwardRef<
     // Loading states
     const isIdentityLoading = polkadotIdentity.isLoading;
     const isIdentitySearching = identitySearch.isLoading;
-    const isApiLoading = isLoading(identityChain);
+    const isApiLoading = clientStatus === ClientConnectionStatus.Connecting;
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(e.target.value);
@@ -535,6 +529,7 @@ export const AddressInputBase = forwardRef<
               <Button
                 type="button"
                 variant="ghost"
+                size="icon"
                 onClick={handleCopy}
                 className="absolute right-2 top-1/2 -translate-y-1/2 p-2 h-7 w-7 rounded-sm"
                 title={isCopied ? "Copied!" : "Copy address"}
@@ -558,11 +553,14 @@ export const AddressInputBase = forwardRef<
         {/* Fixed height when status messages are shown to prevent layout shift */}
         <div className="min-h-[60px] space-y-1">
           {/* Connection status */}
-          {validationResult?.type === "ss58" && !isConnected(identityChain) && (
-            <div className="flex items-center gap-2 text-sm text-yellow-600">
-              <span>Not connected to chain. Identity lookup unavailable.</span>
-            </div>
-          )}
+          {validationResult?.type === "ss58" &&
+            clientStatus !== ClientConnectionStatus.Connected && (
+              <div className="flex items-center gap-2 text-sm text-yellow-600">
+                <span>
+                  Not connected to chain. Identity lookup unavailable.
+                </span>
+              </div>
+            )}
 
           {/* Validation error display */}
           {validationResult?.error && (
@@ -600,11 +598,9 @@ export const AddressInputBase = forwardRef<
           {currentIdentity?.verified && (
             <div className="flex items-center gap-1 text-sm">
               <CircleCheck className="h-5 w-5 text-background fill-green-600 stroke-background" />
-              {dotUiConfig.chains[identityChain].explorerUrls?.[
-                SubstrateExplorer.Subscan
-              ] ? (
+              {services.explorerUrl ? (
                 <a
-                  href={`${dotUiConfig.chains[identityChain as keyof typeof dotUiConfig.chains]?.explorerUrls?.[SubstrateExplorer.Subscan]}account/${inputValue}`}
+                  href={`${services.explorerUrl}account/${inputValue}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:underline hover:after:content-['_↗']"

@@ -1,36 +1,40 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useDedot } from "@/registry/dot-ui/providers/dedot-provider";
+import {
+  ClientConnectionStatus,
+  NetworkId,
+  paseoPeople,
+  usePolkadotClient,
+} from "typink";
 import { hasPositiveIdentityJudgement } from "@/registry/dot-ui/lib/utils.dot-ui";
 import { type IdentitySearchResult } from "@/registry/dot-ui/lib/types.dot-ui";
-import { type ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 import { PalletIdentityRegistration } from "@dedot/chaintypes/substrate";
 import { AccountId32 } from "dedot/codecs";
 
 export function useIdentitySearch(
   displayName: string | null | undefined,
-  identityChain: ChainId = "paseo_people"
+  identityChain: NetworkId = paseoPeople.id
 ) {
-  const { apis, isConnected } = useDedot();
+  const { client: peopleClient, status: peopleStatus } =
+    usePolkadotClient(identityChain);
 
   return useQuery({
     queryKey: ["identity-search-dedot", displayName, identityChain],
     queryFn: async (): Promise<IdentitySearchResult[]> => {
-      const api = apis[identityChain];
-
       if (
-        !api ||
+        !peopleClient ||
         !displayName ||
         displayName.length < 1 ||
-        !isConnected(identityChain)
+        peopleStatus !== ClientConnectionStatus.Connected
       ) {
         return [];
       }
 
       try {
         // Get all identity entries using Dedot API
-        const storageQuery = api.query.identity.identityOf as unknown as {
+        const storageQuery = peopleClient.query.identity
+          .identityOf as unknown as {
           entries(): Promise<[AccountId32, PalletIdentityRegistration][]>;
         };
         const entries = await storageQuery.entries();
@@ -99,10 +103,10 @@ export function useIdentitySearch(
       }
     },
     enabled:
-      !!apis[identityChain] &&
+      !!peopleClient &&
       !!displayName &&
       displayName.trim().length >= 1 &&
-      isConnected(identityChain),
+      peopleStatus === ClientConnectionStatus.Connected,
     staleTime: 5 * 60 * 1000, // 5 minutes - identities don't change often
     retry: 3, // Increased retry count
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
