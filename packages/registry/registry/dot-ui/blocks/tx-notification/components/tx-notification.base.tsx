@@ -39,7 +39,7 @@ export function cancelTxStatusNotification(
   title: string = "Transaction cancelled",
   description: string = ""
 ) {
-  toast.info(
+  toast.error(
     <>
       <ChainLogo network={network} /> {title}
     </>,

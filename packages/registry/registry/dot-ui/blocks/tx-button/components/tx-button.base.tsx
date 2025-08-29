@@ -1,4 +1,10 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// We intentionally allow `any` in a few generic positions to interoperate with
+// typink's UseTxReturnType and conditional Args<T> utilities. This is safe
+// because the runtime paths remain safe (dedot enforces submittable types) and
+// this only relaxes compile-time plumbing so call sites stay simple and
+// correctly inferred.
 
 import { Button, ButtonProps, buttonVariants } from "@/components/ui/button";
 
@@ -20,7 +26,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { useBalance, useTxFee, useTypink } from "typink";
+import { useBalance, useTx, useTxFee, useTypink } from "typink";
 import type {
   UseTxReturnType,
   TxSignAndSendParameters,
@@ -33,6 +39,14 @@ export interface TxButtonIcons {
   finalized?: React.ReactNode;
   inBestBlock?: React.ReactNode;
   error?: React.ReactNode;
+}
+
+// Minimal, generic-agnostic surface for pluggable adapters (dedot, polkadot.js, etc.)
+export interface TxButtonServices {
+  isConnected?: boolean;
+  connectedAccount?: { address?: string } | null;
+  symbol?: string;
+  decimals?: number;
 }
 
 type AnyFn = (...args: any[]) => any;
@@ -51,6 +65,7 @@ export type TxButtonBaseProps<
     resultDisplayDuration?: number;
     withNotification?: boolean;
     icons?: TxButtonIcons;
+    services?: TxButtonServices;
   };
 
 export function TxButtonBase<
@@ -91,7 +106,7 @@ export function TxButtonBase<
     tx: tx as UseTxReturnType<ExtractTxFn<TTx>>,
     enabled: true,
     networkId,
-    ...(args !== undefined ? { args } : {}),
+    args: (args ?? ([] as [])) as Parameters<ExtractTxFn<TTx>>,
   } as unknown as Args<Parameters<ExtractTxFn<TTx>>> & {
     tx: UseTxReturnType<ExtractTxFn<TTx>>;
     enabled?: boolean;
@@ -140,7 +155,7 @@ export function TxButtonBase<
       : undefined;
 
     try {
-      const paramsBase = {
+      const params = {
         networkId,
         callback: (result: ISubmittableResult) => {
           setTxStatus(result.status);
@@ -149,14 +164,25 @@ export function TxButtonBase<
             txStatusNotification(result, toastId as string, targetNetwork);
           }
         },
-      };
-      const params = (
-        args !== undefined ? { ...paramsBase, args } : paramsBase
-      ) as TxSignAndSendParameters<ExtractTxFn<TTx>>;
-      await tx.signAndSend(params);
+        args: (args ?? ([] as [])) as Parameters<ExtractTxFn<TTx>>,
+      } as unknown as TxSignAndSendParameters<ExtractTxFn<TTx>>;
+      await tx.signAndSend({
+        args: ["test"],
+        callback: (result: ISubmittableResult) => {
+          setTxStatus(result.status);
+          console.log("tx status", result);
+          if (withNotification) {
+            txStatusNotification(result, toastId as string, targetNetwork);
+          }
+        },
+      });
     } catch (e) {
       if (withNotification && toastId)
-        cancelTxStatusNotification(toastId as string, targetNetwork);
+        cancelTxStatusNotification(
+          toastId as string,
+          targetNetwork,
+          e instanceof Error ? e.message : String(e)
+        );
       setSubmitError(e instanceof Error ? e.message : String(e));
       setTxStatus(null);
     }
@@ -172,6 +198,19 @@ export function TxButtonBase<
 
   return (
     <div className="inline-flex flex-col gap-1">
+      <div className="text-xs text-muted-foreground font-medium flex justify-start flex-wrap gap-1 flex-col">
+        <div>account: {connectedAccount?.address}</div>
+        <div>
+          accountBalance:{" "}
+          {formatBalance({
+            value: balance?.free,
+            decimals: targetNetwork?.decimals ?? 10,
+            unit: targetNetwork?.symbol ?? "UNIT",
+            nDecimals: 4,
+          })}
+        </div>
+        <div>network: {targetNetwork?.id}</div>
+      </div>
       <div className="text-xs text-muted-foreground font-medium h-4 flex items-center justify-start">
         {fee !== null ? (
           <span className="flex items-center gap-1">
@@ -194,7 +233,6 @@ export function TxButtonBase<
           </span>
         )}
       </div>
-
       <Button
         onClick={onExecute}
         variant={variant}
@@ -230,7 +268,6 @@ export function TxButtonBase<
           </>
         )}
       </Button>
-
       <div className="text-xs font-medium h-4 flex items-center">
         {!connectedAccount?.address ? (
           <span className="text-amber-500">Please select an account</span>

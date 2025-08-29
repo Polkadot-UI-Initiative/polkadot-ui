@@ -21,48 +21,48 @@ import { WalletSelect } from "@/registry/dot-ui/blocks/connect-wallet/components
 import { RemarkButton } from "@/components/remark-button";
 
 const examples = [
-  {
-    name: "Address Input",
-    href: "/docs/components/address-input",
-    code: "address-input",
-    description:
-      "Input component with SS58/Ethereum validation and identity lookup",
-    component: (
-      <div className="flex flex-col gap-2 w-full">
-        <Label>Address</Label>
-        <AddressInputWithProvider
-          className="w-full"
-          truncate={8}
-          format="both"
-        />
-      </div>
-    ),
-  },
-  {
-    name: "Require Connection",
-    href: "/docs/components/require-connection",
-    code: "require-connection",
-    description:
-      "Conditionally render content based on blockchain connection status",
-    component: (
-      <div className="w-full space-y-3">
-        <RequireConnection
-          chainId="paseo"
-          fallback={
-            <div className="flex items-center gap-2 text-muted-foreground text-sm">
-              <WifiOff className="w-4 h-4" />
-              <span>Connect to Paseo</span>
-            </div>
-          }
-        >
-          <div className="flex items-center gap-2 text-green-600 text-sm">
-            <Wifi className="w-4 h-4" />
-            <span>Connected to Paseo</span>
-          </div>
-        </RequireConnection>
-      </div>
-    ),
-  },
+  // {
+  //   name: "Address Input",
+  //   href: "/docs/components/address-input",
+  //   code: "address-input",
+  //   description:
+  //     "Input component with SS58/Ethereum validation and identity lookup",
+  //   component: (
+  //     <div className="flex flex-col gap-2 w-full">
+  //       <Label>Address</Label>
+  //       <AddressInputWithProvider
+  //         className="w-full"
+  //         truncate={8}
+  //         format="both"
+  //       />
+  //     </div>
+  //   ),
+  // },
+  // {
+  //   name: "Require Connection",
+  //   href: "/docs/components/require-connection",
+  //   code: "require-connection",
+  //   description:
+  //     "Conditionally render content based on blockchain connection status",
+  //   component: (
+  //     <div className="w-full space-y-3">
+  //       <RequireConnection
+  //         chainId="paseo"
+  //         fallback={
+  //           <div className="flex items-center gap-2 text-muted-foreground text-sm">
+  //             <WifiOff className="w-4 h-4" />
+  //             <span>Connect to Paseo</span>
+  //           </div>
+  //         }
+  //       >
+  //         <div className="flex items-center gap-2 text-green-600 text-sm">
+  //           <Wifi className="w-4 h-4" />
+  //           <span>Connected to Paseo</span>
+  //         </div>
+  //       </RequireConnection>
+  //     </div>
+  //   ),
+  // },
   {
     name: "Wallet & Account Selection",
     href: "/docs/components/wallet-select",

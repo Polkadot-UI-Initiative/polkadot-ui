@@ -60,12 +60,11 @@ export type TxButtonProps<T extends ChainId = ChainId> =
 
 export function TxButton<T extends ChainId>(props: TxButtonProps<T>) {
   const { connectedAccount } = useTypink();
-
   // Simple services object with type-compatible wrappers
   const services = useMemo(
     () => ({
       connectedAccount,
-      isConnected: !!connectedAccount?.address,
+      useIsConnected: () => !!connectedAccount?.address,
       decimals: 0,
       symbol: "",
     }),
@@ -75,7 +74,7 @@ export function TxButton<T extends ChainId>(props: TxButtonProps<T>) {
   return (
     <TxButtonBase
       {...(props as unknown as TxButtonBaseProps)}
-      // services={services}
+      services={services}
     />
   );
 }
