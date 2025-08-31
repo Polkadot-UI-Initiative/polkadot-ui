@@ -4,6 +4,25 @@
   "homepage": "https://dot-ui.com",
   "items": [
     {
+      "name": "dedot-demo",
+      "type": "registry:component",
+      "title": "Dedot Demo",
+      "description": "A demo component for dedot.",
+      "dependencies": ["dedot", "typink"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "registry/dot-ui/blocks/dedot-demo/dedot-demo.page.tsx",
+          "type": "registry:page",
+          "target": "app/dedot-demo/page.tsx"
+        },
+        {
+          "path": "registry/dot-ui/blocks/dedot-demo/dedot-demo.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "address-input",
       "type": "registry:component",
       "title": "Address Input (dedot)",
@@ -77,7 +96,7 @@
         {
           "path": "registry/dot-ui/blocks/require-connection/demo/page.dedot.tsx",
           "type": "registry:page",
-          "target": "app/demo/dot-ui/require-connection/page.tsx"
+          "target": "app/require-connection/page.tsx"
         },
         {
           "path": "registry/dot-ui/blocks/require-connection/demo/require-connection-demo.tsx",
