@@ -5,7 +5,7 @@
   "description": "Registry server and documentation for Polkadot UI components",
   "scripts": {
     "dev": "next dev --turbopack",
-    "postinstall": "pnpm registry:build && pnpm registry:copy && fumadocs-mdx",
+    "postinstall": "pnpm papi && pnpm registry:build && pnpm registry:copy && fumadocs-mdx",
     "build": "pnpm registry:build && pnpm registry:copy && next build",
     "start": "next start",
     "lint": "next lint",
