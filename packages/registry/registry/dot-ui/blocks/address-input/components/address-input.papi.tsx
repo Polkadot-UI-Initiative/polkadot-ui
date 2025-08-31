@@ -1,20 +1,20 @@
 "use client";
 
-import { ClientConnectionStatus } from "@/registry/dot-ui/lib/types.dot-ui";
-import {
-  PolkadotProvider,
-  usePapi,
-} from "@/registry/dot-ui/providers/papi-provider";
 import { useMemo } from "react";
 import {
   AddressInputBase,
   AddressInputProvider,
   type AddressInputBaseProps,
-} from "./address-input.base";
+} from "@/registry/dot-ui/blocks/address-input/components/address-input.base";
+import { ClientConnectionStatus } from "@/registry/dot-ui/lib/types.dot-ui";
 
 // Import PAPI-specific hooks
 import { useIdentity as papiUseIdentity } from "@/registry/dot-ui/blocks/address-input/hooks/use-identity.papi";
 import { useIdentitySearch as papiUseIdentitySearch } from "@/registry/dot-ui/blocks/address-input/hooks/use-search-identity.papi";
+import {
+  PolkadotProvider,
+  usePapi,
+} from "@/registry/dot-ui/providers/papi-provider";
 import { type ChainIdWithIdentity } from "@/registry/dot-ui/lib/types.papi";
 
 // Props type - removes services prop since we inject it

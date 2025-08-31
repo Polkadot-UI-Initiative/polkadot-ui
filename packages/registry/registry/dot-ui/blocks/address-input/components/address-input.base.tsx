@@ -23,7 +23,6 @@ import { Check, CircleCheck, Copy, Loader2 } from "lucide-react";
 import { forwardRef, ReactNode, useEffect, useRef, useState } from "react";
 
 // Services interface for dependency injection
-//TODO this has dedot dependencies, we need generic service types
 export interface AddressInputServices<TNetworkId extends string = string> {
   // Hook for fetching identity by address
   useIdentity: (

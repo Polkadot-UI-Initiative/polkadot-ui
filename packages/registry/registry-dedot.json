@@ -80,6 +80,11 @@
           "target": "app/demo/dot-ui/require-connection/page.tsx"
         },
         {
+          "path": "registry/dot-ui/blocks/require-connection/demo/require-connection-demo.tsx",
+          "type": "registry:component",
+          "target": "app/demo/dot-ui/require-connection/require-connection-demo.tsx"
+        },
+        {
           "path": "registry/dot-ui/blocks/require-connection/components/require-connection.base.tsx",
           "type": "registry:component"
         },

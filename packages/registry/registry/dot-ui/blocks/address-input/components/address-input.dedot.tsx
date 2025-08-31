@@ -1,6 +1,7 @@
 "use client";
 
-import { PolkadotProvider } from "@/registry/dot-ui/providers/dedot-provider";
+import { useMemo } from "react";
+import { ClientOnly } from "@/components/client-only";
 import {
   AddressInputBase,
   AddressInputProvider,
@@ -8,11 +9,10 @@ import {
 } from "@/registry/dot-ui/blocks/address-input/components/address-input.base";
 
 // Import Dedot-specific hooks
+import { PolkadotProvider } from "@/registry/dot-ui/providers/dedot-provider";
 import { useIdentity } from "@/registry/dot-ui/blocks/address-input/hooks/use-identity.dedot";
 import { useIdentitySearch } from "@/registry/dot-ui/blocks/address-input/hooks/use-search-identity.dedot";
-import { useMemo } from "react";
 import { paseoPeople, usePolkadotClient } from "typink";
-import { ClientOnly } from "@/components/client-only";
 
 export type AddressInputProps = Omit<AddressInputBaseProps, "services">;
 
