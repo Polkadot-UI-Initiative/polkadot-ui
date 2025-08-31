@@ -21,10 +21,8 @@ function RequireConnectionInner(props: RequireConnectionProps) {
 
   const services = useMemo(
     () => ({
-      useProvider: () => ({
-        isLoading: status === ClientConnectionStatus.Connecting,
-        isConnected: status === ClientConnectionStatus.Connected,
-      }),
+      isLoading: status === ClientConnectionStatus.Connecting,
+      isConnected: status === ClientConnectionStatus.Connected,
     }),
     [status]
   );

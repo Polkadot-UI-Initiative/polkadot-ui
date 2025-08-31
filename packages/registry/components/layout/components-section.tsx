@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { BookText } from "lucide-react";
 import { examples } from "../examples";
+import { OpenInV0Button } from "../open-in-v0-button";
 
 export function ComponentsSection() {
   return (
@@ -41,12 +42,12 @@ export function ComponentsSection() {
                   <BookText /> Docs →
                 </Button>
               </Link>
-              {/* <OpenInV0Button
+              <OpenInV0Button
                 name={example.code}
                 title={example.name}
-                prompt={example.description}
-                variant="ghost"
-              /> */}
+                variant="outline"
+                prompt={example.description?.toString() ?? "Explain this code"}
+              />
             </CardFooter>
           </Card>
         ))}

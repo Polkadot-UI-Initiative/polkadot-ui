@@ -23,10 +23,8 @@ export function RequireConnection(props: RequireConnectionProps) {
   // Simple services object with type-compatible wrappers
   const services = useMemo(
     () => ({
-      useProvider: () => ({
-        isLoading: isLoading(props.chainId),
-        isConnected: isConnected(props.chainId),
-      }),
+      isLoading: isLoading(props.chainId),
+      isConnected: isConnected(props.chainId),
     }),
     [isLoading, isConnected, props.chainId]
   );
