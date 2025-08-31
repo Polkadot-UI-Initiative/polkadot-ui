@@ -19,6 +19,10 @@
         {
           "path": "registry/dot-ui/blocks/dedot-demo/dedot-demo.tsx",
           "type": "registry:component"
+        },
+        {
+          "path": "registry/dot-ui/providers/dedot-provider.tsx",
+          "type": "registry:lib"
         }
       ]
     },
