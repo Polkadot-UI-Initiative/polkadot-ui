@@ -17,7 +17,7 @@ import { examples } from "../examples";
 
 export function ComponentsSection() {
   return (
-    <section className="mx-8 space-y-6 py-8 md:py-8 lg:py-12">
+    <section className="mx-8 space-y-6 py-8 md:py-8 lg:py-12" id="components">
       {/* Examples grid */}
       <div className="w-full grid justify-center gap-4 sm:grid-cols-1 lg:grid-cols-3 md:grid-cols-2 2xl:grid-cols-4 auto-rows-fr">
         {examples.map((example) => (
@@ -50,13 +50,13 @@ export function ComponentsSection() {
             </CardFooter>
           </Card>
         ))}
-        <div className="flex flex-col items-center justify-center w-full col-span-full h-32">
-          <span className="text-lg">more components coming soon</span>
+        <div className="flex flex-col items-center justify-center">
+          <span className="text-lg">What&apos;s missing here?</span>
           <Link
             href="https://github.com/Polkadot-UI-Initiative/dot-ui"
             className="text-xs text-primary hover:underline"
           >
-            Follow on GitHub →
+            Open an issue or PR on GitHub →
           </Link>
         </div>
       </div>

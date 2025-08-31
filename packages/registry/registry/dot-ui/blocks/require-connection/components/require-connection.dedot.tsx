@@ -8,6 +8,7 @@ import {
   type RequireConnectionBaseProps,
 } from "./require-connection.base";
 import { ClientConnectionStatus, NetworkId, usePolkadotClient } from "typink";
+import { ClientOnly } from "@/components/client-only";
 
 // Props type - removes services prop since we inject it
 export type RequireConnectionProps = Omit<
@@ -15,10 +16,9 @@ export type RequireConnectionProps = Omit<
   "services"
 >;
 
-export function RequireConnection(props: RequireConnectionProps) {
+function RequireConnectionInner(props: RequireConnectionProps) {
   const { status } = usePolkadotClient(props.chainId);
 
-  // Simple services object with type-compatible wrappers
   const services = useMemo(
     () => ({
       useProvider: () => ({
@@ -30,6 +30,14 @@ export function RequireConnection(props: RequireConnectionProps) {
   );
 
   return <RequireConnectionBase<NetworkId> {...props} services={services} />;
+}
+
+export function RequireConnection(props: RequireConnectionProps) {
+  return (
+    <ClientOnly>
+      <RequireConnectionInner {...props} />
+    </ClientOnly>
+  );
 }
 
 // Wrapped version with provider for drop-in usage

@@ -35,7 +35,8 @@ type CompositeApi = {
 type PapiContextValue = BasePolkadotContextValue<
   ConfiguredChainApi<ChainId>,
   Partial<CompositeApi>,
-  ChainId
+  ChainId, // TNetwork (we store the chain id as the currentChain descriptor)
+  ChainId // TChainId (ensure all funcs accept ChainId instead of string)
 >;
 
 const PolkadotContext = createContext<PapiContextValue | undefined>(undefined);
@@ -150,8 +151,10 @@ export function PolkadotProvider({
     currentChain
   );
 
+  // TODO: update this to use the types from typink
   const value: PapiContextValue = {
     currentChain,
+    currentChainId: currentChain,
     api: apis[currentChain] || null,
     error: errorStates.get(currentChain) || null,
     apis,
@@ -162,6 +165,12 @@ export function PolkadotProvider({
     initializeChain,
     chainName: currentChainConfig.displayName,
     availableChains: getChainIds(polkadotConfig.chains),
+    availableChainIds: getChainIds(polkadotConfig.chains),
+    wallets: [],
+    connectWallet: () => {},
+    accounts: [],
+    setActiveAccount: () => {},
+    defaultCaller: "",
   };
 
   return (

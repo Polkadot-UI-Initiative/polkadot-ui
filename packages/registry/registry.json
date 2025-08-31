@@ -115,7 +115,7 @@
           "target": "app/demo/dot-ui/connect-wallet/page.tsx"
         },
         {
-          "path": "registry/dot-ui/blocks/connect-wallet/components/wallet-selecttsx",
+          "path": "registry/dot-ui/blocks/connect-wallet/components/wallet-select.tsx",
           "type": "registry:component"
         },
         {

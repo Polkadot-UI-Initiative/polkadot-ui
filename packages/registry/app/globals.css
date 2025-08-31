@@ -147,6 +147,15 @@
   }
 }
 
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-[var(--polkadot-pink)] via-[var(--polkadot-violet)] to-[var(--polkadot-cyan)] bg-clip-text text-transparent;
+  }
+  .text-fast-shadow {
+    text-shadow: -10px 0 0 var(--polkadot-pink);
+  }
+}
+
 /* Fix sidebar positioning for fixed header */
 [data-docs-layout] aside[data-sidebar] {
   top: 3.5rem !important; /* 56px / 14 * 0.25rem = 3.5rem */

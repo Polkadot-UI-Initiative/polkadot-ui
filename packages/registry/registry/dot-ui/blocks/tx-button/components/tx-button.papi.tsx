@@ -1,13 +1,13 @@
 "use client";
 
 import { PolkadotProvider } from "@/registry/dot-ui/providers/papi-provider";
-import { TxButtonBase, type TxButtonBaseProps } from "./tx-button.base";
+import { type TxButtonBaseProps } from "./tx-button.base";
 
 // Props type - removes services prop since we inject it
 export type TxButtonProps = Omit<TxButtonBaseProps, "services">;
 
 export function TxButton() {
-  return <TxButtonBase>Papi not implemented</TxButtonBase>;
+  return <>not implemented</>;
 }
 
 // Wrapped version with provider for drop-in usage

@@ -14,13 +14,22 @@ export function HeroSection() {
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
           </Link>
         </Button>
-        <h1 className="text-center text-xl font-bold leading-tight tracking-tighter md:text-6xl lg:leading-[1.1]">
-          Build your App with Web3 Components
+        <h1 className="text-center text-xl font-bold leading-tight tracking-tight md:text-6xl lg:leading-[1.1]">
+          Ship <span className="text-gradient">nicer</span> Polkadot <br /> Apps{" "}
+          <span className="text-gradient italic">faster</span>
         </h1>
         <span className="max-w-[750px] text-center text-lg text-muted-foreground sm:text-lg">
-          A set of beautifully-designed, accessible components for the Polkadot
-          and EVM ecosystem. Type-safe, customizable, and built with modern
-          React patterns. Open Source.
+          Polkadot UI react components deliver best UX for your apps. <br />
+          Fully typesafe, customizable, open source.
+          <br />
+          Powered by{" "}
+          <Link href="https://papi.how" className="underline text-foreground">
+            papi
+          </Link>{" "}
+          and{" "}
+          <Link href="https://dedot.dev" className="underline text-foreground">
+            dedot
+          </Link>
         </span>
 
         <div className="py-6">
@@ -32,7 +41,13 @@ export function HeroSection() {
             <Link href="/docs">Get Started</Link>
           </Button>
           <Button variant="outline" asChild>
-            <Link href="/components">Browse Components</Link>
+            <Link href="#components">Browse Components ↓</Link>
+          </Button>
+          <Button variant="outline" disabled>
+            Add MCP to cursor →{" "}
+            <span className="text-xs text-muted-foreground bg-muted rounded-md px-2 py-1">
+              soon
+            </span>
           </Button>
         </div>
       </div>

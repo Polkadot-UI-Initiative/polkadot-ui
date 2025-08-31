@@ -1,5 +1,5 @@
 import { ClientOnly } from "../client-only";
-import { DemoTxButton } from "./demo-tx-button";
+import { DemoTxButton } from "./example-tx-button";
 import type { ComponentExample } from "./types";
 
 export const txButtonExample: ComponentExample = {
