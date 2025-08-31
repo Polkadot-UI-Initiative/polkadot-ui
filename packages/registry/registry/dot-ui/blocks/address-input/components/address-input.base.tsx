@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ClientConnectionStatus,
   type IdentitySearchResult,
   type PolkadotIdentity,
 } from "@/registry/dot-ui/lib/types.dot-ui";
@@ -17,28 +18,28 @@ import { Identicon } from "@polkadot/react-identicon";
 import { type IconTheme } from "@polkadot/react-identicon/types";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ClientConnectionStatus, NetworkId, paseoPeople } from "typink";
+
 import { Check, CircleCheck, Copy, Loader2 } from "lucide-react";
 import { forwardRef, ReactNode, useEffect, useRef, useState } from "react";
 
 // Services interface for dependency injection
 //TODO this has dedot dependencies, we need generic service types
-export interface AddressInputServices {
+export interface AddressInputServices<TNetworkId extends string = string> {
   // Hook for fetching identity by address
   useIdentity: (
     address: string,
-    identityChain?: NetworkId
+    identityChain?: TNetworkId
   ) => UseQueryResult<PolkadotIdentity | null, Error>;
   // Hook for searching identities by display name
   useIdentitySearch: (
     displayName: string | null,
-    identityChain?: NetworkId
+    identityChain?: TNetworkId
   ) => UseQueryResult<IdentitySearchResult[], Error>;
   clientStatus: ClientConnectionStatus;
   explorerUrl: string;
 }
 
-export interface AddressInputBaseProps {
+export interface AddressInputBaseProps<TNetworkId extends string = string> {
   value?: string;
   onChange?: (value: string) => void;
   label?: string;
@@ -55,7 +56,7 @@ export interface AddressInputBaseProps {
   showIdenticon?: boolean;
   identiconTheme?: IconTheme;
   className?: string;
-  identityChain?: NetworkId;
+  identityChain?: TNetworkId;
   required?: boolean;
   // Injected services - this makes it reusable
   services: AddressInputServices;
@@ -107,7 +108,7 @@ export const AddressInputBase = forwardRef<
       value = "",
       onChange,
       format = "ss58",
-      identityChain = paseoPeople.id,
+      identityChain = undefined,
       withIdentityLookup = true,
       withIdentitySearch = true,
       withCopyButton = true,

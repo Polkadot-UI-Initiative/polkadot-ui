@@ -1,16 +1,16 @@
 "use client";
 
-import { useMemo } from "react";
+import { ClientConnectionStatus } from "@/registry/dot-ui/lib/types.dot-ui";
 import {
   PolkadotProvider,
   usePapi,
 } from "@/registry/dot-ui/providers/papi-provider";
+import { useMemo } from "react";
 import {
   AddressInputBase,
   AddressInputProvider,
   type AddressInputBaseProps,
 } from "./address-input.base";
-import { ClientConnectionStatus } from "typink";
 
 // Import PAPI-specific hooks
 import { useIdentity as papiUseIdentity } from "@/registry/dot-ui/blocks/address-input/hooks/use-identity.papi";
