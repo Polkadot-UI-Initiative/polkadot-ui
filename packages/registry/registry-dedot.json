@@ -14,7 +14,8 @@
         "ethers",
         "@tanstack/react-query",
         "@polkadot/react-identicon",
-        "dedot"
+        "dedot",
+        "typink"
       ],
       "registryDependencies": ["input", "label", "badge", "button"],
       "files": [
@@ -70,7 +71,7 @@
       "type": "registry:component",
       "title": "Require Connection (dedot)",
       "description": "A smart wrapper component that conditionally renders content based on chain connection status, with loading states and fallback UI support using dedot.",
-      "dependencies": ["dedot"],
+      "dependencies": ["dedot", "typink"],
       "registryDependencies": [],
       "files": [
         {
