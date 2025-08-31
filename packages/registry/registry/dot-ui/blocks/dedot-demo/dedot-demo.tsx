@@ -1,3 +1,5 @@
+import { PolkadotProvider } from "../../providers/dedot-provider";
+
 export default function DedotDemo() {
-  return <div>DedotDemo</div>;
+  return <PolkadotProvider>something with providers</PolkadotProvider>;
 }
