@@ -22,7 +22,7 @@
         },
         {
           "path": "registry/dot-ui/providers/dedot-provider.tsx",
-          "type": "registry:lib"
+          "type": "registry:component"
         }
       ]
     },
