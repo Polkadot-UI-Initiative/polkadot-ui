@@ -41,8 +41,7 @@
         },
         {
           "path": "registry/dot-ui/blocks/address-input/demo/address-input-demo.tsx",
-          "type": "registry:component",
-          "target": "app/demo/dot-ui/address-input/address-input-demo.tsx"
+          "type": "registry:component"
         },
         {
           "path": "registry/dot-ui/providers/dedot-provider.tsx",
@@ -81,8 +80,7 @@
         },
         {
           "path": "registry/dot-ui/blocks/require-connection/demo/require-connection-demo.tsx",
-          "type": "registry:component",
-          "target": "app/demo/dot-ui/require-connection/require-connection-demo.tsx"
+          "type": "registry:component"
         },
         {
           "path": "registry/dot-ui/blocks/require-connection/components/require-connection.base.tsx",
