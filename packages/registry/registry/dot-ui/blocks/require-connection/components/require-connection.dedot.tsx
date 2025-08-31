@@ -1,14 +1,13 @@
 "use client";
 
-import { useMemo } from "react";
-import { PolkadotProvider } from "@/registry/dot-ui/providers/dedot-provider";
-// NetworkId intentionally not used here; using SupportedChainId for autocomplete
+import { ClientOnly } from "@/registry/dot-ui/blocks/client-only";
 import {
   RequireConnectionBase,
   type RequireConnectionBaseProps,
-} from "./require-connection.base";
+} from "@/registry/dot-ui/blocks/require-connection/components/require-connection.base";
+import { PolkadotProvider } from "@/registry/dot-ui/providers/dedot-provider";
+import { useMemo } from "react";
 import { ClientConnectionStatus, NetworkId, usePolkadotClient } from "typink";
-import { ClientOnly } from "@/components/client-only";
 
 // Props type - removes services prop since we inject it
 export type RequireConnectionProps = Omit<

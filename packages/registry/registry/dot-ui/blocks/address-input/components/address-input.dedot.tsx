@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { ClientOnly } from "@/components/client-only";
+import { ClientOnly } from "@/registry/dot-ui/blocks/client-only";
 import {
   AddressInputBase,
   AddressInputProvider,

@@ -4,21 +4,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ClientOnly } from "../../registry/dot-ui/blocks/client-only";
 import { RemarkButton } from "../remark-button";
 
-import type { ComponentExample } from "./types";
-
-export const txButtonExample: ComponentExample = {
-  name: "Tx Button",
-  href: "/docs/components/tx-button",
-  code: "tx-button",
-  description:
-    "Button component for sending arbitrary transactions. Supports all chains, all signers with default notification. Fees and error states are handled by the component.",
-  component: (
-    <ClientOnly>
-      <DemoTxButton />
-    </ClientOnly>
-  ),
-};
-
 export function DemoTxButton() {
   const { supportedNetworks } = useTypink();
   return (
