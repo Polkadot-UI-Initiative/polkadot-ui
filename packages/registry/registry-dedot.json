@@ -22,7 +22,8 @@
         },
         {
           "path": "registry/dot-ui/providers/dedot-provider.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "providers/dedot-provider.tsx"
         }
       ]
     },
