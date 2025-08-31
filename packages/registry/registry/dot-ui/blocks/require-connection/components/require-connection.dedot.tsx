@@ -7,7 +7,11 @@ import {
 } from "@/registry/dot-ui/blocks/require-connection/components/require-connection.base";
 import { PolkadotProvider } from "@/registry/dot-ui/providers/dedot-provider";
 import { useMemo } from "react";
-import { ClientConnectionStatus, NetworkId, usePolkadotClient } from "typink";
+import {
+  type NetworkId,
+  ClientConnectionStatus,
+  usePolkadotClient,
+} from "typink";
 
 // Props type - removes services prop since we inject it
 export type RequireConnectionProps = Omit<
