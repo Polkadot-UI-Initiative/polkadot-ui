@@ -1,13 +1,17 @@
 import { NetworkInfo, useTypink, useBalances, Balances } from "typink";
-import { AccountManagementHookProps, ClientHookProps, WalletManagementHookProps } from "@/registry/dot-ui/lib/types.dedot";
+import {
+  AccountManagementHookProps,
+  ClientHookProps,
+  WalletManagementHookProps,
+} from "@/registry/dot-ui/lib/types.dedot";
 
 export interface PolkadotHooks {
-    useClient: () => ClientHookProps;
-    useActiveChain: () => NetworkInfo;
-    useSupportedChains: () => NetworkInfo[];
-    useAccountManagement: () => AccountManagementHookProps;
-    useWalletManagement: () => WalletManagementHookProps;
-    usePolkadotBalances: (addresses: string[]) => Balances;
+  useClient: () => ClientHookProps;
+  useActiveChain: () => NetworkInfo;
+  useSupportedChains: () => NetworkInfo[];
+  useAccountManagement: () => AccountManagementHookProps;
+  useWalletManagement: () => WalletManagementHookProps;
+  usePolkadotBalances: (addresses: string[]) => Balances;
 }
 
 export function useClient(): ClientHookProps {
@@ -23,16 +27,6 @@ export function useActiveChain(): NetworkInfo {
 export function useSupportedChains(): NetworkInfo[] {
   const { supportedNetworks: supportedChains } = useTypink();
   return supportedChains || [];
-}
-
-export function useAccountManagement(): AccountManagementHookProps {
-  const { accounts, connectedAccount: activeAccount, setConnectedAccount: setActiveAccount } = useTypink();
-  return { accounts, activeAccount, setActiveAccount };
-}
-
-export function useWalletManagement(): WalletManagementHookProps {
-  const { wallets, connectWallet, disconnect,  connectedWalletId, signer: activeSigner} = useTypink();
-  return { wallets, connectWallet, disconnect, connectedWalletId, activeSigner};
 }
 
 export function usePolkadotBalances(addresses: string[]): Balances {

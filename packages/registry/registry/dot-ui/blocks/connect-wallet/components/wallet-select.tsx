@@ -67,7 +67,7 @@ export function WalletSelect({
         <DialogHeader className="pb-4">
           <DialogTitle>
             {currentView === 0
-              ? `Connect Wallets (${wallets.length} connected)`
+              ? `Wallet (${wallets.length} connected)`
               : "Select Account"}
           </DialogTitle>
           <DialogDescription>

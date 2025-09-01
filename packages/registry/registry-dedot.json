@@ -110,8 +110,13 @@
       "type": "registry:component",
       "title": "Require Connection (dedot)",
       "description": "A smart wrapper component that conditionally renders content based on chain connection status, with loading states and fallback UI support using dedot.",
-      "dependencies": ["dedot", "typink"],
-      "registryDependencies": [],
+      "dependencies": [
+        "dedot",
+        "typink",
+        "lucide-react",
+        "@polkadot/react-identicon"
+      ],
+      "registryDependencies": ["button", "dialog"],
       "files": [
         {
           "path": "registry/dot-ui/blocks/require-connection/demo/page.dedot.tsx",
@@ -170,13 +175,17 @@
           "type": "registry:component"
         },
         {
+          "path": "registry/dot-ui/blocks/connect-wallet/components/view-select-wallet.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/dot-ui/blocks/connect-wallet/components/view-select-account.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "registry/dot-ui/blocks/connect-wallet/demo/connect-wallet-demo.tsx",
           "type": "registry:component",
           "target": "app/demo/dot-ui/connect-wallet/connect-wallet-demo.tsx"
-        },
-        {
-          "path": "registry/dot-ui/blocks/account-selection/components/account-selection.base.tsx",
-          "type": "registry:component"
         },
         {
           "path": "registry/dot-ui/providers/dedot-provider.tsx",
