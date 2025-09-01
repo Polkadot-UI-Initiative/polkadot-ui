@@ -2,7 +2,7 @@
 
 import { PolkadotProvider } from "@/registry/dot-ui/providers/dedot-provider";
 import { ClientConnectionStatus, useTypink, paseoPeople } from "typink";
-import { RequireConnection } from "../require-connection/components/require-connection.dedot";
+import { RequireConnection } from "@/registry/dot-ui/blocks/require-connection/components/require-connection.dedot";
 
 export default function DedotDemo() {
   return (
