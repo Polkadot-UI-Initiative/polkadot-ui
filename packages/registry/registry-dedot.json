@@ -98,6 +98,10 @@
         {
           "path": "registry/dot-ui/lib/config.dot-ui.ts",
           "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
         }
       ]
     },
