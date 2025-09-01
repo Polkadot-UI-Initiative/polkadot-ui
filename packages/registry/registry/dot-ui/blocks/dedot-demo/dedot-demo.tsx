@@ -3,6 +3,7 @@
 import { PolkadotProvider } from "@/registry/dot-ui/providers/dedot-provider";
 import { ClientConnectionStatus, useTypink, paseoPeople } from "typink";
 import { RequireConnection } from "@/registry/dot-ui/blocks/require-connection/components/require-connection.dedot";
+import { ClientOnly } from "@/registry/dot-ui/blocks/client-only";
 
 export default function DedotDemo() {
   return (
@@ -16,7 +17,7 @@ export function List() {
   const { connectionStatus, network, connectedWalletIds } = useTypink();
 
   return (
-    <div>
+    <ClientOnly>
       <RequireConnection
         chainId={paseoPeople.id}
         fallback={<div>Loading...</div>}
@@ -31,6 +32,6 @@ export function List() {
           connectedWalletIds: {connectedWalletIds?.join(", ")}
         </div>
       </RequireConnection>
-    </div>
+    </ClientOnly>
   );
 }
