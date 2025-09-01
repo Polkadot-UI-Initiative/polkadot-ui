@@ -1,11 +1,12 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   RequireConnectionBase,
   type RequireConnectionBaseProps,
 } from "@/registry/dot-ui/blocks/require-connection/components/require-connection.base";
 import { PolkadotProvider } from "@/registry/dot-ui/providers/dedot-provider";
-import { useMemo } from "react";
+import { ClientOnly } from "@/registry/dot-ui/blocks/client-only";
 import {
   type NetworkId,
   ClientConnectionStatus,
@@ -29,7 +30,11 @@ export function RequireConnection(props: RequireConnectionProps) {
     [status]
   );
 
-  return <RequireConnectionBase<NetworkId> {...props} services={services} />;
+  return (
+    <ClientOnly fallback={props.loadingFallback ?? props.fallback ?? null}>
+      <RequireConnectionBase<NetworkId> {...props} services={services} />
+    </ClientOnly>
+  );
 }
 
 // Wrapped version with provider for drop-in usage

@@ -1,15 +1,16 @@
 "use client";
 
 import { useMemo } from "react";
-import {
-  PolkadotProvider,
-  usePapi,
-} from "@/registry/dot-ui/providers/papi-provider";
 import type { ChainId } from "@/registry/dot-ui/providers/papi-provider";
 import {
   RequireConnectionBase,
   type RequireConnectionBaseProps,
 } from "./require-connection.base";
+import {
+  PolkadotProvider,
+  usePapi,
+} from "@/registry/dot-ui/providers/papi-provider";
+import { ClientOnly } from "@/registry/dot-ui/blocks/client-only";
 
 // Props type - removes services prop since we inject it
 export type RequireConnectionProps = Omit<
@@ -20,7 +21,6 @@ export type RequireConnectionProps = Omit<
 export function RequireConnection(props: RequireConnectionProps) {
   const { isLoading, isConnected } = usePapi();
 
-  // Simple services object with type-compatible wrappers
   const services = useMemo(
     () => ({
       isLoading: isLoading(props.chainId),
@@ -29,7 +29,11 @@ export function RequireConnection(props: RequireConnectionProps) {
     [isLoading, isConnected, props.chainId]
   );
 
-  return <RequireConnectionBase<ChainId> {...props} services={services} />;
+  return (
+    <ClientOnly fallback={props.loadingFallback ?? props.fallback ?? null}>
+      <RequireConnectionBase<ChainId> {...props} services={services} />
+    </ClientOnly>
+  );
 }
 
 // Wrapped version with provider for drop-in usage
