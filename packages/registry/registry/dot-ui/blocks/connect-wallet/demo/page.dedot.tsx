@@ -1,6 +1,6 @@
 import { PolkadotProvider } from "@/registry/dot-ui/providers/dedot-provider";
 import { ConnectWalletDemo } from "@/registry/dot-ui/blocks/connect-wallet/demo/connect-wallet-demo";
-import { WalletSelect } from "../components/wallet-select";
+import { WalletSelect } from "../components/wallet-select.dedot";
 
 export default function ConnectWalletDedotPage() {
   return (

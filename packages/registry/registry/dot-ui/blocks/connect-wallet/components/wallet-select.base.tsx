@@ -1,14 +1,12 @@
 "use client";
 
-import { Button, type ButtonProps } from "@/components/ui/button";
-import { Wallet } from "lucide-react";
-import { Identicon } from "@polkadot/react-identicon";
-import { ViewSelectWallet } from "./view-select-wallet";
-import { ViewSelectAccount } from "./view-select-account";
-
-import { useTypink } from "typink";
-import { cn } from "@/lib/utils";
 import * as React from "react";
+import { Button, type ButtonProps } from "@/components/ui/button";
+import { Identicon } from "@polkadot/react-identicon";
+import { ViewSelectWallet } from "@/registry/dot-ui/blocks/connect-wallet/components/view-select-wallet";
+import { ViewSelectAccount } from "@/registry/dot-ui/blocks/connect-wallet/components/view-select-account";
+import { Wallet as WalletIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -18,16 +16,67 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-interface WalletSelectProps extends Omit<ButtonProps, "children"> {
-  placeholder?: string;
+export interface WalletInfo {
+  id: string;
+  name: string;
+  logo?: string;
+  installed: boolean;
+  installUrl?: string;
 }
 
-export function WalletSelect({
+export interface AccountInfo {
+  address: string;
+  name?: string;
+  source: string;
+}
+
+export interface WalletSelectServices {
+  wallets: WalletInfo[];
+  connectedWallets: WalletInfo[];
+  accounts: AccountInfo[];
+  connectedAccount?: AccountInfo;
+  connectWallet: (id: string) => Promise<void>;
+  disconnect: (walletId?: string) => void;
+  setConnectedAccount: (account: AccountInfo) => void;
+}
+
+export interface ViewSelectWalletProps {
+  next: () => void;
+  wallets: WalletInfo[];
+  connectedWallets: WalletInfo[];
+  accounts: AccountInfo[];
+  connectWallet: (id: string) => Promise<void>;
+  disconnect: (walletId?: string) => void;
+}
+
+export interface ViewSelectAccountProps {
+  previous: () => void;
+  wallets: WalletInfo[];
+  accounts: AccountInfo[];
+  connectedAccount?: AccountInfo;
+  setConnectedAccount: (account: AccountInfo) => void;
+}
+
+export interface WalletSelectBaseProps extends Omit<ButtonProps, "children"> {
+  placeholder?: string;
+  services: WalletSelectServices;
+}
+
+export function WalletSelectBase({
   className,
   placeholder,
+  services,
   ...buttonProps
-}: WalletSelectProps) {
-  const { wallets, connectedWallets, connectedAccount } = useTypink();
+}: WalletSelectBaseProps) {
+  const {
+    accounts,
+    wallets,
+    connectedWallets,
+    connectedAccount,
+    connectWallet,
+    disconnect,
+    setConnectedAccount,
+  } = services;
 
   const [open, setOpen] = React.useState(false);
   const [currentView, setCurrentView] = React.useState(0);
@@ -47,7 +96,7 @@ export function WalletSelect({
           )}
           {...buttonProps}
         >
-          <Wallet className="w-4 h-4" /> {placeholder}
+          <WalletIcon className="w-4 h-4" /> {placeholder}
           {connectedAccount?.name && (
             <span className="hidden sm:block max-w-[100px] truncate">
               {connectedAccount?.name}
@@ -79,11 +128,21 @@ export function WalletSelect({
 
         {currentView === 0 ? (
           <ViewSelectWallet
+            wallets={wallets}
+            connectedWallets={connectedWallets}
+            accounts={accounts}
+            connectWallet={connectWallet}
+            disconnect={disconnect}
             next={() => setCurrentView(1)}
-            previous={() => setCurrentView(0)}
           />
         ) : (
-          <ViewSelectAccount previous={() => setCurrentView(0)} />
+          <ViewSelectAccount
+            previous={() => setCurrentView(0)}
+            wallets={wallets}
+            accounts={accounts}
+            connectedAccount={connectedAccount}
+            setConnectedAccount={setConnectedAccount}
+          />
         )}
       </DialogContent>
     </Dialog>

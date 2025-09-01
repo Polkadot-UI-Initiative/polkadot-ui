@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { WalletSelect } from "@/registry/dot-ui/blocks/connect-wallet/components/wallet-select";
+import { WalletSelect } from "@/registry/dot-ui/blocks/connect-wallet/components/wallet-select.dedot";
 import type { ComponentExample } from "./types";
 
 export const walletSelectExample: ComponentExample = {

@@ -162,7 +162,12 @@
       "type": "registry:component",
       "title": "Wallet Select (dedot)",
       "description": "A wallet connection component provided by Typink.",
-      "dependencies": ["typink", "lucide-react", "dedot"],
+      "dependencies": [
+        "typink",
+        "lucide-react",
+        "dedot",
+        "@polkadot/react-identicon"
+      ],
       "registryDependencies": ["button", "dialog"],
       "files": [
         {
@@ -171,7 +176,11 @@
           "target": "app/demo/dot-ui/connect-wallet/page.tsx"
         },
         {
-          "path": "registry/dot-ui/blocks/connect-wallet/components/wallet-select.tsx",
+          "path": "registry/dot-ui/blocks/connect-wallet/components/wallet-select.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/dot-ui/blocks/connect-wallet/components/wallet-select.dedot.tsx",
           "type": "registry:component"
         },
         {
@@ -180,6 +189,10 @@
         },
         {
           "path": "registry/dot-ui/blocks/connect-wallet/components/view-select-account.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/dot-ui/blocks/client-only.tsx",
           "type": "registry:component"
         },
         {

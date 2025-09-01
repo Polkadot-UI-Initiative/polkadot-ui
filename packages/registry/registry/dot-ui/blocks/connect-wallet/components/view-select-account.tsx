@@ -1,21 +1,20 @@
 "use client";
 
-export interface ViewNavigationProps {
-  next?: () => void;
-  previous?: () => void;
-}
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Identicon from "@polkadot/react-identicon";
 import { ArrowLeft } from "lucide-react";
-import { useTypink } from "typink";
 import { truncateAddress } from "@/registry/dot-ui/lib/utils.dot-ui";
+import { type ViewSelectAccountProps } from "@/registry/dot-ui/blocks/connect-wallet/components/wallet-select.base";
 
-export function ViewSelectAccount({ previous }: ViewNavigationProps) {
-  const { accounts, connectedAccount, setConnectedAccount, wallets } =
-    useTypink();
-
+export function ViewSelectAccount({
+  previous,
+  accounts,
+  connectedAccount,
+  setConnectedAccount,
+  wallets,
+}: ViewSelectAccountProps) {
   const sortedAccounts = accounts.sort((a, b) =>
     a.source.localeCompare(b.source)
   );

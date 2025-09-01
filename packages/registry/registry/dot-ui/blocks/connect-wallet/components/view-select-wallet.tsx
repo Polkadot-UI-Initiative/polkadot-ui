@@ -1,20 +1,19 @@
 import { Button } from "@/components/ui/button";
-export interface ViewNavigationProps {
-  next?: () => void;
-  previous?: () => void;
-}
 
 import Image from "next/image";
 import { DialogFooter } from "@/components/ui/dialog";
 import { ArrowRight, Plus, Zap, ZapOff } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { type ViewSelectWalletProps } from "@/registry/dot-ui/blocks/connect-wallet/components/wallet-select.base";
 
-import { ExtensionWallet, useTypink } from "typink";
-
-export const ViewSelectWallet = ({ next }: ViewNavigationProps) => {
-  const { wallets, accounts, connectedWallets, connectWallet, disconnect } =
-    useTypink();
-
+export const ViewSelectWallet = ({
+  next,
+  wallets,
+  connectedWallets,
+  accounts,
+  connectWallet,
+  disconnect,
+}: ViewSelectWalletProps) => {
   const sortedWallets = wallets.sort((a, b) => {
     if (a.installed && !b.installed) return -1;
     if (!a.installed && b.installed) return 1;
@@ -46,11 +45,8 @@ export const ViewSelectWallet = ({ next }: ViewNavigationProps) => {
                 } else {
                   connectWallet(wallet.id);
                 }
-              } else {
-                if (wallet instanceof ExtensionWallet) {
-                  window.open(wallet.installUrl, "_blank");
-                }
-              }
+              } else if (wallet.installUrl)
+                window.open(wallet.installUrl, "_blank");
             }}
           >
             <div className="flex flex-row items-center justify-start gap-0">
