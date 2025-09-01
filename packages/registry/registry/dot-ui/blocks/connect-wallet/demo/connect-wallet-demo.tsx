@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 
 interface ConnectWalletDemoProps {
   Provider: React.ComponentType<{ children: ReactNode }>;
-  ConnectWallet: React.ComponentType<{ buttonLabel?: string }>;
+  ConnectWallet: React.ComponentType;
   libraryName: string;
 }
 
