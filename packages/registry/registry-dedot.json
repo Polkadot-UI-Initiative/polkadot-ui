@@ -23,6 +23,14 @@
         {
           "path": "registry/dot-ui/providers/dedot-provider.tsx",
           "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/blocks/require-connection/components/require-connection.base.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/blocks/require-connection/components/require-connection.dedot.tsx",
+          "type": "registry:lib"
         }
       ]
     },

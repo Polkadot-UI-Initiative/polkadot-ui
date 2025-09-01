@@ -1,7 +1,8 @@
 "use client";
 
 import { PolkadotProvider } from "@/registry/dot-ui/providers/dedot-provider";
-import { ClientConnectionStatus, useTypink } from "typink";
+import { ClientConnectionStatus, useTypink, paseoPeople } from "typink";
+import { RequireConnection } from "../require-connection/components/require-connection.dedot";
 
 export default function DedotDemo() {
   return (
@@ -13,14 +14,23 @@ export default function DedotDemo() {
 
 export function List() {
   const { connectionStatus, network, connectedWalletIds } = useTypink();
+
   return (
     <div>
-      network: {network.name}
-      isConnected:{" "}
-      {connectionStatus.get("paseo_people") === ClientConnectionStatus.Connected
-        ? "true"
-        : "false"}
-      connectedWalletIds: {connectedWalletIds?.join(", ")}
+      <RequireConnection
+        chainId={paseoPeople.id}
+        fallback={<div>Loading...</div>}
+      >
+        <div>
+          network: {network.name}
+          isConnected:{" "}
+          {connectionStatus.get(paseoPeople.id) ===
+          ClientConnectionStatus.Connected
+            ? "true"
+            : "false"}
+          connectedWalletIds: {connectedWalletIds?.join(", ")}
+        </div>
+      </RequireConnection>
     </div>
   );
 }
