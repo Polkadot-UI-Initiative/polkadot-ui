@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { isValidElement, type ReactNode, type ReactElement } from "react";
 
 import {
   Card,
@@ -46,7 +47,14 @@ export function ComponentsSection() {
                 name={example.code}
                 title={example.name}
                 variant="outline"
-                prompt={example.description?.toString() ?? "Explain this code"}
+                prompt={
+                  (typeof example.description === "string"
+                    ? example.description
+                    : encodeURIComponent(
+                        getTextFromNode(example.description)
+                      )) ||
+                  encodeURIComponent(`${example.name} - explain this code`)
+                }
               />
             </CardFooter>
           </Card>
@@ -63,4 +71,16 @@ export function ComponentsSection() {
       </div>
     </section>
   );
+}
+
+function getTextFromNode(node: ReactNode): string {
+  if (node === null || node === undefined || node === false || node === true)
+    return "";
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(getTextFromNode).join("");
+  if (isValidElement(node)) {
+    const element = node as ReactElement<{ children?: ReactNode }>;
+    return getTextFromNode(element.props.children as ReactNode);
+  }
+  return "";
 }
