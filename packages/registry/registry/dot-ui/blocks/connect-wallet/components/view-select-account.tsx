@@ -1,6 +1,9 @@
 "use client";
 
-import { ViewNavigationProps } from "./multi-view-dialog";
+export interface ViewNavigationProps {
+  next?: () => void;
+  previous?: () => void;
+}
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";

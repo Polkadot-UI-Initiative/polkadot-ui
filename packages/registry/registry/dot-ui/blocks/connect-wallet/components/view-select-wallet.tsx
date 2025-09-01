@@ -1,5 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { ViewNavigationProps } from "./multi-view-dialog";
+export interface ViewNavigationProps {
+  next?: () => void;
+  previous?: () => void;
+}
 
 import Image from "next/image";
 import { DialogFooter } from "@/components/ui/dialog";
@@ -30,15 +33,18 @@ export const ViewSelectWallet = ({ next }: ViewNavigationProps) => {
         return (
           <Button
             key={wallet.id}
-            variant="ghost"
-            className="relative w-full flex flex-row items-center justify-between [&_svg]:size-auto gap-2 h-14"
+            variant="outline"
+            className={cn(
+              "relative w-full flex flex-row items-center justify-between gap-2 h-14",
+              isConnected &&
+                "border-green-500/50 bg-green-500/10 hover:bg-green-500/20"
+            )}
             onClick={() => {
               if (wallet.installed) {
                 if (isConnected) {
-                  disconnect();
+                  disconnect(wallet.id);
                 } else {
                   connectWallet(wallet.id);
-                  console.log("Wallet connected");
                 }
               } else {
                 if (wallet instanceof ExtensionWallet) {
@@ -80,16 +86,16 @@ export const ViewSelectWallet = ({ next }: ViewNavigationProps) => {
               {!wallet.installed ? (
                 <>
                   <span className="flex flex-row items-center gap-2">
-                    <Plus className="w-4 h-4" /> Install
+                    <Plus className="size-3" /> Install
                   </span>
                 </>
               ) : isConnected ? (
                 <span className="text-red-600 dark:text-red-400 flex flex-row items-center gap-2">
-                  <ZapOff className="w-4 h-4" /> Disconnect
+                  <ZapOff className="size-3" /> Disconnect
                 </span>
               ) : (
                 <span className="text-green-600 dark:text-green-400 flex flex-row items-center gap-2">
-                  <Zap className="w-4 h-4" /> Connect
+                  <Zap className="size-3" /> Connect
                 </span>
               )}
             </>
@@ -101,10 +107,10 @@ export const ViewSelectWallet = ({ next }: ViewNavigationProps) => {
           variant="default"
           onClick={next}
           size="lg"
-          disabled={!wallets.length}
+          disabled={!connectedWallets.length}
           className="flex flex-row items-center gap-2"
         >
-          Go to accounts <ArrowRight className="w-3 h-3" />
+          Select Account <ArrowRight className="w-3 h-3" />
         </Button>
       </DialogFooter>
     </div>
