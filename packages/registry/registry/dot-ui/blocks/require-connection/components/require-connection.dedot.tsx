@@ -7,11 +7,7 @@ import {
 } from "@/registry/dot-ui/blocks/require-connection/components/require-connection.base";
 import { PolkadotProvider } from "@/registry/dot-ui/providers/dedot-provider";
 import { ClientOnly } from "@/registry/dot-ui/blocks/client-only";
-import {
-  type NetworkId,
-  ClientConnectionStatus,
-  usePolkadotClient,
-} from "typink";
+import { ClientConnectionStatus, usePolkadotClient } from "typink";
 
 // Props type - removes services prop since we inject it
 export type RequireConnectionProps = Omit<
@@ -32,7 +28,7 @@ export function RequireConnection(props: RequireConnectionProps) {
 
   return (
     <ClientOnly fallback={props.loadingFallback ?? props.fallback ?? null}>
-      <RequireConnectionBase<NetworkId> {...props} services={services} />
+      <RequireConnectionBase {...props} services={services} />
     </ClientOnly>
   );
 }

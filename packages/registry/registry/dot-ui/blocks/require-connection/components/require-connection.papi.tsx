@@ -31,7 +31,7 @@ export function RequireConnection(props: RequireConnectionProps) {
 
   return (
     <ClientOnly fallback={props.loadingFallback ?? props.fallback ?? null}>
-      <RequireConnectionBase<ChainId> {...props} services={services} />
+      <RequireConnectionBase {...props} services={services} />
     </ClientOnly>
   );
 }
