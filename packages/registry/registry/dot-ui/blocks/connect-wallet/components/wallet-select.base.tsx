@@ -116,7 +116,7 @@ export function WalletSelectBase({
         <DialogHeader className="pb-4">
           <DialogTitle>
             {currentView === 0
-              ? `Wallet (${wallets.length} connected)`
+              ? `SelectWallet (${connectedWallets.length} connected)`
               : "Select Account"}
           </DialogTitle>
           <DialogDescription>
