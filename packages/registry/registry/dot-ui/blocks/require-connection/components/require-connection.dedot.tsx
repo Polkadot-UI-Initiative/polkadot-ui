@@ -1,6 +1,5 @@
 "use client";
 
-import { ClientOnly } from "@/registry/dot-ui/blocks/client-only";
 import {
   RequireConnectionBase,
   type RequireConnectionBaseProps,
@@ -19,7 +18,7 @@ export type RequireConnectionProps = Omit<
   "services"
 >;
 
-function RequireConnectionInner(props: RequireConnectionProps) {
+export function RequireConnection(props: RequireConnectionProps) {
   const { status } = usePolkadotClient(props.chainId);
 
   const services = useMemo(
@@ -33,14 +32,6 @@ function RequireConnectionInner(props: RequireConnectionProps) {
   return <RequireConnectionBase<NetworkId> {...props} services={services} />;
 }
 
-export function RequireConnection(props: RequireConnectionProps) {
-  return (
-    <ClientOnly>
-      <RequireConnectionInner {...props} />
-    </ClientOnly>
-  );
-}
-
 // Wrapped version with provider for drop-in usage
 export function RequireConnectionWithProvider(props: RequireConnectionProps) {
   return (
@@ -49,5 +40,3 @@ export function RequireConnectionWithProvider(props: RequireConnectionProps) {
     </PolkadotProvider>
   );
 }
-
-RequireConnectionWithProvider.displayName = "RequireConnectionWithProvider";
