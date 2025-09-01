@@ -197,8 +197,7 @@
         },
         {
           "path": "registry/dot-ui/blocks/connect-wallet/demo/connect-wallet-demo.tsx",
-          "type": "registry:component",
-          "target": "app/demo/dot-ui/connect-wallet/connect-wallet-demo.tsx"
+          "type": "registry:component"
         },
         {
           "path": "registry/dot-ui/providers/dedot-provider.tsx",
