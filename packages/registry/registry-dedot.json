@@ -26,15 +26,15 @@
         },
         {
           "path": "registry/dot-ui/blocks/require-connection/components/require-connection.base.tsx",
-          "type": "registry:component"
+          "type": "registry:lib"
         },
         {
           "path": "registry/dot-ui/blocks/require-connection/components/require-connection.dedot.tsx",
-          "type": "registry:component"
+          "type": "registry:lib"
         },
         {
           "path": "registry/dot-ui/blocks/client-only.tsx",
-          "type": "registry:component"
+          "type": "registry:lib"
         }
       ]
     },
