@@ -37,9 +37,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className="scroll-smooth scroll-pt-12"
     >
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} antialiased`}>
         <FumadocsRootProvider>
           <ThemeProvider>
             <div className="relative flex min-h-screen flex-col">
