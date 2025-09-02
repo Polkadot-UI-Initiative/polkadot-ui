@@ -908,7 +908,7 @@ export class AddCommand {
     logger.subsection("Get help:");
     logger.detail("• Documentation: https://dot-ui.com/docs", true);
     logger.detail(
-      "• GitHub Issues: https://github.com/Polkadot-UI-Initiative/dot-ui/issues",
+      "• GitHub Issues: https://github.com/Polkadot-UI-Initiative/polkadot-ui/issues",
       true
     );
   }
