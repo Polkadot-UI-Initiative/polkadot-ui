@@ -3,82 +3,29 @@
 import { useMemo } from "react";
 import { PolkadotProvider } from "@/registry/dot-ui/providers/dedot-provider";
 import { TxButtonBase, type TxButtonBaseProps } from "./tx-button.base";
-import type { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
-import type { ConfiguredChainApi } from "@/registry/dot-ui/lib/types.dedot";
-import type { ISubmittableExtrinsic, ISubmittableResult } from "dedot/types";
 import { useTypink, useTxFee, useBalance } from "typink";
-import type { UseTxReturnType } from "typink/hooks/useTx";
+// UseTxReturnType only appears in imported types; remove unused local import
 import type { NetworkId } from "typink/types";
+import {
+  type ExtractUseTxFn,
+  type TxButtonProps,
+  type AnyUseTx,
+} from "@/registry/dot-ui/lib/types.dedot";
 
-// Strongly-typed builders for better autocomplete
-export interface TxBuilderForChain<T extends ChainId> {
-  (
-    tx: ConfiguredChainApi<T>["tx"]
-  ): ISubmittableExtrinsic<ISubmittableResult> | undefined;
-}
-
-export interface TxBuilderCtxForChain<T extends ChainId> {
-  (args: {
-    tx: ConfiguredChainApi<T>["tx"];
-    chainId: T;
-    api: ConfiguredChainApi<T>;
-  }): ISubmittableExtrinsic<ISubmittableResult> | undefined;
-}
-
-type BaseOmitted = Omit<
-  TxButtonBaseProps,
-  "services" | "buildTx" | "buildTxCtx" | "tx" | "chainId"
->;
-
-// When chainId is provided as a literal, infer tx type from chain
-export type TxButtonPropsForChain<T extends ChainId> = BaseOmitted &
-  (
-    | {
-        chainId: T;
-        buildTx: TxBuilderForChain<T>;
-        buildTxCtx?: never;
-        tx?: never;
-      }
-    | {
-        chainId: T;
-        buildTxCtx: TxBuilderCtxForChain<T>;
-        buildTx?: never;
-        tx?: never;
-      }
-    | {
-        chainId: T;
-        tx: ISubmittableExtrinsic;
-        buildTx?: never;
-        buildTxCtx?: never;
-      }
-  );
-
-// Fallback props when chainId is not specified (tx is less specific)
-export type TxButtonPropsDefault = Omit<TxButtonBaseProps, "services">;
-
-export type TxButtonProps<T extends ChainId = ChainId> =
-  | TxButtonPropsForChain<T>
-  | TxButtonPropsDefault;
-
-type SubmittableFn = (
-  ...args: unknown[]
-) => ISubmittableExtrinsic<ISubmittableResult>;
-
-export function TxButton<T extends ChainId>(props: TxButtonProps<T>) {
+export function TxButton<TTx extends AnyUseTx>(props: TxButtonProps<TTx>) {
   const { connectedAccount, supportedNetworks } = useTypink();
-  // Compute fee and balance here and pass values to base via services
   const { tx, args, networkId } = props as unknown as {
-    tx?: UseTxReturnType<SubmittableFn>;
-    args?: Parameters<SubmittableFn> | undefined;
+    tx?: TTx;
+    args?: Parameters<ExtractUseTxFn<TTx>> | undefined;
     networkId?: NetworkId | undefined;
   };
 
-  const feeState = useTxFee<SubmittableFn>({
+  const feeState = useTxFee({
     tx: tx!,
     enabled: true,
     networkId,
-    args: (args ?? []) as Parameters<SubmittableFn>,
-  });
+    args: (args ?? []) as Parameters<ExtractUseTxFn<TTx>>,
+  } as Parameters<typeof useTxFee>[0]);
 
   const balanceState = useBalance(connectedAccount?.address, {
     networkId,
@@ -116,7 +63,9 @@ export function TxButton<T extends ChainId>(props: TxButtonProps<T>) {
 }
 
 // Wrapped version with provider for drop-in usage
-export function TxButtonWithProvider(props: TxButtonProps) {
+export function TxButtonWithProvider<TTx extends AnyUseTx>(
+  props: TxButtonProps<TTx>
+) {
   return (
     <PolkadotProvider>
       <TxButton {...props} />

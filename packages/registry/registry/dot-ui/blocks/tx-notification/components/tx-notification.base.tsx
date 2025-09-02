@@ -1,17 +1,9 @@
 import { CheckCheck } from "lucide-react";
 import { toast } from "sonner";
-
-export interface NetworkInfoLike {
-  name: string;
-  logo?: string;
-  subscanUrl?: string;
-  pjsUrl?: string;
-}
-
-export interface TxResultLike {
-  status: { type: string };
-  txHash?: string;
-}
+import type {
+  NetworkInfoLike,
+  TxResultLike,
+} from "@/registry/dot-ui/lib/types.dot-ui";
 
 function ChainLogo({ network }: { network: NetworkInfoLike | undefined }) {
   if (!network?.logo) return null;

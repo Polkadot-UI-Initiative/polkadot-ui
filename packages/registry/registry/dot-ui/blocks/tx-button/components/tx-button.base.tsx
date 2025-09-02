@@ -16,11 +16,7 @@ import {
 } from "@/registry/dot-ui/blocks/tx-notification/components/tx-notification.base";
 import { formatBalance } from "@/registry/dot-ui/lib/utils.dot-ui";
 import { type VariantProps } from "class-variance-authority";
-// Local structural type to avoid hard dependency on dedot
-export type TxResultLike = {
-  status: { type: string };
-  txHash?: string;
-};
+import type { TxResultLike, AnyFn } from "@/registry/dot-ui/lib/types.dot-ui";
 import {
   CheckCheck,
   CheckCircle,
@@ -58,17 +54,16 @@ export interface TxButtonServices<TNetworkId = unknown> {
   balanceFree?: bigint | null;
 }
 
-type AnyFn = (...args: any[]) => any;
 type ArgsProp<TxFn extends AnyFn> =
   Parameters<TxFn> extends [] ? { args?: [] } : { args: Parameters<TxFn> };
 
-type ExtractTxFn<TTx> = TTx extends UseTxReturnType<infer U> ? U : never;
+type ExtractUseTxFn<TTx> = TTx extends UseTxReturnType<infer U> ? U : never;
 
 export type TxButtonBaseProps<
   TTx extends UseTxReturnType<any> = UseTxReturnType<any>,
   TNetworkId = unknown,
 > = ButtonProps &
-  ArgsProp<ExtractTxFn<TTx>> & {
+  ArgsProp<ExtractUseTxFn<TTx>> & {
     children: React.ReactNode;
     tx: TTx;
     networkId?: TNetworkId;
@@ -102,17 +97,16 @@ export function TxButtonBase<
   services,
   ...props
 }: TxButtonBaseProps<TTx, TNetworkId>) {
-  const connectedAccount = services?.connectedAccount ?? null;
-  const supportedNetworks = services?.supportedNetworks ?? [];
+  const { supportedNetworks, connectedAccount } = services ?? {};
 
   const isValidNetwork = useMemo(() => {
     if (!networkId) return true;
-    return supportedNetworks.some((n) => n.id === networkId);
+    return supportedNetworks?.some((n) => n.id === networkId);
   }, [networkId, supportedNetworks]);
 
   const targetNetwork = useMemo(() => {
-    if (networkId) return supportedNetworks.find((n) => n.id === networkId);
-    return supportedNetworks[0];
+    if (networkId) return supportedNetworks?.find((n) => n.id === networkId);
+    return supportedNetworks?.[0];
   }, [networkId, supportedNetworks]);
 
   const fee = services?.fee ?? null;
@@ -155,7 +149,7 @@ export function TxButtonBase<
 
     try {
       await tx.signAndSend({
-        args: (args ?? ([] as [])) as Parameters<ExtractTxFn<TTx>>,
+        args: (args ?? ([] as [])) as Parameters<ExtractUseTxFn<TTx>>,
         callback: (result: TxResultLike) => {
           setTxStatus(result.status);
           console.log("tx status", result);

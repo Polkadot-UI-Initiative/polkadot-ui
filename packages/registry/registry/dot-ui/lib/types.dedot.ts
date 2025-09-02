@@ -1,7 +1,9 @@
 import { PaseoApi, PaseoPeopleApi } from "@dedot/chaintypes";
 import { DedotClient } from "dedot";
-import { useTypink } from "typink";
+import type { ISubmittableExtrinsic, ISubmittableResult } from "dedot/types";
+import { UseTxReturnType, useTypink } from "typink";
 import { type ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
+import { TxButtonBaseProps } from "../blocks/tx-button/components/tx-button.base";
 
 // Map from network IDs to their corresponding chain APIs
 interface ChainApiKindMap {
@@ -40,3 +42,15 @@ export interface WalletManagementHookProps {
 export interface ClientHookProps {
   client: ReturnType<typeof useTypink>["client"] | undefined;
 }
+
+export type AnyTxFn = (
+  ...args: unknown[]
+) => ISubmittableExtrinsic<ISubmittableResult>;
+export type AnyUseTx = UseTxReturnType<AnyTxFn>;
+
+export type TxButtonProps<TTx extends AnyUseTx = AnyUseTx> = Omit<
+  TxButtonBaseProps<TTx>,
+  "services"
+>;
+
+export type ExtractUseTxFn<T> = T extends UseTxReturnType<infer U> ? U : never;

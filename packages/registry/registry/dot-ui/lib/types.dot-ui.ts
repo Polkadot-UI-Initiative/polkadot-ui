@@ -146,3 +146,31 @@ export enum ClientConnectionStatus {
   Connected = "Connected",
   Error = "Error",
 }
+
+// SDK-agnostic structural types used by base components
+
+export interface NetworkInfoLike {
+  name: string;
+  logo?: string;
+  subscanUrl?: string;
+  pjsUrl?: string;
+}
+
+export type TxResultLike = {
+  status: { type: string };
+  txHash?: string;
+};
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export type AnyFn = (...args: any[]) => any;
+
+export interface TxAdapter<TxFn extends AnyFn = AnyFn> {
+  inProgress: boolean;
+  inBestBlockProgress?: boolean;
+  signAndSend: (opts: {
+    args: Parameters<TxFn>;
+    callback: (result: TxResultLike) => void;
+  }) => Promise<void>;
+}
+
+export type ExtractTxFn<TTx> = TTx extends TxAdapter<infer U> ? U : never;
