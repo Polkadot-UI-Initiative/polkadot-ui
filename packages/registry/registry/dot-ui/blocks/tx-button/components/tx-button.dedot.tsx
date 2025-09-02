@@ -6,7 +6,9 @@ import { TxButtonBase, type TxButtonBaseProps } from "./tx-button.base";
 import type { ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 import type { ConfiguredChainApi } from "@/registry/dot-ui/lib/types.dedot";
 import type { ISubmittableExtrinsic, ISubmittableResult } from "dedot/types";
-import { useTypink } from "typink";
+import { useTypink, useTxFee, useBalance } from "typink";
+import type { UseTxReturnType } from "typink/hooks/useTx";
+import type { NetworkId } from "typink/types";
 
 // Strongly-typed builders for better autocomplete
 export interface TxBuilderForChain<T extends ChainId> {
@@ -58,18 +60,51 @@ export type TxButtonProps<T extends ChainId = ChainId> =
   | TxButtonPropsForChain<T>
   | TxButtonPropsDefault;
 
+type SubmittableFn = (
+  ...args: unknown[]
+) => ISubmittableExtrinsic<ISubmittableResult>;
+
 export function TxButton<T extends ChainId>(props: TxButtonProps<T>) {
   const { connectedAccount, supportedNetworks } = useTypink();
+  // Compute fee and balance here and pass values to base via services
+  const { tx, args, networkId } = props as unknown as {
+    tx?: UseTxReturnType<SubmittableFn>;
+    args?: Parameters<SubmittableFn> | undefined;
+    networkId?: NetworkId | undefined;
+  };
+
+  const feeState = useTxFee<SubmittableFn>({
+    tx: tx!,
+    enabled: true,
+    networkId,
+    args: (args ?? []) as Parameters<SubmittableFn>,
+  });
+
+  const balanceState = useBalance(connectedAccount?.address, {
+    networkId,
+  });
   // Simple services object with type-compatible wrappers
   const services = useMemo(
     () => ({
       connectedAccount,
-      useIsConnected: () => !!connectedAccount?.address,
+      useIsConnected: () => !!connectedAccount,
+      isConnected: !!connectedAccount,
       decimals: 0,
       symbol: "",
       supportedNetworks,
+      fee: (feeState.fee as bigint | null) ?? null,
+      isFeeLoading: feeState.isLoading,
+      feeError: (feeState.error as string | null) ?? null,
+      balanceFree: (balanceState?.free as bigint | null) ?? null,
     }),
-    [connectedAccount, supportedNetworks]
+    [
+      connectedAccount,
+      supportedNetworks,
+      feeState.fee,
+      feeState.isLoading,
+      feeState.error,
+      balanceState?.free,
+    ]
   );
 
   return (

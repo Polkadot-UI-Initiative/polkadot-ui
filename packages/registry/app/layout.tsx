@@ -4,7 +4,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navigation } from "@/components/layout/navigation";
 import { ThemeProvider } from "@/components/theme/theme-provider";
-import { MouseFollower } from "@/components/mouse-follower";
 import { RootProvider as FumadocsRootProvider } from "fumadocs-ui/provider";
 import { PolkadotLogo } from "@/components/polkadot-logo";
 import { Toaster } from "@/components/ui/sonner";
