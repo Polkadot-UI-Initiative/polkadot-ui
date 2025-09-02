@@ -36,7 +36,7 @@ export function HeroSection() {
           <AnimatedCodeBlock />
         </div>
 
-        <div className="flex w-full items-center justify-center space-x-4 py-4 md:pb-10">
+        <div className="flex w-full flex-wrap gap-4 items-center justify-center py-4 md:pb-10">
           <Button asChild size="default">
             <Link href="/docs">Get Started</Link>
           </Button>

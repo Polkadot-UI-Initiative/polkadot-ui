@@ -16,8 +16,14 @@ const Toaster = ({ ...props }: ToasterProps) => {
           "--normal-text": "var(--popover-foreground)",
           "--normal-border": "var(--border)",
           "--border-radius": "var(--radius)",
+          "--backdrop-blur": "var(--backdrop-blur)",
         } as React.CSSProperties
       }
+      toastOptions={{
+        classNames: {
+          toast: "backdrop-blur-sm",
+        },
+      }}
       {...props}
     />
   );

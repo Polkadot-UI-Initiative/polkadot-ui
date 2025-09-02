@@ -101,7 +101,7 @@ export function AnimatedCodeBlock() {
   };
 
   return (
-    <div className="max-w-[480px] lg:w-[480px] mx-auto">
+    <div className="max-w-[520px] w-full lg:w-[480px] mx-auto">
       <Tabs
         defaultValue="npm"
         value={activeTab}
@@ -132,7 +132,7 @@ export function AnimatedCodeBlock() {
               <div className="font-mono text-sm flex items-center justify-between">
                 <div className="flex items-center">
                   <span className="text-muted-foreground select-none">$ </span>
-                  <span className="text-foreground ml-1">
+                  <span className="text-foreground ml-1 text-xs md:text-base">
                     {tab.command}{" "}
                     <span
                       className={cn(

@@ -47,6 +47,7 @@ export interface TxButtonServices<TNetworkId = unknown> {
     id: TNetworkId;
     decimals: number;
     symbol: string;
+    name: string;
   }>;
   fee?: bigint | null;
   isFeeLoading?: boolean;
@@ -144,7 +145,7 @@ export function TxButtonBase<
     setTxStatus(null);
 
     const toastId = withNotification
-      ? beginTxStatusNotification(undefined, undefined)
+      ? beginTxStatusNotification(undefined, targetNetwork)
       : undefined;
 
     try {

@@ -31,7 +31,7 @@ export function ViewSelectAccount({
                 <Button
                   variant={
                     connectedAccount?.address === account.address
-                      ? "outline"
+                      ? "default"
                       : "ghost"
                   }
                   className="w-full flex flex-row h-auto justify-start items-center gap-2 px-2 hover:bg-muted hover:text-foreground"
