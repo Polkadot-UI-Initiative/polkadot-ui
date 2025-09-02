@@ -17,7 +17,7 @@ export function RequireAccount(props: RequireAccountProps) {
   const services = useMemo(
     () => ({
       isLoading:
-        connectionStatus.get(props.chainId) ===
+        connectionStatus?.get?.(props.chainId) ===
         ClientConnectionStatus.Connecting,
       hasAccount: !!connectedAccount?.address,
     }),
