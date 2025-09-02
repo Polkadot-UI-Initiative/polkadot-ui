@@ -156,7 +156,7 @@ export function TxButtonBase<
     setTxStatus(null);
 
     const toastId = withNotification
-      ? beginTxStatusNotification(undefined, targetNetwork)
+      ? beginTxStatusNotification(undefined, undefined)
       : undefined;
 
     try {
@@ -169,7 +169,7 @@ export function TxButtonBase<
             txStatusNotification({
               result,
               toastId: toastId as string,
-              network: targetNetwork,
+              network: undefined,
               successDuration: resultDisplayDuration,
             });
           }
@@ -179,7 +179,7 @@ export function TxButtonBase<
       if (withNotification && toastId)
         cancelTxStatusNotification(
           toastId as string,
-          targetNetwork,
+          undefined,
           e instanceof Error ? e.message : String(e)
         );
       setSubmitError(e instanceof Error ? e.message : String(e));
