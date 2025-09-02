@@ -16,7 +16,11 @@ import {
 } from "@/registry/dot-ui/blocks/tx-notification/components/tx-notification.base";
 import { formatBalance } from "@/registry/dot-ui/lib/utils.dot-ui";
 import { type VariantProps } from "class-variance-authority";
-import type { ISubmittableResult, TxStatus } from "dedot/types";
+// Local structural type to avoid hard dependency on dedot
+export type TxResultLike = {
+  status: { type: string };
+  txHash?: string;
+};
 import {
   CheckCheck,
   CheckCircle,
@@ -116,9 +120,10 @@ export function TxButtonBase<
   const feeError = services?.feeError ?? null;
   const balanceFree = services?.balanceFree ?? null;
 
+  type TxStatusLike = { type: string } | null;
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
-  const [txStatus, setTxStatus] = useState<TxStatus | null>(null);
+  const [txStatus, setTxStatus] = useState<TxStatusLike>(null);
 
   const isError = !!submitError || !!feeError || !isValidNetwork;
   const inProgress = tx.inProgress;
@@ -151,7 +156,7 @@ export function TxButtonBase<
     try {
       await tx.signAndSend({
         args: (args ?? ([] as [])) as Parameters<ExtractTxFn<TTx>>,
-        callback: (result: ISubmittableResult) => {
+        callback: (result: TxResultLike) => {
           setTxStatus(result.status);
           console.log("tx status", result);
           if (withNotification) {

@@ -1,9 +1,19 @@
-import { ISubmittableResult } from "dedot/types";
 import { CheckCheck } from "lucide-react";
 import { toast } from "sonner";
-import { NetworkInfo } from "typink";
 
-function ChainLogo({ network }: { network: NetworkInfo | undefined }) {
+export interface NetworkInfoLike {
+  name: string;
+  logo?: string;
+  subscanUrl?: string;
+  pjsUrl?: string;
+}
+
+export interface TxResultLike {
+  status: { type: string };
+  txHash?: string;
+}
+
+function ChainLogo({ network }: { network: NetworkInfoLike | undefined }) {
   if (!network?.logo) return null;
   return (
     // eslint-disable-next-line @next/next/no-img-element
@@ -16,9 +26,9 @@ function ChainLogo({ network }: { network: NetworkInfo | undefined }) {
 }
 
 export interface TxStatusNotificationProps {
-  result: ISubmittableResult;
+  result: TxResultLike;
   toastId: string;
-  network: NetworkInfo | undefined;
+  network: NetworkInfoLike | undefined;
   successDuration: number;
   titles?: {
     submitting?: string;
@@ -36,7 +46,7 @@ export interface TxStatusNotificationProps {
 
 export function beginTxStatusNotification(
   toastId: string | undefined,
-  network: NetworkInfo | undefined,
+  network: NetworkInfoLike | undefined,
   title: string = "Waiting for signature...",
   description: string = "Please sign the transaction in your wallet"
 ) {
@@ -54,7 +64,7 @@ export function beginTxStatusNotification(
 
 export function cancelTxStatusNotification(
   toastId: string,
-  network: NetworkInfo | undefined,
+  network: NetworkInfoLike | undefined,
   title: string = "Transaction cancelled",
   description: string = ""
 ) {
