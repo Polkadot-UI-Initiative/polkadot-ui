@@ -9,7 +9,20 @@ import { Search } from "lucide-react";
 import { useSearchContext } from "fumadocs-ui/provider";
 import Image from "next/image";
 
-export function Navigation() {
+export interface NavigationProps {
+  registryItems?: Array<{
+    name: string;
+    title?: string;
+    type: string;
+    cssVars?: {
+      theme?: Record<string, string>;
+      light?: Record<string, string>;
+      dark?: Record<string, string>;
+    };
+  }>;
+}
+
+export function Navigation({ registryItems }: NavigationProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { setOpenSearch } = useSearchContext();
 
@@ -105,7 +118,7 @@ export function Navigation() {
                 <span className="text-xs">⌘</span>K
               </kbd>
             </Button>
-            <ThemeToggle />
+            <ThemeToggle initialItems={registryItems} />
             <Link
               href="https://github.com/Polkadot-UI-Initiative/dot-ui"
               target="_blank"

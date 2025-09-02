@@ -48,7 +48,11 @@ function resolveThemeVar(
 
 // no-op placeholder removed – switching handled via provider
 
-export function ThemeToggle() {
+export interface ThemeToggleProps {
+  initialItems?: TweakItem[];
+}
+
+export function ThemeToggle({ initialItems }: ThemeToggleProps) {
   const { theme, setTheme } = useTheme();
   const { switchTheme } = useTweakcn();
   const [mounted, setMounted] = useState(false);
@@ -58,21 +62,26 @@ export function ThemeToggle() {
   useEffect(() => {
     let cancelled = false;
     setMounted(true);
+    if (initialItems && initialItems.length) {
+      setItems(initialItems);
+      setSelected("default");
+      switchTheme("default");
+      return () => {
+        cancelled = true;
+      };
+    }
     fetchRegistry()
       .then((list) => {
         if (cancelled) return;
         setItems(list);
-        const first = list[0];
-        if (first) {
-          setSelected(first.name);
-          switchTheme(first.name);
-        }
+        setSelected("default");
+        switchTheme("default");
       })
       .catch(() => {});
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [initialItems, switchTheme]);
 
   if (!mounted) {
     return (
@@ -181,15 +190,15 @@ export function ThemeToggle() {
             onValueChange={(value) => {
               setSelected(value);
               const item = items.find((i) => i.name === value);
-              if (item) {
-                switchTheme(item.name);
-              }
+              if (value === "default") switchTheme("default");
+              else if (item) switchTheme(item.name);
             }}
           >
             <SelectTrigger className="h-8 text-xs">
               <SelectValue placeholder="Select theme" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="default">Default</SelectItem>
               {items
                 .sort((a, b) => a.name.localeCompare(b.name))
                 .map((i) => {

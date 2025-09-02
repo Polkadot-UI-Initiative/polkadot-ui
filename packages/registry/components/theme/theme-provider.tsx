@@ -143,6 +143,14 @@ export function ThemeProvider({
     if (el && el.parentNode) el.parentNode.removeChild(el);
   }
 
+  function clearInjectedTheme() {
+    setCss("");
+    removeHeadElement("tweakcn-fonts-preconnect-1");
+    removeHeadElement("tweakcn-fonts-preconnect-2");
+    removeHeadElement("tweakcn-fonts");
+    removeHeadElement("tweakcn-font-vars");
+  }
+
   function applyGoogleFontsForTheme(item: TweakItem) {
     try {
       const families = collectGoogleFontFamilies(item);
@@ -225,6 +233,10 @@ export function ThemeProvider({
   const switchTheme = React.useCallback(
     (themeName: string) => {
       try {
+        if (themeName === "default") {
+          clearInjectedTheme();
+          return;
+        }
         if (!themes.length) {
           setPendingTheme(themeName);
           return;
@@ -242,8 +254,14 @@ export function ThemeProvider({
 
   React.useEffect(() => {
     if (!pendingTheme || !themes.length) return;
-    const item = themes.find((t) => t.name === pendingTheme);
-    if (item) {
+    if (pendingTheme === "default") {
+      clearInjectedTheme();
+    } else {
+      const item = themes.find((t) => t.name === pendingTheme);
+      if (!item) {
+        setPendingTheme(null);
+        return;
+      }
       setCss(generateTweakCnCss(item));
       applyGoogleFontsForTheme(item);
     }

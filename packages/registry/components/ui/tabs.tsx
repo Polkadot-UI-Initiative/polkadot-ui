@@ -10,11 +10,13 @@ function Tabs({
   ...props
 }: React.ComponentProps<typeof TabsPrimitive.Root>) {
   return (
-    <TabsPrimitive.Root
-      data-slot="tabs"
-      className={cn("flex flex-col gap-2", className)}
-      {...props}
-    />
+    <div className="bg-card border rounded-lg overflow-hidden shadow-lg backdrop-blur-sm">
+      <TabsPrimitive.Root
+        data-slot="tabs"
+        className={cn("flex flex-col gap-2", className)}
+        {...props}
+      />
+    </div>
   );
 }
 
@@ -26,7 +28,7 @@ function TabsList({
     <TabsPrimitive.List
       data-slot="tabs-list"
       className={cn(
-        "bg-muted text-muted-foreground inline-flex h-9 w-fit items-center justify-center rounded-lg p-[3px]",
+        "bg-muted w-full text-muted-foreground inline-flex h-9 items-center justify-center rounded-lg p-[3px] border-b rounded-b-none",
         className
       )}
       {...props}

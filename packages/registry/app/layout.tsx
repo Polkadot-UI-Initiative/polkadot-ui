@@ -26,22 +26,44 @@ export const metadata: Metadata = {
     "Beautiful, accessible components for the Polkadot ecosystem. Type-safe, customizable, and built with modern React patterns.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  type TweakItem = {
+    name: string;
+    title?: string;
+    type: string;
+    cssVars?: {
+      theme?: Record<string, string>;
+      light?: Record<string, string>;
+      dark?: Record<string, string>;
+    };
+  };
+
+  let registryItems: TweakItem[] = [];
+  try {
+    const res = await fetch("https://tweakcn.com/r/registry.json", {
+      cache: "force-cache",
+      next: { revalidate: 3600 },
+    });
+    const { items } = (await res.json()) as { items: TweakItem[] };
+    registryItems = items.filter((i) => i.type === "registry:style");
+  } catch {}
   return (
     <html
       lang="en"
       suppressHydrationWarning
       className="scroll-smooth scroll-pt-12"
     >
-      <body className={`${geistSans.variable} antialiased`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <FumadocsRootProvider>
           <ThemeProvider>
             <div className="relative flex min-h-screen flex-col">
-              <Navigation />
+              <Navigation registryItems={registryItems} />
               <Providers>
                 <main className="flex-1">{children}</main>
               </Providers>
