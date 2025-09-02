@@ -68,7 +68,7 @@
     "eslint-config-next": "15.3.1",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^30.0.4",
-    "shadcn": "3.0.0",
+    "shadcn": "3.1.0",
     "tailwindcss": "^4",
     "ts-jest": "^29.1.2",
     "typescript": "^5"

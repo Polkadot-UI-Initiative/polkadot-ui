@@ -26,10 +26,8 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { useBalance, useTxFee } from "typink";
 
 import type { UseTxReturnType } from "typink/hooks/useTx";
-import type { Args, NetworkId } from "typink/types";
 
 export interface TxButtonIcons {
   default?: React.ReactNode;
@@ -40,16 +38,20 @@ export interface TxButtonIcons {
 }
 
 // Minimal, generic-agnostic surface for pluggable adapters (dedot, polkadot.js, etc.)
-export interface TxButtonServices {
+export interface TxButtonServices<TNetworkId = unknown> {
   isConnected?: boolean;
   connectedAccount?: { address?: string } | null;
   symbol?: string;
   decimals?: number;
   supportedNetworks?: Array<{
-    id: NetworkId;
+    id: TNetworkId;
     decimals: number;
     symbol: string;
   }>;
+  fee?: bigint | null;
+  isFeeLoading?: boolean;
+  feeError?: string | null;
+  balanceFree?: bigint | null;
 }
 
 type AnyFn = (...args: any[]) => any;
@@ -60,19 +62,21 @@ type ExtractTxFn<TTx> = TTx extends UseTxReturnType<infer U> ? U : never;
 
 export type TxButtonBaseProps<
   TTx extends UseTxReturnType<any> = UseTxReturnType<any>,
+  TNetworkId = unknown,
 > = ButtonProps &
   ArgsProp<ExtractTxFn<TTx>> & {
     children: React.ReactNode;
     tx: TTx;
-    networkId?: NetworkId;
+    networkId?: TNetworkId;
     resultDisplayDuration?: number;
     withNotification?: boolean;
     icons?: TxButtonIcons;
-    services?: TxButtonServices;
+    services?: TxButtonServices<TNetworkId>;
   };
 
 export function TxButtonBase<
   TTx extends UseTxReturnType<AnyFn> = UseTxReturnType<AnyFn>,
+  TNetworkId = unknown,
 >({
   children,
   tx,
@@ -93,7 +97,7 @@ export function TxButtonBase<
   },
   services,
   ...props
-}: TxButtonBaseProps<TTx>) {
+}: TxButtonBaseProps<TTx, TNetworkId>) {
   const connectedAccount = services?.connectedAccount ?? null;
   const supportedNetworks = services?.supportedNetworks ?? [];
 
@@ -107,26 +111,10 @@ export function TxButtonBase<
     return supportedNetworks[0];
   }, [networkId, supportedNetworks]);
 
-  const feeInputForHook = {
-    tx: tx as UseTxReturnType<ExtractTxFn<TTx>>,
-    enabled: true,
-    networkId,
-    args: (args ?? ([] as [])) as Parameters<ExtractTxFn<TTx>>,
-  } as unknown as Args<Parameters<ExtractTxFn<TTx>>> & {
-    tx: UseTxReturnType<ExtractTxFn<TTx>>;
-    enabled?: boolean;
-    networkId?: NetworkId;
-  };
-
-  const {
-    fee,
-    isLoading: isFeeLoading,
-    error: feeError,
-  } = useTxFee<ExtractTxFn<TTx>>(feeInputForHook);
-
-  const balance = useBalance(connectedAccount?.address, {
-    networkId,
-  });
+  const fee = services?.fee ?? null;
+  const isFeeLoading = services?.isFeeLoading ?? false;
+  const feeError = services?.feeError ?? null;
+  const balanceFree = services?.balanceFree ?? null;
 
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -137,7 +125,8 @@ export function TxButtonBase<
   const inBestBlockProgress = tx.inBestBlockProgress;
   const isLoading = inProgress;
 
-  const canCoverFee = !!balance && !!fee && balance.free >= fee;
+  const canCoverFee =
+    fee !== null && balanceFree !== null && balanceFree >= fee;
 
   useEffect(() => {
     if (txStatus || isError) {
@@ -161,7 +150,7 @@ export function TxButtonBase<
 
     try {
       await tx.signAndSend({
-        args: ["test"],
+        args: (args ?? ([] as [])) as Parameters<ExtractTxFn<TTx>>,
         callback: (result: ISubmittableResult) => {
           setTxStatus(result.status);
           console.log("tx status", result);
