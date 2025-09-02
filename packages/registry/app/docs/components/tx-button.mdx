@@ -20,7 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
   <TabsContent value="code" className="my-0">
 ```tsx
 import { useTx } from "typink"
-import { TxButtonBase } from "@/registry/dot-ui/blocks/tx-button/components/tx-button.base"
+import { TxButtonBase } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.base"
 
 function RemarkExample() {
   const tx = useTx((tx) => tx.system.remark)
@@ -45,7 +45,7 @@ If you prefer an all-in-one component with provider, use the registry wrapper:
   <TabsContent value="code" className="my-0">
 ```tsx
 import { useTx } from "typink"
-import { TxButtonWithProvider } from "@/registry/dot-ui/blocks/tx-button/components/tx-button.dedot"
+import { TxButtonWithProvider } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.dedot"
 
 function App() {
   const tx = useTx((tx) => tx.system.remark)

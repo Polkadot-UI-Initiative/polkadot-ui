@@ -10,7 +10,7 @@ import { transactionDetailsExample } from "./example-transaction-details";
 import { networkIndicatorExample } from "./example-network-indicator";
 import { balanceDisplayExample } from "./example-balance-display";
 import { nftCardExample } from "./example-nft-card";
-import DedotDemo from "@/registry/dot-ui/blocks/dedot-demo/dedot-demo";
+import DedotDemo from "@/registry/polkadot-ui/blocks/dedot-demo/dedot-demo";
 
 export const demoExample: ComponentExample = {
   name: "Dedot Demo",

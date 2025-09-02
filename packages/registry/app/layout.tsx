@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "dot-ui - Polkadot UI Components",
+  title: "polkadot-ui - Polkadot React Components",
   description:
     "Beautiful, accessible components for the Polkadot ecosystem. Type-safe, customizable, and built with modern React patterns.",
 };

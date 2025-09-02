@@ -37,8 +37,10 @@ export function Navigation({ registryItems }: NavigationProps) {
       <div className="flex h-14 items-center px-4">
         <div className="mr-4 hidden md:flex">
           <Link className="mr-6 flex items-center space-x-2" href="/">
-            <Image src="/logo.svg" alt="dot-ui" width={24} height={24} />
-            <span className="hidden font-bold sm:inline-block">dot-ui</span>
+            <Image src="/logo.svg" alt="polkadot-ui" width={24} height={24} />
+            <span className="hidden font-bold sm:inline-block">
+              polkadot-ui
+            </span>
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
             {navItems.map((item) => (

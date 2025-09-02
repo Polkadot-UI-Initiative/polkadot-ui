@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
-  "name": "dot-ui-dedot",
-  "homepage": "https://dot-ui.com",
+  "name": "polkadot-ui-dedot",
+  "homepage": "https://polkadot-ui.com",
   "items": [
     {
       "name": "dedot-demo",
@@ -12,28 +12,28 @@
       "registryDependencies": [],
       "files": [
         {
-          "path": "registry/dot-ui/blocks/dedot-demo/dedot-demo.page.tsx",
+          "path": "registry/polkadot-ui/blocks/dedot-demo/dedot-demo.page.tsx",
           "type": "registry:page",
           "target": "app/dedot-demo/page.tsx"
         },
         {
-          "path": "registry/dot-ui/blocks/dedot-demo/dedot-demo.tsx",
+          "path": "registry/polkadot-ui/blocks/dedot-demo/dedot-demo.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/providers/dedot-provider.tsx",
+          "path": "registry/polkadot-ui/providers/dedot-provider.tsx",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/blocks/require-connection/components/require-connection.base.tsx",
+          "path": "registry/polkadot-ui/blocks/require-connection/components/require-connection.base.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/blocks/require-connection/components/require-connection.dedot.tsx",
+          "path": "registry/polkadot-ui/blocks/require-connection/components/require-connection.dedot.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/blocks/client-only.tsx",
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
           "type": "registry:component"
         }
       ]
@@ -52,27 +52,27 @@
       "registryDependencies": ["button", "dialog"],
       "files": [
         {
-          "path": "registry/dot-ui/blocks/require-account/components/require-account.base.tsx",
+          "path": "registry/polkadot-ui/blocks/require-account/components/require-account.base.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/blocks/require-account/components/require-account.dedot.tsx",
+          "path": "registry/polkadot-ui/blocks/require-account/components/require-account.dedot.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/providers/dedot-provider.tsx",
+          "path": "registry/polkadot-ui/providers/dedot-provider.tsx",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/types.dot-ui.ts",
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/utils.dot-ui.ts",
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/blocks/client-only.tsx",
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
           "type": "registry:component"
         }
       ]
@@ -94,52 +94,52 @@
       "registryDependencies": ["input", "label", "badge", "button"],
       "files": [
         {
-          "path": "registry/dot-ui/blocks/address-input/components/address-input.dedot.tsx",
+          "path": "registry/polkadot-ui/blocks/address-input/components/address-input.dedot.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/blocks/address-input/components/address-input.base.tsx",
+          "path": "registry/polkadot-ui/blocks/address-input/components/address-input.base.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/blocks/address-input/hooks/use-identity.dedot.ts",
+          "path": "registry/polkadot-ui/blocks/address-input/hooks/use-identity.dedot.ts",
           "type": "registry:hook"
         },
         {
-          "path": "registry/dot-ui/blocks/address-input/hooks/use-search-identity.dedot.ts",
+          "path": "registry/polkadot-ui/blocks/address-input/hooks/use-search-identity.dedot.ts",
           "type": "registry:hook"
         },
         {
-          "path": "registry/dot-ui/blocks/address-input/demo/page.dedot.tsx",
+          "path": "registry/polkadot-ui/blocks/address-input/demo/page.dedot.tsx",
           "type": "registry:page",
-          "target": "app/demo/dot-ui/address-input/page.tsx"
+          "target": "app/demo/polkadot-ui/address-input/page.tsx"
         },
         {
-          "path": "registry/dot-ui/blocks/address-input/demo/address-input-demo.tsx",
+          "path": "registry/polkadot-ui/blocks/address-input/demo/address-input-demo.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/providers/dedot-provider.tsx",
+          "path": "registry/polkadot-ui/providers/dedot-provider.tsx",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/utils.dot-ui.ts",
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/types.dot-ui.ts",
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/types.dedot.ts",
+          "path": "registry/polkadot-ui/lib/types.dedot.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/config.dot-ui.ts",
+          "path": "registry/polkadot-ui/lib/config.dot-ui.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/blocks/client-only.tsx",
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
           "type": "registry:component"
         }
       ]
@@ -158,40 +158,40 @@
       "registryDependencies": ["button", "dialog"],
       "files": [
         {
-          "path": "registry/dot-ui/blocks/require-connection/demo/page.dedot.tsx",
+          "path": "registry/polkadot-ui/blocks/require-connection/demo/page.dedot.tsx",
           "type": "registry:page",
           "target": "app/require-connection/page.tsx"
         },
         {
-          "path": "registry/dot-ui/blocks/require-connection/demo/require-connection-demo.tsx",
+          "path": "registry/polkadot-ui/blocks/require-connection/demo/require-connection-demo.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/blocks/require-connection/components/require-connection.base.tsx",
+          "path": "registry/polkadot-ui/blocks/require-connection/components/require-connection.base.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/blocks/require-connection/components/require-connection.dedot.tsx",
+          "path": "registry/polkadot-ui/blocks/require-connection/components/require-connection.dedot.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/blocks/client-only.tsx",
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/providers/dedot-provider.tsx",
+          "path": "registry/polkadot-ui/providers/dedot-provider.tsx",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/utils.dot-ui.ts",
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/types.dot-ui.ts",
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/config.dot-ui.ts",
+          "path": "registry/polkadot-ui/lib/config.dot-ui.ts",
           "type": "registry:lib"
         }
       ]
@@ -210,48 +210,48 @@
       "registryDependencies": ["button", "dialog"],
       "files": [
         {
-          "path": "registry/dot-ui/blocks/connect-wallet/demo/page.dedot.tsx",
+          "path": "registry/polkadot-ui/blocks/connect-wallet/demo/page.dedot.tsx",
           "type": "registry:page",
-          "target": "app/demo/dot-ui/connect-wallet/page.tsx"
+          "target": "app/demo/polkadot-ui/connect-wallet/page.tsx"
         },
         {
-          "path": "registry/dot-ui/blocks/connect-wallet/components/wallet-select.base.tsx",
+          "path": "registry/polkadot-ui/blocks/connect-wallet/components/wallet-select.base.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/blocks/connect-wallet/components/wallet-select.dedot.tsx",
+          "path": "registry/polkadot-ui/blocks/connect-wallet/components/wallet-select.dedot.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/blocks/connect-wallet/components/view-select-wallet.tsx",
+          "path": "registry/polkadot-ui/blocks/connect-wallet/components/view-select-wallet.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/blocks/connect-wallet/components/view-select-account.tsx",
+          "path": "registry/polkadot-ui/blocks/connect-wallet/components/view-select-account.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/blocks/client-only.tsx",
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/blocks/connect-wallet/demo/connect-wallet-demo.tsx",
+          "path": "registry/polkadot-ui/blocks/connect-wallet/demo/connect-wallet-demo.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/providers/dedot-provider.tsx",
+          "path": "registry/polkadot-ui/providers/dedot-provider.tsx",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/utils.dot-ui.ts",
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/types.dot-ui.ts",
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/config.dot-ui.ts",
+          "path": "registry/polkadot-ui/lib/config.dot-ui.ts",
           "type": "registry:lib"
         }
       ]

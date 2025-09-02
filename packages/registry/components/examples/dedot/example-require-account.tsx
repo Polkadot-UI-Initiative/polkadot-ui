@@ -5,7 +5,7 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { RequireAccount } from "@/registry/dot-ui/blocks/require-account/components/require-account.dedot";
+import { RequireAccount } from "@/registry/polkadot-ui/blocks/require-account/components/require-account.dedot";
 import type { ComponentExample } from "../types.examples";
 import { useTypink } from "typink";
 

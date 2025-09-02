@@ -19,53 +19,53 @@
       "registryDependencies": ["input", "label", "badge", "button"],
       "files": [
         {
-          "path": "registry/dot-ui/blocks/address-input/components/address-input.papi.tsx",
+          "path": "registry/polkadot-ui/blocks/address-input/components/address-input.papi.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/blocks/address-input/components/address-input.base.tsx",
+          "path": "registry/polkadot-ui/blocks/address-input/components/address-input.base.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/blocks/address-input/hooks/use-identity.papi.ts",
+          "path": "registry/polkadot-ui/blocks/address-input/hooks/use-identity.papi.ts",
           "type": "registry:hook"
         },
         {
-          "path": "registry/dot-ui/blocks/address-input/hooks/use-search-identity.papi.ts",
+          "path": "registry/polkadot-ui/blocks/address-input/hooks/use-search-identity.papi.ts",
           "type": "registry:hook"
         },
         {
-          "path": "registry/dot-ui/blocks/address-input/demo/page.papi.tsx",
+          "path": "registry/polkadot-ui/blocks/address-input/demo/page.papi.tsx",
           "type": "registry:page",
-          "target": "app/demo/dot-ui/address-input/page.tsx"
+          "target": "app/demo/polkadot-ui/address-input/page.tsx"
         },
         {
-          "path": "registry/dot-ui/blocks/address-input/demo/address-input-demo.tsx",
+          "path": "registry/polkadot-ui/blocks/address-input/demo/address-input-demo.tsx",
           "type": "registry:component",
-          "target": "app/demo/dot-ui/address-input/address-input-demo.tsx"
+          "target": "app/demo/polkadot-ui/address-input/address-input-demo.tsx"
         },
         {
-          "path": "registry/dot-ui/providers/papi-provider.tsx",
+          "path": "registry/polkadot-ui/providers/papi-provider.tsx",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/utils.dot-ui.ts",
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/types.dot-ui.ts",
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/types.papi.ts",
+          "path": "registry/polkadot-ui/lib/types.papi.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/config.dot-ui.ts",
+          "path": "registry/polkadot-ui/lib/config.dot-ui.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/config.papi.ts",
+          "path": "registry/polkadot-ui/lib/config.papi.ts",
           "type": "registry:lib"
         }
       ]
@@ -79,41 +79,41 @@
       "registryDependencies": [],
       "files": [
         {
-          "path": "registry/dot-ui/blocks/require-connection/demo/page.papi.tsx",
+          "path": "registry/polkadot-ui/blocks/require-connection/demo/page.papi.tsx",
           "type": "registry:page",
-          "target": "app/demo/dot-ui/require-connection/page.tsx"
+          "target": "app/demo/polkadot-ui/require-connection/page.tsx"
         },
 
         {
-          "path": "registry/dot-ui/blocks/require-connection/components/require-connection.papi.tsx",
+          "path": "registry/polkadot-ui/blocks/require-connection/components/require-connection.papi.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/blocks/require-connection/components/require-connection.base.tsx",
+          "path": "registry/polkadot-ui/blocks/require-connection/components/require-connection.base.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/dot-ui/providers/papi-provider.tsx",
+          "path": "registry/polkadot-ui/providers/papi-provider.tsx",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/utils.dot-ui.ts",
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/types.dot-ui.ts",
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/types.papi.ts",
+          "path": "registry/polkadot-ui/lib/types.papi.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/config.dot-ui.ts",
+          "path": "registry/polkadot-ui/lib/config.dot-ui.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/dot-ui/lib/config.papi.ts",
+          "path": "registry/polkadot-ui/lib/config.papi.ts",
           "type": "registry:lib"
         }
       ]

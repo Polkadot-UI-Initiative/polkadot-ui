@@ -1,8 +1,8 @@
 "use client";
 
-import { usePolkadotApi } from "../../registry/dot-ui/providers/papi-provider";
-import { usePapi } from "../../registry/dot-ui/providers/papi-provider";
-import { RequireConnection } from "../../registry/dot-ui/blocks/require-connection/components/require-connection.papi";
+import { usePolkadotApi } from "../../registry/polkadot-ui/providers/papi-provider";
+import { usePapi } from "../../registry/polkadot-ui/providers/papi-provider";
+import { RequireConnection } from "../../registry/polkadot-ui/blocks/require-connection/components/require-connection.papi";
 
 export function ClientComponent() {
   const api = usePolkadotApi("paseo_people");

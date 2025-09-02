@@ -1,5 +1,5 @@
 {
-  "name": "@dot-ui/registry",
+  "name": "@polkadot-ui/registry",
   "version": "0.1.0",
   "private": true,
   "description": "Registry server and documentation for Polkadot UI components",
