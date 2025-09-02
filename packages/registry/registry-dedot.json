@@ -70,6 +70,10 @@
         {
           "path": "registry/dot-ui/lib/utils.dot-ui.ts",
           "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
         }
       ]
     },
