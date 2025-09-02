@@ -39,6 +39,41 @@
       ]
     },
     {
+      "name": "require-account",
+      "type": "registry:component",
+      "title": "Require Account (dedot)",
+      "description": "Render children only when an account is selected; otherwise show a prompt.",
+      "dependencies": [
+        "dedot",
+        "typink",
+        "lucide-react",
+        "@polkadot/react-identicon"
+      ],
+      "registryDependencies": ["button", "dialog"],
+      "files": [
+        {
+          "path": "registry/dot-ui/blocks/require-account/components/require-account.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/dot-ui/blocks/require-account/components/require-account.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/dot-ui/providers/dedot-provider.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/dot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
       "name": "address-input",
       "type": "registry:component",
       "title": "Address Input (dedot)",
