@@ -51,7 +51,7 @@ export default function RootLayout({
               <footer className="flex justify-center items-center mt-12 mb-4 p-4">
                 <PolkadotLogo withPoweredBy />
               </footer>
-              <MouseFollower />
+              {/* <MouseFollower /> */}
             </div>
             <Toaster
               position="bottom-right"

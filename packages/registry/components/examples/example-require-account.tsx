@@ -1,8 +1,13 @@
-import { Card, CardHeader, CardTitle, CardDescription } from "../ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
 import { RequireAccount } from "@/registry/dot-ui/blocks/require-account/components/require-account.dedot";
 import type { ComponentExample } from "./types";
 import { useTypink } from "typink";
-import { truncateAddress } from "@/registry/dot-ui/lib/utils.dot-ui";
 
 export const requireAccountExample: ComponentExample = {
   name: "Require Account",
@@ -27,9 +32,9 @@ export const requireAccountExample: ComponentExample = {
         <Card className="bg-white/5 border border-border w-full">
           <CardHeader>
             <CardTitle>✅ Account Selected</CardTitle>
-            <CardDescription className="text-xs font-normal">
+            <CardContent className="text-xs font-normal">
               <Component />
-            </CardDescription>
+            </CardContent>
           </CardHeader>
         </Card>
       </RequireAccount>
