@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { WalletSelect } from "@/registry/dot-ui/blocks/connect-wallet/components/wallet-select.dedot";
-import type { ComponentExample } from "./types";
+import type { ComponentExample } from "../types.examples";
 
 export const walletSelectExample: ComponentExample = {
   name: "Wallet & Account Selection",

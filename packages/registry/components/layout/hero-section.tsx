@@ -15,7 +15,7 @@ export function HeroSection() {
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
           </Link>
         </Button>
-        <h1 className="text-center text-xl font-bold leading-tight tracking-tight md:text-6xl lg:leading-[1.1]">
+        <h1 className="text-center text-3xl font-bold leading-tight tracking-tight md:text-6xl lg:leading-[1.1]">
           Ship <span className="text-gradient">nicer</span> Polkadot <br /> Apps{" "}
           <span className="text-gradient italic">faster</span>
         </h1>

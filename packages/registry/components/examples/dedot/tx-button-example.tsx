@@ -1,6 +1,6 @@
-import { ClientOnly } from "../../registry/dot-ui/blocks/client-only";
+import { ClientOnly } from "../../../registry/dot-ui/blocks/client-only";
 import { DemoTxButton } from "./example-tx-button";
-import type { ComponentExample } from "./types";
+import type { ComponentExample } from "../types.examples";
 
 export const txButtonExample: ComponentExample = {
   name: "Tx Button",
