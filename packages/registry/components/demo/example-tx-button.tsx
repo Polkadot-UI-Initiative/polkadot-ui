@@ -2,7 +2,7 @@ import { useTypink } from "typink";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ClientOnly } from "../../registry/dot-ui/blocks/client-only";
-import { RemarkButton } from "../remark-button";
+import { RemarkButton } from "../examples/dedot/remark-button";
 
 export function DemoTxButton() {
   const { supportedNetworks } = useTypink();

@@ -1,6 +1,6 @@
 import { AddressInputWithProvider } from "@/registry/dot-ui/blocks/address-input/components/address-input.dedot";
 import { Label } from "@/registry/dot-ui/ui/label";
-import type { ComponentExample } from "./types";
+import type { ComponentExample } from "../types.examples";
 
 export const addressInputExample: ComponentExample = {
   name: "Address Input",

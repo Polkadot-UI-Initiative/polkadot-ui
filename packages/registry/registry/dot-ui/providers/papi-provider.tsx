@@ -22,6 +22,7 @@ import {
   type BasePolkadotContextValue,
   type BasePolkadotProviderProps,
 } from "@/registry/dot-ui/lib/types.dot-ui";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // PAPI-specific types
 type ConfiguredChainApi<T extends ChainId> = TypedApi<ChainDescriptor<T>>;
@@ -58,6 +59,7 @@ export function PolkadotProvider({
   const [errorStates, setErrorStates] = useState<Map<ChainId, string | null>>(
     new Map()
   );
+  const queryClient = new QueryClient();
 
   const initializeChain = useCallback(
     async (chainId: ChainId) => {
@@ -174,9 +176,11 @@ export function PolkadotProvider({
   };
 
   return (
-    <PolkadotContext.Provider value={value}>
-      {children}
-    </PolkadotContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <PolkadotContext.Provider value={value}>
+        {children}
+      </PolkadotContext.Provider>
+    </QueryClientProvider>
   );
 }
 

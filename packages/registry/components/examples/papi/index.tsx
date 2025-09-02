@@ -1,4 +1,4 @@
-import type { ComponentExample } from "./types";
+import type { ComponentExample } from "../types.examples";
 import { addressInputExample } from "./example-address-input";
 import { txButtonExample } from "./example-tx-button";
 import { requireConnectionExample } from "./example-require-connection";
@@ -10,7 +10,7 @@ import { transactionDetailsExample } from "./example-transaction-details";
 import { networkIndicatorExample } from "./example-network-indicator";
 import { balanceDisplayExample } from "./example-balance-display";
 import { nftCardExample } from "./example-nft-card";
-import DedotDemo from "../../registry/dot-ui/blocks/dedot-demo/dedot-demo";
+import DedotDemo from "@/registry/dot-ui/blocks/dedot-demo/dedot-demo";
 
 export const demoExample: ComponentExample = {
   name: "Dedot Demo",
@@ -21,7 +21,7 @@ export const demoExample: ComponentExample = {
 };
 
 export const examples: ComponentExample[] = [
-  demoExample,
+  // demoExample,
   txButtonExample,
   addressInputExample,
   walletSelectExample,

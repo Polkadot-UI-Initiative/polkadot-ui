@@ -1,6 +1,11 @@
-import { Card, CardHeader, CardTitle, CardDescription } from "../ui/card";
-import { RequireConnection } from "@/registry/dot-ui/blocks/require-connection/components/require-connection.dedot";
-import type { ComponentExample } from "./types";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { RequireConnection } from "@/registry/dot-ui/blocks/require-connection/components/require-connection.papi";
+import type { ComponentExample } from "../types.examples";
 
 export const requireConnectionExample: ComponentExample = {
   name: "Require Connection",

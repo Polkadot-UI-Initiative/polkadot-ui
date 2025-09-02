@@ -1,5 +1,5 @@
-import type { ComponentExample } from "./types";
-import { ExamplePlaceholder } from "./placeholder";
+import type { ComponentExample } from "../types.examples";
+import { ExamplePlaceholder } from "@/components/examples/placeholder";
 
 export const amountInputExample: ComponentExample = {
   name: "Amount Input",

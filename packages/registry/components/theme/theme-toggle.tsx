@@ -245,7 +245,8 @@ export function ThemeToggle({ initialItems }: ThemeToggleProps) {
         </div>
 
         <div className="text-xs mt-6">
-          Our library is fully themable with css vars. Above themes provided by{" "}
+          Polkadot UI is fully themable with tailwind css vars. Above themes
+          provided by{" "}
           <Link href="https://tweakcn.com/" className="underline">
             tweakcn
           </Link>

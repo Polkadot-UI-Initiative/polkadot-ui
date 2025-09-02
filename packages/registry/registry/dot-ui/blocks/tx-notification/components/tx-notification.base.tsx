@@ -12,7 +12,7 @@ function ChainLogo({ network }: { network: NetworkInfoLike | undefined }) {
     <img
       src={network.logo}
       alt={network.name}
-      className="absolute -right-2 -top-2 w-5 h-5 shadow-md"
+      className="absolute -right-1 -top-1 w-5 h-5"
     />
   );
 }

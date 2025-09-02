@@ -14,7 +14,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { BookText } from "lucide-react";
-import { examples } from "../examples";
+import { examples } from "../examples/papi";
 import { OpenInV0Button } from "../open-in-v0-button";
 
 export function ComponentsSection() {

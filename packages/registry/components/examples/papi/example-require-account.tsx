@@ -5,9 +5,9 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { RequireAccount } from "@/registry/dot-ui/blocks/require-account/components/require-account.dedot";
-import type { ComponentExample } from "./types";
-import { useTypink } from "typink";
+import { RequireAccount } from "@/registry/dot-ui/blocks/require-account/components/require-account.papi";
+import type { ComponentExample } from "../types.examples";
+import { usePapi } from "@/registry/dot-ui/providers/papi-provider";
 
 export const requireAccountExample: ComponentExample = {
   name: "Require Account",
@@ -43,11 +43,11 @@ export const requireAccountExample: ComponentExample = {
 };
 
 function Component() {
-  const { connectedAccount } = useTypink();
+  const { activeAccount } = usePapi();
   return (
     <div>
-      <div>Account name: {connectedAccount?.name}</div>
-      <div>Wallet: {connectedAccount?.source}</div>
+      <div>Account name: {activeAccount?.name}</div>
+      <div>Wallet: {activeAccount?.source}</div>
     </div>
   );
 }

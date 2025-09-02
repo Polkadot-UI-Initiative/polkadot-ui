@@ -102,7 +102,6 @@ export const ViewSelectWallet = ({
         <Button
           variant="default"
           onClick={next}
-          size="lg"
           disabled={!connectedWallets.length}
           className="flex flex-row items-center gap-2"
         >

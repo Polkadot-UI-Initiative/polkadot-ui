@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { AnimatedCodeBlock } from "../animated-code-block";
 import { ArrowRight } from "lucide-react";
+import { Badge } from "../ui/badge";
 
 export function HeroSection() {
   return (
@@ -18,11 +19,9 @@ export function HeroSection() {
           Ship <span className="text-gradient">nicer</span> Polkadot <br /> Apps{" "}
           <span className="text-gradient italic">faster</span>
         </h1>
-        <span className="max-w-[750px] text-center text-lg text-muted-foreground sm:text-lg">
-          Polkadot UI react components deliver best UX for your apps. <br />
-          Fully typesafe, customizable, open source.
-          <br />
-          Powered by{" "}
+        <span className="max-w-[750px] text-center text-lg text-muted-foreground sm:text-lg my-8">
+          Deliver great UX with ready-made, typesafe Polkadot components. Fully
+          customizable. Fully open source. Powered by{" "}
           <Link href="https://papi.how" className="underline text-foreground">
             papi
           </Link>{" "}
@@ -45,9 +44,9 @@ export function HeroSection() {
           </Button>
           <Button variant="outline" disabled>
             Add MCP to cursor →{" "}
-            <span className="text-xs text-muted-foreground bg-muted rounded-md px-2 py-1">
+            <Badge className="text-xs" variant="secondary">
               soon
-            </span>
+            </Badge>
           </Button>
         </div>
       </div>
