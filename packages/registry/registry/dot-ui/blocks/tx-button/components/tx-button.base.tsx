@@ -26,7 +26,8 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { useBalance, useTxFee, useTypink } from "typink";
+import { useBalance, useTxFee } from "typink";
+
 import type { UseTxReturnType } from "typink/hooks/useTx";
 import type { Args, NetworkId } from "typink/types";
 
@@ -44,6 +45,11 @@ export interface TxButtonServices {
   connectedAccount?: { address?: string } | null;
   symbol?: string;
   decimals?: number;
+  supportedNetworks?: Array<{
+    id: NetworkId;
+    decimals: number;
+    symbol: string;
+  }>;
 }
 
 type AnyFn = (...args: any[]) => any;
@@ -85,9 +91,11 @@ export function TxButtonBase<
     inBestBlock: <CheckCircle className="w-4 h-4" />,
     error: <X className="w-4 h-4" />,
   },
+  services,
   ...props
 }: TxButtonBaseProps<TTx>) {
-  const { connectedAccount, supportedNetworks } = useTypink();
+  const connectedAccount = services?.connectedAccount ?? null;
+  const supportedNetworks = services?.supportedNetworks ?? [];
 
   const isValidNetwork = useMemo(() => {
     if (!networkId) return true;

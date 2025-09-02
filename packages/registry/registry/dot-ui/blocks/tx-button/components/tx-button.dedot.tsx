@@ -59,7 +59,7 @@ export type TxButtonProps<T extends ChainId = ChainId> =
   | TxButtonPropsDefault;
 
 export function TxButton<T extends ChainId>(props: TxButtonProps<T>) {
-  const { connectedAccount } = useTypink();
+  const { connectedAccount, supportedNetworks } = useTypink();
   // Simple services object with type-compatible wrappers
   const services = useMemo(
     () => ({
@@ -67,8 +67,9 @@ export function TxButton<T extends ChainId>(props: TxButtonProps<T>) {
       useIsConnected: () => !!connectedAccount?.address,
       decimals: 0,
       symbol: "",
+      supportedNetworks,
     }),
-    [connectedAccount]
+    [connectedAccount, supportedNetworks]
   );
 
   return (
