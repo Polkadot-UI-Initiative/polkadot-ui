@@ -190,39 +190,47 @@ export function ThemeToggle() {
               <SelectValue placeholder="Select theme" />
             </SelectTrigger>
             <SelectContent>
-              {items.map((i) => {
-                const isDark =
-                  theme === "dark" ||
-                  (theme === "system" &&
-                    typeof window !== "undefined" &&
-                    window.matchMedia &&
-                    window.matchMedia("(prefers-color-scheme: dark)").matches);
-                const bg =
-                  resolveThemeVar(i, "background", !!isDark) || "transparent";
-                const fg = resolveThemeVar(i, "foreground", !!isDark);
-                const primary = resolveThemeVar(i, "primary", !!isDark);
-                const secondary = resolveThemeVar(i, "secondary", !!isDark);
-                return (
-                  <SelectItem
-                    key={i.name}
-                    value={i.name}
-                    className="flex items-center justify-between"
-                    style={{ backgroundColor: bg, color: fg }}
-                  >
-                    <span className="truncate">{i.title || i.name}</span>
-                    <span className="ml-2 flex items-center gap-1">
-                      <span
-                        className="h-3 w-3 rounded-full border"
-                        style={{ backgroundColor: primary }}
-                      />
-                      <span
-                        className="h-3 w-3 rounded-full border"
-                        style={{ backgroundColor: secondary }}
-                      />
-                    </span>
-                  </SelectItem>
-                );
-              })}
+              {items
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((i) => {
+                  const isDark =
+                    theme === "dark" ||
+                    (theme === "system" &&
+                      typeof window !== "undefined" &&
+                      window.matchMedia &&
+                      window.matchMedia("(prefers-color-scheme: dark)")
+                        .matches);
+                  const bg =
+                    resolveThemeVar(i, "background", !!isDark) || "transparent";
+                  const fg = resolveThemeVar(i, "foreground", !!isDark);
+                  const primary = resolveThemeVar(i, "primary", !!isDark);
+                  const secondary = resolveThemeVar(i, "secondary", !!isDark);
+                  const muted = resolveThemeVar(i, "muted", !!isDark);
+                  return (
+                    <SelectItem
+                      key={i.name}
+                      value={i.name}
+                      className="flex items-center justify-between"
+                      style={{ backgroundColor: bg, color: fg }}
+                    >
+                      <span className="ml-2 flex items-center gap-1">
+                        <span
+                          className="h-3 w-3 rounded-full border"
+                          style={{ backgroundColor: primary }}
+                        />
+                        <span
+                          className="h-3 w-3 rounded-full border -ml-2"
+                          style={{ backgroundColor: secondary }}
+                        />
+                        <span
+                          className="h-3 w-3 rounded-full border -ml-2"
+                          style={{ backgroundColor: muted }}
+                        />
+                      </span>
+                      <span className="truncate">{i.title || i.name}</span>
+                    </SelectItem>
+                  );
+                })}
             </SelectContent>
           </Select>
         </div>
