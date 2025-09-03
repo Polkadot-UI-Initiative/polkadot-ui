@@ -57,13 +57,15 @@ export const ViewSelectWallet = ({
                 )}
               />
               <div className="flex flex-row items-center justify-start gap-2">
-                <Image
-                  src={wallet.logo ?? ""}
-                  alt={wallet.name}
-                  className="w-[32px] h-[32px]"
-                  width={32}
-                  height={32}
-                />
+                {wallet.logo && (
+                  <Image
+                    src={wallet.logo ?? ""}
+                    alt={wallet.name}
+                    className="w-[32px] h-[32px]"
+                    width={32}
+                    height={32}
+                  />
+                )}
                 <div className="flex flex-col items-start">
                   <span className="font-bold">{wallet.name}</span>
                   <span

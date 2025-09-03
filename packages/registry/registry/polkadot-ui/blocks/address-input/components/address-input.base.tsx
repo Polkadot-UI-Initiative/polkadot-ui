@@ -425,7 +425,7 @@ export const AddressInputBase = forwardRef<
                 "border-red-500 focus:border-red-500",
               inputValue.trim() &&
                 validationResult?.isValid === true &&
-                "border-succ focus:border-green-500",
+                "focus:border-green-500",
               className
             )}
             {...props}

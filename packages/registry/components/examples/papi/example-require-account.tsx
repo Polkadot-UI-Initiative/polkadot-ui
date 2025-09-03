@@ -47,7 +47,7 @@ function Component() {
   return (
     <div>
       <div>Account name: {selectedAccount?.name}</div>
-      <div>Wallet: {selectedAccount?.address}</div>
+      <div>Wallet: {selectedAccount?.wallet.name}</div>
     </div>
   );
 }
