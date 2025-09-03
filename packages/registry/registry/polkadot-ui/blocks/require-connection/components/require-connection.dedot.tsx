@@ -18,17 +18,12 @@ export type RequireConnectionProps = Omit<
 export function RequireConnection(props: RequireConnectionProps) {
   const { status } = usePolkadotClient(props.chainId);
 
-  const services = useMemo(
-    () => ({
-      isLoading: status === ClientConnectionStatus.Connecting,
-      isConnected: status === ClientConnectionStatus.Connected,
-    }),
-    [status]
-  );
+  const isLoading = status === ClientConnectionStatus.Connecting;
+  const isConnected = status === ClientConnectionStatus.Connected;
 
   return (
     <ClientOnly fallback={props.loadingFallback ?? props.fallback ?? null}>
-      <RequireConnectionBase {...props} services={services} />
+      <RequireConnectionBase {...props} services={{ isLoading, isConnected }} />
     </ClientOnly>
   );
 }

@@ -96,6 +96,9 @@ importers:
       '@radix-ui/react-label':
         specifier: ^2.1.4
         version: 2.1.7(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@radix-ui/react-navigation-menu':
+        specifier: ^1.2.14
+        version: 1.2.14(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-popover':
         specifier: ^1.1.15
         version: 1.1.15(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -111,6 +114,12 @@ importers:
       '@radix-ui/react-toggle':
         specifier: ^1.1.10
         version: 1.1.10(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@reactive-dot/core':
+        specifier: ^0.46.1
+        version: 0.46.1(polkadot-api@1.14.1(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3))
+      '@reactive-dot/react':
+        specifier: ^0.46.2
+        version: 0.46.2(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@19.1.2)(polkadot-api@1.14.1(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3))(react@19.1.0)
       '@styleglide/theme-editor':
         specifier: ^0.0.15
         version: 0.0.15
@@ -1659,8 +1668,8 @@ packages:
       '@types/react-dom':
         optional: true
 
-  '@radix-ui/react-navigation-menu@1.2.13':
-    resolution: {integrity: sha512-WG8wWfDiJlSF5hELjwfjSGOXcBR/ZMhBFCGYe8vERpC39CQYZeq1PQ2kaYHdye3V95d06H89KGMsVCIE4LWo3g==}
+  '@radix-ui/react-navigation-menu@1.2.14':
+    resolution: {integrity: sha512-YB9mTFQvCOAQMHU+C/jVl96WmuWeltyUEpRJJky51huhds5W2FQr1J8D/16sQlf0ozxkPK8uF3niQMdUwZPv5w==}
     peerDependencies:
       '@types/react': 19.1.2
       '@types/react-dom': 19.1.2
@@ -1912,6 +1921,19 @@ packages:
   '@radix-ui/rect@1.1.1':
     resolution: {integrity: sha512-HPwpGIzkl28mWyZqG52jiqDJ12waP11Pa1lGoiyUkIEuMLBP0oeK/C89esbXrxsky5we7dfd8U58nm0SgAWpVw==}
 
+  '@reactive-dot/core@0.46.1':
+    resolution: {integrity: sha512-U+w0U8zYdcHD4xSwXslHqETr3BJhKBUvOwaENjZmb7DdYLXc2vUdDjLKX60q+Fwk6uCSQJRjpdOfVS/UEeWHQQ==}
+    peerDependencies:
+      polkadot-api: '>=1.11.x'
+
+  '@reactive-dot/react@0.46.2':
+    resolution: {integrity: sha512-aV52ExIZNl15H28dQSu1LsYNueG3PcqI6ANtXJ3S14wccMjxFsEvIm9oiBv3XTrrkRhzJ81Tzl6/uSU2DjkRYQ==}
+    peerDependencies:
+      react: 19.x
+
+  '@reactive-dot/utils@0.10.0':
+    resolution: {integrity: sha512-Er9LpLMX9e4UJoKJaefW7ePL9t8mVcshtuDqiKJE5VFiiq6xJirtIQ878rxI8fzWtB/EkNmslCVS4+wJR3nqVA==}
+
   '@redis/bloom@1.2.0':
     resolution: {integrity: sha512-HG2DFjYKbpNmVXsa0keLHp/3leGJz1mjh09f2RLGGLQZzSHpkmZWuwJbAvo3QcRY8p80m5+ZdXZdYOSBLlp7Cg==}
     peerDependencies:
@@ -2112,6 +2134,12 @@ packages:
 
   '@substrate/connect-known-chains@1.10.3':
     resolution: {integrity: sha512-OJEZO1Pagtb6bNE3wCikc2wrmvEU5x7GxFFLqqbz1AJYYxSlrPCGu4N2og5YTExo4IcloNMQYFRkBGue0BKZ4w==}
+
+  '@substrate/discovery@0.2.2':
+    resolution: {integrity: sha512-vD5B1LqIaiDBWpJ7h1b89jzhU0AKjOySFAt2zbTDz+gpRdcOn0I8PoxhOrent4LXFX9O/ch8bGG/JYDtr2B2QA==}
+
+  '@substrate/smoldot-discovery@2.0.2':
+    resolution: {integrity: sha512-6KG6S1QkEfDJIgqYszSWH7n6QBGdcU9LG6sWdEUR86wqrr26Pr1z52cOUhHBRtU2+vydglIM6IVnMuzFEIUbBw==}
 
   '@substrate/ss58-registry@1.51.0':
     resolution: {integrity: sha512-TWDurLiPxndFgKjVavCniytBIw+t4ViOi7TYp9h/D0NMmkEc9klFTo+827eyEJ0lELpqO207Ey7uGxUa+BS1jQ==}
@@ -4320,6 +4348,18 @@ packages:
   jiti@2.4.2:
     resolution: {integrity: sha512-rg9zJN+G4n2nfJl5MW3BMygZX56zKPNVEYYqq7adpmMh4Jn2QNEwhvQlFy6jPVdcod7txZtKHWnyZiA3a0zP7A==}
     hasBin: true
+
+  jotai-derive@0.1.3:
+    resolution: {integrity: sha512-0jRoDpQ0prXxGRxh1rOqaM8Lkku+LohCRVES1cKtlWq7d80HviIDtCdWnP2QmQtUtyRtRW5JbYB4V7tODvnLFg==}
+    deprecated: This package has been moved to https://www.npmjs.com/package/jotai-eager
+    peerDependencies:
+      jotai: '>=2.0.0'
+
+  jotai-effect@2.0.5:
+    resolution: {integrity: sha512-SUCStiMDWMQIV5Wh95Dq0qvl3tsI1vKDSRHFBQg2bHS5BCIyDB6ykFpIFYhX+d2yYk3dJjOgNKZaTJEUmFFcdA==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      jotai: '>=2.12.1'
 
   jotai@2.13.1:
     resolution: {integrity: sha512-cRsw6kFeGC9Z/D3egVKrTXRweycZ4z/k7i2MrfCzPYsL9SIWcPXTyqv258/+Ay8VUEcihNiE/coBLE6Kic6b8A==}
@@ -7993,16 +8033,16 @@ snapshots:
       '@types/react': 19.1.2
       '@types/react-dom': 19.1.2(@types/react@19.1.2)
 
-  '@radix-ui/react-navigation-menu@1.2.13(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@radix-ui/react-navigation-menu@1.2.14(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
-      '@radix-ui/primitive': 1.1.2
+      '@radix-ui/primitive': 1.1.3
       '@radix-ui/react-collection': 1.1.7(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.1.2)(react@19.1.0)
       '@radix-ui/react-context': 1.1.2(@types/react@19.1.2)(react@19.1.0)
       '@radix-ui/react-direction': 1.1.1(@types/react@19.1.2)(react@19.1.0)
-      '@radix-ui/react-dismissable-layer': 1.1.10(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@radix-ui/react-dismissable-layer': 1.1.11(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-id': 1.1.1(@types/react@19.1.2)(react@19.1.0)
-      '@radix-ui/react-presence': 1.1.4(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@radix-ui/react-presence': 1.1.5(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-primitive': 2.1.3(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-use-callback-ref': 1.1.1(@types/react@19.1.2)(react@19.1.0)
       '@radix-ui/react-use-controllable-state': 1.2.2(@types/react@19.1.2)(react@19.1.0)
@@ -8257,6 +8297,28 @@ snapshots:
 
   '@radix-ui/rect@1.1.1': {}
 
+  '@reactive-dot/core@0.46.1(polkadot-api@1.14.1(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3))':
+    dependencies:
+      '@noble/hashes': 1.8.0
+      '@reactive-dot/utils': 0.10.0
+      '@substrate/smoldot-discovery': 2.0.2
+      polkadot-api: 1.14.1(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3)
+
+  '@reactive-dot/react@0.46.2(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@19.1.2)(polkadot-api@1.14.1(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3))(react@19.1.0)':
+    dependencies:
+      '@reactive-dot/core': 0.46.1(polkadot-api@1.14.1(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3))
+      jotai: 2.13.1(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@19.1.2)(react@19.1.0)
+      jotai-derive: 0.1.3(jotai@2.13.1(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@19.1.2)(react@19.1.0))
+      jotai-effect: 2.0.5(jotai@2.13.1(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@19.1.2)(react@19.1.0))
+      react: 19.1.0
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@babel/template'
+      - '@types/react'
+      - polkadot-api
+
+  '@reactive-dot/utils@0.10.0': {}
+
   '@redis/bloom@1.2.0(@redis/client@1.6.1)':
     dependencies:
       '@redis/client': 1.6.1
@@ -8425,6 +8487,12 @@ snapshots:
   '@styleglide/theme-editor@0.0.15': {}
 
   '@substrate/connect-known-chains@1.10.3': {}
+
+  '@substrate/discovery@0.2.2': {}
+
+  '@substrate/smoldot-discovery@2.0.2':
+    dependencies:
+      '@substrate/discovery': 0.2.2
 
   '@substrate/ss58-registry@1.51.0': {}
 
@@ -10195,7 +10263,7 @@ snapshots:
       '@radix-ui/react-collapsible': 1.1.11(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-dialog': 1.1.14(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-direction': 1.1.1(@types/react@19.1.2)(react@19.1.0)
-      '@radix-ui/react-navigation-menu': 1.2.13(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@radix-ui/react-navigation-menu': 1.2.14(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-popover': 1.1.15(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-presence': 1.1.4(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-scroll-area': 1.2.9(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -11174,6 +11242,14 @@ snapshots:
       - ts-node
 
   jiti@2.4.2: {}
+
+  jotai-derive@0.1.3(jotai@2.13.1(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@19.1.2)(react@19.1.0)):
+    dependencies:
+      jotai: 2.13.1(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@19.1.2)(react@19.1.0)
+
+  jotai-effect@2.0.5(jotai@2.13.1(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@19.1.2)(react@19.1.0)):
+    dependencies:
+      jotai: 2.13.1(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@19.1.2)(react@19.1.0)
 
   jotai@2.13.1(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@19.1.2)(react@19.1.0):
     optionalDependencies:
