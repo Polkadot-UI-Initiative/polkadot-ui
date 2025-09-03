@@ -88,6 +88,7 @@ export enum ClientConnectionStatus {
   Error = "Error",
 }
 
+// helper hook to get connection status for papi / reactive-dot
 export function usePapiClientStatus(chainId?: SupportedChainId) {
   const client = useClient(chainId ? { chainId } : undefined) as PolkadotClient;
   const [status, setStatus] = useState<ClientConnectionStatus>(
@@ -119,7 +120,6 @@ export function usePapiClientStatus(chainId?: SupportedChainId) {
 }
 
 // account provider
-
 interface SelectedAccountContext {
   selectedAccount: WalletAccount | null;
   setSelectedAccount: (account: WalletAccount | null) => void;
@@ -153,6 +153,7 @@ export function SelectedAccountProvider({
   }, [accounts]);
 
   const setSelectedAccount = (account: WalletAccount | null) => {
+    console.log("setSelectedAccount in provider ", account);
     setSelectedAccountState(account);
     if (account) {
       localStorage.setItem(SELECTED_ACCOUNT_KEY, account.address);

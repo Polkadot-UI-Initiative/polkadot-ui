@@ -6,6 +6,7 @@ import {
 } from "@/registry/polkadot-ui/blocks/connect-wallet/components/wallet-select.base";
 import { PolkadotProvider } from "@/registry/polkadot-ui/providers/polkadot-provider.reactive-dot";
 import { usePapi } from "@/registry/polkadot-ui/providers/polkadot-provider.reactive-dot";
+import { useMemo, useCallback } from "react";
 
 export type WalletSelectProps = Omit<WalletSelectBaseProps, "services">;
 
@@ -20,55 +21,98 @@ export function WalletSelect() {
     setSelectedAccount,
   } = usePapi();
 
-  // Map reactive-dot shapes to base props
-  const services = {
-    accounts: accounts.map((a) => ({
-      address: a.address,
-      name: a.name,
-      source: "not implemented",
-    })),
-    wallets: (wallets ?? []).map((w) => ({
-      id: w.id,
-      name: w.name,
-      logo: undefined,
-      //TODO: fix this
-      installed: true,
-      installUrl: "not implemented",
-    })),
-    connectedWallets: connectedWallets.map((w) => ({
-      id: w.id,
-      name: w.name,
-      logo: undefined,
-      installed: true,
-      installUrl: "not implemented",
-    })),
+  const installedWalletIds = useMemo(
+    () => new Set(wallets.map((w) => w.id)),
+    [wallets]
+  );
 
-    connectWallet: async (id: string) => {
+  const mappedAccounts = useMemo(
+    () =>
+      accounts.map((a) => ({
+        address: a.address,
+        name: a.name,
+        source: a.wallet.id,
+      })),
+    [accounts]
+  );
+
+  const mappedWallets = useMemo(
+    () =>
+      (wallets ?? []).map((w) => ({
+        id: w.id,
+        name: w.name,
+        logo: undefined,
+        installed: installedWalletIds.has(w.id),
+      })),
+    [wallets, installedWalletIds]
+  );
+
+  const mappedConnectedWallets = useMemo(
+    () =>
+      connectedWallets.map((w) => ({
+        id: w.id,
+        name: w.name,
+        logo: undefined,
+        installed: installedWalletIds.has(w.id),
+      })),
+    [connectedWallets, installedWalletIds]
+  );
+
+  const handleConnect = useCallback(
+    async (id: string) => {
       await connectWallet(wallets.find((w) => w.id === id));
     },
-    disconnect: async (walletId?: string) => {
+    [wallets, connectWallet]
+  );
+
+  const handleDisconnect = useCallback(
+    async (walletId?: string) => {
       await disconnectWallet(wallets.find((w) => w.id === walletId));
     },
-    connectedAccount: selectedAccount
-      ? {
-          name: selectedAccount.name,
-          source: "not implemented",
-          address: selectedAccount.address,
-        }
-      : undefined,
-    setConnectedAccount: (account) =>
-      setSelectedAccount(
-        selectedAccount
-          ? {
-              ...selectedAccount,
-              id: account.address,
-              name: account.name,
-              address: account.address,
-              polkadotSigner: selectedAccount?.polkadotSigner,
-            }
-          : null
-      ),
-  } satisfies WalletSelectBaseProps["services"];
+    [wallets, disconnectWallet]
+  );
+
+  const mappedConnectedAccount = useMemo(
+    () =>
+      selectedAccount
+        ? {
+            name: selectedAccount.name,
+            source: selectedAccount.wallet.id,
+            address: selectedAccount.address,
+          }
+        : undefined,
+    [selectedAccount]
+  );
+
+  const handleSetConnectedAccount = useCallback(
+    (account: { address: string; name?: string }) => {
+      const found = accounts.find((a) => a.address === account.address) || null;
+      setSelectedAccount(found);
+    },
+    [accounts, setSelectedAccount]
+  );
+
+  const services = useMemo(
+    () =>
+      ({
+        accounts: mappedAccounts,
+        wallets: mappedWallets,
+        connectedWallets: mappedConnectedWallets,
+        connectWallet: handleConnect,
+        disconnect: handleDisconnect,
+        connectedAccount: mappedConnectedAccount,
+        setConnectedAccount: handleSetConnectedAccount,
+      }) satisfies WalletSelectBaseProps["services"],
+    [
+      mappedAccounts,
+      mappedWallets,
+      mappedConnectedWallets,
+      handleConnect,
+      handleDisconnect,
+      mappedConnectedAccount,
+      handleSetConnectedAccount,
+    ]
+  );
 
   return (
     <ClientOnly>

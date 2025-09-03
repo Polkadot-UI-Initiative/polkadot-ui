@@ -49,12 +49,14 @@ export interface ViewSelectWalletProps {
   disconnect: (walletId?: string) => void;
 }
 
-export interface ViewSelectAccountProps {
+export interface ViewSelectAccountProps<
+  TAccount extends AccountInfo = AccountInfo,
+> {
   previous: () => void;
   wallets: WalletInfo[];
   accounts: AccountInfo[];
-  connectedAccount?: AccountInfo;
-  setConnectedAccount: (account: AccountInfo) => void;
+  connectedAccount?: TAccount;
+  setConnectedAccount: (account: TAccount) => void;
 }
 
 export interface WalletSelectBaseProps extends Omit<ButtonProps, "children"> {
