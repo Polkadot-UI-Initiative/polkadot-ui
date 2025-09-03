@@ -14,7 +14,7 @@ export function ClientComponent() {
       is paseo_people connected:{" "}
       {isConnected("paseo_people") ? "true" : "false"}
       <RequireConnection
-        chainId="paseo_people"
+        chainId="paseoPeople"
         fallback={<div>Not connected</div>}
       >
         <div>ClientComponent, {"paseo_people"} </div>

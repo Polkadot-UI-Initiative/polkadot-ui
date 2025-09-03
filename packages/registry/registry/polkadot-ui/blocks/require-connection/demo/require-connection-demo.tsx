@@ -1,14 +1,13 @@
 "use client";
 
-import { type ChainId } from "@/registry/polkadot-ui/lib/config.dot-ui";
 import { Button } from "@/registry/polkadot-ui/ui/button";
 import { Loader2, Wifi, WifiOff } from "lucide-react";
 import { type ReactNode, useState } from "react";
 
-interface RequireConnectionDemoProps {
+interface RequireConnectionDemoProps<TChainId extends string> {
   Provider: React.ComponentType<{ children: ReactNode }>;
   RequireConnection: React.ComponentType<{
-    chainId: ChainId;
+    chainId: TChainId;
     children: ReactNode;
     fallback: ReactNode;
     loadingFallback?: ReactNode;
@@ -16,12 +15,14 @@ interface RequireConnectionDemoProps {
   libraryName: string;
 }
 
-export default function RequireConnectionDemo({
+export default function RequireConnectionDemo<TChainId extends string>({
   Provider,
   RequireConnection,
   libraryName,
-}: RequireConnectionDemoProps) {
-  const [selectedChain, setSelectedChain] = useState<ChainId>("paseo");
+}: RequireConnectionDemoProps<TChainId>) {
+  const [selectedChain, setSelectedChain] = useState<TChainId>(
+    "paseo" as TChainId
+  );
 
   return (
     <Provider>
@@ -47,13 +48,13 @@ export default function RequireConnectionDemo({
           <div className="flex gap-4">
             <Button
               variant={selectedChain === "paseo" ? "default" : "outline"}
-              onClick={() => setSelectedChain("paseo")}
+              onClick={() => setSelectedChain("paseo" as TChainId)}
             >
               Paseo Relay Chain
             </Button>
             <Button
               variant={selectedChain === "paseo_people" ? "default" : "outline"}
-              onClick={() => setSelectedChain("paseo_people")}
+              onClick={() => setSelectedChain("paseo_people" as TChainId)}
             >
               Paseo People
             </Button>
