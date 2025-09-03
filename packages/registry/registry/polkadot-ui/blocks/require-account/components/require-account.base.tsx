@@ -27,5 +27,3 @@ export function RequireAccountBase<TChainId extends string = string>({
 
   return <>{hasAccount ? children : fallback}</>;
 }
-
-RequireAccountBase.displayName = "RequireAccountBase";
