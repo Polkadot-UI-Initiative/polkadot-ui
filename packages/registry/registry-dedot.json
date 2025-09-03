@@ -21,7 +21,7 @@
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/providers/dedot-provider.tsx",
+          "path": "registry/polkadot-ui/providers/polkadot-provider.dedot.tsx",
           "type": "registry:lib"
         },
         {
@@ -60,7 +60,7 @@
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/providers/dedot-provider.tsx",
+          "path": "registry/polkadot-ui/providers/polkadot-provider.dedot.tsx",
           "type": "registry:lib"
         },
         {
@@ -119,7 +119,7 @@
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/providers/dedot-provider.tsx",
+          "path": "registry/polkadot-ui/providers/polkadot-provider.dedot.tsx",
           "type": "registry:lib"
         },
         {
@@ -179,7 +179,7 @@
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/providers/dedot-provider.tsx",
+          "path": "registry/polkadot-ui/providers/polkadot-provider.dedot.tsx",
           "type": "registry:lib"
         },
         {
@@ -239,7 +239,7 @@
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/providers/dedot-provider.tsx",
+          "path": "registry/polkadot-ui/providers/polkadot-provider.dedot.tsx",
           "type": "registry:lib"
         },
         {

@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
-import { PolkadotProvider } from "@/registry/polkadot-ui/providers/dedot-provider";
+import { PolkadotProvider } from "@/registry/polkadot-ui/providers/polkadot-provider.dedot";
 import {
   RequireAccountBase,
   type RequireAccountBaseProps,

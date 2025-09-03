@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 
-import Image from "next/image";
 import { DialogFooter } from "@/components/ui/dialog";
-import { ArrowRight, Plus, Zap, ZapOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { type ViewSelectWalletProps } from "@/registry/polkadot-ui/blocks/connect-wallet/components/wallet-select.base";
+import { ArrowRight, Plus, Zap, ZapOff } from "lucide-react";
+import Image from "next/image";
 
 export const ViewSelectWallet = ({
   next,

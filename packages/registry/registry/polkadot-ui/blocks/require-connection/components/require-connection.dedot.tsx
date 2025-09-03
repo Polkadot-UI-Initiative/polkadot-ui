@@ -5,7 +5,7 @@ import {
   RequireConnectionBase,
   type RequireConnectionBaseProps,
 } from "@/registry/polkadot-ui/blocks/require-connection/components/require-connection.base";
-import { PolkadotProvider } from "@/registry/polkadot-ui/providers/dedot-provider";
+import { PolkadotProvider } from "@/registry/polkadot-ui/providers/polkadot-provider.dedot";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import { ClientConnectionStatus, usePolkadotClient } from "typink";
 

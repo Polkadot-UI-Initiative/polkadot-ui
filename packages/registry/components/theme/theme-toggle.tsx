@@ -214,15 +214,17 @@ export function ThemeToggle({ initialItems }: ThemeToggleProps) {
                   const fg = resolveThemeVar(i, "foreground", !!isDark);
                   const primary = resolveThemeVar(i, "primary", !!isDark);
                   const secondary = resolveThemeVar(i, "secondary", !!isDark);
-                  const muted = resolveThemeVar(i, "muted", !!isDark);
+                  const accent = resolveThemeVar(i, "accent", !!isDark);
                   return (
                     <SelectItem
                       key={i.name}
                       value={i.name}
                       className="flex items-center justify-between"
-                      style={{ backgroundColor: bg, color: fg }}
                     >
-                      <span className="ml-2 flex items-center gap-1">
+                      <span
+                        className="ml-2 flex items-center gap-1 p-2 rounded-md"
+                        style={{ backgroundColor: bg, color: fg }}
+                      >
                         <span
                           className="h-3 w-3 rounded-full border"
                           style={{ backgroundColor: primary }}
@@ -233,7 +235,7 @@ export function ThemeToggle({ initialItems }: ThemeToggleProps) {
                         />
                         <span
                           className="h-3 w-3 rounded-full border -ml-2"
-                          style={{ backgroundColor: muted }}
+                          style={{ backgroundColor: accent }}
                         />
                       </span>
                       <span className="truncate">{i.title || i.name}</span>

@@ -1,29 +1,29 @@
 "use client";
 
 import {
-  ChainId,
-  PolkadotProvider,
-  usePapi,
-} from "@/registry/polkadot-ui/providers/papi-provider";
-import {
   RequireAccountBase,
   type RequireAccountBaseProps,
 } from "@/registry/polkadot-ui/blocks/require-account/components/require-account.base";
 import { useMemo } from "react";
 import { ClientOnly } from "../../client-only";
+import {
+  ClientConnectionStatus,
+  usePapi,
+} from "@/registry/polkadot-ui/providers/polkadot-provider.reactive-dot";
+import { PolkadotProvider } from "@/registry/polkadot-ui/providers/polkadot-provider.reactive-dot";
 
 export type RequireAccountProps = Omit<RequireAccountBaseProps, "services">;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function RequireAccount(props: RequireAccountProps) {
-  const { activeAccount, isLoading } = usePapi();
+  const { selectedAccount, status } = usePapi();
 
   const services = useMemo(
     () => ({
-      isLoading: isLoading(props.chainId as ChainId),
-      hasAccount: !!activeAccount?.address,
+      isLoading: status === ClientConnectionStatus.Connecting,
+      hasAccount: !!selectedAccount?.address,
     }),
-    [isLoading, activeAccount?.address, props.chainId]
+    [status, selectedAccount?.address]
   );
 
   return (

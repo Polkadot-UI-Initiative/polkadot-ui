@@ -45,7 +45,7 @@
           "target": "app/demo/polkadot-ui/address-input/address-input-demo.tsx"
         },
         {
-          "path": "registry/polkadot-ui/providers/papi-provider.tsx",
+          "path": "registry/polkadot-ui/providers/polkadot-provider.papi.tsx",
           "type": "registry:lib"
         },
         {
@@ -93,7 +93,7 @@
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/providers/papi-provider.tsx",
+          "path": "registry/polkadot-ui/providers/polkadot-provider.papi.tsx",
           "type": "registry:lib"
         },
         {

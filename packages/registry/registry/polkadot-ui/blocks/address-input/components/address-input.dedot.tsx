@@ -9,7 +9,7 @@ import {
 } from "@/registry/polkadot-ui/blocks/address-input/components/address-input.base";
 
 // Import Dedot-specific hooks
-import { PolkadotProvider } from "@/registry/polkadot-ui/providers/dedot-provider";
+import { PolkadotProvider } from "@/registry/polkadot-ui/providers/polkadot-provider.dedot";
 import { useIdentity } from "@/registry/polkadot-ui/blocks/address-input/hooks/use-identity.dedot";
 import { useIdentitySearch } from "@/registry/polkadot-ui/blocks/address-input/hooks/use-search-identity.dedot";
 import { paseoPeople, usePolkadotClient } from "typink";

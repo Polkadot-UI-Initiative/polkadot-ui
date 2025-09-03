@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import { RequireAccount } from "@/registry/polkadot-ui/blocks/require-account/components/require-account.papi";
 import type { ComponentExample } from "../types.examples";
-import { usePapi } from "@/registry/polkadot-ui/providers/papi-provider";
+import { usePapi } from "@/registry/polkadot-ui/providers/polkadot-provider.reactive-dot";
 
 export const requireAccountExample: ComponentExample = {
   name: "Require Account",
@@ -43,11 +43,11 @@ export const requireAccountExample: ComponentExample = {
 };
 
 function Component() {
-  const { activeAccount } = usePapi();
+  const { selectedAccount } = usePapi();
   return (
     <div>
-      <div>Account name: {activeAccount?.name}</div>
-      <div>Wallet: {activeAccount?.source}</div>
+      <div>Account name: {selectedAccount?.name}</div>
+      <div>Wallet: {selectedAccount?.address}</div>
     </div>
   );
 }

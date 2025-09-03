@@ -1,32 +1,34 @@
 "use client";
 
 import { useMemo } from "react";
-import type { ChainId } from "@/registry/polkadot-ui/providers/papi-provider";
 import {
   RequireConnectionBase,
   type RequireConnectionBaseProps,
 } from "./require-connection.base";
 import {
+  ClientConnectionStatus,
   PolkadotProvider,
-  usePapi,
-} from "@/registry/polkadot-ui/providers/papi-provider";
+  SupportedChainId,
+  usePapiClientStatus,
+} from "@/registry/polkadot-ui/providers/polkadot-provider.reactive-dot";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 
 // Props type - removes services prop since we inject it
 export type RequireConnectionProps = Omit<
-  RequireConnectionBaseProps<ChainId>,
+  RequireConnectionBaseProps<SupportedChainId>,
   "services"
 >;
 
 export function RequireConnection(props: RequireConnectionProps) {
-  const { isLoading, isConnected } = usePapi();
+  const defaultChainId = "paseo";
+  const { status } = usePapiClientStatus(props.chainId || defaultChainId);
 
   const services = useMemo(
     () => ({
-      isLoading: isLoading(props.chainId),
-      isConnected: isConnected(props.chainId),
+      isLoading: status === ClientConnectionStatus.Connecting,
+      isConnected: status === ClientConnectionStatus.Connected,
     }),
-    [isLoading, isConnected, props.chainId]
+    [status]
   );
 
   return (

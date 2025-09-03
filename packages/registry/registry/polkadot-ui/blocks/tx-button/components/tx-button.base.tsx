@@ -21,6 +21,7 @@ import type {
   AnyFn,
 } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import {
+  Ban,
   CheckCheck,
   CheckCircle,
   Coins,
@@ -96,7 +97,7 @@ export function TxButtonBase<
     loading: <Loader2 className="w-4 h-4 animate-spin" />,
     finalized: <CheckCheck className="w-4 h-4" />,
     inBestBlock: <CheckCircle className="w-4 h-4" />,
-    error: <X className="w-4 h-4" />,
+    error: <Ban className="w-4 h-4" />,
   },
   services,
   ...props
@@ -250,11 +251,11 @@ export function TxButtonBase<
         {!connectedAccount?.address ? (
           <span className="text-amber-500">Please select an account</span>
         ) : !isValidNetwork ? (
-          <span className="text-red-500">Invalid network</span>
+          <span className="text-destructive">Invalid network</span>
         ) : feeError ? (
-          <span className="text-red-500">{feeError}</span>
+          <span className="text-destructive">{feeError}</span>
         ) : fee !== null && !canCoverFee ? (
-          <span className="text-red-500">Insufficient balance for fee</span>
+          <span className="text-destructive">Insufficient balance for fee</span>
         ) : (
           <span className="text-transparent">_</span>
         )}
@@ -270,7 +271,7 @@ export function TxButtonSkeleton({
     loading: <Loader2 className="w-4 h-4 animate-spin" />,
     finalized: <CheckCheck className="w-4 h-4" />,
     inBestBlock: <CheckCircle className="w-4 h-4" />,
-    error: <X className="w-4 h-4" />,
+    error: <Ban className="w-4 h-4" />,
   },
   ...props
 }: React.ComponentProps<"button"> &

@@ -14,7 +14,7 @@ import { useIdentitySearch as papiUseIdentitySearch } from "@/registry/polkadot-
 import {
   PolkadotProvider,
   usePapi,
-} from "@/registry/polkadot-ui/providers/papi-provider";
+} from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
 import { type ChainIdWithIdentity } from "@/registry/polkadot-ui/lib/types.papi";
 
 // Props type - removes services prop since we inject it

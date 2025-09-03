@@ -1,6 +1,6 @@
 "use client";
 
-import { PolkadotProvider } from "@/registry/polkadot-ui/providers/papi-provider";
+import { PolkadotProvider } from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
 import { type TxButtonBaseProps } from "./tx-button.base";
 
 // Props type - removes services prop since we inject it

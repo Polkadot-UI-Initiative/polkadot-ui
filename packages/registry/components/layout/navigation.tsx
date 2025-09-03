@@ -34,6 +34,7 @@ export function Navigation({ registryItems }: NavigationProps) {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      {/* // <header className="fixed top-0 left-1/2 z-50 w-[min(90%,700px)] -translate-x-1/2 rounded-b-4xl border-t-0 bg-background/70 backdrop-blur-md px-4"> */}
       <div className="flex h-14 items-center px-4">
         <div className="mr-4 hidden md:flex">
           <Link className="mr-6 flex items-center space-x-2" href="/">

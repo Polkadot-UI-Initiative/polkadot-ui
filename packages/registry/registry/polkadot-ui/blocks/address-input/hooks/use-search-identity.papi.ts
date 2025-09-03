@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   usePapi,
   usePolkadotApi,
-} from "@/registry/polkadot-ui/providers/papi-provider";
+} from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
 import {
   extractText,
   hasPositiveIdentityJudgement,

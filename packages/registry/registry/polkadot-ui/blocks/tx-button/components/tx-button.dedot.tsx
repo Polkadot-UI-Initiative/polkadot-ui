@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { PolkadotProvider } from "@/registry/polkadot-ui/providers/dedot-provider";
+import { PolkadotProvider } from "@/registry/polkadot-ui/providers/polkadot-provider.dedot";
 import { TxButtonBase, type TxButtonBaseProps } from "./tx-button.base";
 import { useTypink, useTxFee, useBalance } from "typink";
 // UseTxReturnType only appears in imported types; remove unused local import

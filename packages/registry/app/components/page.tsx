@@ -5,7 +5,7 @@
 
 import { RequireConnection } from "@/registry/polkadot-ui/blocks/require-connection/components/require-connection.dedot";
 import RequireConnectionDemo from "@/registry/polkadot-ui/blocks/require-connection/demo/require-connection-demo";
-import { PolkadotProvider } from "@/registry/polkadot-ui/providers/dedot-provider";
+import { PolkadotProvider } from "@/registry/polkadot-ui/providers/polkadot-provider.dedot";
 
 export default async function Components() {
   return (

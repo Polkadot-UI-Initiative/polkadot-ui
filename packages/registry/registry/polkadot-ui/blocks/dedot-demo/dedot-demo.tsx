@@ -1,6 +1,6 @@
 "use client";
 
-import { PolkadotProvider } from "@/registry/polkadot-ui/providers/dedot-provider";
+import { PolkadotProvider } from "@/registry/polkadot-ui/providers/polkadot-provider.dedot";
 import { ClientConnectionStatus, useTypink, paseoPeople } from "typink";
 import { RequireConnection } from "@/registry/polkadot-ui/blocks/require-connection/components/require-connection.dedot";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";

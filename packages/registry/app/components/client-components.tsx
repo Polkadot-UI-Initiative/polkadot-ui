@@ -1,7 +1,7 @@
 "use client";
 
-import { usePolkadotApi } from "../../registry/polkadot-ui/providers/papi-provider";
-import { usePapi } from "../../registry/polkadot-ui/providers/papi-provider";
+import { usePolkadotApi } from "../../registry/polkadot-ui/providers/polkadot-provider.papi";
+import { usePapi } from "../../registry/polkadot-ui/providers/polkadot-provider.papi";
 import { RequireConnection } from "../../registry/polkadot-ui/blocks/require-connection/components/require-connection.papi";
 
 export function ClientComponent() {

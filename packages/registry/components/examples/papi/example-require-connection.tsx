@@ -22,9 +22,7 @@ export const requireConnectionExample: ComponentExample = {
             <CardHeader>
               <CardTitle>⛓️‍💥 Not Connected to Paseo</CardTitle>
               <CardDescription className="text-xs font-normal">
-                Make sure your app is connected to Paseo to continue. This is
-                the content that will be displayed when you are not connected to
-                Paseo.
+                Make sure your app is connected to Paseo to continue.
               </CardDescription>
             </CardHeader>
           </Card>
@@ -34,8 +32,7 @@ export const requireConnectionExample: ComponentExample = {
           <CardHeader>
             <CardTitle>⚡️ Connected to Paseo</CardTitle>
             <CardDescription className="text-xs font-normal">
-              You are connected to Paseo. This is the content that will be
-              displayed when you are connected to Paseo.
+              Content you see when you are connected to Paseo.
             </CardDescription>
           </CardHeader>
         </Card>
