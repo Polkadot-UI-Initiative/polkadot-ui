@@ -105,8 +105,9 @@ export function txStatusNotification({
   const chainLogo = <ChainLogo network={network} />;
 
   switch (status.type) {
-    case "Broadcasting":
-    case "Validated":
+    case "broadcasted": //papi
+    case "Broadcasting": //dedot
+    case "Validated": //dedot
       toast.loading(
         <>
           {chainLogo} {titles.submitting}
@@ -117,7 +118,8 @@ export function txStatusNotification({
         }
       );
       break;
-    case "BestChainBlockIncluded":
+    case "txBestBlocksState": //papi
+    case "BestChainBlockIncluded": //dedot
       toast.loading(
         <>
           {chainLogo} {titles.included}
@@ -129,7 +131,8 @@ export function txStatusNotification({
         }
       );
       break;
-    case "Finalized":
+    case "finalized": //papi
+    case "Finalized": //dedot
       toast.success(
         <>
           {chainLogo} {titles.finalized}

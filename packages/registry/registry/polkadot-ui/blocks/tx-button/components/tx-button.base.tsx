@@ -1,5 +1,4 @@
 "use client";
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // We intentionally allow `any` in a few generic positions to interoperate with
 // typink's UseTxReturnType and conditional Args<T> utilities. This is safe
 // because the runtime paths remain safe (dedot enforces submittable types) and
@@ -19,6 +18,7 @@ import { type VariantProps } from "class-variance-authority";
 import type {
   TxResultLike,
   AnyFn,
+  TxAdapter,
 } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import {
   Ban,
@@ -27,11 +27,8 @@ import {
   Coins,
   Loader2,
   PenLine,
-  X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-
-import type { UseTxReturnType } from "typink/hooks/useTx";
 
 export interface TxButtonIcons {
   default?: React.ReactNode;
@@ -43,7 +40,7 @@ export interface TxButtonIcons {
 
 // Minimal, generic-agnostic surface for pluggable adapters (dedot, polkadot.js, etc.)
 export interface TxButtonServices<TNetworkId = unknown> {
-  isConnected?: boolean;
+  isConnected?: boolean; //TODO not used?
   connectedAccount?: { address?: string } | null;
   symbol?: string;
   decimals?: number;
@@ -59,18 +56,23 @@ export interface TxButtonServices<TNetworkId = unknown> {
   balanceFree?: bigint | null;
 }
 
-type ArgsProp<TxFn extends AnyFn> =
-  Parameters<TxFn> extends [] ? { args?: [] } : { args: Parameters<TxFn> };
+type ArgsProp = { args?: unknown[] };
 
-type ExtractUseTxFn<TTx> = TTx extends UseTxReturnType<infer U> ? U : never;
+export interface ExecuteAdapterProps {
+  execute?: (opts: {
+    args: unknown[];
+    onStatus: (result: TxResultLike) => void;
+  }) => Promise<void>;
+}
 
 export type TxButtonBaseProps<
-  TTx extends UseTxReturnType<any> = UseTxReturnType<any>,
+  TTx extends TxAdapter<AnyFn> = TxAdapter<AnyFn>,
   TNetworkId = unknown,
 > = ButtonProps &
-  ArgsProp<ExtractUseTxFn<TTx>> & {
+  ArgsProp &
+  ExecuteAdapterProps & {
     children: React.ReactNode;
-    tx: TTx;
+    tx?: TTx;
     networkId?: TNetworkId;
     resultDisplayDuration?: number;
     withNotification?: boolean;
@@ -79,12 +81,13 @@ export type TxButtonBaseProps<
   };
 
 export function TxButtonBase<
-  TTx extends UseTxReturnType<AnyFn> = UseTxReturnType<AnyFn>,
+  TTx extends TxAdapter<AnyFn> = TxAdapter<AnyFn>,
   TNetworkId = unknown,
 >({
   children,
   tx,
   args,
+  execute,
   networkId,
   className,
   variant,
@@ -125,8 +128,10 @@ export function TxButtonBase<
   const [txStatus, setTxStatus] = useState<TxStatusLike>(null);
 
   const isError = !!submitError || !!feeError || !isValidNetwork;
-  const inProgress = tx.inProgress;
-  const inBestBlockProgress = tx.inBestBlockProgress;
+  const [localInProgress, setLocalInProgress] = useState(false);
+  const [localBestBlock, setLocalBestBlock] = useState(false);
+  const inProgress = tx ? tx.inProgress : localInProgress;
+  const inBestBlockProgress = tx ? tx.inBestBlockProgress : localBestBlock;
   const isLoading = inProgress;
 
   const canCoverFee =
@@ -144,7 +149,7 @@ export function TxButtonBase<
     setShowResult(false);
   }, [txStatus, isError, resultDisplayDuration]);
 
-  async function onExecute() {
+  async function handleExecuteClick() {
     setSubmitError(null);
     setTxStatus(null);
 
@@ -153,21 +158,42 @@ export function TxButtonBase<
       : undefined;
 
     try {
-      await tx.signAndSend({
-        args: (args ?? ([] as [])) as Parameters<ExtractUseTxFn<TTx>>,
-        callback: (result: TxResultLike) => {
-          setTxStatus(result.status);
-          console.log("tx status", result);
-          if (withNotification) {
-            txStatusNotification({
-              result,
-              toastId: toastId as string,
-              network: undefined,
-              successDuration: resultDisplayDuration,
-            });
-          }
-        },
-      });
+      if (tx) {
+        await tx.signAndSend({
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          args: (args ?? ([] as unknown[])) as any,
+          callback: (result: TxResultLike) => {
+            setTxStatus(result.status);
+            if (result.status.type === "InBestBlock") setLocalBestBlock(true);
+            if (withNotification) {
+              txStatusNotification({
+                result,
+                toastId: toastId as string,
+                network: undefined,
+                successDuration: resultDisplayDuration,
+              });
+            }
+          },
+        });
+      } else if (execute) {
+        setLocalInProgress(true);
+        setLocalBestBlock(false);
+        await execute({
+          args: (args ?? []) as unknown[],
+          onStatus: (result) => {
+            setTxStatus(result.status);
+            if (result.status.type === "InBestBlock") setLocalBestBlock(true);
+            if (withNotification) {
+              txStatusNotification({
+                result,
+                toastId: toastId as string,
+                network: undefined,
+                successDuration: resultDisplayDuration,
+              });
+            }
+          },
+        });
+      }
     } catch (e) {
       if (withNotification && toastId)
         cancelTxStatusNotification(
@@ -177,6 +203,11 @@ export function TxButtonBase<
         );
       setSubmitError(e instanceof Error ? e.message : String(e));
       setTxStatus(null);
+    } finally {
+      if (!tx) {
+        setLocalInProgress(false);
+        setLocalBestBlock(false);
+      }
     }
   }
 
@@ -213,7 +244,7 @@ export function TxButtonBase<
         )}
       </div>
       <Button
-        onClick={onExecute}
+        onClick={handleExecuteClick}
         variant={variant}
         size={size}
         disabled={isButtonDisabled}

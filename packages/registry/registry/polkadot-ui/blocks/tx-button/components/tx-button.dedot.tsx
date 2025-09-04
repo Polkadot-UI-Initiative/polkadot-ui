@@ -34,7 +34,6 @@ export function TxButton<TTx extends AnyUseTx>(props: TxButtonProps<TTx>) {
   const services = useMemo(
     () => ({
       connectedAccount,
-      useIsConnected: () => !!connectedAccount,
       isConnected: !!connectedAccount,
       decimals: 0,
       symbol: "",

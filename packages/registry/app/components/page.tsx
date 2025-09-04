@@ -1,18 +1,10 @@
-// import { AddressInput } from "@/registry/dot-ui/blocks/address-input/components/address-input.dedot";
-// import { PolkadotProvider } from "@/registry/dot-ui/providers/dedot-provider";
-// import { ClientComponent } from "@/app/components/client-components";
-// import { Suspense } from "react";
+import { Dedot, Papi } from "./client-components";
 
-import { RequireConnection } from "@/registry/polkadot-ui/blocks/require-connection/components/require-connection.dedot";
-import RequireConnectionDemo from "@/registry/polkadot-ui/blocks/require-connection/demo/require-connection-demo";
-import { PolkadotProvider } from "@/registry/polkadot-ui/providers/polkadot-provider.dedot";
-
-export default async function Components() {
+export default async function ComponentsPage() {
   return (
-    <RequireConnectionDemo
-      Provider={PolkadotProvider}
-      RequireConnection={RequireConnection}
-      libraryName="Dedot"
-    />
+    <>
+      <Dedot />
+      <Papi />
+    </>
   );
 }
