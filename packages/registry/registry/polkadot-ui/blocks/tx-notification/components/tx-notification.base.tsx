@@ -17,31 +17,50 @@ function ChainLogo({ network }: { network: NetworkInfoLike | undefined }) {
   );
 }
 
+export interface TxStatusNotificationTexts {
+  signing?: string;
+  submitting?: string;
+  included?: string;
+  finalized?: string;
+  error?: string;
+}
+
 export interface TxStatusNotificationProps {
   result: TxResultLike;
   toastId: string;
   network: NetworkInfoLike | undefined;
   successDuration: number;
-  titles?: {
-    submitting?: string;
-    included?: string;
-    finalized?: string;
-    error?: string;
-  };
-  descriptions?: {
-    submitting?: string;
-    included?: string;
-    finalized?: string;
-    error?: string;
-  };
+  title: string;
+  titles?: TxStatusNotificationTexts;
+  descriptions?: TxStatusNotificationTexts;
 }
 
-export function beginTxStatusNotification(
-  toastId: string | undefined,
-  network: NetworkInfoLike | undefined,
-  title: string = "Waiting for signature...",
-  description: string = "Please sign the transaction in your wallet"
-) {
+export const defaultTitles = {
+  signing: "Waiting for signature...",
+  submitting: "Waiting for confirmation...",
+  included: "Waiting for finalization...",
+  finalized: "",
+  error: "",
+};
+export const defaultDescriptions = {
+  signing: "Please sign the transaction in your wallet",
+  submitting: "Waiting for confirmation...",
+  included: "Waiting for finalization...",
+  finalized: "Transaction finalized",
+  error: "Transaction failed",
+};
+
+export function beginTxStatusNotification({
+  toastId,
+  network,
+  title = "Waiting for signature...",
+  description = "Please sign the transaction in your wallet",
+}: {
+  toastId?: string;
+  network: NetworkInfoLike;
+  title: string;
+  description: string;
+}) {
   const id = toast.loading(
     <>
       <ChainLogo network={network} /> {title}
@@ -54,12 +73,17 @@ export function beginTxStatusNotification(
   return id as string;
 }
 
-export function cancelTxStatusNotification(
-  toastId: string,
-  network: NetworkInfoLike | undefined,
-  title: string = "Transaction cancelled",
-  description: string = ""
-) {
+export function cancelTxStatusNotification({
+  toastId,
+  network,
+  title = "Transaction cancelled",
+  description = "",
+}: {
+  toastId: string;
+  network: NetworkInfoLike | undefined;
+  title: string;
+  description: string;
+}) {
   toast.error(
     <>
       <ChainLogo network={network} /> {title}
@@ -76,18 +100,9 @@ export function txStatusNotification({
   toastId = "tx-status-notification",
   network,
   successDuration = 10000,
-  titles = {
-    submitting: "Waiting for confirmation...",
-    included: "Waiting for finalization...",
-    finalized: "",
-    error: "",
-  },
-  descriptions = {
-    submitting: "Transaction submitted",
-    included: "Transaction included in block",
-    finalized: "Transaction finalized",
-    error: "Transaction failed",
-  },
+  title,
+  titles = defaultTitles,
+  descriptions = defaultDescriptions,
 }: TxStatusNotificationProps) {
   const { status, txHash } = result;
   const explorerUrl = network?.subscanUrl ?? network?.pjsUrl;
@@ -110,7 +125,7 @@ export function txStatusNotification({
     case "Validated": //dedot
       toast.loading(
         <>
-          {chainLogo} {titles.submitting}
+          {chainLogo} {title ?? titles.submitting}
         </>,
         {
           id: toastId,
@@ -122,7 +137,7 @@ export function txStatusNotification({
     case "BestChainBlockIncluded": //dedot
       toast.loading(
         <>
-          {chainLogo} {titles.included}
+          {chainLogo} {title ?? titles.included}
         </>,
         {
           id: toastId,
@@ -135,7 +150,7 @@ export function txStatusNotification({
     case "Finalized": //dedot
       toast.success(
         <>
-          {chainLogo} {titles.finalized}
+          {chainLogo} {title ?? titles.finalized}
         </>,
         {
           id: toastId,
@@ -151,7 +166,7 @@ export function txStatusNotification({
     case "Drop":
       toast.error(
         <>
-          {chainLogo} {titles.error}
+          {chainLogo} {title ?? titles.error}
         </>,
         {
           id: toastId,

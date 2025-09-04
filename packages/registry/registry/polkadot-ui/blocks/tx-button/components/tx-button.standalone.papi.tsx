@@ -1,26 +1,27 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-
 import { cn } from "@/lib/utils";
-import { formatBalance } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import type { SupportedChainId } from "@/registry/polkadot-ui/providers/polkadot-provider.reactive-dot";
-import { Coins, Loader2, CheckCheck, CheckCircle, Ban } from "lucide-react";
-import type { Transaction as PapiTransaction } from "polkadot-api";
-import { useEffect, useState } from "react";
-import { useSelectedAccount } from "../../../providers/polkadot-provider.reactive-dot";
 import {
   beginTxStatusNotification,
   cancelTxStatusNotification,
+  defaultDescriptions,
+  defaultTitles,
   txStatusNotification,
-} from "../../tx-notification/components/tx-notification.base";
-import { TxButtonBaseProps } from "./tx-button.base";
+} from "@/registry/polkadot-ui/blocks/tx-notification/components/tx-notification.base";
+import { formatBalance } from "@/registry/polkadot-ui/lib/utils.dot-ui";
+import type { SupportedChainId } from "@/registry/polkadot-ui/providers/polkadot-provider.reactive-dot";
+import { useSelectedAccount } from "@/registry/polkadot-ui/providers/polkadot-provider.reactive-dot";
 import { config as reactiveDotConfig } from "@/registry/polkadot-ui/reactive-dot.config";
 import { useSpendableBalance } from "@reactive-dot/react";
+import { Ban, CheckCheck, CheckCircle, Coins, Loader2 } from "lucide-react";
+import type { Transaction as PapiTransaction } from "polkadot-api";
+import { useEffect, useState } from "react";
+import { TxButtonBaseProps } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.base";
 
 export function TxButtonStandalone(
   props: TxButtonBaseProps & {
-    transaction: PapiTransaction<any, string, string, unknown>;
+    transaction: PapiTransaction<object, string, string, unknown>;
     networkId: SupportedChainId;
   }
 ) {
@@ -35,6 +36,10 @@ export function TxButtonStandalone(
       finalized: <CheckCheck className="w-4 h-4" />,
       inBestBlock: <CheckCircle className="w-4 h-4" />,
       error: <Ban className="w-4 h-4" />,
+    },
+    notifications = {
+      titles: defaultTitles,
+      descriptions: defaultDescriptions,
     },
     ...rest
   } = props;
@@ -55,7 +60,11 @@ export function TxButtonStandalone(
   const balanceFree = useSpendableBalance(selectedAccount?.address ?? "");
 
   const isError = !!submitError || !!feeError || !isValidNetwork;
-  const isLoading = txStatus !== null;
+  const status = txStatus?.type;
+  const isLoading =
+    status === "Loading" || status === "signed" || status === "broadcasted";
+  const isInBlock = status === "txBestBlocksState" || status === "inBlock";
+  const isFinalized = status === "finalized" || status === "Finalized";
   const explorerUrl = reactiveDotConfig.chains[networkId].explorerUrl;
   const symbol = reactiveDotConfig.chains[networkId].symbol;
   const decimals = reactiveDotConfig.chains[networkId].decimals;
@@ -97,17 +106,32 @@ export function TxButtonStandalone(
     setTxStatus({ type: "Loading" });
     console.log("aaa", explorerUrl);
 
-    const toastId = beginTxStatusNotification(undefined, {
-      name: networkId,
+    const toastId = beginTxStatusNotification({
+      network: {
+        name: networkId,
+      },
+      title:
+        notifications.title ??
+        notifications.titles?.signing ??
+        "Waiting for signature...",
+      description:
+        notifications.description ??
+        notifications.descriptions?.signing ??
+        "Please sign the transaction in your wallet",
     });
     transaction.signSubmitAndWatch(signer).subscribe({
       next: (ev) => {
         console.log(ev);
         setTxStatus({ type: ev.type });
         txStatusNotification({
+          title:
+            notifications.title ??
+            notifications.titles?.submitting ??
+            "Waiting for confirmation...",
           successDuration: props.resultDisplayDuration ?? 10000,
           result: { txHash: ev.txHash, status: { type: ev.type } },
           toastId,
+
           network: {
             name: networkId,
             subscanUrl: explorerUrl,
@@ -117,6 +141,10 @@ export function TxButtonStandalone(
       error: (err) => {
         setTxStatus({ type: "Error" });
         txStatusNotification({
+          title:
+            notifications.title ??
+            notifications.titles?.error ??
+            "Transaction failed",
           successDuration: props.resultDisplayDuration ?? 10000,
           result: {
             status: { type: "Error" },
@@ -124,13 +152,18 @@ export function TxButtonStandalone(
           toastId,
           network: { name: networkId },
         });
-        cancelTxStatusNotification(
+        cancelTxStatusNotification({
           toastId,
-          {
+          network: {
             name: networkId,
+            subscanUrl: explorerUrl,
           },
-          err instanceof Error ? err.message : String(err)
-        );
+          title:
+            notifications.title ??
+            notifications.titles?.error ??
+            "Transaction failed",
+          description: err instanceof Error ? err.message : String(err),
+        });
       },
     });
   };
@@ -145,7 +178,7 @@ export function TxButtonStandalone(
 
   return (
     <div className="inline-flex flex-col gap-1">
-      <div className="text-xs text-muted-foreground font-medium h-4 flex items-center justify-start">
+      <div className="text-xs text-muted-foreground font-normal h-4 flex items-center justify-start">
         {fee !== null ? (
           <span className="flex items-center gap-1">
             <Coins className="w-3 h-3" />
@@ -180,12 +213,12 @@ export function TxButtonStandalone(
             {children}
             {icons.loading}
           </>
-        ) : txStatus && txStatus === "txBestBlocksState" ? (
+        ) : isInBlock ? (
           <>
             {children}
             {icons.inBestBlock}
           </>
-        ) : txStatus && showResult && txStatus === "finalized" ? (
+        ) : showResult && isFinalized ? (
           <>
             {children}
             {icons.finalized}
@@ -202,7 +235,7 @@ export function TxButtonStandalone(
           </>
         )}
       </Button>
-      <div className="text-xs font-medium h-4 flex items-center">
+      <div className="text-xs font-normal h-4 flex items-center">
         {!connectedAccount?.address ? (
           <span className="text-amber-500">Please select an account</span>
         ) : !isValidNetwork ? (

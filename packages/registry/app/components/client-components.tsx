@@ -12,7 +12,6 @@ import {
   usePapi,
 } from "@/registry/polkadot-ui/providers/polkadot-provider.reactive-dot";
 import { Binary } from "polkadot-api";
-import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import { Suspense } from "react";
 import { config } from "@/registry/polkadot-ui/reactive-dot.config";
 import { TxButtonSkeleton } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.base";
@@ -29,6 +28,9 @@ export function Components() {
         tx={tx}
         args={["Hello, World from Polkadot Next.js Starter!"]}
         networkId="paseo"
+        notifications={{
+          title: "Remark Welcome Message",
+        }}
       >
         Send Remark
       </TxButtonDedot>
@@ -62,7 +64,14 @@ export function Papi() {
           <Suspense
             fallback={<TxButtonSkeleton>Send Remark (PAPI)</TxButtonSkeleton>}
           >
-            <TxButtonPapi transaction={transaction} networkId={networkId}>
+            <TxButtonPapi
+              transaction={transaction}
+              networkId={networkId}
+              notifications={{
+                title: "Remark Welcome Message",
+                description: "Please sign the transaction in your wallet",
+              }}
+            >
               Send Remark (PAPI)
             </TxButtonPapi>
           </Suspense>

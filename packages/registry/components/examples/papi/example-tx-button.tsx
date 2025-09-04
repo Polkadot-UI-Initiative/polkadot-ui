@@ -4,7 +4,6 @@ import type { ComponentExample } from "../types.examples";
 import { useChainIds } from "@reactive-dot/react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { TxButtonStandalone as TxButton } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.standalone.papi";
-import type { PapiTxButtonStandaloneProps } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.standalone.papi";
 import { Binary } from "polkadot-api";
 
 export const txButtonExample: ComponentExample = {
@@ -63,16 +62,12 @@ export function RemarkButton({ networkId }: { networkId: string }) {
     System: { remark: (data: { remark: Binary }) => unknown };
   };
   const remarkTxBuilder = ((tx: MinimalPapiTx) => (data: { remark: Binary }) =>
-    tx.System.remark(
-      data
-    )) as unknown as PapiTxButtonStandaloneProps["txBuilder"];
+    tx.System.remark(data)) as unknown as TxButtonStandaloneProps["txBuilder"];
   return (
     <TxButton
       txBuilder={remarkTxBuilder}
       args={[{ remark: Binary.fromText("Hello World from polkadot-ui") }]}
-      networkId={
-        networkId as unknown as PapiTxButtonStandaloneProps["networkId"]
-      }
+      networkId={networkId as unknown as TxButtonStandaloneProps["networkId"]}
     >
       Click Me
     </TxButton>

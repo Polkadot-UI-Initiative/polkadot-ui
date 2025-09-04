@@ -11,7 +11,10 @@ import { cn } from "@/lib/utils";
 import {
   beginTxStatusNotification,
   cancelTxStatusNotification,
+  defaultDescriptions,
+  defaultTitles,
   txStatusNotification,
+  TxStatusNotificationTexts,
 } from "@/registry/polkadot-ui/blocks/tx-notification/components/tx-notification.base";
 import { formatBalance } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { type VariantProps } from "class-variance-authority";
@@ -19,15 +22,9 @@ import type {
   TxResultLike,
   AnyFn,
   TxAdapter,
+  NetworkInfoLike,
 } from "@/registry/polkadot-ui/lib/types.dot-ui";
-import {
-  Ban,
-  CheckCheck,
-  CheckCircle,
-  Coins,
-  Loader2,
-  PenLine,
-} from "lucide-react";
+import { Ban, CheckCheck, CheckCircle, Coins, Loader2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -39,7 +36,7 @@ export interface TxButtonIcons {
   error?: React.ReactNode;
 }
 
-// Minimal, generic-agnostic surface for pluggable adapters (dedot, polkadot.js, etc.)
+// Minimal, generic-agnostic surface for pluggable adapters (dedot, papi, etc.)
 export interface TxButtonServices<TNetworkId = unknown> {
   isConnected?: boolean; //TODO not used?
   connectedAccount?: { address?: string } | null;
@@ -77,6 +74,12 @@ export type TxButtonBaseProps<
     networkId?: TNetworkId;
     resultDisplayDuration?: number;
     withNotification?: boolean;
+    notifications?: {
+      title?: string;
+      description?: string;
+      titles?: TxStatusNotificationTexts;
+      descriptions?: TxStatusNotificationTexts;
+    };
     icons?: TxButtonIcons;
     services?: TxButtonServices<TNetworkId>;
   };
@@ -103,6 +106,10 @@ export function TxButtonBase<
     inBestBlock: <CheckCircle className="w-4 h-4" />,
     error: <Ban className="w-4 h-4" />,
   },
+  notifications = {
+    titles: defaultTitles,
+    descriptions: defaultDescriptions,
+  },
   services,
   ...props
 }: TxButtonBaseProps<TTx, TNetworkId>) {
@@ -114,8 +121,11 @@ export function TxButtonBase<
   }, [networkId, supportedNetworks]);
 
   const targetNetwork = useMemo(() => {
-    if (networkId) return supportedNetworks?.find((n) => n.id === networkId);
-    return supportedNetworks?.[0];
+    if (networkId)
+      return (
+        supportedNetworks?.find((n) => n.id === networkId) ||
+        supportedNetworks?.[0]
+      );
   }, [networkId, supportedNetworks]);
 
   const fee = services?.fee ?? null;
@@ -155,7 +165,18 @@ export function TxButtonBase<
     setTxStatus(null);
 
     const toastId = withNotification
-      ? beginTxStatusNotification(undefined, targetNetwork)
+      ? beginTxStatusNotification({
+          toastId: undefined,
+          network: targetNetwork as NetworkInfoLike,
+          title:
+            notifications.title ??
+            notifications.titles?.submitting ??
+            "Waiting for confirmation...",
+          description:
+            notifications.description ??
+            notifications.descriptions?.submitting ??
+            "Transaction submitted",
+        })
       : undefined;
 
     try {
@@ -168,6 +189,10 @@ export function TxButtonBase<
             if (result.status.type === "InBestBlock") setLocalBestBlock(true);
             if (withNotification) {
               txStatusNotification({
+                title:
+                  notifications.title ??
+                  notifications.titles?.submitting ??
+                  "Waiting for confirmation...",
                 result,
                 toastId: toastId as string,
                 network: undefined,
@@ -186,6 +211,10 @@ export function TxButtonBase<
             if (result.status.type === "InBestBlock") setLocalBestBlock(true);
             if (withNotification) {
               txStatusNotification({
+                title:
+                  notifications.title ??
+                  notifications.titles?.submitting ??
+                  "Waiting for confirmation...",
                 result,
                 toastId: toastId as string,
                 network: undefined,
@@ -197,11 +226,16 @@ export function TxButtonBase<
       }
     } catch (e) {
       if (withNotification && toastId)
-        cancelTxStatusNotification(
-          toastId as string,
-          undefined,
-          e instanceof Error ? e.message : String(e)
-        );
+        cancelTxStatusNotification({
+          toastId,
+          network: undefined,
+          title:
+            notifications.title ??
+            notifications.titles?.error ??
+            "Transaction failed",
+          description: e instanceof Error ? e.message : String(e),
+        });
+      setSubmitError(e instanceof Error ? e.message : String(e));
       setSubmitError(e instanceof Error ? e.message : String(e));
       setTxStatus(null);
     } finally {
@@ -221,7 +255,7 @@ export function TxButtonBase<
     !canCoverFee;
 
   return (
-    <div className="inline-flex flex-col gap-1">
+    <div className="inline-flex flex-col gap-2">
       <div className="text-xs text-muted-foreground font-medium h-4 flex items-center justify-start">
         {fee !== null ? (
           <span className="flex items-center gap-1">
@@ -279,7 +313,7 @@ export function TxButtonBase<
           </>
         )}
       </Button>
-      <div className="text-xs font-medium h-4 flex items-center">
+      <div className="text-xs font-normal h-4 flex items-center">
         {!connectedAccount?.address ? (
           <span className="text-amber-500">Please select an account</span>
         ) : !isValidNetwork ? (
@@ -314,8 +348,8 @@ export function TxButtonSkeleton({
   return (
     <div className="inline-flex flex-col gap-2">
       <div className="text-xs text-muted-foreground font-medium h-2 flex items-center justify-start gap-1">
-        <Coins className="w-3 h-3" />
-        <Skeleton className="h-4 w-8" />
+        <Coins className="w-3 2" />
+        <Skeleton className="h-3 w-8" />
       </div>
       <Button disabled {...props}>
         {children}
