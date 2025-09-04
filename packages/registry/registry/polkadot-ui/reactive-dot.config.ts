@@ -9,10 +9,16 @@ export const config = defineConfig({
     paseo: {
       descriptor: paseo,
       provider: getWsProvider("wss://sys.ibp.network/paseo"),
+      explorerUrl: "https://paseo.subscan.io",
+      symbol: "PAS",
+      decimals: 10,
     },
     paseoPeople: {
       descriptor: paseo_people,
       provider: getWsProvider("wss://sys.ibp.network/people-paseo"),
+      explorerUrl: "https://people-paseo.subscan.io",
+      symbol: "PAS",
+      decimals: 10,
     },
   },
   wallets: [new InjectedWalletProvider()],

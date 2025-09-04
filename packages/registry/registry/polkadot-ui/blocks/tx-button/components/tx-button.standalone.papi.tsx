@@ -2,18 +2,21 @@
 
 import { Button } from "@/components/ui/button";
 
-import type { Transaction as PapiTransaction } from "polkadot-api";
-import type { SupportedChainId } from "@/registry/polkadot-ui/providers/polkadot-provider.reactive-dot";
-import { useSelectedAccount } from "../../../providers/polkadot-provider.reactive-dot";
+import { cn } from "@/lib/utils";
 import { formatBalance } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { Coins, Loader2 } from "lucide-react";
+import type { SupportedChainId } from "@/registry/polkadot-ui/providers/polkadot-provider.reactive-dot";
+import { Coins, Loader2, CheckCheck, CheckCircle, Ban } from "lucide-react";
+import type { Transaction as PapiTransaction } from "polkadot-api";
 import { useEffect, useState } from "react";
+import { useSelectedAccount } from "../../../providers/polkadot-provider.reactive-dot";
 import {
   beginTxStatusNotification,
   cancelTxStatusNotification,
   txStatusNotification,
 } from "../../tx-notification/components/tx-notification.base";
 import { TxButtonBaseProps } from "./tx-button.base";
+import { config as reactiveDotConfig } from "@/registry/polkadot-ui/reactive-dot.config";
+import { useSpendableBalance } from "@reactive-dot/react";
 
 export function TxButtonStandalone(
   props: TxButtonBaseProps & {
@@ -21,16 +24,55 @@ export function TxButtonStandalone(
     networkId: SupportedChainId;
   }
 ) {
-  const { transaction, networkId, children, disabled, icons } = props;
+  const {
+    transaction,
+    networkId,
+    children,
+    disabled,
+    icons = {
+      default: null,
+      loading: <Loader2 className="w-4 h-4 animate-spin" />,
+      finalized: <CheckCheck className="w-4 h-4" />,
+      inBestBlock: <CheckCircle className="w-4 h-4" />,
+      error: <Ban className="w-4 h-4" />,
+    },
+    ...rest
+  } = props;
 
   const { selectedAccount } = useSelectedAccount();
   const signer = selectedAccount?.polkadotSigner;
+
+  const connectedAccount = selectedAccount;
+  const isValidNetwork = true;
 
   type TxStatusLike = { type: string } | null;
   const [fee, setFee] = useState<bigint | null>(null);
   const [isFeeLoading, setIsFeeLoading] = useState<boolean>(false);
   const [feeError, setFeeError] = useState<string | null>(null);
   const [txStatus, setTxStatus] = useState<TxStatusLike>(null);
+  const [showResult, setShowResult] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const balanceFree = useSpendableBalance(selectedAccount?.address ?? "");
+
+  const isError = !!submitError || !!feeError || !isValidNetwork;
+  const isLoading = txStatus !== null;
+  const explorerUrl = reactiveDotConfig.chains[networkId].explorerUrl;
+  const symbol = reactiveDotConfig.chains[networkId].symbol;
+  const decimals = reactiveDotConfig.chains[networkId].decimals;
+  const canCoverFee =
+    fee !== null && balanceFree !== null && balanceFree.planck >= fee;
+
+  useEffect(() => {
+    if (txStatus || isError) {
+      setShowResult(true);
+      const timer = setTimeout(
+        () => setShowResult(false),
+        props.resultDisplayDuration
+      );
+      return () => clearTimeout(timer);
+    }
+    setShowResult(false);
+  }, [txStatus, isError, props.resultDisplayDuration]);
 
   useEffect(() => {
     setIsFeeLoading(true);
@@ -51,25 +93,29 @@ export function TxButtonStandalone(
   if (!signer) return "no signer";
 
   const handleClick = () => {
-    if (!transaction) return;
+    setSubmitError(null);
+    setTxStatus({ type: "Loading" });
+    console.log("aaa", explorerUrl);
+
     const toastId = beginTxStatusNotification(undefined, {
       name: networkId,
     });
     transaction.signSubmitAndWatch(signer).subscribe({
       next: (ev) => {
         console.log(ev);
-        setTxStatus(ev);
+        setTxStatus({ type: ev.type });
         txStatusNotification({
           successDuration: props.resultDisplayDuration ?? 10000,
-          result: {
-            status: { type: ev.type },
-          },
+          result: { txHash: ev.txHash, status: { type: ev.type } },
           toastId,
-          network: { name: networkId },
+          network: {
+            name: networkId,
+            subscanUrl: explorerUrl,
+          },
         });
       },
       error: (err) => {
-        setTxStatus(null);
+        setTxStatus({ type: "Error" });
         txStatusNotification({
           successDuration: props.resultDisplayDuration ?? 10000,
           result: {
@@ -89,17 +135,6 @@ export function TxButtonStandalone(
     });
   };
 
-  console.log("fee", fee);
-
-  const isLoading = false;
-
-  const inBestBlockProgress = false;
-  const showResult = false;
-  const isError = false;
-  const connectedAccount = selectedAccount;
-  const isValidNetwork = true;
-  const canCoverFee = true;
-
   const isButtonDisabled =
     disabled ||
     isLoading ||
@@ -116,8 +151,8 @@ export function TxButtonStandalone(
             <Coins className="w-3 h-3" />
             {formatBalance({
               value: fee,
-              decimals: 10,
-              unit: "UNIT",
+              decimals: decimals,
+              unit: symbol,
               nDecimals: 4,
             })}
           </span>
@@ -134,36 +169,36 @@ export function TxButtonStandalone(
       </div>
       <Button
         onClick={handleClick}
-        // variant={variant}
-        // size={size}
+        variant={props.variant}
+        size={props.size}
         disabled={isButtonDisabled}
-        // className={cn(isLoading && "cursor-not-allowed", className)}
-        {...props}
+        className={cn(isLoading && "cursor-not-allowed", props.className)}
+        {...rest}
       >
         {isLoading ? (
           <>
             {children}
-            {icons?.loading}
+            {icons.loading}
           </>
-        ) : inBestBlockProgress ? (
+        ) : txStatus && txStatus === "txBestBlocksState" ? (
           <>
             {children}
-            {icons?.inBestBlock}
+            {icons.inBestBlock}
           </>
-        ) : txStatus && showResult && txStatus.type === "Finalized" ? (
+        ) : txStatus && showResult && txStatus === "finalized" ? (
           <>
             {children}
-            {icons?.finalized}
+            {icons.finalized}
           </>
         ) : isError && showResult ? (
           <>
             {children}
-            {icons?.error}
+            {icons.error}
           </>
         ) : (
           <>
             {children}
-            {icons?.default}
+            {icons.default}
           </>
         )}
       </Button>

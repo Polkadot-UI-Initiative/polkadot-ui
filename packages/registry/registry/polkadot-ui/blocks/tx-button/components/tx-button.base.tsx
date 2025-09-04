@@ -29,6 +29,7 @@ import {
   PenLine,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export interface TxButtonIcons {
   default?: React.ReactNode;
@@ -298,7 +299,7 @@ export function TxButtonBase<
 export function TxButtonSkeleton({
   children,
   icons = {
-    default: <PenLine className="w-4 h-4" />,
+    default: null,
     loading: <Loader2 className="w-4 h-4 animate-spin" />,
     finalized: <CheckCheck className="w-4 h-4" />,
     inBestBlock: <CheckCircle className="w-4 h-4" />,
@@ -311,7 +312,11 @@ export function TxButtonSkeleton({
     icons?: TxButtonBaseProps["icons"];
   }) {
   return (
-    <div className="inline-flex flex-col gap-1">
+    <div className="inline-flex flex-col gap-2">
+      <div className="text-xs text-muted-foreground font-medium h-2 flex items-center justify-start gap-1">
+        <Coins className="w-3 h-3" />
+        <Skeleton className="h-4 w-8" />
+      </div>
       <Button disabled {...props}>
         {children}
         {icons.default}

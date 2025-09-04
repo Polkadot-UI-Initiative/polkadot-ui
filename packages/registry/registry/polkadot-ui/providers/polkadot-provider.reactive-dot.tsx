@@ -119,7 +119,7 @@ export function usePapiClientStatus(chainId?: SupportedChainId) {
   return { status, isConnected, client, error } as const;
 }
 
-// account provider
+// selectedaccount provider, reactive-dot does not provide this
 interface SelectedAccountContext {
   selectedAccount: WalletAccount | null;
   setSelectedAccount: (account: WalletAccount | null) => void;
@@ -142,7 +142,7 @@ export function SelectedAccountProvider({
 
   const accounts = useAccounts();
 
-  // Load selected account from localStorage on mount
+  // Load selected account from localStorage on mount,
   useEffect(() => {
     const stored = localStorage.getItem(SELECTED_ACCOUNT_KEY);
     if (stored) {

@@ -1,17 +1,21 @@
 "use client";
 
-import { useTx } from "typink";
+import { paseo, useTx } from "typink";
 import { WalletSelect } from "@/registry/polkadot-ui/blocks/connect-wallet/components/wallet-select.dedot";
 import { WalletSelect as WalletSelectPapi } from "@/registry/polkadot-ui/blocks/connect-wallet/components/wallet-select.papi";
 import { TxButton as TxButtonDedot } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.dedot";
 import { PolkadotProvider as PolkadotProviderDedot } from "@/registry/polkadot-ui/providers/polkadot-provider.dedot";
 
 import { TxButtonStandalone as TxButtonPapi } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.standalone.papi";
-import { PolkadotProvider as PolkadotProviderPapi } from "@/registry/polkadot-ui/providers/polkadot-provider.reactive-dot";
+import {
+  PolkadotProvider as PolkadotProviderPapi,
+  usePapi,
+} from "@/registry/polkadot-ui/providers/polkadot-provider.reactive-dot";
 import { Binary } from "polkadot-api";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
-import { usePolkadotApi } from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
 import { Suspense } from "react";
+import { config } from "@/registry/polkadot-ui/reactive-dot.config";
+import { TxButtonSkeleton } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.base";
 
 export function Components() {
   const tx = useTx((tx) => tx.system.remark, {
@@ -43,23 +47,26 @@ export function Dedot() {
 
 export function Papi() {
   const networkId = "paseo" as const;
-  const typedApi = usePolkadotApi(networkId);
+  const { client } = usePapi();
+  const typedApi = client?.getTypedApi(config.chains[networkId].descriptor);
   const transaction = typedApi?.tx.System.remark({
-    remark: Binary.fromText("Hello from polkadot-next-js-starter!"),
+    remark: Binary.fromText("Hello from polkadot-ui!"),
   });
 
   return (
     <PolkadotProviderPapi>
       <h1>PAPI</h1>
       {transaction ? (
-        <ClientOnly>
+        <div className="flex flex-col gap-4 max-w-sm">
           <WalletSelectPapi />
-          <Suspense>
+          <Suspense
+            fallback={<TxButtonSkeleton>Send Remark (PAPI)</TxButtonSkeleton>}
+          >
             <TxButtonPapi transaction={transaction} networkId={networkId}>
               Send Remark (PAPI)
             </TxButtonPapi>
           </Suspense>
-        </ClientOnly>
+        </div>
       ) : null}
     </PolkadotProviderPapi>
   );
