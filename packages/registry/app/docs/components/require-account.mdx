@@ -69,7 +69,7 @@ function MyComponent() {
   </TabsList>
   <TabsContent value="preview">
     <RequireAccountWithProvider
-      chainId="paseo_people"
+      chainId="paseoPeople"
       loadingFallback={
         <div className="flex items-center gap-2 text-blue-600">
           <Loader2 className="w-4 h-4 animate-spin" />
@@ -92,7 +92,7 @@ function MyComponent() {
   <TabsContent value="code" className="my-0">
 ```tsx
 <RequireAccount
-  chainId="paseo_people"
+    chainId="paseoPeople"
   loadingFallback={<div>Resolving accounts...</div>}
   fallback={<div>No account selected</div>}
 >
