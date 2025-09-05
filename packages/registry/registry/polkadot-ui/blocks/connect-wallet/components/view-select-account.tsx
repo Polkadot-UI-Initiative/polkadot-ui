@@ -6,7 +6,7 @@ import Image from "next/image";
 import Identicon from "@polkadot/react-identicon";
 import { ArrowLeft } from "lucide-react";
 import { truncateAddress } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { type ViewSelectAccountProps } from "@/registry/polkadot-ui/blocks/connect-wallet/components/wallet-select.base";
+import { type ViewSelectAccountProps } from "@/registry/polkadot-ui/blocks/connect-wallet/components/connect-wallet.base";
 
 export function ViewSelectAccount({
   previous,

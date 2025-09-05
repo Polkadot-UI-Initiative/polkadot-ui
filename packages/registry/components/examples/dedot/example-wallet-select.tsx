@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { WalletSelect } from "@/registry/polkadot-ui/blocks/connect-wallet/components/wallet-select.dedot";
+import { WalletSelect } from "@/registry/polkadot-ui/blocks/connect-wallet/components/connect-wallet.dedot";
 import type { ComponentExample } from "../types.examples";
 
 export const walletSelectExample: ComponentExample = {

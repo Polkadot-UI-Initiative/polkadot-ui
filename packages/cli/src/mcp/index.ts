@@ -437,7 +437,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           "Add a component to your project",
           "```bash",
           "npx polkadot-ui add address-input",
-          "npx polkadot-ui add connect-wallet --dev",
+          "npx polkadot-ui add wallet-select --dev",
           "```",
           "",
           "### `init`",

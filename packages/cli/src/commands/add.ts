@@ -116,7 +116,7 @@ export class AddCommand {
       logger.newline();
       logger.subsection("Examples:");
       logger.detail("polkadot-ui add block-number", true);
-      logger.detail("polkadot-ui add connect-wallet", true);
+      logger.detail("polkadot-ui add wallet-select", true);
       return false;
     }
 
@@ -128,8 +128,7 @@ export class AddCommand {
       logger.newline();
       logger.subsection("Valid examples:");
       logger.detail("✓ block-number", true);
-      logger.detail("✓ connect-wallet", true);
-      logger.detail("✓ staking-rewards", true);
+      logger.detail("✓ wallet-select", true);
       logger.newline();
       logger.subsection("Invalid examples:");
       logger.detail("✗ blockNumber (camelCase)", true);

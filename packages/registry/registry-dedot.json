@@ -215,11 +215,11 @@
           "target": "app/demo/polkadot-ui/connect-wallet/page.tsx"
         },
         {
-          "path": "registry/polkadot-ui/blocks/connect-wallet/components/wallet-select.base.tsx",
+          "path": "registry/polkadot-ui/blocks/connect-wallet/components/connect-wallet.base.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/blocks/connect-wallet/components/wallet-select.dedot.tsx",
+          "path": "registry/polkadot-ui/blocks/connect-wallet/components/connect-wallet.dedot.tsx",
           "type": "registry:component"
         },
         {
