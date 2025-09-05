@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "polkadot-ui": {
+      "command": "node",
+      "args": [
+        "packages/cli/dist/index.js",
+        "mcp"
+      ],
+      "env": {
+        "REGISTRY_URL": "http://localhost:3000",
+        "AVAILABLE_TOOLS": "{\"add\":\"Add a component to your project\",\"init\":\"Initialize a new project with Polkadot UI components\",\"list\":\"List all available components\",\"telemetry\":\"Manage telemetry settings and view privacy information\",\"mcp\":\"Start the MCP server for Cursor integration\",\"help\":\"Show help information\"}"
+      }
+    }
+  }
+}
