@@ -1,14 +1,13 @@
 import { FeedbackToast } from "@/components/feedback-toast";
+import { Footer } from "@/components/layout/footer";
 import { Navigation } from "@/components/layout/navigation";
-import { PolkadotLogo } from "@/components/polkadot-logo";
 import { Providers } from "@/components/providers";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/next";
 import { RootProvider as FumadocsRootProvider } from "fumadocs-ui/provider";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { Suspense } from "react";
+import { Geist, Geist_Mono, Unbounded } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -19,6 +18,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const unbounded = Unbounded({
+  variable: "--font-unbounded",
+  subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
@@ -59,7 +64,7 @@ export default async function RootLayout({
       className="scroll-smooth scroll-pt-12"
     >
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${unbounded.variable} antialiased`}
       >
         <FumadocsRootProvider>
           <ThemeProvider>
@@ -68,9 +73,7 @@ export default async function RootLayout({
               <Providers>
                 <main className="flex-1">{children}</main>
               </Providers>
-              <footer className="flex justify-center items-center mt-12 mb-4 p-4">
-                <PolkadotLogo withPoweredBy />
-              </footer>
+              <Footer />
               {/* <MouseFollower /> */}
             </div>
             <Toaster
