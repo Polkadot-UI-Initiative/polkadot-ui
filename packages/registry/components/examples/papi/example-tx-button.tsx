@@ -3,7 +3,7 @@ import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import type { ComponentExample } from "../types.examples";
 import { useChainIds } from "@reactive-dot/react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { TxButtonStandalone as TxButton } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.papi";
+import { TxButton } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.papi";
 import { Binary } from "polkadot-api";
 import { usePapi } from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
 import { config } from "@/registry/polkadot-ui/reactive-dot.config";
@@ -30,11 +30,22 @@ export function DemoTxButton() {
     symbol: "",
     name: "",
   }));
+
+  const nets = supportedNetworks?.slice() || [];
+
+  if (nets.length === 0) {
+    return (
+      <div className="flex w-full items-center justify-center p-8 text-muted-foreground">
+        No supported networks available
+      </div>
+    );
+  }
+
   return (
     <div className="flex w-full  flex-col gap-6">
-      <Tabs defaultValue={supportedNetworks[0].name}>
+      <Tabs defaultValue={nets[0].id}>
         <TabsList>
-          {supportedNetworks.slice(0, 3).map((network) => (
+          {nets.slice(0, 3).map((network) => (
             <TabsTrigger
               key={network.id}
               value={network.id}
@@ -44,7 +55,7 @@ export function DemoTxButton() {
             </TabsTrigger>
           ))}
         </TabsList>
-        {supportedNetworks.slice(0, 3).map((network) => (
+        {nets.slice(0, 3).map((network) => (
           <TabsContent
             key={network.id}
             value={network.id}

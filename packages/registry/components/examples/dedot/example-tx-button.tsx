@@ -21,24 +21,35 @@ export const txButtonExample: ComponentExample = {
 
 export function DemoTxButton() {
   const { supportedNetworks } = useTypink();
+
+  const nets = supportedNetworks?.slice() || [];
+
+  if (nets.length === 0) {
+    return (
+      <div className="flex w-full items-center justify-center p-8 text-muted-foreground">
+        No supported networks available
+      </div>
+    );
+  }
+
   return (
     <div className="flex w-full  flex-col gap-6">
-      <Tabs defaultValue={supportedNetworks[0].name}>
+      <Tabs defaultValue={nets[0].id}>
         <TabsList>
-          {supportedNetworks.slice(0, 3).map((network) => (
+          {nets.slice(0, 3).map((network) => (
             <TabsTrigger
-              key={network.name}
-              value={network.name}
+              key={network.id}
+              value={network.id}
               className="text-xs"
             >
               {network.name}
             </TabsTrigger>
           ))}
         </TabsList>
-        {supportedNetworks.slice(0, 3).map((network) => (
+        {nets.slice(0, 3).map((network) => (
           <TabsContent
-            key={network.name}
-            value={network.name}
+            key={network.id}
+            value={network.id}
             className="w-full items-center justify-center h-full flex my-8"
           >
             <ClientOnly>

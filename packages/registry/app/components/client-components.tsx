@@ -6,7 +6,7 @@ import { WalletSelect as WalletSelectPapi } from "@/registry/polkadot-ui/blocks/
 import { TxButton as TxButtonDedot } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.dedot";
 import { PolkadotProvider as PolkadotProviderDedot } from "@/registry/polkadot-ui/providers/polkadot-provider.dedot";
 
-import { TxButtonStandalone as TxButtonPapi } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.papi";
+import { TxButton as TxButtonPapi } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.papi";
 import {
   PolkadotProvider as PolkadotProviderPapi,
   usePapi,

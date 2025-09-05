@@ -35,14 +35,14 @@ export function ComponentsSection() {
               {example.component}
             </CardContent>
             <CardFooter className="mt-auto flex items-center pt-2 gap-2">
-              <Link
-                href={example.href}
-                className="text-xs text-primary hover:underline"
-              >
-                <Button size="sm" variant="secondary" className="text-xs">
+              <Button asChild size="sm" variant="secondary">
+                <Link
+                  href={example.href}
+                  className="text-primary hover:underline"
+                >
                   <BookText /> Docs →
-                </Button>
-              </Link>
+                </Link>
+              </Button>
               <OpenInV0Button
                 name={example.code}
                 title={example.name}

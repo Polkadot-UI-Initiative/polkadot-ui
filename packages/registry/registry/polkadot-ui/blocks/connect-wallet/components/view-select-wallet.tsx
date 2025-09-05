@@ -20,6 +20,37 @@ export const ViewSelectWallet = ({
     return 0;
   });
 
+  const openSafeUrl = (url: string) => {
+    try {
+      // Validate URL is non-empty string
+      if (!url || typeof url !== "string" || url.trim() === "") {
+        console.warn("Invalid URL: URL is empty or not a string");
+        return;
+      }
+
+      // Validate URL format and ensure it's HTTP/HTTPS
+      const trimmedUrl = url.trim();
+      if (
+        !trimmedUrl.startsWith("http://") &&
+        !trimmedUrl.startsWith("https://")
+      ) {
+        console.warn("Invalid URL: URL must start with http:// or https://");
+        return;
+      }
+
+      // Additional URL validation using URL constructor
+      new URL(trimmedUrl);
+
+      // Open with security measures
+      const win = window.open(trimmedUrl, "_blank", "noopener,noreferrer");
+      if (win) {
+        win.opener = null; // Fallback security measure
+      }
+    } catch (error) {
+      console.error("Failed to open URL:", error);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-2">
       {sortedWallets.map((wallet) => {
@@ -45,8 +76,9 @@ export const ViewSelectWallet = ({
                 } else {
                   connectWallet(wallet.id);
                 }
-              } else if (wallet.installUrl)
-                window.open(wallet.installUrl, "_blank");
+              } else if (wallet.installUrl) {
+                openSafeUrl(wallet.installUrl);
+              }
             }}
           >
             <div className="flex flex-row items-center justify-start gap-0">

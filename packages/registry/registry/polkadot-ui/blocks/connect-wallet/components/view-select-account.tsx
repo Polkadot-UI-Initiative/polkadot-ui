@@ -15,9 +15,9 @@ export function ViewSelectAccount({
   setConnectedAccount,
   wallets,
 }: ViewSelectAccountProps) {
-  const sortedAccounts = accounts.sort((a, b) =>
-    a.source.localeCompare(b.source)
-  );
+  const sortedAccounts = (accounts || [])
+    .slice()
+    .sort((a, b) => a.source.localeCompare(b.source));
 
   return (
     <>

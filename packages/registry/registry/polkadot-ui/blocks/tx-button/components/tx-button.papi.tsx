@@ -17,14 +17,17 @@ import type { Transaction as PapiTransaction } from "polkadot-api";
 import { useEffect, useState } from "react";
 import { TxButtonBaseProps } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.base";
 import { ChainId } from "@reactive-dot/core";
-import { usePapi } from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
+import {
+  PolkadotProvider,
+  usePapi,
+} from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
 
-export function TxButtonStandalone(
-  props: TxButtonBaseProps & {
-    transaction: PapiTransaction<object, string, string, unknown>;
-    networkId: ChainId;
-  }
-) {
+type TxButtonProps = TxButtonBaseProps & {
+  transaction: PapiTransaction<object, string, string, unknown>;
+  networkId: ChainId;
+};
+
+export function TxButton(props: TxButtonProps) {
   const {
     transaction,
     networkId,
@@ -247,5 +250,13 @@ export function TxButtonStandalone(
         )}
       </div>
     </div>
+  );
+}
+
+export function TxButtonWithProvider(props: TxButtonProps) {
+  return (
+    <PolkadotProvider>
+      <TxButton {...props} />
+    </PolkadotProvider>
   );
 }

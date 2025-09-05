@@ -27,7 +27,7 @@ export interface TxStatusNotificationTexts {
 
 export interface TxStatusNotificationProps {
   result: TxResultLike;
-  toastId: string;
+  toastId: string | number;
   network: NetworkInfoLike | undefined;
   successDuration: number;
   title: string;
@@ -56,7 +56,7 @@ export function beginTxStatusNotification({
   title = "Waiting for signature...",
   description = "Please sign the transaction in your wallet",
 }: {
-  toastId?: string;
+  toastId?: string | number;
   network: NetworkInfoLike;
   title: string;
   description: string;
@@ -70,7 +70,7 @@ export function beginTxStatusNotification({
       description,
     }
   );
-  return id as string;
+  return id;
 }
 
 export function cancelTxStatusNotification({
@@ -79,7 +79,7 @@ export function cancelTxStatusNotification({
   title = "Transaction cancelled",
   description = "",
 }: {
-  toastId: string;
+  toastId: string | number;
   network: NetworkInfoLike | undefined;
   title: string;
   description: string;
