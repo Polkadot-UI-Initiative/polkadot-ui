@@ -53,7 +53,7 @@ export function PolkadotProvider({
 export function usePapi(
   chainId: ChainId = Object.keys(config.chains)[0] as ChainId
 ) {
-  const config = useConfig();
+  const runtimeConfig = useConfig();
   const wallets = useWallets();
   const connectedWallets = useConnectedWallets();
   const accounts = useAccounts();
@@ -66,7 +66,7 @@ export function usePapi(
   return {
     accounts,
     query: useLazyLoadQuery,
-    config,
+    config: runtimeConfig,
     wallets,
     connectedWallets,
     client,
@@ -88,25 +88,41 @@ export enum ClientConnectionStatus {
 
 // helper hook to get connection status for papi / reactive-dot
 export function usePapiClientStatus(chainId?: ChainId) {
-  const client = useClient(chainId ? { chainId } : undefined) as PolkadotClient;
+  const client = useClient(chainId ? { chainId } : undefined);
   const [status, setStatus] = useState<ClientConnectionStatus>(
     ClientConnectionStatus.NotConnected
   );
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    setStatus(ClientConnectionStatus.Connecting);
     setError(null);
 
-    const subscription = client.bestBlocks$.subscribe({
-      next: () => setStatus(ClientConnectionStatus.Connected),
-      error: (e) => {
-        setError(e instanceof Error ? e : new Error(String(e)));
-        setStatus(ClientConnectionStatus.Error);
-      },
-    });
+    if (!client) {
+      setStatus(ClientConnectionStatus.NotConnected);
+      return;
+    }
 
-    return () => subscription.unsubscribe();
+    setStatus(ClientConnectionStatus.Connecting);
+
+    let subscription: { unsubscribe: () => void } | null = null;
+    try {
+      // bestBlocks$ emits when connected; treat first emission as connected
+      // and propagate errors to status
+      subscription = (client as PolkadotClient).bestBlocks$.subscribe({
+        next: () => setStatus(ClientConnectionStatus.Connected),
+        error: (e) => {
+          setError(e instanceof Error ? e : new Error(String(e)));
+          setStatus(ClientConnectionStatus.Error);
+        },
+      });
+    } catch (e) {
+      setError(e instanceof Error ? e : new Error(String(e)));
+      setStatus(ClientConnectionStatus.Error);
+    }
+
+    return () => {
+      if (subscription) subscription.unsubscribe();
+    };
   }, [client]);
 
   const isConnected = useMemo(

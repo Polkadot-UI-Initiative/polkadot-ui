@@ -132,7 +132,7 @@ export function AnimatedCodeBlock() {
               <div className="font-mono text-sm flex items-center justify-between">
                 <div className="flex items-center">
                   <span className="text-muted-foreground select-none">$ </span>
-                  <span className="text-foreground ml-1 text-xs md:text-base">
+                  <span className="text-foreground ml-1 text-xs md:text-sm">
                     {tab.command}{" "}
                     <span
                       className={cn(

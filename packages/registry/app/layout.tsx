@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
-import { Analytics } from "@vercel/analytics/next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { Navigation } from "@/components/layout/navigation";
-import { ThemeProvider } from "@/components/theme/theme-provider";
-import { RootProvider as FumadocsRootProvider } from "fumadocs-ui/provider";
-import { PolkadotLogo } from "@/components/polkadot-logo";
-import { Toaster } from "@/components/ui/sonner";
 import { FeedbackToast } from "@/components/feedback-toast";
+import { Navigation } from "@/components/layout/navigation";
+import { PolkadotLogo } from "@/components/polkadot-logo";
 import { Providers } from "@/components/providers";
+import { ThemeProvider } from "@/components/theme/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
+import { Analytics } from "@vercel/analytics/next";
+import { RootProvider as FumadocsRootProvider } from "fumadocs-ui/provider";
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,7 +47,7 @@ export default async function RootLayout({
   try {
     const res = await fetch("https://tweakcn.com/r/registry.json", {
       cache: "force-cache",
-      next: { revalidate: 3600 },
+      next: { revalidate: 86400 },
     });
     const { items } = (await res.json()) as { items: TweakItem[] };
     registryItems = items.filter((i) => i.type === "registry:style");
@@ -64,9 +65,11 @@ export default async function RootLayout({
           <ThemeProvider>
             <div className="relative flex min-h-screen flex-col">
               <Navigation registryItems={registryItems} />
-              <Providers>
-                <main className="flex-1">{children}</main>
-              </Providers>
+              <Suspense fallback={<main className="flex-1" />}>
+                <Providers>
+                  <main className="flex-1">{children}</main>
+                </Providers>
+              </Suspense>
               <footer className="flex justify-center items-center mt-12 mb-4 p-4">
                 <PolkadotLogo withPoweredBy />
               </footer>
