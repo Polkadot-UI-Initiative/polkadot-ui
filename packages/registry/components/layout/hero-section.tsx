@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { AnimatedCodeBlock } from "../animated-code-block";
 import { ArrowRight } from "lucide-react";
+import { CursorDeepLinkButton } from "./cursor-deep-link-button";
 
 export function HeroSection() {
   return (
@@ -34,6 +35,7 @@ export function HeroSection() {
           <Button variant="outline" asChild>
             <Link href="/components">Browse Components</Link>
           </Button>
+          <CursorDeepLinkButton />
         </div>
       </div>
     </section>

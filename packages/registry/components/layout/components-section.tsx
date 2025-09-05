@@ -64,14 +64,14 @@ const examples = [
   {
     name: "Tx Button with Tx Notification",
     href: "/docs/components/tx-notification",
-    code: "simple-tx-button with tx-notification",
+    code: "tx-notification",
     description: "Simple tx button with tx notification",
     component: <TxButtonWithTxNotification />,
   },
   {
     name: "Wallet Selection",
     href: "/docs/components/connect-wallet",
-    code: "wallet-selection",
+    code: "connect-wallet",
     description: "Wallet connection and account selection",
     component: (
       <div className="flex flex-col gap-2 w-full">

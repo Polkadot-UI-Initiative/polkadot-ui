@@ -10,7 +10,6 @@ import { CliOptions } from "./types/index.js";
 
 const program = new Command();
 
-// CLI metadata
 program
   .name("dot-ui")
   .description(
@@ -18,7 +17,6 @@ program
   )
   .version("0.1.0");
 
-// Global options
 program
   .option("--dev", "Use development registry (localhost:3000)")
   .option("--verbose", "Show detailed output")
@@ -28,7 +26,6 @@ program
     "Show detailed prompts for create-next-app and shadcn configuration"
   );
 
-// Add command
 program
   .command("add")
   .description("Add a component to your project")
@@ -50,7 +47,6 @@ program
     }
   });
 
-// Init command
 program
   .command("init")
   .description("Initialize a new project with Polkadot UI components")
@@ -71,7 +67,6 @@ program
     }
   });
 
-// List command
 program
   .command("list")
   .description("List all available components")
@@ -92,7 +87,6 @@ program
     }
   });
 
-// Telemetry command
 program
   .command("telemetry")
   .description("Manage telemetry settings and view privacy information")
@@ -113,7 +107,13 @@ program
     }
   });
 
-// Help command
+program
+  .command("mcp")
+  .description("Start the MCP server for Cursor integration")
+  .action(async () => {
+    const { default: mcpServer } = await import("./mcp/index.js");
+  });
+
 program
   .command("help")
   .description("Show help information")
@@ -121,10 +121,8 @@ program
     program.help();
   });
 
-// Error handling
 program.exitOverride((err) => {
   if (err.exitCode === 0) {
-    // Normal exit (help command, etc.)
     process.exit(0);
   }
 
@@ -140,12 +138,10 @@ program.exitOverride((err) => {
     process.exit(1);
   }
 
-  // Other commander errors
   logger.error(err.message);
   process.exit(1);
 });
 
-// Handle uncaught errors
 process.on("uncaughtException", (error) => {
   logger.error("Unexpected error occurred:");
   logger.error(error.message);
@@ -164,10 +160,8 @@ process.on("unhandledRejection", (reason) => {
   process.exit(1);
 });
 
-// Show help if no command provided
 if (process.argv.length <= 2) {
   program.help();
 }
 
-// Parse arguments
 program.parse(process.argv);
