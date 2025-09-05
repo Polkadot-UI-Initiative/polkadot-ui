@@ -22,7 +22,7 @@ export function OpenInV0Button({
       <a
         href={`https://v0.dev/chat/api/open?url=https://${process.env.VERCEL_BRANCH_URL}/r/dedot/${name}.json&title=${encodeURIComponent(title ?? name)}&prompt=${encodeURIComponent(prompt ?? "Explain this code")}`}
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
       >
         Open in{" "}
         <svg

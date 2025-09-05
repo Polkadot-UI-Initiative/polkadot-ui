@@ -134,7 +134,7 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
   const [selectedFromSearch, setSelectedFromSearch] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Merge forwarded ref with internal ref
   useEffect(() => {

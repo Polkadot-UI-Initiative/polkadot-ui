@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { type ChainId } from "@/registry/polkadot-ui/lib/config.dot-ui";
 import {
   InjectedSigner,
@@ -105,7 +106,7 @@ export interface BasePolkadotContextValue<
 
 // Common provider props interface
 export interface BasePolkadotProviderProps<TChainId = ChainId> {
-  children: React.ReactNode;
+  children: ReactNode;
   defaultChain?: TChainId;
   availableChains?: NetworkInfo[];
 }

@@ -8,6 +8,7 @@ import { Binary } from "polkadot-api";
 import { usePapi } from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
 import { config } from "@/registry/polkadot-ui/reactive-dot.config";
 import { ChainId } from "@reactive-dot/core";
+import { Suspense } from "react";
 
 export const txButtonExample: ComponentExample = {
   name: "Tx Button",
@@ -61,9 +62,11 @@ export function DemoTxButton() {
             value={network.id}
             className="w-full items-center justify-center h-full flex my-8"
           >
-            <ClientOnly>
-              <RemarkButton networkId={network.id} />
-            </ClientOnly>
+            <Suspense>
+              <ClientOnly>
+                <RemarkButton networkId={network.id} />
+              </ClientOnly>
+            </Suspense>
           </TabsContent>
         ))}
       </Tabs>
@@ -75,15 +78,11 @@ export function RemarkButton({ networkId }: { networkId: ChainId }) {
   const { client } = usePapi();
   const typedApi = client?.getTypedApi(config.chains[networkId].descriptor);
   const transaction = typedApi?.tx.System.remark({
-    remark: Binary.fromText("Hello from polkadot-ui!"),
+    remark: Binary.fromText("Hello World from polkadot-ui"),
   });
 
   return (
-    <TxButton
-      transaction={transaction}
-      args={[{ remark: Binary.fromText("Hello World from polkadot-ui") }]}
-      networkId={networkId}
-    >
+    <TxButton transaction={transaction} networkId={networkId}>
       Click Me
     </TxButton>
   );
