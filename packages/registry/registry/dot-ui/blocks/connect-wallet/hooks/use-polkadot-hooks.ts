@@ -31,8 +31,20 @@ export function useAccountManagement(): AccountManagementHookProps {
 }
 
 export function useWalletManagement(): WalletManagementHookProps {
-  const { wallets, connectWallet, disconnect,  connectedWalletId, signer: activeSigner} = useTypink();
-  return { wallets, connectWallet, disconnect, connectedWalletId, activeSigner};
+  const {
+    wallets,
+    connectWallet,
+    disconnect,
+    connectedWalletIds,
+    signer: activeSigner,
+  } = useTypink();
+  return {
+    wallets,
+    connectWallet,
+    disconnect,
+    connectedWalletIds,
+    activeSigner,
+  };
 }
 
 export function usePolkadotBalances(addresses: string[]): Balances {

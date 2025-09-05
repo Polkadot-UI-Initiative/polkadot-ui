@@ -34,7 +34,7 @@
     "@vercel/analytics": "^1.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "dedot": "^0.14.1",
+    "dedot": "^0.15.0",
     "ethers": "^6.15.0",
     "fumadocs-core": "^15.6.3",
     "fumadocs-mdx": "^11.6.11",
@@ -52,11 +52,11 @@
     "sonner": "^2.0.6",
     "tailwind-merge": "^3.2.0",
     "tw-animate-css": "^1.2.5",
-    "typink": "^0.2.1",
+    "typink": "^0.3.1",
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@dedot/chaintypes": "^0.123.0",
+    "@dedot/chaintypes": "^0.132.0",
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.6.3",

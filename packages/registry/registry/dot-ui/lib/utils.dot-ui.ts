@@ -140,6 +140,19 @@ export function truncateAddress(
   return `${address.slice(0, truncLength)}...${address.slice(-truncLength)}`;
 }
 
+export function shortenName(
+  name: string,
+  length: number | boolean = 8
+): string {
+  if (!name || length === false) return name;
+
+  const truncLength = typeof length === "number" ? length : 8;
+
+  if (name.length <= truncLength) return name;
+
+  return `${name.slice(0, truncLength)}...`;
+}
+
 /**
  * Check if an identity has positive judgements to determine a verified identity
  * @param judgements Array of judgements from on chain query

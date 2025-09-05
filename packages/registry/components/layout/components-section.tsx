@@ -15,8 +15,8 @@ import { Button } from "@/components/ui/button";
 import { BookText, Wifi, WifiOff } from "lucide-react";
 import { Label } from "@/registry/dot-ui/ui/label";
 import { cn } from "@/lib/utils";
-import { SimpleTxButtonWithProvider } from "@/registry/dot-ui/blocks/tx-notification/components/simple-tx-button";
 import { ConnectWalletWithProvider } from "@/registry/dot-ui/blocks/connect-wallet/components/connect-wallet.dedot";
+import { TxButtonWithTxNotification } from "@/registry/dot-ui/blocks/tx-notification/components/tx-button-with-tx-notification";
 
 const examples = [
   {
@@ -64,18 +64,14 @@ const examples = [
   {
     name: "Tx Button with Tx Notification",
     href: "/docs/components/tx-notification",
-    code: "simple-tx-button with tx-notification",
+    code: "tx-notification",
     description: "Simple tx button with tx notification",
-    component: (
-      <div className="flex flex-col gap-2 w-full">
-        <SimpleTxButtonWithProvider />
-      </div>
-    ),
+    component: <TxButtonWithTxNotification />,
   },
   {
     name: "Wallet Selection",
-    href: "/docs/components/wallet-selection",
-    code: "wallet-selection",
+    href: "/docs/components/connect-wallet",
+    code: "connect-wallet",
     description: "Wallet connection and account selection",
     component: (
       <div className="flex flex-col gap-2 w-full">

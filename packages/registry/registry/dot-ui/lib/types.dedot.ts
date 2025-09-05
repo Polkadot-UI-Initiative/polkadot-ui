@@ -1,7 +1,7 @@
 import { type ChainId } from "@/registry/dot-ui/lib/config.dot-ui";
 import { PaseoApi, PaseoPeopleApi } from "@dedot/chaintypes";
 import { DedotClient, WsProvider } from "dedot";
-import { InjectedAccount, InjectedSigner, useTypink, Wallet } from "typink";
+import { InjectedSigner, TypinkAccount, useTypink, Wallet } from "typink";
 
 // Dedot relies on ChainApi in the form of interfaces
 // to generate the types and APIs suggestions,
@@ -38,16 +38,16 @@ export async function createTypedClient<T extends ChainId>(
 }
 
 export interface AccountManagementHookProps {
-  accounts: InjectedAccount[];
-  setActiveAccount: (account: InjectedAccount) => void;
-  activeAccount?: InjectedAccount;
+  accounts: TypinkAccount[];
+  setActiveAccount: (account: TypinkAccount) => void;
+  activeAccount?: TypinkAccount;
 }
 
 export interface WalletManagementHookProps {
   wallets: Wallet[];
   connectWallet: (walletId: string) => void;
-  disconnect: () => void;
-  connectedWalletId?: string;
+  connectedWalletIds: string[];
+  disconnect: (walletId?: string) => void;
   activeSigner?: InjectedSigner;
 }
 
