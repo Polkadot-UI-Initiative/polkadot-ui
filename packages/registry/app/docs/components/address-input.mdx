@@ -3,7 +3,7 @@ title: Address Input
 description: A comprehensive address input component with SS58/Ethereum validation and identity lookup.
 ---
 
-import { AddressInputWithProvider } from "@/registry/polkadot-ui/blocks/address-input/components/address-input.papi";
+import { AddressInputWithProvider } from "@/registry/polkadot-ui/blocks/address-input/components/address-input.dedot";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 ## Introduction
@@ -263,7 +263,7 @@ When `withIdentityLookup` is enabled:
 The `identityChain` prop allows you to specify which chain to use for identity lookups. This is particularly useful in multi-chain environments where different chains may have different identity registries:
 
 - **`paseoPeople`** (default): Paseo People chain for testnet identities
-- **`kusama_people`**: Kusama People chain for Kusama identities  
+- **`kusamaPeople`**: Kusama People chain for Kusama identities  
 - **`polkadot_people`**: Polkadot People chain for mainnet identities
 
 The type `ChainIdWithIdentity` ensures only chains with Identity pallet support can be used.

@@ -1,29 +1,6 @@
-import { PaseoApi, PaseoPeopleApi } from "@dedot/chaintypes";
-import { DedotClient } from "dedot";
 import type { ISubmittableExtrinsic, ISubmittableResult } from "dedot/types";
 import { UseTxReturnType, useTypink } from "typink";
-import { type ChainId } from "@/registry/polkadot-ui/lib/config.dot-ui";
 import { TxButtonBaseProps } from "../blocks/tx-button/components/tx-button.base";
-
-// Map from network IDs to their corresponding chain APIs
-interface ChainApiKindMap {
-  paseo: PaseoApi;
-  paseo_people: PaseoPeopleApi;
-}
-
-export type ChainApiType<T extends ChainId> = ChainApiKindMap[T];
-
-export type AnyChainApi = ChainApiKindMap[keyof ChainApiKindMap];
-
-export type ConfiguredChainApi<T extends ChainId = ChainId> = DedotClient<
-  ChainApiType<T>
->;
-
-export type ConfiguredAnyChainApi = DedotClient<AnyChainApi>;
-
-export type CompositeApi = {
-  [K in ChainId]: ConfiguredChainApi<K>;
-};
 
 export interface AccountManagementHookProps {
   accounts: import("typink").TypinkAccount[];
