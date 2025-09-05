@@ -10,6 +10,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-unbounded: var(--font-unbounded);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -144,6 +145,15 @@
 @layer components {
   .container {
     @apply w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-[var(--polkadot-pink)] via-[var(--polkadot-violet)] to-[var(--polkadot-cyan)] bg-clip-text text-transparent;
+  }
+  .text-fast-shadow {
+    text-shadow: -10px 0 0 var(--polkadot-pink);
   }
 }
 

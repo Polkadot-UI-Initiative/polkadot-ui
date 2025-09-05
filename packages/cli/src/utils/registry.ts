@@ -8,7 +8,7 @@ export class Registry {
   private selectedLibrary: "papi" | "dedot" | null = null; // New: user's explicit choice
 
   constructor(isDev: boolean = false) {
-    this.baseUrl = isDev ? "http://localhost:3000" : "https://dot-ui.com";
+    this.baseUrl = isDev ? "http://localhost:3000" : "https://polkadot-ui.com";
     this.polkadotDetector = new PolkadotDetector();
   }
 

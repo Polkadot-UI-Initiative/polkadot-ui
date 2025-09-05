@@ -42,20 +42,20 @@ const MockPolkadotProvider = ({ children }: { children: React.ReactNode }) => (
 );
 
 // Mock the providers and hooks
-jest.mock("../registry/dot-ui/providers/papi-provider", () => ({
+jest.mock("../registry/polkadot-ui/providers/papi-provider", () => ({
   PolkadotProvider: MockPolkadotProvider,
   usePapi: mockUsePapi,
 }));
 
 jest.mock(
-  "../registry/dot-ui/blocks/address-input/hooks/use-identity.papi",
+  "../registry/polkadot-ui/blocks/address-input/hooks/use-identity.papi",
   () => ({
     usePolkadotIdentity: mockUsePolkadotIdentity,
   })
 );
 
 jest.mock(
-  "../registry/dot-ui/blocks/address-input/hooks/use-search-identity.papi",
+  "../registry/polkadot-ui/blocks/address-input/hooks/use-search-identity.papi",
   () => ({
     useIdentityByDisplayName: mockUseIdentityByDisplayName,
   })
@@ -65,8 +65,8 @@ jest.mock(
 import {
   AddressInput,
   AddressInputWithProvider,
-} from "../registry/dot-ui/blocks/address-input/components/address-input.papi";
-import { PolkadotProvider } from "../registry/dot-ui/providers/papi-provider";
+} from "../registry/polkadot-ui/blocks/address-input/components/address-input.papi";
+import { PolkadotProvider } from "../registry/polkadot-ui/providers/polkadot-provider.papi";
 
 // Test wrapper with providers
 function TestWrapper({ children }: { children: React.ReactNode }) {

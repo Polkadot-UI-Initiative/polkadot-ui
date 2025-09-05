@@ -116,7 +116,7 @@ export class AddCommand {
       logger.newline();
       logger.subsection("Examples:");
       logger.detail("polkadot-ui add block-number", true);
-      logger.detail("polkadot-ui add connect-wallet", true);
+      logger.detail("polkadot-ui add wallet-select", true);
       return false;
     }
 
@@ -128,8 +128,7 @@ export class AddCommand {
       logger.newline();
       logger.subsection("Valid examples:");
       logger.detail("✓ block-number", true);
-      logger.detail("✓ connect-wallet", true);
-      logger.detail("✓ staking-rewards", true);
+      logger.detail("✓ wallet-select", true);
       logger.newline();
       logger.subsection("Invalid examples:");
       logger.detail("✗ blockNumber (camelCase)", true);
@@ -646,7 +645,7 @@ export class AddCommand {
 
     // If no chains are configured, install defaults
     logger.info("No chains configured, installing defaults");
-    const defaultChains = ["paseo", "paseo_people"];
+    const defaultChains = ["paseo", "paseoPeople"];
 
     logger.detail(`Installing default chains: ${defaultChains.join(", ")}`);
     await this.installMissingChains(defaultChains);
@@ -906,9 +905,9 @@ export class AddCommand {
 
     logger.newline();
     logger.subsection("Get help:");
-    logger.detail("• Documentation: https://dot-ui.com/docs", true);
+    logger.detail("• Documentation: https://polkadot-ui.com/docs", true);
     logger.detail(
-      "• GitHub Issues: https://github.com/Polkadot-UI-Initiative/dot-ui/issues",
+      "• GitHub Issues: https://github.com/Polkadot-UI-Initiative/polkadot-ui/issues",
       true
     );
   }

@@ -23,10 +23,8 @@ async function loadRegistry(
   dev: boolean = false
 ): Promise<any> {
   try {
-    const baseUrl = dev 
-      ? "http://localhost:3000" 
-      : "https://dot-ui.com";
-    
+    const baseUrl = dev ? "http://localhost:3000" : "https://polkadot-ui.com";
+
     let registryFile: string;
     switch (registryType) {
       case "papi":
@@ -43,9 +41,11 @@ async function loadRegistry(
 
     const registryUrl = `${baseUrl}/${registryFile}`;
     const response = await fetch(registryUrl);
-    
+
     if (!response.ok) {
-      throw new Error(`Failed to fetch registry: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch registry: ${response.status} ${response.statusText}`
+      );
     }
 
     return await response.json();
@@ -147,7 +147,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: "manage_telemetry",
-        description: "Manage telemetry settings and display privacy information",
+        description:
+          "Manage telemetry settings and display privacy information",
         inputSchema: {
           type: "object",
           properties: {
@@ -166,23 +167,23 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
           },
         },
-                },
-          {
-            name: "cli_help",
-            description: "Show all available CLI commands and their descriptions",
-            inputSchema: {
-              type: "object",
-              properties: {
-                verbose: {
-                  type: "boolean",
-                  description: "Show detailed command information",
-                },
-              },
+      },
+      {
+        name: "cli_help",
+        description: "Show all available CLI commands and their descriptions",
+        inputSchema: {
+          type: "object",
+          properties: {
+            verbose: {
+              type: "boolean",
+              description: "Show detailed command information",
             },
           },
-        ],
-      };
-    });
+        },
+      },
+    ],
+  };
+});
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
@@ -190,16 +191,24 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   try {
     switch (name) {
       case "add_component": {
-        const { component, registryType = "papi", dev = false, force = false, interactive = false } = args as {
+        const {
+          component,
+          registryType = "papi",
+          dev = false,
+          force = false,
+          interactive = false,
+        } = args as {
           component: string;
           registryType?: "papi" | "dedot" | "default";
           dev?: boolean;
           force?: boolean;
           interactive?: boolean;
         };
-        
+
         const registry = await loadRegistry(registryType, dev);
-        const componentDetails = registry.items.find((item: any) => item.name === component);
+        const componentDetails = registry.items.find(
+          (item: any) => item.name === component
+        );
 
         if (!componentDetails) {
           const availableComponents = registry.items
@@ -225,7 +234,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           ...componentDetails.dependencies.map((dep: string) => `- ${dep}`),
           "",
           "## Registry Dependencies",
-          ...componentDetails.registryDependencies.map((dep: string) => `- ${dep}`),
+          ...componentDetails.registryDependencies.map(
+            (dep: string) => `- ${dep}`
+          ),
           "",
           "## Files",
           ...componentDetails.files.map(
@@ -252,12 +263,16 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case "list_components": {
-        const { registryType = "papi", dev = false, verbose = false } = args as {
+        const {
+          registryType = "papi",
+          dev = false,
+          verbose = false,
+        } = args as {
           registryType?: "papi" | "dedot" | "default";
           dev?: boolean;
           verbose?: boolean;
         };
-        
+
         const registry = await loadRegistry(registryType, dev);
 
         const componentList = [
@@ -302,13 +317,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case "init_project": {
-        const { registryType = "papi", dev = false, force = false, interactive = false } = args as {
+        const {
+          registryType = "papi",
+          dev = false,
+          force = false,
+          interactive = false,
+        } = args as {
           registryType?: "papi" | "dedot" | "default";
           dev?: boolean;
           force?: boolean;
           interactive?: boolean;
         };
-        
+
         const registry = await loadRegistry(registryType, dev);
 
         const initInstructions = [
@@ -356,7 +376,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           action?: "status" | "enable" | "disable" | "info";
           dev?: boolean;
         };
-        
+
         const telemetryInfo = [
           "# Polkadot UI Telemetry Information",
           "",
@@ -407,7 +427,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const { verbose = false } = args as {
           verbose?: boolean;
         };
-        
+
         const cliCommands = [
           "# Polkadot UI CLI Commands",
           "",
@@ -417,7 +437,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           "Add a component to your project",
           "```bash",
           "npx polkadot-ui add address-input",
-          "npx polkadot-ui add connect-wallet --dev",
+          "npx polkadot-ui add wallet-select --dev",
           "```",
           "",
           "### `init`",
@@ -516,12 +536,12 @@ await server.connect(transport);
 console.error("MCP server connected successfully");
 
 // Keep the server alive
-process.on('SIGINT', () => {
+process.on("SIGINT", () => {
   console.error("MCP server shutting down...");
   process.exit(0);
 });
 
-process.on('SIGTERM', () => {
+process.on("SIGTERM", () => {
   console.error("MCP server shutting down...");
   process.exit(0);
 });
