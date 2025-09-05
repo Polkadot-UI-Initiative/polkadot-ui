@@ -175,7 +175,7 @@ export function TxButtonBase<
           description:
             notifications.description ??
             notifications.descriptions?.submitting ??
-            "Transaction submitted",
+            "Awaiting signature...",
         })
       : undefined;
 
@@ -195,7 +195,7 @@ export function TxButtonBase<
                   "Waiting for confirmation...",
                 result,
                 toastId: toastId as string,
-                network: undefined,
+                network: targetNetwork as NetworkInfoLike,
                 successDuration: resultDisplayDuration,
               });
             }
@@ -217,7 +217,7 @@ export function TxButtonBase<
                   "Waiting for confirmation...",
                 result,
                 toastId: toastId as string,
-                network: undefined,
+                network: targetNetwork as NetworkInfoLike,
                 successDuration: resultDisplayDuration,
               });
             }
@@ -228,7 +228,7 @@ export function TxButtonBase<
       if (withNotification && toastId)
         cancelTxStatusNotification({
           toastId,
-          network: undefined,
+          network: targetNetwork as NetworkInfoLike,
           title:
             notifications.title ??
             notifications.titles?.error ??

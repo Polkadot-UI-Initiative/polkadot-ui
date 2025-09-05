@@ -28,7 +28,6 @@ export function PolkadotProvider({
   appName = "Polkadot UI App",
   defaultCaller = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
   supportedNetworks = SUPPORTED_NETWORKS,
-  defaultNetworkId,
 }: {
   children: React.ReactNode;
   appName?: string;
@@ -43,7 +42,6 @@ export function PolkadotProvider({
         appName={appName}
         defaultCaller={defaultCaller}
         supportedNetworks={supportedNetworks}
-        defaultNetworkId={defaultNetworkId}
         defaultNetworkIds={supportedNetworks.map((network) => network.id)}
       >
         {children}

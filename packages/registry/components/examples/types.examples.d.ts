@@ -6,4 +6,5 @@ export interface ComponentExample {
   code: string;
   description: ReactNode;
   component: ReactNode;
+  tsx?: string;
 }

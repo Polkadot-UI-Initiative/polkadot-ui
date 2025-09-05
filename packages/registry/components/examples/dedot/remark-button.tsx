@@ -16,6 +16,9 @@ export function RemarkButton({ networkId }: { networkId: NetworkId }) {
       args={["Hello World from polkadot-ui"]}
       networkId={networkId}
       className="w-full"
+      notifications={{
+        title: "Remark Welcome Message",
+      }}
     >
       Remark a message on{" "}
       {/* eslint-disable-next-line @next/next/no-img-element */}

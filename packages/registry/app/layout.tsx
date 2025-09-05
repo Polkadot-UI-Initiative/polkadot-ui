@@ -65,11 +65,9 @@ export default async function RootLayout({
           <ThemeProvider>
             <div className="relative flex min-h-screen flex-col">
               <Navigation registryItems={registryItems} />
-              <Suspense fallback={<main className="flex-1" />}>
-                <Providers>
-                  <main className="flex-1">{children}</main>
-                </Providers>
-              </Suspense>
+              <Providers>
+                <main className="flex-1">{children}</main>
+              </Providers>
               <footer className="flex justify-center items-center mt-12 mb-4 p-4">
                 <PolkadotLogo withPoweredBy />
               </footer>

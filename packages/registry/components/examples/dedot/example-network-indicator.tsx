@@ -1,5 +1,6 @@
 import type { ComponentExample } from "../types.examples";
-import { ExamplePlaceholder } from "@/components/examples/placeholder";
+import { NetworkIndicator } from "@/registry/polkadot-ui/blocks/network-indicator/network-indicator.dedot";
+import { paseo, paseoPeople, polkadot } from "typink";
 
 export const networkIndicatorExample: ComponentExample = {
   name: "Network Indicator",
@@ -7,9 +8,17 @@ export const networkIndicatorExample: ComponentExample = {
   code: "network-indicator",
   description: "Show current network and status",
   component: (
-    <ExamplePlaceholder
-      title="Network Indicator"
-      description="Real-time chain status widget coming soon"
-    />
+    <div className="flex items-center gap-2 flex-col">
+      <NetworkIndicator chainId={paseo.id} at="best" />
+      <NetworkIndicator chainId={paseoPeople.id} at="finalized" />
+      <NetworkIndicator chainId={polkadot.id} at="best" />
+    </div>
   ),
+  tsx: `
+    <div className="flex items-center gap-2 flex-col">
+      <NetworkIndicator chainId={paseo.id} at="best" />
+      <NetworkIndicator chainId={paseoPeople.id} at="finalized" />
+      <NetworkIndicator chainId={polkadot.id} at="best" />
+    </div>
+  `,
 };

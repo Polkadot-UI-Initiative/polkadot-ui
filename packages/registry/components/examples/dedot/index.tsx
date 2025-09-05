@@ -21,16 +21,16 @@ export const demoExample: ComponentExample = {
 };
 
 export const examples: ComponentExample[] = [
-  demoExample,
+  // demoExample,
+  walletSelectExample,
   txButtonExample,
   addressInputExample,
-  walletSelectExample,
   requireConnectionExample,
   requireAccountExample,
+  networkIndicatorExample,
   amountInputExample,
   selectTokenExample,
   transactionDetailsExample,
-  networkIndicatorExample,
   balanceDisplayExample,
   nftCardExample,
 ];
