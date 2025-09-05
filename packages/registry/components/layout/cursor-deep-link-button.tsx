@@ -5,8 +5,7 @@ import Image from "next/image";
 
 
 
-export function CursorDeepLinkButton({
-}) {
+export function CursorDeepLinkButton() {
   // Use local development paths when in development
   const isDevelopment = process.env.NODE_ENV === "development";
 
@@ -44,8 +43,12 @@ export function CursorDeepLinkButton({
         },
       };
 
-  const encodedConfig = btoa(JSON.stringify(config));
-  const deepLinkUrl = `cursor://anysphere.cursor-deeplink/mcp/install?name=polkadot-ui&config=${encodedConfig}`;
+  const encodedConfig = Buffer.from(JSON.stringify(config)).toString("base64");
+  const params = new URLSearchParams({
+    name: "polkadot-ui",
+    config: encodedConfig,
+  });
+  const deepLinkUrl = `cursor://anysphere.cursor-deeplink/mcp/install?${params.toString()}`;
 
   return (
     <Button variant="outline" asChild>
