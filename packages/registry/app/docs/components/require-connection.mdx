@@ -3,7 +3,7 @@ title: Require Connection
 description: A component that conditionally renders content based on blockchain connection status.
 ---
 
-import { RequireConnectionWithProvider } from "@/registry/dot-ui/blocks/require-connection/components/require-connection.papi";
+import { RequireConnectionWithProvider } from "@/registry/polkadot-ui/blocks/require-connection/components/require-connection.papi";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AlertCircle, Wifi, WifiOff, Loader2 } from "lucide-react";
 
@@ -78,7 +78,7 @@ function MyComponent() {
   </TabsList>
   <TabsContent value="preview">
     <RequireConnectionWithProvider
-      chainId="paseo_people"
+      chainId="paseoPeople"
       loadingFallback={
         <div className="flex items-center gap-2 text-blue-600">
           <Loader2 className="w-4 h-4 animate-spin" />
@@ -101,7 +101,7 @@ function MyComponent() {
   <TabsContent value="code" className="my-0">
 ```tsx
 <RequireConnection
-  chainId="paseo_people"
+  chainId="paseoPeople"
   loadingFallback={<div>Connecting to Paseo People...</div>}
   fallback={<div>Failed to connect to Paseo People</div>}
 >
@@ -175,7 +175,7 @@ The component handles three distinct states:
 The component works with any chain ID configured in your dot-ui config:
 
 - `"paseo"` - Paseo Relay Chain
-- `"paseo_people"` - Paseo People Chain
+- `"paseoPeople"` - Paseo People Chain
 - Any custom chains you've added to your configuration
 
 ## Use Cases
@@ -194,8 +194,8 @@ function MultiChainComponent() {
       </RequireConnection>
 
       <RequireConnection
-        chainId="paseo_people"
-        fallback={<ConnectMessage chain="paseo_people" />}
+        chainId="paseoPeople"
+        fallback={<ConnectMessage chain="paseoPeople" />}
       >
         <PeopleChainFeatures />
       </RequireConnection>
@@ -220,7 +220,7 @@ function MultiChainComponent() {
 
 ```tsx
 <RequireConnection chainId="paseo" fallback={<ConnectRelay />}>
-  <RequireConnection chainId="paseo_people" fallback={<ConnectPeople />}>
+  <RequireConnection chainId="paseoPeople" fallback={<ConnectPeople />}>
     <CrossChainFeature />
   </RequireConnection>
 </RequireConnection>

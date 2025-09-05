@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { isValidElement, type ReactNode, type ReactElement } from "react";
 
 import {
   Card,
@@ -9,178 +12,75 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { AddressInputWithProvider } from "@/registry/dot-ui/blocks/address-input/components/address-input.dedot";
-import { RequireConnectionWithProvider } from "@/registry/dot-ui/blocks/require-connection/components/require-connection.dedot";
 import { Button } from "@/components/ui/button";
-import { BookText, Wifi, WifiOff } from "lucide-react";
-import { Label } from "@/registry/dot-ui/ui/label";
-import { cn } from "@/lib/utils";
-import { ConnectWalletWithProvider } from "@/registry/dot-ui/blocks/connect-wallet/components/connect-wallet.dedot";
-import { TxButtonWithTxNotification } from "@/registry/dot-ui/blocks/tx-notification/components/tx-button-with-tx-notification";
-
-const examples = [
-  {
-    name: "Address Input",
-    href: "/docs/components/address-input",
-    code: "address-input",
-    description:
-      "Input component with SS58/Ethereum validation and identity lookup",
-    component: (
-      <div className="flex flex-col gap-2 w-full">
-        <Label>Address</Label>
-        <AddressInputWithProvider
-          className="w-full"
-          truncate={8}
-          format="both"
-        />
-      </div>
-    ),
-  },
-  {
-    name: "Require Connection",
-    href: "/docs/components/require-connection",
-    code: "require-connection",
-    description:
-      "Conditionally render content based on blockchain connection status",
-    component: (
-      <div className="w-full space-y-3">
-        <RequireConnectionWithProvider
-          chainId="paseo"
-          fallback={
-            <div className="flex items-center gap-2 text-muted-foreground text-sm">
-              <WifiOff className="w-4 h-4" />
-              <span>Connect to Paseo</span>
-            </div>
-          }
-        >
-          <div className="flex items-center gap-2 text-green-600 text-sm">
-            <Wifi className="w-4 h-4" />
-            <span>Connected to Paseo</span>
-          </div>
-        </RequireConnectionWithProvider>
-      </div>
-    ),
-  },
-  {
-    name: "Tx Button with Tx Notification",
-    href: "/docs/components/tx-notification",
-    code: "tx-notification",
-    description: "Simple tx button with tx notification",
-    component: <TxButtonWithTxNotification />,
-  },
-  {
-    name: "Wallet Selection",
-    href: "/docs/components/connect-wallet",
-    code: "connect-wallet",
-    description: "Wallet connection and account selection",
-    component: (
-      <div className="flex flex-col gap-2 w-full">
-        <ConnectWalletWithProvider />
-      </div>
-    ),
-  },
-  // {
-  //   name: "Block Number DEMO",
-  //   href: "/docs/components/block-number",
-  //   code: "block-number",
-  //   description: "Will not be part of the library",
-  //   component: <BlockNumber />,
-  // },
-];
-
-// const categories = [
-//   {
-//     name: "Featured",
-//     href: "/examples",
-//     description: "Most popular Polkadot components",
-//     className: "text-primary border-primary",
-//   },
-//   {
-//     name: "Blockchain",
-//     href: "/examples/blockchain",
-//     description: "Core blockchain interactions",
-//     className:
-//       "text-muted-foreground border-transparent hover:border-muted-foreground",
-//   },
-//   {
-//     name: "Wallet",
-//     href: "/examples/wallet",
-//     description: "Wallet connection and management",
-//     className:
-//       "text-muted-foreground border-transparent hover:border-muted-foreground",
-//   },
-//   {
-//     name: "DeFi",
-//     href: "/examples/defi",
-//     description: "Decentralized finance components",
-//     className:
-//       "text-muted-foreground border-transparent hover:border-muted-foreground",
-//   },
-//   {
-//     name: "Governance",
-//     href: "/examples/governance",
-//     description: "On-chain governance tools",
-//     className:
-//       "text-muted-foreground border-transparent hover:border-muted-foreground",
-//   },
-// ];
+import { BookText } from "lucide-react";
+import { examples } from "../examples/papi";
+import { OpenInV0Button } from "../open-in-v0-button";
 
 export function ComponentsSection() {
   return (
-    <section className="container space-y-6 py-8 md:py-8 lg:py-12">
+    <section className="mx-8 space-y-6 py-8 md:py-8 lg:py-12" id="components">
       {/* Examples grid */}
-      <div className="mx-auto grid justify-center gap-4 sm:grid-cols-1 md:max-w-[64rem] md:grid-cols-2 2xl:grid-cols-3">
+      <div className="w-full grid justify-center gap-4 sm:grid-cols-1 lg:grid-cols-3 md:grid-cols-2 2xl:grid-cols-4 auto-rows-fr">
         {examples.map((example) => (
           <Card
             key={example.name}
-            className="relative overflow-hidden flex flex-col justify-between"
+            className="relative flex flex-col justify-between h-full"
           >
             <CardHeader>
               <CardTitle className="text-lg">{example.name}</CardTitle>
               <CardDescription>{example.description}</CardDescription>
             </CardHeader>
-            <CardContent className="flex items-center justify-center">
+            <CardContent className="flex items-center justify-center flex-1">
               {example.component}
             </CardContent>
-            <CardFooter className="flex items-center pt-2 gap-2">
+            <CardFooter className="mt-auto flex items-center pt-2 gap-2">
               <Link
                 href={example.href}
                 className="text-xs text-primary hover:underline"
               >
-                <Button size="sm" variant="ghost" className="text-xs">
+                <Button size="sm" variant="secondary" className="text-xs">
                   <BookText /> Docs →
                 </Button>
               </Link>
-              {/* <OpenInV0Button
+              <OpenInV0Button
                 name={example.code}
                 title={example.name}
-                prompt={example.description}
-                variant="ghost"
-              /> */}
+                variant="outline"
+                prompt={
+                  (typeof example.description === "string"
+                    ? example.description
+                    : encodeURIComponent(
+                        getTextFromNode(example.description)
+                      )) ||
+                  encodeURIComponent(`${example.name} - explain this code`)
+                }
+              />
             </CardFooter>
           </Card>
         ))}
-        <Card
-          className={cn(
-            "relative overflow-hidden flex flex-col justify-center items-center",
-            examples.length % 2 === 0 && "col-span-full"
-          )}
-        >
-          <CardHeader className="text-center">
-            <CardTitle className="text-lg">
-              More Polkadot Components Coming Soon
-            </CardTitle>
-          </CardHeader>
-          <CardFooter className="flex items-center justify-center pt-0">
-            <Link
-              href="https://github.com/Polkadot-UI-Initiative/dot-ui"
-              className="text-xs text-primary hover:underline"
-            >
-              Follow and ⭐️ on GitHub →
-            </Link>
-          </CardFooter>
-        </Card>
+        <div className="flex flex-col items-center justify-center">
+          <span className="text-lg">What&apos;s missing here?</span>
+          <Link
+            href="https://github.com/Polkadot-UI-Initiative/polkadot-ui"
+            className="text-xs text-primary hover:underline"
+          >
+            Open an issue or PR on GitHub →
+          </Link>
+        </div>
       </div>
     </section>
   );
+}
+
+function getTextFromNode(node: ReactNode): string {
+  if (node === null || node === undefined || node === false || node === true)
+    return "";
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(getTextFromNode).join("");
+  if (isValidElement(node)) {
+    const element = node as ReactElement<{ children?: ReactNode }>;
+    return getTextFromNode(element.props.children as ReactNode);
+  }
+  return "";
 }

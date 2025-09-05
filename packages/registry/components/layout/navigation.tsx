@@ -5,10 +5,24 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { GitHubStars } from "@/components/github-stars";
-import { Search } from "lucide-react";
+import { LayoutTemplate, Search } from "lucide-react";
 import { useSearchContext } from "fumadocs-ui/provider";
+import Image from "next/image";
 
-export function Navigation() {
+export interface NavigationProps {
+  registryItems?: Array<{
+    name: string;
+    title?: string;
+    type: string;
+    cssVars?: {
+      theme?: Record<string, string>;
+      light?: Record<string, string>;
+      dark?: Record<string, string>;
+    };
+  }>;
+}
+
+export function Navigation({ registryItems }: NavigationProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { setOpenSearch } = useSearchContext();
 
@@ -20,11 +34,15 @@ export function Navigation() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      {/* // <header className="fixed top-0 left-1/2 z-50 w-[min(90%,700px)] -translate-x-1/2 rounded-b-4xl border-t-0 bg-background/70 backdrop-blur-md px-4"> */}
       <div className="flex h-14 items-center px-4">
         <div className="mr-4 hidden md:flex">
           <Link className="mr-6 flex items-center space-x-2" href="/">
-            <div className="h-6 w-6 rounded bg-primary" />
-            <span className="hidden font-bold sm:inline-block">dot-ui</span>
+            {/* <Image src="/logo.svg" alt="polkadot-ui" width={24} height={24} /> */}
+            <LayoutTemplate />
+            <span className="hidden font-bold sm:inline-block">
+              polkadot-ui
+            </span>
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
             {navItems.map((item) => (
@@ -81,7 +99,13 @@ export function Navigation() {
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <div className="w-full flex-1 md:w-auto md:flex-none">
             <Link className="flex items-center space-x-2 md:hidden" href="/">
-              <div className="h-6 w-6 rounded bg-primary" />
+              <Image
+                src="/logo.svg"
+                alt="dot-ui"
+                width={24}
+                height={24}
+                className="h-6 w-6 rounded bg-primary"
+              />
               <span className="font-bold">dot-ui</span>
             </Link>
           </div>
@@ -98,9 +122,9 @@ export function Navigation() {
                 <span className="text-xs">⌘</span>K
               </kbd>
             </Button>
-            <ThemeToggle />
+            <ThemeToggle initialItems={registryItems} />
             <Link
-              href="https://github.com/Polkadot-UI-Initiative/dot-ui"
+              href="https://github.com/Polkadot-UI-Initiative/polkadot-ui"
               target="_blank"
               rel="noreferrer"
             >
@@ -112,7 +136,7 @@ export function Navigation() {
                   />
                 </svg>
                 <span className="sr-only">GitHub</span>
-                <GitHubStars repo="Polkadot-UI-Initiative/dot-ui" />
+                <GitHubStars repo="Polkadot-UI-Initiative/polkadot-ui" />
               </Button>
             </Link>
           </nav>

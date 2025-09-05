@@ -207,6 +207,8 @@ export class TelemetryCommand {
     console.log(
       "  For questions about data collection or to request data deletion,"
     );
-    console.log("  please visit: https://github.com/dot-ui/dot-ui/issues");
+    console.log(
+      "  please visit: https://github.com/polkadot-ui/polkadot-ui/issues"
+    );
   }
 }

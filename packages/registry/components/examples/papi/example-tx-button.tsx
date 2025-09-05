@@ -1,0 +1,79 @@
+import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
+
+import type { ComponentExample } from "../types.examples";
+import { useChainIds } from "@reactive-dot/react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { TxButtonStandalone as TxButton } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.papi";
+import { Binary } from "polkadot-api";
+import { usePapi } from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
+import { config } from "@/registry/polkadot-ui/reactive-dot.config";
+import { ChainId } from "@reactive-dot/core";
+
+export const txButtonExample: ComponentExample = {
+  name: "Tx Button",
+  href: "/docs/components/tx-button",
+  code: "tx-button",
+  description:
+    "Button component for sending arbitrary transactions. Supports all chains, all signers with default notification. Fees and error states are handled by the component.",
+  component: (
+    <ClientOnly>
+      <DemoTxButton />
+    </ClientOnly>
+  ),
+};
+
+export function DemoTxButton() {
+  const supportedNetworks = useChainIds()?.map((chainId) => ({
+    id: chainId,
+    // TODO: get decimals and symbol from chain
+    decimals: 0,
+    symbol: "",
+    name: "",
+  }));
+  return (
+    <div className="flex w-full  flex-col gap-6">
+      <Tabs defaultValue={supportedNetworks[0].name}>
+        <TabsList>
+          {supportedNetworks.slice(0, 3).map((network) => (
+            <TabsTrigger
+              key={network.id}
+              value={network.id}
+              className="text-xs"
+            >
+              {network.id}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        {supportedNetworks.slice(0, 3).map((network) => (
+          <TabsContent
+            key={network.id}
+            value={network.id}
+            className="w-full items-center justify-center h-full flex my-8"
+          >
+            <ClientOnly>
+              <RemarkButton networkId={network.id} />
+            </ClientOnly>
+          </TabsContent>
+        ))}
+      </Tabs>
+    </div>
+  );
+}
+
+export function RemarkButton({ networkId }: { networkId: ChainId }) {
+  const { client } = usePapi();
+  const typedApi = client?.getTypedApi(config.chains[networkId].descriptor);
+  const transaction = typedApi?.tx.System.remark({
+    remark: Binary.fromText("Hello from polkadot-ui!"),
+  });
+
+  return (
+    <TxButton
+      transaction={transaction}
+      args={[{ remark: Binary.fromText("Hello World from polkadot-ui") }]}
+      networkId={networkId}
+    >
+      Click Me
+    </TxButton>
+  );
+}

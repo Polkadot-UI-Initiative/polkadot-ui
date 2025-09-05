@@ -797,7 +797,7 @@ export default defineConfig({
       this.logger.detail("Add Polkadot UI components:", true);
       this.logger.code("polkadot-ui add block-number");
       this.logger.detail("Check out the documentation:", true);
-      this.logger.code("https://dot-ui.com/docs");
+      this.logger.code("https://polkadot-ui.com/docs");
     } else {
       this.logger.detail(
         "🔄 [DEBUG] Skipping next steps - called from add command"

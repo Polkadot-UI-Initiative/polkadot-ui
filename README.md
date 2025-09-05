@@ -2,7 +2,7 @@
 
 A monorepo containing a CLI tool and registry server for Polkadot UI components,
 similar to shadcn/ui but specifically designed for Web3 development. For a list
-of available components visit [dot-ui.com](https://dot-ui.com)
+of available components visit [polkadot-ui.com](https://polkadot-ui.com)
 
 ## Architecture
 
@@ -38,7 +38,7 @@ bunx polkadot-ui add address-input
 1. **Clone and install dependencies:**
 
    ```bash
-   git clone https://github.com/Polkadot-UI-Initiative/dot-ui
+   git clone https://github.com/Polkadot-UI-Initiative/polkadot-ui
    cd dot-ui
    pnpm install
    ```
@@ -110,7 +110,7 @@ pnpm registry:copy    # Copy registry.json to public/
 
 ### CLI → Registry Communication
 
-1. **Production**: CLI fetches from `https://dot-ui.com`
+1. **Production**: CLI fetches from `https://polkadot-ui.com`
 2. **Development**: With `--dev` flag, CLI uses `http://localhost:3000`
 
 ### Component Installation Process

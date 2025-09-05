@@ -177,7 +177,7 @@ export class Logger {
 
     this.subsection("Check out the demo page");
     this.detail(
-      `Run the dev server and access the demo page at http://localhost:3000/demo/dot-ui/${componentName}`,
+      `Run the dev server and access the demo page at http://localhost:3000/demo/polkadot-ui/${componentName}`,
       true
     );
 
@@ -191,7 +191,7 @@ export class Logger {
     this.newline();
 
     this.detail("2. Read the component documentation:", true);
-    this.code(`https://dot-ui.com/docs/components/${componentName}`);
+    this.code(`https://polkadot-ui.com/docs/components/${componentName}`);
     this.newline();
 
     this.detail(
@@ -202,7 +202,9 @@ export class Logger {
       `Use <${formattedName} /> instead of <${formattedName}WithProvider /> and wrap your app in <PolkadotProvider>`
     );
     this.newline();
-    this.code("Read more at https://dot-ui.com/docs#add-your-first-component");
+    this.code(
+      "Read more at https://polkadot-ui.com/docs#add-your-first-component"
+    );
     this.newline();
 
     this.detail("Happy coding with Polkadot! 🚀");
