@@ -4,8 +4,8 @@ import {
   WalletSelectBase,
   type WalletSelectBaseProps,
 } from "@/registry/polkadot-ui/blocks/connect-wallet/components/wallet-select.base";
-import { PolkadotProvider } from "@/registry/polkadot-ui/providers/polkadot-provider.reactive-dot";
-import { usePapi } from "@/registry/polkadot-ui/providers/polkadot-provider.reactive-dot";
+import { PolkadotProvider } from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
+import { usePapi } from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
 import { useMemo, useCallback } from "react";
 
 export type WalletSelectProps = Omit<WalletSelectBaseProps, "services">;

@@ -1,13 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
-import {
-  usePapi,
-  usePolkadotApi,
-} from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
+// import {
+//   usePapi,
+//   usePolkadotApi,
+// } from "@/registry/polkadot-ui/providers/__polkadot-provider.papi";
 import {
   extractText,
   hasPositiveIdentityJudgement,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { type ChainIdWithIdentity } from "@/registry/polkadot-ui/lib/types.papi";
+import {
+  ClientConnectionStatus,
+  usePapi,
+} from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
+import { config } from "@/registry/polkadot-ui/reactive-dot.config";
 
 export interface PolkadotIdentity {
   display?: string;
@@ -19,20 +24,19 @@ export interface PolkadotIdentity {
 
 export function useIdentity(
   address: string,
-  identityChain: ChainIdWithIdentity | undefined = "paseo_people"
+  identityChain: ChainIdWithIdentity | undefined = "paseoPeople"
 ) {
-  const { isLoading, isConnected } = usePapi();
-  const peopleApi = usePolkadotApi(identityChain);
+  const { status, client } = usePapi(identityChain);
+  const isLoading = status === ClientConnectionStatus.Connecting;
+  const isConnected = status === ClientConnectionStatus.Connected;
+  const peopleApi = client?.getTypedApi(
+    config.chains[identityChain].descriptor
+  );
 
   return useQuery({
     queryKey: ["polkadot-identity-papi", address, identityChain],
     queryFn: async (): Promise<PolkadotIdentity | null> => {
-      if (
-        !peopleApi ||
-        !address ||
-        isLoading(identityChain) ||
-        !isConnected(identityChain)
-      ) {
+      if (!peopleApi || !address || isLoading || !isConnected) {
         return null;
       }
 
@@ -60,11 +64,7 @@ export function useIdentity(
         return null;
       }
     },
-    enabled:
-      !!peopleApi &&
-      !!address &&
-      address.length > 0 &&
-      isConnected(identityChain),
+    enabled: !!peopleApi && !!address && address.length > 0 && isConnected,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }

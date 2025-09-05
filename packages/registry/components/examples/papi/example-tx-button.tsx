@@ -3,8 +3,11 @@ import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import type { ComponentExample } from "../types.examples";
 import { useChainIds } from "@reactive-dot/react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { TxButtonStandalone as TxButton } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.standalone.papi";
+import { TxButtonStandalone as TxButton } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.papi";
 import { Binary } from "polkadot-api";
+import { usePapi } from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
+import { config } from "@/registry/polkadot-ui/reactive-dot.config";
+import { ChainId } from "@reactive-dot/core";
 
 export const txButtonExample: ComponentExample = {
   name: "Tx Button",
@@ -57,17 +60,18 @@ export function DemoTxButton() {
   );
 }
 
-export function RemarkButton({ networkId }: { networkId: string }) {
-  type MinimalPapiTx = {
-    System: { remark: (data: { remark: Binary }) => unknown };
-  };
-  const remarkTxBuilder = ((tx: MinimalPapiTx) => (data: { remark: Binary }) =>
-    tx.System.remark(data)) as unknown as TxButtonStandaloneProps["txBuilder"];
+export function RemarkButton({ networkId }: { networkId: ChainId }) {
+  const { client } = usePapi();
+  const typedApi = client?.getTypedApi(config.chains[networkId].descriptor);
+  const transaction = typedApi?.tx.System.remark({
+    remark: Binary.fromText("Hello from polkadot-ui!"),
+  });
+
   return (
     <TxButton
-      txBuilder={remarkTxBuilder}
+      transaction={transaction}
       args={[{ remark: Binary.fromText("Hello World from polkadot-ui") }]}
-      networkId={networkId as unknown as TxButtonStandaloneProps["networkId"]}
+      networkId={networkId}
     >
       Click Me
     </TxButton>

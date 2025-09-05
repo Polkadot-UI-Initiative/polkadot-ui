@@ -17,5 +17,8 @@
     "lib": "@/lib",
     "hooks": "@/hooks"
   },
-  "iconLibrary": "lucide"
+  "iconLibrary": "lucide",
+  "registries": {
+    "@polkadot-ui": "https://polkadot-ui.com/r/dedot/{name}.json"
+  }
 }

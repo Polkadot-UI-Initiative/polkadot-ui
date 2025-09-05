@@ -1,9 +1,9 @@
 import { type TypedApi } from "polkadot-api";
-import { polkadotConfig } from "@/registry/polkadot-ui/lib/config.papi";
-import { type ChainId } from "@/registry/polkadot-ui/lib/config.dot-ui";
+import { type ChainId } from "@reactive-dot/core";
+import { config } from "../reactive-dot.config";
 
 export type ChainDescriptor<T extends ChainId> =
-  (typeof polkadotConfig.chains)[T]["descriptor"];
+  (typeof config.chains)[T]["descriptor"];
 
 // Type to constrain chains to only those with Identity pallet
 type HasIdentityPallet<T extends ChainId> =

@@ -5,17 +5,17 @@ import {
   RequireConnectionBase,
   type RequireConnectionBaseProps,
 } from "./require-connection.base";
+import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   ClientConnectionStatus,
   PolkadotProvider,
-  SupportedChainId,
   usePapiClientStatus,
-} from "@/registry/polkadot-ui/providers/polkadot-provider.reactive-dot";
-import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
+} from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
+import { ChainId } from "@reactive-dot/core";
 
 // Props type - removes services prop since we inject it
 export type RequireConnectionProps = Omit<
-  RequireConnectionBaseProps<SupportedChainId>,
+  RequireConnectionBaseProps<ChainId>,
   "services"
 >;
 

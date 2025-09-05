@@ -11,42 +11,49 @@ import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui"
 // Import PAPI-specific hooks
 import { useIdentity as papiUseIdentity } from "@/registry/polkadot-ui/blocks/address-input/hooks/use-identity.papi";
 import { useIdentitySearch as papiUseIdentitySearch } from "@/registry/polkadot-ui/blocks/address-input/hooks/use-search-identity.papi";
+
+import { type ChainIdWithIdentity } from "@/registry/polkadot-ui/lib/types.papi";
 import {
   PolkadotProvider,
   usePapi,
 } from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
-import { type ChainIdWithIdentity } from "@/registry/polkadot-ui/lib/types.papi";
+import { ChainId } from "@reactive-dot/core";
 
 // Props type - removes services prop since we inject it
-export type AddressInputProps = Omit<AddressInputBaseProps, "services">;
+export type AddressInputProps = Omit<
+  AddressInputBaseProps<ChainId>,
+  "services"
+>;
 
 export function AddressInput(props: AddressInputProps) {
-  const { isLoading, isConnected, currentChainId } = usePapi();
+  const { status } = usePapi(props.identityChain);
+  const isLoading = status === ClientConnectionStatus.Connecting;
+  const isConnected = status === ClientConnectionStatus.Connected;
 
   // Simple services object with type-compatible wrappers
   const services = useMemo(
     () => ({
-      useIdentity: (address: string, identityChain?: string) => {
-        const chain = (identityChain ?? "paseo_people") as ChainIdWithIdentity;
+      useIdentity: (address: string, identityChain?: ChainIdWithIdentity) => {
+        const chain = identityChain ?? "paseoPeople";
         return papiUseIdentity(address, chain);
       },
       useIdentitySearch: (
         displayName: string | null | undefined,
-        identityChain?: string
+        identityChain?: ChainIdWithIdentity
       ) => {
-        const chain = (identityChain ?? "paseo_people") as ChainIdWithIdentity;
+        const chain = identityChain ?? "paseoPeople";
         return papiUseIdentitySearch(displayName, chain);
       },
       useProvider: () => ({
         isLoading,
         isConnected,
       }),
-      clientStatus: isLoading(currentChainId)
+      clientStatus: isLoading
         ? ClientConnectionStatus.Connecting
         : ClientConnectionStatus.Connected,
       explorerUrl: "",
     }),
-    [isLoading, isConnected, currentChainId]
+    [isLoading, isConnected]
   );
 
   return <AddressInputBase {...props} services={services} />;

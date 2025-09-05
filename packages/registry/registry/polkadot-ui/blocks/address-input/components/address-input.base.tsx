@@ -32,7 +32,7 @@ export interface AddressInputServices<TNetworkId extends string = string> {
   // Hook for searching identities by display name
   useIdentitySearch: (
     displayName: string | null,
-    identityChain?: TNetworkId
+    identityChain?: TNetworkId | undefined
   ) => UseQueryResult<IdentitySearchResult[], Error>;
   clientStatus: ClientConnectionStatus;
   explorerUrl: string;
@@ -55,10 +55,10 @@ export interface AddressInputBaseProps<TNetworkId extends string = string> {
   showIdenticon?: boolean;
   identiconTheme?: IconTheme;
   className?: string;
-  identityChain?: TNetworkId;
+  identityChain?: TNetworkId | undefined;
   required?: boolean;
   // Injected services - this makes it reusable
-  services: AddressInputServices;
+  services: AddressInputServices<TNetworkId>;
 }
 
 export interface IdentityResult {

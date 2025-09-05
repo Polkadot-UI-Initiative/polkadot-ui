@@ -1,23 +1,29 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import {
-  usePapi,
-  usePolkadotApi,
-} from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
+import { usePapi } from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
 import {
   extractText,
   hasPositiveIdentityJudgement,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { type ChainIdWithIdentity } from "@/registry/polkadot-ui/lib/types.papi";
-import { type IdentitySearchResult } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import {
+  ClientConnectionStatus,
+  type IdentitySearchResult,
+} from "@/registry/polkadot-ui/lib/types.dot-ui";
+import { config } from "@/registry/polkadot-ui/reactive-dot.config";
 
 export function useIdentitySearch(
   displayName: string | null | undefined,
-  identityChain: ChainIdWithIdentity = "paseo_people"
+  identityChain: ChainIdWithIdentity = "paseoPeople"
 ) {
-  const { isLoading, isConnected } = usePapi();
-  const peopleApi = usePolkadotApi(identityChain);
+  const { status, client } = usePapi(identityChain);
+  //TODO use the status directly
+  const isLoading = status === ClientConnectionStatus.Connecting;
+  const isConnected = status === ClientConnectionStatus.Connected;
+  const peopleApi = client?.getTypedApi(
+    config.chains[identityChain].descriptor
+  );
 
   return useQuery({
     queryKey: ["identity-search", displayName, identityChain],
@@ -26,8 +32,8 @@ export function useIdentitySearch(
         !peopleApi ||
         !displayName ||
         displayName.length < 3 ||
-        isLoading(identityChain) ||
-        !isConnected(identityChain)
+        isLoading ||
+        !isConnected
       ) {
         return [];
       }
@@ -84,10 +90,7 @@ export function useIdentitySearch(
       }
     },
     enabled:
-      !!peopleApi &&
-      !!displayName &&
-      displayName.length >= 3 &&
-      isConnected(identityChain),
+      !!peopleApi && !!displayName && displayName.length >= 3 && isConnected,
     staleTime: 5 * 60 * 1000, // 5 minutes - identities don't change often
     gcTime: 10 * 60 * 1000, // 10 minutes - keep cached longer for search
   });

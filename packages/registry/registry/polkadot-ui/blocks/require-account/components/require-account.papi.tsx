@@ -6,11 +6,11 @@ import {
 } from "@/registry/polkadot-ui/blocks/require-account/components/require-account.base";
 import { useMemo } from "react";
 import { ClientOnly } from "../../client-only";
+import { PolkadotProvider } from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
 import {
   ClientConnectionStatus,
   usePapi,
-} from "@/registry/polkadot-ui/providers/polkadot-provider.reactive-dot";
-import { PolkadotProvider } from "@/registry/polkadot-ui/providers/polkadot-provider.reactive-dot";
+} from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
 
 export type RequireAccountProps = Omit<RequireAccountBaseProps, "services">;
 

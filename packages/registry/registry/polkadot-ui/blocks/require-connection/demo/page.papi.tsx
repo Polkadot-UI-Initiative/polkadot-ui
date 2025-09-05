@@ -1,4 +1,4 @@
-import { PolkadotProvider } from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
+import { PolkadotProvider } from "@/registry/polkadot-ui/providers/__polkadot-provider.papi";
 import { RequireConnection } from "@/registry/polkadot-ui/blocks/require-connection/components/require-connection.papi";
 import RequireConnectionDemo from "@/registry/polkadot-ui/blocks/require-connection/demo/require-connection-demo";
 
