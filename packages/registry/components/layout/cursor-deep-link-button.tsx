@@ -43,7 +43,8 @@ export function CursorDeepLinkButton() {
         },
       };
 
-  const encodedConfig = Buffer.from(JSON.stringify(config)).toString("base64");
+  // Use btoa for browser compatibility (client component)
+  const encodedConfig = btoa(JSON.stringify(config));
   const params = new URLSearchParams({
     name: "polkadot-ui",
     config: encodedConfig,
