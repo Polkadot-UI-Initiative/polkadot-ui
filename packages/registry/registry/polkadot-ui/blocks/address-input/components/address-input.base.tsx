@@ -23,11 +23,11 @@ import { Check, CircleCheck, Copy, Loader2 } from "lucide-react";
 import { forwardRef, ReactNode, useEffect, useRef, useState } from "react";
 
 // Services interface for dependency injection
-export interface AddressInputServices<TNetworkId extends string = string> {
+export interface AddressInputServices<TNetworkId> {
   // Hook for fetching identity by address
   useIdentity: (
     address: string,
-    identityChain?: TNetworkId
+    identityChain?: TNetworkId | undefined
   ) => UseQueryResult<PolkadotIdentity | null, Error>;
   // Hook for searching identities by display name
   useIdentitySearch: (
@@ -38,7 +38,7 @@ export interface AddressInputServices<TNetworkId extends string = string> {
   explorerUrl: string;
 }
 
-export interface AddressInputBaseProps<TNetworkId extends string = string> {
+export interface AddressInputBaseProps<TNetworkId = string> {
   value?: string;
   onChange?: (value: string) => void;
   label?: string;

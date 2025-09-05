@@ -111,10 +111,6 @@
         {
           "path": "registry/polkadot-ui/lib/config.dot-ui.ts",
           "type": "registry:lib"
-        },
-        {
-          "path": "registry/polkadot-ui/lib/config.papi.ts",
-          "type": "registry:lib"
         }
       ]
     }

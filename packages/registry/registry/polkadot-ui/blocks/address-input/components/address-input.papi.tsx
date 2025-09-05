@@ -5,6 +5,7 @@ import {
   AddressInputBase,
   AddressInputProvider,
   type AddressInputBaseProps,
+  type AddressInputServices,
 } from "@/registry/polkadot-ui/blocks/address-input/components/address-input.base";
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 
@@ -17,11 +18,11 @@ import {
   PolkadotProvider,
   usePapi,
 } from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
-import { ChainId } from "@reactive-dot/core";
+import { identity } from "@polkadot/util";
 
 // Props type - removes services prop since we inject it
 export type AddressInputProps = Omit<
-  AddressInputBaseProps<ChainId>,
+  AddressInputBaseProps<ChainIdWithIdentity>,
   "services"
 >;
 
@@ -31,7 +32,7 @@ export function AddressInput(props: AddressInputProps) {
   const isConnected = status === ClientConnectionStatus.Connected;
 
   // Simple services object with type-compatible wrappers
-  const services = useMemo(
+  const services = useMemo<AddressInputServices<ChainIdWithIdentity>>(
     () => ({
       useIdentity: (address: string, identityChain?: ChainIdWithIdentity) => {
         const chain = identityChain ?? "paseoPeople";
@@ -41,8 +42,10 @@ export function AddressInput(props: AddressInputProps) {
         displayName: string | null | undefined,
         identityChain?: ChainIdWithIdentity
       ) => {
-        const chain = identityChain ?? "paseoPeople";
-        return papiUseIdentitySearch(displayName, chain);
+        return papiUseIdentitySearch(
+          displayName,
+          identityChain ?? "paseoPeople"
+        );
       },
       useProvider: () => ({
         isLoading,
