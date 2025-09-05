@@ -3,9 +3,10 @@ title: Require Connection
 description: A component that conditionally renders content based on blockchain connection status.
 ---
 
-import { RequireConnectionWithProvider } from "@/registry/polkadot-ui/blocks/require-connection/components/require-connection.papi";
+import { RequireConnection } from "@/registry/polkadot-ui/blocks/require-connection/components/require-connection.dedot";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AlertCircle, Wifi, WifiOff, Loader2 } from "lucide-react";
+import { paseo, paseoPeople } from "typink";
 
 ## Introduction
 
@@ -36,7 +37,7 @@ npx polkadot-ui@latest add require-connection
     <TabsTrigger value="code">Code</TabsTrigger>
   </TabsList>
   <TabsContent value="preview">
-    <RequireConnectionWithProvider
+    <RequireConnection
       chainId="paseo"
       fallback={
         <div className="flex items-center gap-2 text-muted-foreground">
@@ -49,7 +50,7 @@ npx polkadot-ui@latest add require-connection
         <Wifi className="w-4 h-4" />
         <span>🎉 Connected to Paseo! This content is now visible.</span>
       </div>
-    </RequireConnectionWithProvider>
+    </RequireConnection>
   </TabsContent>
   <TabsContent value="code" className="my-0">
 ```tsx
@@ -58,7 +59,7 @@ import { RequireConnection } from "@/components/ui/require-connection";
 function MyComponent() {
   return (
     <RequireConnection
-      chainId="paseo"
+      chainId={paseo.id}
       fallback={<div>Please connect to Paseo to continue</div>}
     >
       <div>🎉 Connected to Paseo! This content is now visible.</div>
@@ -77,8 +78,8 @@ function MyComponent() {
     <TabsTrigger value="code">Code</TabsTrigger>
   </TabsList>
   <TabsContent value="preview">
-    <RequireConnectionWithProvider
-      chainId="paseoPeople"
+    <RequireConnection
+      chainId={paseo.id}
       loadingFallback={
         <div className="flex items-center gap-2 text-blue-600">
           <Loader2 className="w-4 h-4 animate-spin" />
@@ -96,12 +97,12 @@ function MyComponent() {
         <Wifi className="w-4 h-4" />
         <span>Connected to Paseo People</span>
       </div>
-    </RequireConnectionWithProvider>
+    </RequireConnection>
   </TabsContent>
   <TabsContent value="code" className="my-0">
 ```tsx
 <RequireConnection
-  chainId="paseoPeople"
+  chainId={paseo.id}
   loadingFallback={<div>Connecting to Paseo People...</div>}
   fallback={<div>Failed to connect to Paseo People</div>}
 >
@@ -119,8 +120,8 @@ function MyComponent() {
     <TabsTrigger value="code">Code</TabsTrigger>
   </TabsList>
   <TabsContent value="preview">
-    <RequireConnectionWithProvider
-      chainId="paseo"
+    <RequireConnection
+      chainId={paseo.id}
       fallback={
         <div className="flex items-center gap-2 text-muted-foreground">
           <WifiOff className="w-4 h-4" />
@@ -134,12 +135,12 @@ function MyComponent() {
           Transaction interface is available when connected.
         </p>
       </div>
-    </RequireConnectionWithProvider>
+    </RequireConnection>
   </TabsContent>
   <TabsContent value="code" className="my-0">
 ```tsx
 <RequireConnection
-  chainId="paseo"
+  chainId={paseo.id}
   fallback={
     <div className="flex items-center gap-2 text-muted-foreground">
       <WifiOff className="w-4 h-4" />
@@ -187,14 +188,14 @@ function MultiChainComponent() {
   return (
     <div className="space-y-6">
       <RequireConnection
-        chainId="paseo"
+        chainId={paseo.id}
         fallback={<ConnectMessage chain="paseo" />}
       >
         <RelayChainFeatures />
       </RequireConnection>
 
       <RequireConnection
-        chainId="paseoPeople"
+        chainId={paseo.id}
         fallback={<ConnectMessage chain="paseoPeople" />}
       >
         <PeopleChainFeatures />
@@ -208,7 +209,7 @@ function MultiChainComponent() {
 
 ```tsx
 <RequireConnection
-  chainId="paseo"
+  chainId={paseo.id}
   loadingFallback={<DashboardSkeleton />}
   fallback={<ConnectPrompt />}
 >
@@ -219,7 +220,7 @@ function MultiChainComponent() {
 ### Nested Protection
 
 ```tsx
-<RequireConnection chainId="paseo" fallback={<ConnectRelay />}>
+<RequireConnection chainId={paseo.id} fallback={<ConnectRelay />}>
   <RequireConnection chainId="paseoPeople" fallback={<ConnectPeople />}>
     <CrossChainFeature />
   </RequireConnection>
@@ -234,7 +235,7 @@ Always provide meaningful fallback content that explains why the connection is r
 
 ```tsx
 <RequireConnection
-  chainId="paseo"
+  chainId={paseo.id}
   fallback={
     <div className="text-center p-6">
       <h3>Paseo Connection Required</h3>
@@ -252,7 +253,7 @@ For better UX, provide loading states for slow connections:
 
 ```tsx
 <RequireConnection
-  chainId="paseo"
+  chainId={paseo.id}
   loadingFallback={<Spinner>Connecting to Paseo...</Spinner>}
   fallback={<ConnectionError />}
 >
@@ -266,7 +267,7 @@ Use descriptive error messages to help users understand what's needed:
 
 ```tsx
 <RequireConnection
-  chainId="paseo"
+  chainId={paseo.id}
   fallback={
     <Alert>
       <AlertCircle className="h-4 w-4" />
@@ -284,8 +285,8 @@ Use descriptive error messages to help users understand what's needed:
 
 ## Examples
 
-<RequireConnectionWithProvider
-  chainId="paseo"
+<RequireConnection
+    chainId={paseo.id}
   fallback={
     <div className="flex items-center gap-2 text-muted-foreground">
       <WifiOff className="w-4 h-4" />
@@ -297,4 +298,4 @@ Use descriptive error messages to help users understand what's needed:
     <Wifi className="w-4 h-4" />
     <span>This content is protected by RequireConnection</span>
   </div>
-</RequireConnectionWithProvider>
+</RequireConnection>
