@@ -21,6 +21,8 @@ export const SUPPORTED_NETWORKS = [
   polkadotPeople,
 ];
 
+const queryClient = new QueryClient();
+
 export function PolkadotProvider({
   children,
   appName = "Polkadot UI App",
@@ -35,7 +37,6 @@ export function PolkadotProvider({
   deployments?: ContractDeployment[];
   supportedNetworks?: NetworkInfo[];
 }) {
-  const queryClient = new QueryClient();
   return (
     <QueryClientProvider client={queryClient}>
       <TypinkProvider

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, type ReactElement } from "react";
 import {
   AddressInputBase,
   AddressInputProvider,
@@ -18,7 +18,6 @@ import {
   PolkadotProvider,
   usePapi,
 } from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
-import { identity } from "@polkadot/util";
 
 // Props type - removes services prop since we inject it
 export type AddressInputProps = Omit<
@@ -59,7 +58,11 @@ export function AddressInput(props: AddressInputProps) {
     [isLoading, isConnected]
   );
 
-  return <AddressInputBase {...props} services={services} />;
+  const AddressInputBasePapi = AddressInputBase as unknown as (
+    props: AddressInputBaseProps<ChainIdWithIdentity>
+  ) => ReactElement;
+
+  return <AddressInputBasePapi {...props} services={services} />;
 }
 // Wrapped version with provider for drop-in usage
 export function AddressInputWithProvider(props: AddressInputProps) {

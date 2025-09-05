@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { AnimatedCodeBlock } from "../animated-code-block";
 import { ArrowRight } from "lucide-react";
-import { Badge } from "../ui/badge";
+import Image from "next/image";
 
 export function HeroSection() {
   return (
@@ -42,11 +42,16 @@ export function HeroSection() {
           <Button variant="outline" asChild>
             <Link href="#components">Browse Components ↓</Link>
           </Button>
-          <Button variant="outline" disabled>
-            Add MCP to cursor →{" "}
-            <Badge className="text-xs" variant="secondary">
-              soon
-            </Badge>
+          <Button variant="outline" asChild>
+            <Link href="https://cursor.com/en/install-mcp?name=polkadot-ui&config=eyJ1cmwiOiJodHRwczovL3BvbGthZG90LXVpLmNvbS9hcGkvbWNwIn0%3D">
+              <Image
+                src="cursor.svg"
+                alt="Add polkadot-ui MCP server to Cursor"
+                height={24}
+                width={24}
+              />
+              Add MCP to Cursor →{" "}
+            </Link>
           </Button>
         </div>
       </div>

@@ -18,6 +18,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { PolkadotClient } from "polkadot-api";
 import { WalletAccount } from "@reactive-dot/core/wallets.js";
 import { ChainId } from "@reactive-dot/core";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // export const SUPPORTED_NETWORKS = [
 //   paseo,
@@ -29,6 +30,8 @@ import { ChainId } from "@reactive-dot/core";
 
 export type SupportedChainId = keyof typeof config.chains;
 
+const queryClient = new QueryClient();
+
 export function PolkadotProvider({
   children,
   chainId = "paseo",
@@ -37,11 +40,13 @@ export function PolkadotProvider({
   chainId?: SupportedChainId;
 }) {
   return (
-    <ReactiveDotProvider config={config}>
-      <ChainProvider chainId={chainId}>
-        <SelectedAccountProvider>{children}</SelectedAccountProvider>
-      </ChainProvider>
-    </ReactiveDotProvider>
+    <QueryClientProvider client={queryClient}>
+      <ReactiveDotProvider config={config}>
+        <ChainProvider chainId={chainId}>
+          <SelectedAccountProvider>{children}</SelectedAccountProvider>
+        </ChainProvider>
+      </ReactiveDotProvider>
+    </QueryClientProvider>
   );
 }
 
