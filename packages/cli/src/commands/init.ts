@@ -196,7 +196,7 @@ export class InitCommand {
     const polkadotDetector = new PolkadotDetector();
     const polkadotLibrary = await polkadotDetector.promptForLibrarySelection({
       skipPrompt: false, // Init command always prompts
-      defaultLibrary: "papi",
+      defaultLibrary: "dedot",
     });
     this.logger.detail(
       "🔗 [DEBUG] Selected Polkadot library:" + polkadotLibrary

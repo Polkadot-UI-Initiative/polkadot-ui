@@ -240,7 +240,7 @@ export class ProjectDetector {
     if (!(await this.hasReact())) {
       errors.push("This does not appear to be a React project");
       errors.push(
-        "dot-ui requires a React-based project (Next.js, Vite, or CRA)"
+        "polkadot-ui requires a React-based project (Next.js, Vite, or CRA)"
       );
       return { isValid: false, errors, warnings };
     }

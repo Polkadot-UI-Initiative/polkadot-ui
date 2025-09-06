@@ -5,7 +5,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/registry/polkadot-ui/ui/tooltip";
 import { useMemo, useState } from "react";
 import {
   ClientConnectionStatus,

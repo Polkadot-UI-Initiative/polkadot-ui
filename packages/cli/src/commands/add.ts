@@ -333,7 +333,7 @@ export class AddCommand {
       );
 
       // Track library detection for telemetry
-      let selectedLibrary: "papi" | "dedot" = "papi"; // Default fallback
+      let selectedLibrary: "papi" | "dedot" = "dedot"; // Default fallback
       let wasPrompted = false;
 
       // Handle case where no library is detected - prompt user
@@ -358,7 +358,7 @@ export class AddCommand {
         this.registry.setSelectedLibrary(selectedLibrary);
 
         logger.info(
-          `Selected: ${selectedLibrary === "papi" ? "Polkadot API (papi)" : "Dedot"}`
+          `Selected: ${selectedLibrary === "papi" ? "Polkadot API (papi)" : "Dedot (+typink)"}`
         );
         logger.info(
           "The library will be installed and configured automatically."

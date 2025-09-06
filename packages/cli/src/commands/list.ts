@@ -36,6 +36,7 @@ export class ListCommand {
 
     try {
       const registryInfo = await this.registry.getRegistryInfo();
+      console.log(registryInfo);
 
       if (!registryInfo.isConnected) {
         spinner.fail("Registry connection failed");

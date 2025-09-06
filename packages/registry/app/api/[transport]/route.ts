@@ -107,7 +107,7 @@ const handler = createMcpHandler(
     // Add Component Tool
     server.tool(
       "add_component",
-      "Add a Polkadot UI component to your project",
+      "Add a Polkadot UI component to your project. This tool will add the component to your project and install the required dependencies. To make it work, the component needs to be wrapped in a PolkadotProvider or the component with provider must be used.",
       {
         component: z.string().describe("The component name to add"),
         registryType: z

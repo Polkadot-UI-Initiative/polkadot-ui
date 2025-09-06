@@ -11,7 +11,7 @@ import { CliOptions } from "./types/index.js";
 const program = new Command();
 
 program
-  .name("dot-ui")
+  .name("polkadot-ui")
   .description(
     "CLI for installing Polkadot UI components with automatic API setup"
   )
@@ -128,13 +128,13 @@ program.exitOverride((err) => {
 
   if (err.code === "commander.unknownCommand") {
     logger.error(`Unknown command: ${err.message.split("'")[1]}`);
-    logger.info('Run "dot-ui help" to see available commands');
+    logger.info('Run "polkadot-ui help" to see available commands');
     process.exit(1);
   }
 
   if (err.code === "commander.missingArgument") {
     logger.error(err.message);
-    logger.info('Run "dot-ui help" to see command usage');
+    logger.info('Run "polkadot-ui help" to see command usage');
     process.exit(1);
   }
 
