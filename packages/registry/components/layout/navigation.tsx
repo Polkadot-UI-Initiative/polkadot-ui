@@ -8,6 +8,7 @@ import { GitHubStars } from "@/components/github-stars";
 import { Search } from "lucide-react";
 import { useSearchContext } from "fumadocs-ui/provider";
 import Image from "next/image";
+import { Logo } from "../logo";
 
 export interface NavigationProps {
   registryItems?: Array<{
@@ -38,7 +39,7 @@ export function Navigation({ registryItems }: NavigationProps) {
       <div className="flex h-14 items-center px-4">
         <div className="mr-4 hidden md:flex">
           <Link className="mr-6 flex items-center space-x-2" href="/">
-            <Image src="/logo.svg" alt="polkadot-ui" width={18} height={18} />
+            <Logo props={{ className: "h-4 w-4" }} />
             <span className="hidden font-bold sm:inline-block">
               polkadot-ui
             </span>
