@@ -175,7 +175,7 @@ const handler = createMcpHandler(
             "",
             "## Installation Command",
             "```bash",
-            `npx polkadot-ui add ${component}${dev ? " --dev" : ""}${force ? " --force" : ""}${!interactive ? " --no-interactive" : ""}`,
+            `npx polkadot-ui@latest add ${component}${dev ? " --dev" : ""}${force ? " --force" : ""}${!interactive ? " --no-interactive" : ""}`,
             "```",
             "",
             "## Manual Installation",
@@ -243,7 +243,7 @@ const handler = createMcpHandler(
             "## Usage",
             "Add a component to your project:",
             "```bash",
-            "npx polkadot-ui add <component-name>",
+            "npx polkadot-ui@latest add <component-name>",
             "```",
             "",
             `**Registry Source:** ${dev ? "Development" : "Production"}`,
@@ -292,7 +292,7 @@ const handler = createMcpHandler(
           .describe("Show detailed prompts for configuration"),
       },
       async ({
-        registryType = "papi",
+        registryType = "dedot",
         dev = false,
         force = false,
         interactive = false,
@@ -306,7 +306,7 @@ const handler = createMcpHandler(
             "To initialize a new project with Polkadot UI components, run:",
             "",
             "```bash",
-            `npx polkadot-ui init${dev ? " --dev" : ""}${force ? " --force" : ""}${!interactive ? " --no-interactive" : ""}`,
+            `npx polkadot-ui@latest init${dev ? " --dev" : ""}${force ? " --force" : ""}${!interactive ? " --no-interactive" : ""}`,
             "```",
             "",
             "## What this does:",
@@ -324,8 +324,9 @@ const handler = createMcpHandler(
             "## Next Steps:",
             "1. Run the init command above",
             "2. Follow the interactive prompts",
-            "3. Add components with `npx polkadot-ui add <component-name>`",
-            "4. Start building your Polkadot application!",
+            "3. Add components with `npx polkadot-ui@latest add <component-name>`",
+            "4. Wrap the component in a PolkadotProvider or the component with provider must be used.",
+            "5. Start building your Polkadot application!",
             "",
             `**Registry:** ${dev ? "Development" : "Production"} (${registry.homepage})`,
           ].join("\n");
@@ -385,10 +386,10 @@ const handler = createMcpHandler(
           "",
           "## Telemetry Controls:",
           "```bash",
-          "npx polkadot-ui telemetry status   # Check current status",
-          "npx polkadot-ui telemetry enable   # Enable telemetry",
-          "npx polkadot-ui telemetry disable  # Disable telemetry",
-          "npx polkadot-ui telemetry info     # Show this information",
+          "npx polkadot-ui@latest telemetry status   # Check current status",
+          "npx polkadot-ui@latest telemetry enable   # Enable telemetry",
+          "npx polkadot-ui@latest telemetry disable  # Disable telemetry",
+          "npx polkadot-ui@latest telemetry info     # Show this information",
           "```",
           "",
           `**Current Action:** ${action}`,
@@ -396,7 +397,7 @@ const handler = createMcpHandler(
           "",
           "## Opt-out Options:",
           "- Set environment variable: `DOT_UI_DISABLE_TELEMETRY=1`",
-          "- Run: `npx polkadot-ui telemetry disable`",
+          "- Run: `npx polkadot-ui@latest telemetry disable`",
           "- Telemetry is automatically disabled in CI environments",
         ].join("\n");
 
@@ -420,7 +421,7 @@ const handler = createMcpHandler(
         mimeType: "application/json",
       },
       async () => {
-        const registry = await loadRegistry("papi", false);
+        const registry = await loadRegistry("dedot", false);
         return {
           contents: [
             {

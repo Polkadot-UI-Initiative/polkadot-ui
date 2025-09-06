@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import {
   RequireConnectionBase,
   type RequireConnectionBaseProps,
-} from "./require-connection.base";
+} from "@/registry/polkadot-ui/blocks/require-connection/components/require-connection.base";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   ClientConnectionStatus,
