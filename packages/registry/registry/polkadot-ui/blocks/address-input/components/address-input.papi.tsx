@@ -17,7 +17,7 @@ import { type ChainIdWithIdentity } from "@/registry/polkadot-ui/lib/types.papi"
 import {
   PolkadotProvider,
   usePapi,
-} from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
+} from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 
 // Props type - removes services prop since we inject it
 export type AddressInputProps = Omit<

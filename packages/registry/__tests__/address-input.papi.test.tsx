@@ -66,7 +66,7 @@ import {
   AddressInput,
   AddressInputWithProvider,
 } from "../registry/polkadot-ui/blocks/address-input/components/address-input.papi";
-import { PolkadotProvider } from "../registry/polkadot-ui/providers/polkadot-provider.papi";
+import { PolkadotProvider } from "../registry/polkadot-ui/lib/polkadot-provider.papi";
 
 // Test wrapper with providers
 function TestWrapper({ children }: { children: React.ReactNode }) {

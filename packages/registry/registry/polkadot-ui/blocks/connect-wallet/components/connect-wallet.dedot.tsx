@@ -1,6 +1,6 @@
 "use client";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
-import { PolkadotProvider } from "@/registry/polkadot-ui/providers/polkadot-provider.dedot";
+import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import {
   WalletSelectBase,
   type WalletSelectBaseProps,
