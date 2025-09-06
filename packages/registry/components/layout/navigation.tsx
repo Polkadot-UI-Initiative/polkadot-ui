@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { GitHubStars } from "@/components/github-stars";
-import { LayoutTemplate, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useSearchContext } from "fumadocs-ui/provider";
 import Image from "next/image";
 
@@ -38,8 +38,7 @@ export function Navigation({ registryItems }: NavigationProps) {
       <div className="flex h-14 items-center px-4">
         <div className="mr-4 hidden md:flex">
           <Link className="mr-6 flex items-center space-x-2" href="/">
-            {/* <Image src="/logo.svg" alt="polkadot-ui" width={24} height={24} /> */}
-            <LayoutTemplate />
+            <Image src="/logo.svg" alt="polkadot-ui" width={18} height={18} />
             <span className="hidden font-bold sm:inline-block">
               polkadot-ui
             </span>
