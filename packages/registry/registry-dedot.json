@@ -118,7 +118,8 @@
         "dedot",
         "typink",
         "lucide-react",
-        "@polkadot/react-identicon"
+        "@polkadot/react-identicon",
+        "@tanstack/react-query"
       ],
       "registryDependencies": ["button", "dialog"],
       "files": [
