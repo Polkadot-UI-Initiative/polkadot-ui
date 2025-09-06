@@ -5,8 +5,8 @@
 // this only relaxes compile-time plumbing so call sites stay simple and
 // correctly inferred.
 
-import { Button, ButtonProps, buttonVariants } from "@/components/ui/button";
-
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import {
   beginTxStatusNotification,
@@ -15,18 +15,16 @@ import {
   defaultTitles,
   txStatusNotification,
   TxStatusNotificationTexts,
-} from "@/registry/polkadot-ui/blocks/tx-notification/components/tx-notification.base";
-import { formatBalance } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { type VariantProps } from "class-variance-authority";
+} from "@/registry/polkadot-ui/blocks/tx-notification/components/tx-notification";
 import type {
-  TxResultLike,
   AnyFn,
-  TxAdapter,
   NetworkInfoLike,
+  TxAdapter,
+  TxResultLike,
 } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import { type VariantProps } from "class-variance-authority";
 import { Ban, CheckCheck, CheckCircle, Coins, Loader2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export interface TxButtonIcons {
   default?: React.ReactNode;
@@ -54,6 +52,30 @@ export interface TxButtonServices<TNetworkId = unknown> {
   balanceFree?: bigint | null;
 }
 
+// original source: https://github.com/polkadot-api/react-teleport-example/blob/main/src/lib/utils.ts
+export const formatBalance = ({
+  value,
+  decimals = 0,
+  unit,
+  nDecimals,
+}: {
+  value: bigint | null | undefined;
+  decimals?: number;
+  unit?: string;
+  nDecimals?: number;
+  padToDecimals?: boolean;
+  decimalSeparator?: string;
+}): string => {
+  if (value === null || value === undefined) return "";
+  const precisionMultiplier = 10n ** BigInt(decimals);
+  const isNegative = value < 0n;
+  const absValue = isNegative ? value * -1n : value;
+  const fullNumber = Number(absValue) / Number(precisionMultiplier);
+  const formattedNumber = fullNumber.toFixed(nDecimals);
+  const finalNumber = isNegative ? `-${formattedNumber}` : formattedNumber;
+  return unit ? `${finalNumber} ${unit}` : finalNumber;
+};
+
 type ArgsProp = { args?: unknown[] };
 
 export interface ExecuteAdapterProps {
@@ -61,6 +83,12 @@ export interface ExecuteAdapterProps {
     args: unknown[];
     onStatus: (result: TxResultLike) => void;
   }) => Promise<void>;
+}
+
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean;
 }
 
 export type TxButtonBaseProps<
@@ -141,12 +169,6 @@ export function TxButtonBase<
   const isError = !!submitError || !!feeError || !isValidNetwork;
   const [localInProgress, setLocalInProgress] = useState(false);
   const [localBestBlock, setLocalBestBlock] = useState(false);
-  const inProgress = tx ? tx.inProgress : localInProgress;
-  const inBestBlockProgress = tx ? tx.inBestBlockProgress : localBestBlock;
-  const isLoading = inProgress;
-
-  const canCoverFee =
-    fee !== null && balanceFree !== null && balanceFree >= fee;
 
   useEffect(() => {
     if (txStatus || isError) {
@@ -159,6 +181,19 @@ export function TxButtonBase<
     }
     setShowResult(false);
   }, [txStatus, isError, resultDisplayDuration]);
+
+  const inProgress = tx ? tx.inProgress : localInProgress;
+  const inBestBlockProgress = tx ? tx.inBestBlockProgress : localBestBlock;
+  const isLoading = inProgress;
+  const canCoverFee =
+    fee !== null && balanceFree !== null && balanceFree >= fee;
+  const isButtonDisabled =
+    disabled ||
+    isLoading ||
+    !connectedAccount?.address ||
+    !!feeError ||
+    !isValidNetwork ||
+    !canCoverFee;
 
   async function handleExecuteClick() {
     setSubmitError(null);
@@ -245,14 +280,6 @@ export function TxButtonBase<
       }
     }
   }
-
-  const isButtonDisabled =
-    disabled ||
-    isLoading ||
-    !connectedAccount?.address ||
-    !!feeError ||
-    !isValidNetwork ||
-    !canCoverFee;
 
   return (
     <div className="inline-flex flex-col gap-2">

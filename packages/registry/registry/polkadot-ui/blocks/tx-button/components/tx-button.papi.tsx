@@ -8,7 +8,7 @@ import {
   defaultDescriptions,
   defaultTitles,
   txStatusNotification,
-} from "@/registry/polkadot-ui/blocks/tx-notification/components/tx-notification.base";
+} from "@/registry/polkadot-ui/blocks/tx-notification/components/tx-notification";
 import { formatBalance } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { config as reactiveDotConfig } from "@/registry/polkadot-ui/reactive-dot.config";
 import { useSpendableBalance } from "@reactive-dot/react";

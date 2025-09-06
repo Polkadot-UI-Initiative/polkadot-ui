@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import {
   Tooltip,
   TooltipContent,
@@ -18,12 +19,14 @@ export interface NetworkIndicatorProps {
   chainId: NetworkId;
   showBlockNumber?: boolean;
   at: "best" | "finalized";
+  className?: string;
 }
 
 export function NetworkIndicator({
   chainId,
   showBlockNumber = true,
   at = "best",
+  className,
 }: NetworkIndicatorProps) {
   const { connectionStatus, supportedNetworks } = useTypink();
   const [isOpen, setIsOpen] = useState(false);
@@ -80,7 +83,7 @@ export function NetworkIndicator({
   return (
     <TooltipProvider>
       <Tooltip delayDuration={100} open={isOpen} onOpenChange={setIsOpen}>
-        <TooltipTrigger asChild className="flex items-center">
+        <TooltipTrigger asChild className={cn("flex items-center", className)}>
           {Trigger}
         </TooltipTrigger>
         <TooltipContent side="top" className="">
