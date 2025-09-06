@@ -11,7 +11,7 @@
       "dependencies": ["dedot", "typink", "lucide-react", "sonner"],
       "files": [
         {
-          "path": "registry/polkadot-ui/blocks/tx-notification/components/tx-notification.base.tsx",
+          "path": "registry/polkadot-ui/blocks/tx-notification/components/tx-notification.tsx",
           "type": "registry:component"
         },
         {
@@ -56,7 +56,7 @@
           "type": "registry:lib"
         },
         {
-          "path": "registry/polkadot-ui/blocks/tx-notification/components/tx-notification.base.tsx",
+          "path": "registry/polkadot-ui/blocks/tx-notification/components/tx-notification.tsx",
           "type": "registry:component"
         }
       ]

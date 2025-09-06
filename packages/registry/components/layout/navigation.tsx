@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { GitHubStars } from "@/components/github-stars";
-import { LayoutTemplate, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useSearchContext } from "fumadocs-ui/provider";
 import Image from "next/image";
 
