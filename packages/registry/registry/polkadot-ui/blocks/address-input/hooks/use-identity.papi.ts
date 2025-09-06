@@ -11,7 +11,7 @@ import { type ChainIdWithIdentity } from "@/registry/polkadot-ui/lib/types.papi"
 import {
   ClientConnectionStatus,
   usePapi,
-} from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
+} from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { config } from "@/registry/polkadot-ui/reactive-dot.config";
 
 export interface PolkadotIdentity {

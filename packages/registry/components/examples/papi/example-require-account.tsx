@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import { RequireAccount } from "@/registry/polkadot-ui/blocks/require-account/components/require-account.papi";
 import type { ComponentExample } from "../types.examples";
-import { usePapi } from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
+import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 
 export const requireAccountExample: ComponentExample = {
   name: "Require Account",

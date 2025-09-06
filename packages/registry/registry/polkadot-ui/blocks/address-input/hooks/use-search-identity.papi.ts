@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { usePapi } from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
+import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import {
   extractText,
   hasPositiveIdentityJudgement,

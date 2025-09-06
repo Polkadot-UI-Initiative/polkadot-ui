@@ -12,7 +12,8 @@
         "dedot",
         "typink",
         "lucide-react",
-        "@polkadot/react-identicon"
+        "@polkadot/react-identicon",
+        "@tanstack/react-query"
       ],
       "registryDependencies": ["button", "dialog"],
       "files": [
@@ -25,7 +26,7 @@
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/providers/polkadot-provider.dedot.tsx",
+          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
           "type": "registry:lib"
         },
         {
@@ -84,7 +85,7 @@
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/providers/polkadot-provider.dedot.tsx",
+          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
           "type": "registry:lib"
         },
         {
@@ -145,7 +146,7 @@
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/providers/polkadot-provider.dedot.tsx",
+          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
           "type": "registry:lib"
         },
         {
@@ -171,7 +172,8 @@
         "typink",
         "lucide-react",
         "dedot",
-        "@polkadot/react-identicon"
+        "@polkadot/react-identicon",
+        "@tanstack/react-query"
       ],
       "registryDependencies": ["button", "dialog"],
       "files": [
@@ -205,13 +207,10 @@
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/providers/polkadot-provider.dedot.tsx",
+          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
           "type": "registry:lib"
         },
-        {
-          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
-          "type": "registry:lib"
-        },
+
         {
           "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
           "type": "registry:lib"
@@ -235,7 +234,7 @@
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/providers/polkadot-provider.dedot.tsx",
+          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
           "type": "registry:lib"
         }
       ]

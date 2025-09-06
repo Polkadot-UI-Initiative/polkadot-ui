@@ -20,7 +20,7 @@ import { ChainId } from "@reactive-dot/core";
 import {
   PolkadotProvider,
   usePapi,
-} from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
+} from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 
 type TxButtonProps = TxButtonBaseProps & {
   transaction: PapiTransaction<object, string, string, unknown>;

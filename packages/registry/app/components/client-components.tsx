@@ -4,13 +4,13 @@ import { useTx } from "typink";
 import { WalletSelect } from "@/registry/polkadot-ui/blocks/connect-wallet/components/connect-wallet.dedot";
 import { WalletSelect as WalletSelectPapi } from "@/registry/polkadot-ui/blocks/connect-wallet/components/connect-wallet.papi";
 import { TxButton as TxButtonDedot } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.dedot";
-import { PolkadotProvider as PolkadotProviderDedot } from "@/registry/polkadot-ui/providers/polkadot-provider.dedot";
+import { PolkadotProvider as PolkadotProviderDedot } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 
 import { TxButton as TxButtonPapi } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.papi";
 import {
   PolkadotProvider as PolkadotProviderPapi,
   usePapi,
-} from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
+} from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { Binary } from "polkadot-api";
 import { Suspense } from "react";
 import { config } from "@/registry/polkadot-ui/reactive-dot.config";

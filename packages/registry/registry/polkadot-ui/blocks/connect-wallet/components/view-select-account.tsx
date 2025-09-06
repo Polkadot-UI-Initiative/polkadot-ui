@@ -5,8 +5,17 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Identicon from "@polkadot/react-identicon";
 import { ArrowLeft } from "lucide-react";
-import { truncateAddress } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { type ViewSelectAccountProps } from "@/registry/polkadot-ui/blocks/connect-wallet/components/connect-wallet.base";
+
+function truncateAddress(
+  address: string,
+  length: number | boolean = 8
+): string {
+  if (!address || length === false) return address;
+  const truncLength = typeof length === "number" ? length : 8;
+  if (address.length <= truncLength * 2 + 3) return address;
+  return `${address.slice(0, truncLength)}...${address.slice(-truncLength)}`;
+}
 
 export function ViewSelectAccount({
   previous,

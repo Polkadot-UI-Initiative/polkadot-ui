@@ -5,7 +5,7 @@ import { useChainIds } from "@reactive-dot/react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { TxButton } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.papi";
 import { Binary } from "polkadot-api";
-import { usePapi } from "@/registry/polkadot-ui/providers/polkadot-provider.papi";
+import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { config } from "@/registry/polkadot-ui/reactive-dot.config";
 import { ChainId } from "@reactive-dot/core";
 import { Suspense } from "react";
