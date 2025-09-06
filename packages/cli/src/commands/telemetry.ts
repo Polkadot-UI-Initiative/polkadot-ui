@@ -111,13 +111,13 @@ export class TelemetryCommand {
 
     if (telemetryInfo.enabled) {
       console.log("\n💡 To disable telemetry:");
-      console.log("  dot-ui telemetry disable");
+      console.log("  polkadot-ui telemetry disable");
       console.log(
         "  OR set environment variable: DOT_UI_DISABLE_TELEMETRY=true"
       );
     } else {
       console.log("\n💡 To enable telemetry:");
-      console.log("  dot-ui telemetry enable");
+      console.log("  polkadot-ui telemetry enable");
     }
   }
 
@@ -140,15 +140,15 @@ export class TelemetryCommand {
     if (confirm) {
       await this.telemetry.setEnabled(true);
       console.log("\n✅ Telemetry enabled");
-      console.log("Thank you for helping improve dot-ui!");
+      console.log("Thank you for helping improve polkadot-ui!");
       console.log("\n💡 You can disable telemetry anytime with:");
-      console.log("  dot-ui telemetry disable");
+      console.log("  polkadot-ui telemetry disable");
       console.log(
         "  OR set environment variable: DOT_UI_DISABLE_TELEMETRY=true"
       );
     } else {
       console.log("\n❌ Telemetry remains disabled");
-      console.log("You can enable it later with: dot-ui telemetry enable");
+      console.log("You can enable it later with: polkadot-ui telemetry enable");
     }
   }
 
@@ -160,7 +160,7 @@ export class TelemetryCommand {
     console.log("\n❌ Telemetry disabled");
     console.log("No usage data will be collected.");
     console.log("\n💡 You can re-enable telemetry anytime with:");
-    console.log("  dot-ui telemetry enable");
+    console.log("  polkadot-ui telemetry enable");
   }
 
   /**
@@ -172,7 +172,7 @@ export class TelemetryCommand {
     console.log("\n📋 Data Collection Information");
     console.log("=============================");
     console.log(
-      "The dot-ui CLI collects anonymous usage data to help improve the tool."
+      "The polkadot-ui CLI collects anonymous usage data to help improve the tool."
     );
     console.log(
       "This data helps us understand how the CLI is used and where to focus development efforts.\n"
@@ -197,10 +197,10 @@ export class TelemetryCommand {
     console.log("  • Full transparency about what data is collected");
 
     console.log("\n🛠️ Control Options:");
-    console.log("  • Command: dot-ui telemetry disable");
+    console.log("  • Command: polkadot-ui telemetry disable");
     console.log("  • Environment variable: DOT_UI_DISABLE_TELEMETRY=true");
     console.log(
-      `  • Config file: ${telemetryInfo.configPath || "~/.dot-ui/telemetry.json"}`
+      `  • Config file: ${telemetryInfo.configPath || "~/.polkadot-ui/telemetry.json"}`
     );
 
     console.log("\n📧 Contact:");

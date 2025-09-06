@@ -4,41 +4,6 @@
   "homepage": "https://polkadot-ui.com",
   "items": [
     {
-      "name": "dedot-demo",
-      "type": "registry:component",
-      "title": "Dedot Demo",
-      "description": "A demo component for dedot.",
-      "dependencies": ["dedot", "typink"],
-      "registryDependencies": [],
-      "files": [
-        {
-          "path": "registry/polkadot-ui/blocks/dedot-demo/dedot-demo.page.tsx",
-          "type": "registry:page",
-          "target": "app/dedot-demo/page.tsx"
-        },
-        {
-          "path": "registry/polkadot-ui/blocks/dedot-demo/dedot-demo.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/polkadot-ui/providers/polkadot-provider.dedot.tsx",
-          "type": "registry:lib"
-        },
-        {
-          "path": "registry/polkadot-ui/blocks/require-connection/components/require-connection.base.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/polkadot-ui/blocks/require-connection/components/require-connection.dedot.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/polkadot-ui/blocks/client-only.tsx",
-          "type": "registry:component"
-        }
-      ]
-    },
-    {
       "name": "require-account",
       "type": "registry:component",
       "title": "Require Account (dedot)",
@@ -252,6 +217,24 @@
         },
         {
           "path": "registry/polkadot-ui/lib/config.dot-ui.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "network-indicator",
+      "type": "registry:component",
+      "title": "Network Indicator (dedot)",
+      "description": "A component that displays the network indicator.",
+      "dependencies": ["dedot", "typink", "@tanstack/react-query"],
+      "registryDependencies": ["tooltip"],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/network-indicator/network-indicator.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/providers/polkadot-provider.dedot.tsx",
           "type": "registry:lib"
         }
       ]

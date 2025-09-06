@@ -109,7 +109,7 @@ export class Logger {
   showProjectGuidance() {
     this.newline();
     this.error("No package.json found in current directory");
-    this.info("To use dot-ui, you need a React or Next.js project.");
+    this.info("To use polkadot-ui, you need a React or Next.js project.");
     this.subsection("Create a new project:");
 
     this.info("📦 Next.js project (recommended):");
@@ -130,7 +130,9 @@ export class Logger {
     this.command("cd my-polkadot-app");
     this.newline();
 
-    this.info("Then run dot-ui commands from inside your project directory.");
+    this.info(
+      "Then run polkadot-ui commands from inside your project directory."
+    );
   }
 
   /**
@@ -139,7 +141,7 @@ export class Logger {
   showReactRequirements() {
     this.newline();
     this.error("This doesn't appear to be a React project");
-    this.info("dot-ui requires a React-based project.");
+    this.info("polkadot-ui requires a React-based project.");
     this.subsection("Supported frameworks:");
     this.detail("• Next.js", true);
     this.detail("• Vite + React", true);
@@ -149,7 +151,7 @@ export class Logger {
     this.subsection("To create a new React project:");
     this.command("npx create-next-app@latest my-polkadot-app");
     this.command("cd my-polkadot-app");
-    this.command("dot-ui add <component-name>");
+    this.command("polkadot-ui add <component-name>");
   }
 
   /**
