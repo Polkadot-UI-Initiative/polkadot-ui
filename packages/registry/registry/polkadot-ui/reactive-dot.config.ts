@@ -4,7 +4,7 @@ import { defineConfig } from "@reactive-dot/core";
 import { InjectedWalletProvider } from "@reactive-dot/core/wallets.js";
 
 export const config = defineConfig({
-  ssr: false,
+  ssr: true,
   chains: {
     paseo: {
       name: "Paseo",

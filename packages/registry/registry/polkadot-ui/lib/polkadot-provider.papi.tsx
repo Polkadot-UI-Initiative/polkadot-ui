@@ -5,7 +5,6 @@ import {
   ChainProvider,
   useAccounts,
   useLazyLoadQuery,
-  useConfig,
   useWallets,
   useClient,
   useConnectedWallets,
@@ -53,20 +52,24 @@ export function PolkadotProvider({
 export function usePapi(
   chainId: ChainId = Object.keys(config.chains)[0] as ChainId
 ) {
-  const runtimeConfig = useConfig();
   const wallets = useWallets();
   const connectedWallets = useConnectedWallets();
   const accounts = useAccounts();
   const client = useClient(chainId ? { chainId } : undefined);
-  const { status } = usePapiClientStatus();
+  const { status } = usePapiClientStatus(chainId);
   const [, connectWallet] = useWalletConnector();
   const [, disconnectWallet] = useWalletDisconnector();
   const { selectedAccount, setSelectedAccount } = useSelectedAccount();
-
+  const supportedNetworks = Object.entries(config.chains).map(
+    ([id, chain]) => ({
+      id: id as ChainId,
+      ...chain,
+    })
+  );
   return {
     accounts,
     query: useLazyLoadQuery,
-    config: runtimeConfig,
+    config,
     wallets,
     connectedWallets,
     client,
@@ -75,6 +78,7 @@ export function usePapi(
     disconnectWallet,
     selectedAccount,
     setSelectedAccount,
+    supportedNetworks,
   };
 }
 

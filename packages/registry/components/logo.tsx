@@ -14,9 +14,9 @@ export function Logo({ props }: { props: React.SVGProps<SVGSVGElement> }) {
       <g
         id="Artboard"
         stroke="none"
-        stroke-width="1"
+        strokeWidth="1"
         fill="none"
-        fill-rule="evenodd"
+        fillRule="evenodd"
       >
         <g id="polkadot-ui_logo_symbol_white">
           <path

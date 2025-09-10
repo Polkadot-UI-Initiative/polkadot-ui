@@ -15,12 +15,14 @@ import { useSpendableBalance } from "@reactive-dot/react";
 import { Ban, CheckCheck, CheckCircle, Coins, Loader2 } from "lucide-react";
 import type { Transaction as PapiTransaction } from "polkadot-api";
 import { useEffect, useState } from "react";
+
 import { TxButtonBaseProps } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.base";
 import { ChainId } from "@reactive-dot/core";
 import {
   PolkadotProvider,
   usePapi,
 } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
+import { ClientOnly } from "../../client-only";
 
 type TxButtonProps = TxButtonBaseProps & {
   transaction: PapiTransaction<object, string, string, unknown>;
@@ -28,6 +30,13 @@ type TxButtonProps = TxButtonBaseProps & {
 };
 
 export function TxButton(props: TxButtonProps) {
+  return (
+    <ClientOnly>
+      <TxButtonRaw {...props} />
+    </ClientOnly>
+  );
+}
+export function TxButtonRaw(props: TxButtonProps) {
   const {
     transaction,
     networkId,
@@ -91,16 +100,19 @@ export function TxButton(props: TxButtonProps) {
     setFeeError(null);
     setFee(null);
 
+    if (!transaction || !selectedAccount?.address) {
+      setIsFeeLoading(false);
+      return;
+    }
+
     transaction
-      ?.getEstimatedFees(selectedAccount?.address ?? "")
+      .getEstimatedFees(selectedAccount.address)
       .then((fee) => setFee(fee))
       .catch((error) =>
         setFeeError(error instanceof Error ? error.message : String(error))
       )
-      .finally(() => {
-        setIsFeeLoading(false);
-      });
-  }, [transaction, selectedAccount]);
+      .finally(() => setIsFeeLoading(false));
+  }, [transaction, selectedAccount?.address]);
 
   if (!signer) return "no signer";
 

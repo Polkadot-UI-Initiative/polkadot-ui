@@ -369,7 +369,7 @@ export function TxButtonSkeleton({
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
-    children: React.ReactNode;
+    children?: React.ReactNode;
     icons?: TxButtonBaseProps["icons"];
   }) {
   return (

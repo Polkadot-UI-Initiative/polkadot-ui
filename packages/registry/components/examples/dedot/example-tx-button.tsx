@@ -2,7 +2,7 @@ import { useTypink } from "typink";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
-import { RemarkButton } from "@/components/examples/dedot/remark-button";
+import { RemarkButton } from "@/components/examples/dedot/remark-button.dedot";
 
 import type { ComponentExample } from "../types.examples";
 
