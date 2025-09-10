@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Card,
   CardHeader,
@@ -9,7 +7,6 @@ import {
 } from "@/components/ui/card";
 import { RequireAccount } from "@/registry/polkadot-ui/blocks/require-account/components/require-account.papi";
 import type { ComponentExample } from "../types.examples";
-import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 
 export const requireAccountExample: ComponentExample = {
   name: "Require Account",
@@ -34,22 +31,10 @@ export const requireAccountExample: ComponentExample = {
         <Card className="bg-white/5 border border-border w-full">
           <CardHeader>
             <CardTitle>✅ Account Selected</CardTitle>
-            <CardContent className="text-xs font-normal">
-              <Component />
-            </CardContent>
+            <CardContent className="text-xs font-normal">Yay!</CardContent>
           </CardHeader>
         </Card>
       </RequireAccount>
     </div>
   ),
 };
-
-function Component() {
-  const { selectedAccount } = usePapi();
-  return (
-    <div>
-      <div>Account name: {selectedAccount?.name}</div>
-      <div>Wallet: {selectedAccount?.wallet.name}</div>
-    </div>
-  );
-}

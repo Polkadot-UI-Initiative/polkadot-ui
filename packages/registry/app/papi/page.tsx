@@ -1,3 +1,5 @@
+"use client";
+
 import { examples } from "@/components/examples/papi";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import {
