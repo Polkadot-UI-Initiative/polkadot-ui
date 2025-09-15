@@ -26,7 +26,7 @@ export type AddressInputProps = Omit<
 >;
 
 export function AddressInput(props: AddressInputProps) {
-  const { status } = usePapi(props.identityChain);
+  const { status } = usePapi();
   const isLoading = status === ClientConnectionStatus.Connecting;
   const isConnected = status === ClientConnectionStatus.Connected;
 

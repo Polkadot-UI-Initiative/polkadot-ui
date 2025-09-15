@@ -55,7 +55,7 @@ export function TxButton<TTx extends AnyUseTx>(props: TxButtonProps<TTx>) {
 
   return (
     <TxButtonBase
-      {...(props as unknown as TxButtonBaseProps)}
+      {...(props as unknown as TxButtonBaseProps<TTx, NetworkId>)}
       services={services}
     />
   );

@@ -91,30 +91,30 @@ export interface ButtonProps
   asChild?: boolean;
 }
 
-export type TxButtonBaseProps<
+export interface TxButtonBaseProps<
   TTx extends TxAdapter<AnyFn> = TxAdapter<AnyFn>,
-  TNetworkId = unknown,
-> = ButtonProps &
-  ArgsProp &
-  ExecuteAdapterProps & {
-    children: React.ReactNode;
-    tx?: TTx;
-    networkId?: TNetworkId;
-    resultDisplayDuration?: number;
-    withNotification?: boolean;
-    notifications?: {
-      title?: string;
-      description?: string;
-      titles?: TxStatusNotificationTexts;
-      descriptions?: TxStatusNotificationTexts;
-    };
-    icons?: TxButtonIcons;
-    services?: TxButtonServices<TNetworkId>;
+  TNetworkId extends string = string,
+> extends ButtonProps,
+    ArgsProp,
+    ExecuteAdapterProps {
+  children: React.ReactNode;
+  tx?: TTx;
+  networkId?: TNetworkId;
+  resultDisplayDuration?: number;
+  withNotification?: boolean;
+  notifications?: {
+    title?: string;
+    description?: string;
+    titles?: TxStatusNotificationTexts;
+    descriptions?: TxStatusNotificationTexts;
   };
+  icons?: TxButtonIcons;
+  services?: TxButtonServices<TNetworkId>;
+}
 
 export function TxButtonBase<
-  TTx extends TxAdapter<AnyFn> = TxAdapter<AnyFn>,
-  TNetworkId = unknown,
+  TTx extends TxAdapter<AnyFn>,
+  TNetworkId extends string,
 >({
   children,
   tx,
@@ -202,7 +202,7 @@ export function TxButtonBase<
     const toastId = withNotification
       ? beginTxStatusNotification({
           toastId: undefined,
-          network: targetNetwork as NetworkInfoLike,
+          network: targetNetwork as NetworkInfoLike<TNetworkId>,
           title:
             notifications.title ??
             notifications.titles?.submitting ??
@@ -230,7 +230,7 @@ export function TxButtonBase<
                   "Waiting for confirmation...",
                 result,
                 toastId: toastId as string,
-                network: targetNetwork as NetworkInfoLike,
+                network: targetNetwork as NetworkInfoLike<TNetworkId>,
                 successDuration: resultDisplayDuration,
               });
             }
@@ -252,7 +252,7 @@ export function TxButtonBase<
                   "Waiting for confirmation...",
                 result,
                 toastId: toastId as string,
-                network: targetNetwork as NetworkInfoLike,
+                network: targetNetwork as NetworkInfoLike<TNetworkId>,
                 successDuration: resultDisplayDuration,
               });
             }
@@ -263,7 +263,7 @@ export function TxButtonBase<
       if (withNotification && toastId)
         cancelTxStatusNotification({
           toastId,
-          network: targetNetwork as NetworkInfoLike,
+          network: targetNetwork as NetworkInfoLike<TNetworkId>,
           title:
             notifications.title ??
             notifications.titles?.error ??
@@ -370,7 +370,7 @@ export function TxButtonSkeleton({
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     children: React.ReactNode;
-    icons?: TxButtonBaseProps["icons"];
+    icons?: TxButtonIcons;
   }) {
   return (
     <div className="inline-flex flex-col gap-2">

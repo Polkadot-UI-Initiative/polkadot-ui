@@ -1,5 +1,3 @@
-import type { ReactNode } from "react";
-import { type ChainId } from "@/registry/polkadot-ui/lib/config.dot-ui";
 import {
   InjectedSigner,
   NetworkId,
@@ -18,29 +16,6 @@ export interface ChainConfig {
     Record<keyof typeof SubstrateExplorer, string>
   >;
   readonly faucetUrls?: string[];
-}
-
-// Base config chain type (used by base config and helpers)
-export interface BaseChainConfig extends ChainConfig {}
-
-export interface DotUiConfig {
-  readonly chains: Record<string, ChainConfig>;
-  readonly defaultChain: ChainId;
-}
-
-export interface PolkadotConfig<
-  TChains extends Readonly<Record<ChainId, ChainConfig>> = Readonly<
-    Record<string, ChainConfig>
-  >,
-> {
-  readonly chains: TChains;
-  readonly defaultChain: keyof TChains;
-}
-
-export function definePolkadotConfig<
-  TChains extends Readonly<Record<ChainId, ChainConfig>>,
->(config: PolkadotConfig<TChains>) {
-  return config;
 }
 
 export const SubstrateExplorer = {
@@ -104,19 +79,6 @@ export interface BasePolkadotContextValue<
   defaultCaller: string;
 }
 
-// Common provider props interface
-export interface BasePolkadotProviderProps<TChainId = ChainId> {
-  children: ReactNode;
-  defaultChain?: TChainId;
-  availableChains?: NetworkInfo[];
-}
-
-// Common hook interface for getting specific chain APIs
-export interface BasePolkadotHooks<TApi, TChainId = ChainId> {
-  useTypedPolkadotApi: () => TApi | null;
-  usePolkadotApi: (chainId: TChainId) => TApi | null;
-}
-
 export interface FormattedIdentity {
   display?: string;
   email?: string;
@@ -150,17 +112,30 @@ export enum ClientConnectionStatus {
 
 // SDK-agnostic structural types used by base components
 
-export interface NetworkInfoLike {
+export interface NetworkInfoLike<TNetworkId extends string = string> {
+  id: TNetworkId;
   name: string;
   logo?: string;
   subscanUrl?: string;
   pjsUrl?: string;
+  symbol?: string;
+  decimals?: number;
 }
 
 export type TxResultLike = {
   status: { type: string };
   txHash?: string;
 };
+
+export interface BlockInfoLike {
+  number: number;
+  hash: string;
+}
+
+export interface UseBlockInfoLike {
+  best?: BlockInfoLike;
+  finalized?: BlockInfoLike;
+}
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type AnyFn = (...args: any[]) => any;

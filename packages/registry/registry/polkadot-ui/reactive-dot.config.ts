@@ -4,7 +4,7 @@ import { defineConfig } from "@reactive-dot/core";
 import { InjectedWalletProvider } from "@reactive-dot/core/wallets.js";
 
 export const config = defineConfig({
-  ssr: false,
+  ssr: true,
   chains: {
     paseo: {
       name: "Paseo",
@@ -13,6 +13,7 @@ export const config = defineConfig({
       explorerUrl: "https://paseo.subscan.io",
       symbol: "PAS",
       decimals: 10,
+      logo: "https://raw.githubusercontent.com/Koniverse/SubWallet-ChainList/refs/heads/master/packages/chain-list-assets/public/",
     },
     paseoPeople: {
       name: "Paseo People",
@@ -21,6 +22,7 @@ export const config = defineConfig({
       explorerUrl: "https://people-paseo.subscan.io",
       symbol: "PAS",
       decimals: 10,
+      logo: "https://paseo.network/logo.png",
     },
   },
   wallets: [new InjectedWalletProvider()],

@@ -30,7 +30,7 @@ export const requireConnectionExample: ComponentExample = {
           </Card>
         }
       >
-        <Card className="bg-white/5 border border-border w-full">
+        <Card className="bg-background border border-border w-full h-full">
           <CardHeader>
             <CardTitle>⚡️ Connected to Paseo</CardTitle>
             <CardDescription className="text-xs font-normal">

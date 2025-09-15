@@ -7,11 +7,11 @@ import {
 } from "@/registry/polkadot-ui/blocks/require-connection/components/require-connection.base";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
-  ClientConnectionStatus,
   PolkadotProvider,
-  usePapiClientStatus,
+  usePapi,
 } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { ChainId } from "@reactive-dot/core";
+import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 
 // Props type - removes services prop since we inject it
 export type RequireConnectionProps = Omit<
@@ -21,7 +21,7 @@ export type RequireConnectionProps = Omit<
 
 export function RequireConnection(props: RequireConnectionProps) {
   const defaultChainId = "paseo";
-  const { status } = usePapiClientStatus(props.chainId || defaultChainId);
+  const { status } = usePapi(props.chainId || defaultChainId);
 
   const services = useMemo(
     () => ({

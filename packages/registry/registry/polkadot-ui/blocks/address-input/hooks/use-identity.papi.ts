@@ -8,11 +8,9 @@ import {
   hasPositiveIdentityJudgement,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { type ChainIdWithIdentity } from "@/registry/polkadot-ui/lib/types.papi";
-import {
-  ClientConnectionStatus,
-  usePapi,
-} from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
+import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { config } from "@/registry/polkadot-ui/reactive-dot.config";
+import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 
 export interface PolkadotIdentity {
   display?: string;

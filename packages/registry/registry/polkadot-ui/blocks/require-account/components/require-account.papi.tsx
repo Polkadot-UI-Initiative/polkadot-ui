@@ -7,10 +7,8 @@ import {
 import { useMemo } from "react";
 import { ClientOnly } from "../../client-only";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
-import {
-  ClientConnectionStatus,
-  usePapi,
-} from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
+import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
+import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 
 export type RequireAccountProps = Omit<RequireAccountBaseProps, "services">;
 

@@ -1,7 +1,6 @@
 import { FeedbackToast } from "@/components/feedback-toast";
 import { Footer } from "@/components/layout/footer";
 import { Navigation } from "@/components/layout/navigation";
-import { Providers } from "@/components/providers";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/next";
@@ -70,9 +69,7 @@ export default async function RootLayout({
           <ThemeProvider>
             <div className="relative flex min-h-screen flex-col">
               <Navigation registryItems={registryItems} />
-              <Providers>
-                <main className="flex-1">{children}</main>
-              </Providers>
+              <main className="flex-1">{children}</main>
               <Footer />
               {/* <MouseFollower /> */}
             </div>
