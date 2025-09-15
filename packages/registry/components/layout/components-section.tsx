@@ -50,8 +50,8 @@ export function ComponentsSection() {
           prompt={
             (typeof example.description === "string"
               ? example.description
-              : encodeURIComponent(getTextFromNode(example.description))) ||
-            encodeURIComponent(`${example.name} - explain this code`)
+              : getTextFromNode(example.description)) ||
+            `${example.name} - explain this code`
           }
         />
       </CardFooter>
