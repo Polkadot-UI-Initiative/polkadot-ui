@@ -19,20 +19,20 @@ export const requireAccountExample: ComponentExample = {
       <RequireAccount
         chainId="paseo"
         fallback={
-          <Card className="bg-white/5 border border-border w-full">
+          <Card className="bg-primary text-background border border-border w-full h-30">
             <CardHeader>
               <CardTitle>👤 No Account Selected</CardTitle>
-              <CardDescription className="text-xs font-normal">
+              <CardDescription className="text-xs font-normal text-background">
                 Please select an account to continue.
               </CardDescription>
             </CardHeader>
           </Card>
         }
       >
-        <Card className="bg-white/5 border border-border w-full">
+        <Card className="bg-primary text-background border border-border w-full h-30">
           <CardHeader>
             <CardTitle>✅ Account Selected</CardTitle>
-            <CardContent className="text-xs font-normal">
+            <CardContent className="text-xs font-normal text-background">
               <Component />
             </CardContent>
           </CardHeader>
