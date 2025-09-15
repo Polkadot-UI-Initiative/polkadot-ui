@@ -102,8 +102,8 @@ and this project adheres to
 
 - Updated documentation to use "polkadot-ui" branding consistently
 - Updated all CLI command examples to use `polkadot-ui` instead of `dot-ui`
-- Updated registry URLs to use dot-ui.com (production domain)
-- Maintained internal references to dot-ui for consistency
+- Updated registry URLs to use polkadot-ui.com (production domain)
+- Maintained internal references to polkadot-ui for consistency
 
 ### Fixed
 
@@ -115,7 +115,7 @@ and this project adheres to
 
 ### Added
 
-- Initial alpha release of dot-ui CLI
+- Initial alpha release of polkadot-ui CLI
 - **`init` command** - Initialize new projects with Polkadot UI components
   - Interactive project setup with framework selection (Next.js/Vite)
   - Automatic TypeScript, ESLint, and Tailwind CSS configuration
@@ -177,7 +177,7 @@ and this project adheres to
 
 ### Registry Integration
 
-- Fetches components from dot-ui.com registry
+- Fetches components from polkadot-ui.com registry
 - Support for custom registry URLs
 - Automatic component validation
 - Registry dependency resolution

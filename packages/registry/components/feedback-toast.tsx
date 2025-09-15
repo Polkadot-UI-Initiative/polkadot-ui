@@ -23,7 +23,9 @@ export function FeedbackToast() {
             <div className="flex flex-row items-center gap-3">
               <Heart className="h-5 w-5 text-pink-500 flex-shrink-0" />
               <div className="flex-1">
-                <p className="font-medium text-sm">Help us improve dot-ui!</p>
+                <p className="font-medium text-sm">
+                  Help us improve polkadot-ui!
+                </p>
                 <p className="text-xs text-muted-foreground">
                   Share your feedback and help shape the future of Web3 UI
                   components
