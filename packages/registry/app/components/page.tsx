@@ -1,10 +1,10 @@
-import { Dedot } from "./client-components";
+import { Dedot, Papi } from "./client-components";
 
 export default async function ComponentsPage() {
   return (
     <>
       <Dedot />
-      {/* <Papi /> */}
+      <Papi />
     </>
   );
 }

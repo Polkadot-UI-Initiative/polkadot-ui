@@ -1,11 +1,10 @@
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 
 import type { ComponentExample } from "../types.examples";
-import { useChainIds } from "@reactive-dot/react";
+import { useChainIds, useClient } from "@reactive-dot/react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { TxButton } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.papi";
 import { Binary } from "polkadot-api";
-import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { config } from "@/registry/polkadot-ui/reactive-dot.config";
 import { ChainId } from "@reactive-dot/core";
 import { Suspense } from "react";
@@ -24,12 +23,13 @@ export const txButtonExample: ComponentExample = {
 };
 
 export function DemoTxButton() {
-  const supportedNetworks = useChainIds()?.map((chainId) => ({
+  const supportedChainIds = useChainIds();
+  const supportedNetworks = supportedChainIds?.map((chainId) => ({
     id: chainId,
     // TODO: get decimals and symbol from chain
-    decimals: 0,
-    symbol: "",
-    name: "",
+    decimals: config.chains[chainId].decimals ?? 0,
+    symbol: config.chains[chainId].symbol ?? "N/A",
+    name: config.chains[chainId].name,
   }));
 
   const nets = supportedNetworks?.slice() || [];
@@ -75,7 +75,7 @@ export function DemoTxButton() {
 }
 
 export function RemarkButton({ networkId }: { networkId: ChainId }) {
-  const { client } = usePapi();
+  const client = useClient({ chainId: networkId });
   const typedApi = client?.getTypedApi(config.chains[networkId].descriptor);
   const transaction = typedApi?.tx.System.remark({
     remark: Binary.fromText("Hello World from polkadot-ui"),

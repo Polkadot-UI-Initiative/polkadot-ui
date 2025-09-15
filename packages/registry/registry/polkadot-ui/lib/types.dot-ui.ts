@@ -150,17 +150,30 @@ export enum ClientConnectionStatus {
 
 // SDK-agnostic structural types used by base components
 
-export interface NetworkInfoLike {
+export interface NetworkInfoLike<TNetworkId extends string> {
+  id: TNetworkId;
   name: string;
   logo?: string;
   subscanUrl?: string;
   pjsUrl?: string;
+  symbol?: string;
+  decimals?: number;
 }
 
 export type TxResultLike = {
   status: { type: string };
   txHash?: string;
 };
+
+export interface BlockInfoLike {
+  number: number;
+  hash: string;
+}
+
+export interface UseBlockInfoLike {
+  best?: BlockInfoLike;
+  finalized?: BlockInfoLike;
+}
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type AnyFn = (...args: any[]) => any;
