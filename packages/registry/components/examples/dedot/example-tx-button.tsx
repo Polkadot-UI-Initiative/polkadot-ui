@@ -12,11 +12,7 @@ export const txButtonExample: ComponentExample = {
   code: "tx-button",
   description:
     "Button component for sending arbitrary transactions. Supports all chains, all signers with default notification. Fees and error states are handled by the component.",
-  component: (
-    <ClientOnly>
-      <DemoTxButton />
-    </ClientOnly>
-  ),
+  component: <DemoTxButton />,
 };
 
 export function DemoTxButton() {

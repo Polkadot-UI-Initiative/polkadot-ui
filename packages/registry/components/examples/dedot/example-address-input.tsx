@@ -1,4 +1,4 @@
-import { AddressInputWithProvider } from "@/registry/polkadot-ui/blocks/address-input/components/address-input.dedot";
+import { AddressInput } from "@/registry/polkadot-ui/blocks/address-input/components/address-input.dedot";
 import { Label } from "@/registry/polkadot-ui/ui/label";
 import type { ComponentExample } from "../types.examples";
 
@@ -11,7 +11,7 @@ export const addressInputExample: ComponentExample = {
   component: (
     <div className="flex flex-col gap-2 w-full">
       <Label>Address</Label>
-      <AddressInputWithProvider
+      <AddressInput
         className="w-full"
         truncate={8}
         format="both"

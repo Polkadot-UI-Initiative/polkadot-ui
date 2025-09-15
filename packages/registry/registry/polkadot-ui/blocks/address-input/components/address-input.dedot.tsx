@@ -16,7 +16,7 @@ import { usePolkadotClient } from "typink";
 
 export type AddressInputProps = Omit<AddressInputBaseProps, "services">;
 
-function AddressInputInner(props: AddressInputProps) {
+export function AddressInput(props: AddressInputProps) {
   const { status } = usePolkadotClient(props.identityChain);
 
   const services = useMemo(
@@ -32,13 +32,6 @@ function AddressInputInner(props: AddressInputProps) {
   return <AddressInputBase {...props} services={services} />;
 }
 
-export function AddressInput(props: AddressInputProps) {
-  return (
-    <ClientOnly>
-      <AddressInputInner {...props} />
-    </ClientOnly>
-  );
-}
 // Wrapped version with provider for drop-in usage
 export function AddressInputWithProvider(props: AddressInputProps) {
   return (
