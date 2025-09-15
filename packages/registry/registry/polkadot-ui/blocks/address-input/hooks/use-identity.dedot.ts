@@ -9,6 +9,7 @@ import {
   NetworkId,
   ClientConnectionStatus,
 } from "typink";
+import { getIdentityNetworkId } from "@/registry/polkadot-ui/lib/utils.dedot";
 
 export interface PolkadotIdentity {
   display?: string;
@@ -22,8 +23,9 @@ export function useIdentity(
   address: string,
   identityChain: NetworkId = paseoPeople.id
 ) {
-  const { client: peopleClient, status: peopleStatus } =
-    usePolkadotClient(identityChain);
+  const { client: peopleClient, status: peopleStatus } = usePolkadotClient(
+    getIdentityNetworkId(identityChain)
+  );
 
   return useQuery({
     queryKey: ["polkadot-identity-dedot", address, identityChain],

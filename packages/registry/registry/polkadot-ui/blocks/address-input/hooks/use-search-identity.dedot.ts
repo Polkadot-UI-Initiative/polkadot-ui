@@ -10,14 +10,16 @@ import {
 import { hasPositiveIdentityJudgement } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { type IdentitySearchResult } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { PalletIdentityRegistration } from "@dedot/chaintypes/substrate";
+import { getIdentityNetworkId } from "@/registry/polkadot-ui/lib/utils.dedot";
 import { AccountId32 } from "dedot/codecs";
 
 export function useIdentitySearch(
   displayName: string | null | undefined,
   identityChain: NetworkId = paseoPeople.id
 ) {
-  const { client: peopleClient, status: peopleStatus } =
-    usePolkadotClient(identityChain);
+  const { client: peopleClient, status: peopleStatus } = usePolkadotClient(
+    getIdentityNetworkId(identityChain)
+  );
 
   return useQuery({
     queryKey: ["identity-search-dedot", displayName, identityChain],
