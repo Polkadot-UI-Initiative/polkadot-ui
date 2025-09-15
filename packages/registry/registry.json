@@ -292,7 +292,15 @@
           "type": "registry:component"
         },
         {
+          "path": "registry/polkadot-ui/blocks/network-indicator/network-indicator.base.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
           "type": "registry:lib"
         }
       ]
