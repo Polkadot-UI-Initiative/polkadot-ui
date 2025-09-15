@@ -22,6 +22,7 @@ import {
   usePapi,
 } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { DEFAULT_CALLER } from "@/registry/polkadot-ui/lib/utils";
+import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 
 type TxButtonProps = TxButtonBaseProps & {
   transaction: PapiTransaction<object, string, string, unknown>;
@@ -29,6 +30,14 @@ type TxButtonProps = TxButtonBaseProps & {
 };
 
 export function TxButton(props: TxButtonProps) {
+  return (
+    <ClientOnly fallback={<Button onClick={() => {}} {...props} />}>
+      <TxButtonInner {...props} />
+    </ClientOnly>
+  );
+}
+
+export function TxButtonInner(props: TxButtonProps) {
   const {
     transaction,
     networkId,

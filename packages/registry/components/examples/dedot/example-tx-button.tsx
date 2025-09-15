@@ -1,7 +1,6 @@
 import { useTypink } from "typink";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import { RemarkButton } from "@/components/examples/dedot/remark-button";
 
 import type { ComponentExample } from "../types.examples";
@@ -48,9 +47,7 @@ export function DemoTxButton() {
             value={network.id}
             className="w-full items-center justify-center h-full flex my-8"
           >
-            <ClientOnly>
-              <RemarkButton networkId={network.id} />
-            </ClientOnly>
+            <RemarkButton networkId={network.id} />
           </TabsContent>
         ))}
       </Tabs>
