@@ -12,12 +12,15 @@ import {
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { useIdentity } from "@/registry/polkadot-ui/blocks/address-input/hooks/use-identity.dedot";
 import { useIdentitySearch } from "@/registry/polkadot-ui/blocks/address-input/hooks/use-search-identity.dedot";
-import { paseoPeople, usePolkadotClient } from "typink";
+import { usePolkadotClient } from "typink";
+import { getIdentityNetworkId } from "@/registry/polkadot-ui/lib/utils.dedot";
 
 export type AddressInputProps = Omit<AddressInputBaseProps, "services">;
 
 function AddressInputInner(props: AddressInputProps) {
-  const { status } = usePolkadotClient(props.identityChain || paseoPeople.id);
+  const { status } = usePolkadotClient(
+    getIdentityNetworkId(props.identityChain)
+  );
 
   const services = useMemo(
     () => ({
