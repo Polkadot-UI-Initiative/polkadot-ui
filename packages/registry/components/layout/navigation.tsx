@@ -101,7 +101,7 @@ export function Navigation({ registryItems }: NavigationProps) {
             <Link className="flex items-center space-x-2 md:hidden" href="/">
               <Image
                 src="/logo.svg"
-                alt="dot-ui"
+                alt="polkadot-ui"
                 width={24}
                 height={24}
                 className="h-6 w-6 rounded bg-primary"

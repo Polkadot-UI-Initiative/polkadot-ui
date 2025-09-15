@@ -1,5 +1,5 @@
 /**
- * @fileoverview Telemetry system for dot-ui CLI with GDPR-compliant privacy controls
+ * @fileoverview Telemetry system for polkadot-ui CLI with GDPR-compliant privacy controls
  *
  * PRIVACY & GDPR COMPLIANCE FEATURES:
  * ==================================
@@ -20,7 +20,7 @@
  *    - Error messages are truncated and sanitized
  *
  * 4. USER CONTROL:
- *    - 'dot-ui telemetry' command for full management
+ *    - 'polkadot-ui telemetry' command for full management
  *    - Environment variable: DOT_UI_DISABLE_TELEMETRY=true
  *    - Configuration file: ~/.dot-ui/telemetry.json
  *
@@ -34,18 +34,18 @@
  * ==============
  *
  * View telemetry status:
- *   dot-ui telemetry status
+ *   polkadot-ui telemetry status
  *
  * Disable telemetry:
- *   dot-ui telemetry disable
+ *   polkadot-ui telemetry disable
  *   # OR
  *   export DOT_UI_DISABLE_TELEMETRY=true
  *
  * View data collection details:
- *   dot-ui telemetry info
+ *   polkadot-ui telemetry info
  *
  * Enable telemetry with consent:
- *   dot-ui telemetry enable
+ *   polkadot-ui telemetry enable
  */
 
 import { PostHog } from "posthog-node";
@@ -431,7 +431,7 @@ export class Telemetry {
         properties: {
           ...properties,
           ...systemInfo,
-          $lib: "dot-ui-cli",
+          $lib: "polkadot-ui-cli",
           $lib_version: properties.cli_version,
         },
       });

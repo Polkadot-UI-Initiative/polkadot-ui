@@ -1,6 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
-  "name": "dot-ui-papi",
+  "name": "polkadot-ui-papi",
   "homepage": "https://polkadot-ui.com",
   "items": [
     {
