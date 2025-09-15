@@ -8,7 +8,7 @@ export function FeedbackToast() {
   useEffect(() => {
     // Check if feedback toast has already been shown in this session
     const hasShownFeedbackToast = localStorage.getItem(
-      "dot-ui-feedback-toast-shown"
+      "polkadot-ui-feedback-toast-shown"
     );
 
     if (hasShownFeedbackToast) {
@@ -50,18 +50,18 @@ export function FeedbackToast() {
                 "_blank"
               );
               // Mark as clicked so we don't show it again
-              localStorage.setItem("dot-ui-feedback-toast-shown", "true");
+              localStorage.setItem("polkadot-ui-feedback-toast-shown", "true");
             },
           },
           onDismiss: () => {
             // Mark as dismissed so we don't show it again in this session
-            localStorage.setItem("dot-ui-feedback-toast-shown", "true");
+            localStorage.setItem("polkadot-ui-feedback-toast-shown", "true");
           },
         }
       );
 
       // Mark as shown (regardless of user action)
-      localStorage.setItem("dot-ui-feedback-toast-shown", "true");
+      localStorage.setItem("polkadot-ui-feedback-toast-shown", "true");
     }, 3000); // 5 seconds delay
 
     // Cleanup timer on unmount

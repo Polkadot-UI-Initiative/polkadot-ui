@@ -8,7 +8,7 @@ import {
   Wallet,
 } from "typink";
 
-// interfaces related to dot-ui will be used by papi + dedot
+// interfaces related to polkadot-ui will be used by papi + dedot
 export interface ChainConfig {
   readonly endpoints: string[];
   readonly displayName: string;

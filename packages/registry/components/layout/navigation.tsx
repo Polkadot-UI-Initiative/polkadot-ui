@@ -7,7 +7,6 @@ import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { GitHubStars } from "@/components/github-stars";
 import { Search } from "lucide-react";
 import { useSearchContext } from "fumadocs-ui/provider";
-import Image from "next/image";
 import { Logo } from "../logo";
 
 export interface NavigationProps {
@@ -95,18 +94,14 @@ export function Navigation({ registryItems }: NavigationProps) {
           <span className="sr-only">Toggle Menu</span>
         </Button>
 
-        {/* Mobile logo */}
+        {/* Mobile menu */}
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-          <div className="w-full flex-1 md:w-auto md:flex-none">
-            <Link className="flex items-center space-x-2 md:hidden" href="/">
-              <Image
-                src="/logo.svg"
-                alt="dot-ui"
-                width={24}
-                height={24}
-                className="h-6 w-6 rounded bg-primary"
-              />
-              <span className="font-bold">dot-ui</span>
+          <div className="w-full flex-1 md:w-auto md:flex-none md:hidden">
+            <Link className="mr-6 flex items-center space-x-2" href="/">
+              <Logo props={{ className: "h-4 w-4" }} />
+              <span className="hidden font-bold sm:inline-block">
+                polkadot-ui
+              </span>
             </Link>
           </div>
           <nav className="flex items-center space-x-2 gap-0">
@@ -148,8 +143,13 @@ export function Navigation({ registryItems }: NavigationProps) {
         <div className="fixed inset-0 top-14 z-50 grid h-[calc(100vh-3.5rem)] grid-flow-row auto-rows-max overflow-auto p-6 pb-32 animate-in slide-in-from-bottom-80 md:hidden">
           <div className="relative z-20 grid gap-6 rounded-md bg-popover p-4 text-popover-foreground shadow-md">
             <Link className="flex items-center space-x-2" href="/">
-              <div className="h-6 w-6 rounded bg-primary" />
-              <span className="font-bold">dot-ui</span>
+              <Link className="mr-6 flex items-center space-x-2" href="/">
+                <Logo props={{ className: "h-4 w-4" }} />
+                <span className="hidden font-bold sm:inline-block">
+                  polkadot-ui
+                </span>
+              </Link>
+              <span className="font-bold">polkadot-ui</span>
             </Link>
             <nav className="grid grid-flow-row auto-rows-max text-sm">
               {navItems.map((item, index) => (
