@@ -25,8 +25,15 @@ export function NetworkIndicator<T extends ChainId>(
     };
   });
 
-  const { status, blockInfo } = usePapi(props.chainId);
+export function usePapi(chainId?: ChainId) {
+  const ctx = useContext(PapiContext);
+  if (!ctx) throw new Error("usePapi must be used within PolkadotProvider");
 
+  const chainClient = useClient(chainId ? { chainId } : undefined);
+  const { status, blockInfo } = usePapiClientStatus(chainId);
+
+  return chainId ? { ...ctx, client: chainClient, status, blockInfo } : ctx;
+}
   const services = useMemo(
     () => ({
       connectionStatus: status,
