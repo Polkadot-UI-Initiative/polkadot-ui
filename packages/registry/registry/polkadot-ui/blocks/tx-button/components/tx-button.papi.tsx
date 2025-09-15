@@ -110,6 +110,7 @@ export function TxButton(props: TxButtonProps) {
 
     const toastId = beginTxStatusNotification({
       network: {
+        id: networkId,
         name: networkId,
       },
       title:
@@ -134,6 +135,7 @@ export function TxButton(props: TxButtonProps) {
           toastId,
 
           network: {
+            id: networkId,
             name: networkId,
             subscanUrl: explorerUrl,
           },
@@ -151,11 +153,12 @@ export function TxButton(props: TxButtonProps) {
             status: { type: "Error" },
           },
           toastId,
-          network: { name: networkId },
+          network: { id: networkId, name: networkId },
         });
         cancelTxStatusNotification({
           toastId,
           network: {
+            id: networkId,
             name: networkId,
             subscanUrl: explorerUrl,
           },

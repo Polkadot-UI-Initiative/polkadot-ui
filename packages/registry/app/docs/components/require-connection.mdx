@@ -3,7 +3,7 @@ title: Require Connection
 description: A component that conditionally renders content based on blockchain connection status.
 ---
 
-import { RequireConnection } from "@/registry/polkadot-ui/blocks/require-connection/components/require-connection.dedot";
+import { RequireConnectionWithProvider } from "@/registry/polkadot-ui/blocks/require-connection/components/require-connection.dedot";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AlertCircle, Wifi, WifiOff, Loader2 } from "lucide-react";
 import { paseo, paseoPeople } from "typink";
@@ -37,7 +37,7 @@ npx polkadot-ui@latest add require-connection
     <TabsTrigger value="code">Code</TabsTrigger>
   </TabsList>
   <TabsContent value="preview">
-    <RequireConnection
+    <RequireConnectionWithProvider
       chainId="paseo"
       fallback={
         <div className="flex items-center gap-2 text-muted-foreground">
@@ -50,7 +50,7 @@ npx polkadot-ui@latest add require-connection
         <Wifi className="w-4 h-4" />
         <span>🎉 Connected to Paseo! This content is now visible.</span>
       </div>
-    </RequireConnection>
+    </RequireConnectionWithProvider>
   </TabsContent>
   <TabsContent value="code" className="my-0">
 ```tsx
@@ -78,7 +78,7 @@ function MyComponent() {
     <TabsTrigger value="code">Code</TabsTrigger>
   </TabsList>
   <TabsContent value="preview">
-    <RequireConnection
+    <RequireConnectionWithProvider
       chainId={paseo.id}
       loadingFallback={
         <div className="flex items-center gap-2 text-blue-600">
@@ -97,7 +97,7 @@ function MyComponent() {
         <Wifi className="w-4 h-4" />
         <span>Connected to Paseo People</span>
       </div>
-    </RequireConnection>
+    </RequireConnectionWithProvider>
   </TabsContent>
   <TabsContent value="code" className="my-0">
 ```tsx
@@ -120,7 +120,7 @@ function MyComponent() {
     <TabsTrigger value="code">Code</TabsTrigger>
   </TabsList>
   <TabsContent value="preview">
-    <RequireConnection
+    <RequireConnectionWithProvider
       chainId={paseo.id}
       fallback={
         <div className="flex items-center gap-2 text-muted-foreground">
@@ -135,7 +135,7 @@ function MyComponent() {
           Transaction interface is available when connected.
         </p>
       </div>
-    </RequireConnection>
+    </RequireConnectionWithProvider>
   </TabsContent>
   <TabsContent value="code" className="my-0">
 ```tsx
@@ -285,7 +285,7 @@ Use descriptive error messages to help users understand what's needed:
 
 ## Examples
 
-<RequireConnection
+<RequireConnectionWithProvider
     chainId={paseo.id}
   fallback={
     <div className="flex items-center gap-2 text-muted-foreground">
@@ -298,4 +298,4 @@ Use descriptive error messages to help users understand what's needed:
     <Wifi className="w-4 h-4" />
     <span>This content is protected by RequireConnection</span>
   </div>
-</RequireConnection>
+</RequireConnectionWithProvider>
