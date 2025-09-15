@@ -18,7 +18,11 @@ export interface NetworkIndicatorBaseProps<TNetworkId extends string> {
   chainId: TNetworkId;
   showBlockNumber?: boolean;
   showLogo?: boolean;
-  at: "best" | "finalized";
+export interface NetworkIndicatorBaseProps<TNetworkId extends string> {
+  chainId: TNetworkId;
+  showBlockNumber?: boolean;
+  showLogo?: boolean;
+  at?: "best" | "finalized";
   className?: string;
   services: NetworkIndicatorServices<TNetworkId>;
 }
