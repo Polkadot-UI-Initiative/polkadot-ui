@@ -121,9 +121,9 @@ export function usePapi(chainId?: ChainId) {
   if (!ctx) throw new Error("usePapi must be used within PolkadotProvider");
 
   const chainClient = useClient(chainId ? { chainId } : undefined);
-  const { status } = usePapiClientStatus(chainId);
+  const { status, blockInfo } = usePapiClientStatus(chainId);
 
-  return chainId ? { ...ctx, client: chainClient, status } : ctx;
+  return chainId ? { ...ctx, client: chainClient, status, blockInfo } : ctx;
 }
 
 function usePapiClientStatus(chainId?: ChainId) {
