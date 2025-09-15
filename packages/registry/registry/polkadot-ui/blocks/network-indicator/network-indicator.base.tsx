@@ -18,11 +18,7 @@ export interface NetworkIndicatorBaseProps<TNetworkId extends string> {
   chainId: TNetworkId;
   showBlockNumber?: boolean;
   showLogo?: boolean;
-export interface NetworkIndicatorBaseProps<TNetworkId extends string> {
-  chainId: TNetworkId;
-  showBlockNumber?: boolean;
-  showLogo?: boolean;
-  at?: "best" | "finalized";
+  at: "best" | "finalized";
   className?: string;
   services: NetworkIndicatorServices<TNetworkId>;
 }
@@ -77,7 +73,7 @@ export function NetworkIndicatorBase<TNetworkId extends string>({
         )}
       </div>
     );
-  }, [blockNumber, connectionStatus, showBlockNumber, network]);
+  }, [blockNumber, connectionStatus, showBlockNumber, network, showLogo]);
 
   const Content = useMemo(() => {
     return (
