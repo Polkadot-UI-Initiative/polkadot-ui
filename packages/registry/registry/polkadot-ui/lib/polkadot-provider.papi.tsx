@@ -1,23 +1,21 @@
 "use client";
 
-import {
-  ReactiveDotProvider,
-  ChainProvider,
-  useAccounts,
-  useLazyLoadQuery,
-  useWallets,
-  useClient,
-  useConnectedWallets,
-  useWalletDisconnector,
-  useWalletConnector,
-} from "@reactive-dot/react";
+import { ReactiveDotProvider, ChainProvider } from "@reactive-dot/react";
 import { config } from "../reactive-dot.config";
 import type { ReactNode } from "react";
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import type { PolkadotClient } from "polkadot-api";
+import {
+  createContext,
+  Suspense,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { WalletAccount } from "@reactive-dot/core/wallets.js";
 import { ChainId } from "@reactive-dot/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
+import { ExtensionProvider } from "./polkadot-extension-provider.papi";
 
 // export const SUPPORTED_NETWORKS = [
 //   paseo,
@@ -42,47 +40,17 @@ export function PolkadotProvider({
     <QueryClientProvider client={queryClient}>
       <ReactiveDotProvider config={config}>
         <ChainProvider chainId={chainId}>
-          <SelectedAccountProvider>{children}</SelectedAccountProvider>
+          <ExtensionProvider>
+            <PapiProviderCore chainId={chainId as ChainId}>
+              {children}
+            </PapiProviderCore>
+          </ExtensionProvider>
         </ChainProvider>
       </ReactiveDotProvider>
     </QueryClientProvider>
   );
 }
 
-export function usePapi(
-  chainId: ChainId = Object.keys(config.chains)[0] as ChainId
-) {
-  const wallets = useWallets();
-  const connectedWallets = useConnectedWallets();
-  const accounts = useAccounts();
-  const client = useClient(chainId ? { chainId } : undefined);
-  const { status } = usePapiClientStatus(chainId);
-  const [, connectWallet] = useWalletConnector();
-  const [, disconnectWallet] = useWalletDisconnector();
-  const { selectedAccount, setSelectedAccount } = useSelectedAccount();
-  const supportedNetworks = Object.entries(config.chains).map(
-    ([id, chain]) => ({
-      id: id as ChainId,
-      ...chain,
-    })
-  );
-  return {
-    accounts,
-    query: useLazyLoadQuery,
-    config,
-    wallets,
-    connectedWallets,
-    client,
-    status,
-    connectWallet,
-    disconnectWallet,
-    selectedAccount,
-    setSelectedAccount,
-    supportedNetworks,
-  };
-}
-
-// todo use common type for both providers dedot and papi
 export enum ClientConnectionStatus {
   NotConnected = "NotConnected", // not yet connected or disconnected
   Connecting = "Connecting", // initial connecting or reconnecting
@@ -90,113 +58,42 @@ export enum ClientConnectionStatus {
   Error = "Error",
 }
 
-// helper hook to get connection status for papi / reactive-dot
-export function usePapiClientStatus(chainId?: ChainId) {
-  const client = useClient(chainId ? { chainId } : undefined);
-  const [status, setStatus] = useState<ClientConnectionStatus>(
-    ClientConnectionStatus.NotConnected
-  );
-  const [error, setError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    setError(null);
-
-    if (!client) {
-      setStatus(ClientConnectionStatus.NotConnected);
-      return;
-    }
-
-    setStatus(ClientConnectionStatus.Connecting);
-
-    let subscription: { unsubscribe: () => void } | null = null;
-    try {
-      // bestBlocks$ emits when connected; treat first emission as connected
-      // and propagate errors to status
-      subscription = (client as PolkadotClient).bestBlocks$.subscribe({
-        next: () => setStatus(ClientConnectionStatus.Connected),
-        error: (e) => {
-          setError(e instanceof Error ? e : new Error(String(e)));
-          setStatus(ClientConnectionStatus.Error);
-        },
-      });
-    } catch (e) {
-      setError(e instanceof Error ? e : new Error(String(e)));
-      setStatus(ClientConnectionStatus.Error);
-    }
-
-    return () => {
-      if (subscription) subscription.unsubscribe();
-    };
-  }, [client]);
-
-  const isConnected = useMemo(
-    () => status === ClientConnectionStatus.Connected,
-    [status]
-  );
-
-  return { status, isConnected, client, error } as const;
+interface PapiContextValue {
+  config: typeof config;
+  supportedNetworks: Array<
+    { id: ChainId } & (typeof config.chains)[keyof typeof config.chains]
+  >;
 }
 
-// selectedaccount provider, reactive-dot does not provide this
-interface SelectedAccountContext {
-  selectedAccount: WalletAccount | null;
-  setSelectedAccount: (account: WalletAccount | null) => void;
-}
+const PapiContext = createContext<PapiContextValue | undefined>(undefined);
 
-const SelectedAccountContext = createContext<SelectedAccountContext>({
-  selectedAccount: null,
-  setSelectedAccount: () => {},
-});
-
-const SELECTED_ACCOUNT_KEY = "polkadot:selected-account";
-
-export function SelectedAccountProvider({
+function PapiProviderCore({
   children,
 }: {
+  chainId: ChainId;
   children: React.ReactNode;
 }) {
-  const [selectedAccount, setSelectedAccountState] =
-    useState<WalletAccount | null>(null);
+  const supportedNetworks = useMemo(
+    () =>
+      Object.entries(config.chains).map(([id, chain]) => ({
+        id: id as ChainId,
+        ...chain,
+      })),
+    []
+  ) as Array<
+    { id: ChainId } & (typeof config.chains)[keyof typeof config.chains]
+  >;
 
-  const accounts = useAccounts();
-
-  // Load selected account from localStorage on mount,
-  useEffect(() => {
-    const stored = localStorage.getItem(SELECTED_ACCOUNT_KEY);
-    if (stored) {
-      setSelectedAccountState(
-        accounts.find((account) => account.address === stored) || null
-      );
-    }
-  }, [accounts]);
-
-  const setSelectedAccount = (account: WalletAccount | null) => {
-    setSelectedAccountState(account);
-    if (account) {
-      localStorage.setItem(SELECTED_ACCOUNT_KEY, account.address);
-    } else {
-      localStorage.removeItem(SELECTED_ACCOUNT_KEY);
-    }
+  const ctx: PapiContextValue = {
+    config,
+    supportedNetworks,
   };
 
-  return (
-    <SelectedAccountContext.Provider
-      value={{
-        selectedAccount,
-        setSelectedAccount,
-      }}
-    >
-      {children}
-    </SelectedAccountContext.Provider>
-  );
+  return <PapiContext.Provider value={ctx}>{children}</PapiContext.Provider>;
 }
 
-export const useSelectedAccount = () => {
-  const context = useContext(SelectedAccountContext);
-  if (!context) {
-    throw new Error(
-      "useSelectedAccount must be used within a SelectedAccountProvider"
-    );
-  }
-  return context;
-};
+export function usePapi() {
+  const ctx = useContext(PapiContext);
+  if (!ctx) throw new Error("usePapi must be used within PolkadotProvider");
+  return ctx;
+}

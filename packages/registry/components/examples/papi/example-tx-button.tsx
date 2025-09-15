@@ -1,7 +1,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { ComponentExample } from "../types.examples";
 import { RemarkButton } from "./remark-button.papi";
-import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
+import { config } from "@/registry/polkadot-ui/reactive-dot.config";
+import { ChainId } from "@reactive-dot/core";
+import { useMemo } from "react";
 
 export const txButtonExample: ComponentExample = {
   name: "Tx Button",
@@ -13,7 +15,16 @@ export const txButtonExample: ComponentExample = {
 };
 
 export function DemoTxButton() {
-  const { supportedNetworks } = usePapi();
+  const supportedNetworks = useMemo(
+    () =>
+      Object.entries(config.chains).map(([id, chain]) => ({
+        id: id as ChainId,
+        ...chain,
+      })),
+    []
+  ) as Array<
+    { id: ChainId } & (typeof config.chains)[keyof typeof config.chains]
+  >;
 
   return (
     <Tabs defaultValue={supportedNetworks[0].id}>
