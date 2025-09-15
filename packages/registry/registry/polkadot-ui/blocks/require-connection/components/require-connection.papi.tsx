@@ -9,7 +9,7 @@ import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   ClientConnectionStatus,
   PolkadotProvider,
-  usePapiClientStatus,
+  usePapi,
 } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { ChainId } from "@reactive-dot/core";
 
@@ -21,7 +21,7 @@ export type RequireConnectionProps = Omit<
 
 export function RequireConnection(props: RequireConnectionProps) {
   const defaultChainId = "paseo";
-  const { status } = usePapiClientStatus(props.chainId || defaultChainId);
+  const { status } = usePapi(props.chainId || defaultChainId);
 
   const services = useMemo(
     () => ({
