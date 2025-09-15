@@ -20,7 +20,7 @@ import { OpenInV0Button } from "../open-in-v0-button";
 import { PolkadotProvider as PolkadotProviderPapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { PolkadotProvider as PolkadotProviderDedot } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 
-const USED_LIBRARY: "papi" | "dedot" = "papi";
+const USED_LIBRARY: "papi" | "dedot" = "dedot";
 
 export function ComponentsSection() {
   const examples = USED_LIBRARY === "papi" ? papiExamples : dedotExamples;
