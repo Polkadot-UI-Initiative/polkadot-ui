@@ -382,11 +382,11 @@ export class Telemetry {
       console.log("\n📊 Privacy Notice");
       console.log("================");
       console.log(
-        "dot-ui collects anonymous usage data to help improve the tool."
+        "polkadot-ui collects anonymous usage data to help improve the tool."
       );
       console.log("No personal information or project data is collected.");
       console.log(
-        "Run 'dot-ui telemetry info' for details or 'dot-ui telemetry disable' to opt out."
+        "Run 'polkadot-ui telemetry info' for details or 'polkadot-ui telemetry disable' to opt out."
       );
       console.log(
         "Set DOT_UI_DISABLE_TELEMETRY=true to disable permanently.\n"
