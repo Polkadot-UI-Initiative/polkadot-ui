@@ -13,14 +13,11 @@ import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.d
 import { useIdentity } from "@/registry/polkadot-ui/blocks/address-input/hooks/use-identity.dedot";
 import { useIdentitySearch } from "@/registry/polkadot-ui/blocks/address-input/hooks/use-search-identity.dedot";
 import { usePolkadotClient } from "typink";
-import { getIdentityNetworkId } from "@/registry/polkadot-ui/lib/utils.dedot";
 
 export type AddressInputProps = Omit<AddressInputBaseProps, "services">;
 
 function AddressInputInner(props: AddressInputProps) {
-  const { status } = usePolkadotClient(
-    getIdentityNetworkId(props.identityChain)
-  );
+  const { status } = usePolkadotClient(props.identityChain);
 
   const services = useMemo(
     () => ({

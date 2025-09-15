@@ -76,14 +76,21 @@ export function DemoTxButton() {
 
 export function RemarkButton({ networkId }: { networkId: ChainId }) {
   const client = useClient({ chainId: networkId });
+  const network = config.chains[networkId];
   const typedApi = client?.getTypedApi(config.chains[networkId].descriptor);
   const transaction = typedApi?.tx.System.remark({
     remark: Binary.fromText("Hello World from polkadot-ui"),
   });
 
   return (
-    <TxButton transaction={transaction} networkId={networkId}>
-      Click Me
+    <TxButton
+      transaction={transaction}
+      networkId={networkId}
+      notifications={{
+        title: "Remark Welcome Message",
+      }}
+    >
+      Remark a message on {network.name}
     </TxButton>
   );
 }

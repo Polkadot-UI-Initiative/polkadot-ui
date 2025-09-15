@@ -21,6 +21,9 @@ export const SUPPORTED_NETWORKS = [
   polkadotPeople,
 ];
 
+const a = paseo.logo;
+console.log(a);
+
 const queryClient = new QueryClient();
 
 export function PolkadotProvider({

@@ -6,7 +6,7 @@ import {
 } from "@/registry/polkadot-ui/blocks/require-connection/components/require-connection.base";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
-import { ClientConnectionStatus, usePolkadotClient } from "typink";
+import { ClientConnectionStatus, usePolkadotClient, useTypink } from "typink";
 
 // Props type - removes services prop since we inject it
 export type RequireConnectionProps = Omit<
@@ -15,7 +15,9 @@ export type RequireConnectionProps = Omit<
 >;
 
 export function RequireConnection(props: RequireConnectionProps) {
-  const { status } = usePolkadotClient(props.chainId);
+  const { supportedNetworks } = useTypink();
+  const network = supportedNetworks?.find((n) => n.id === props.chainId);
+  const { status } = usePolkadotClient(network?.id ?? props.chainId);
 
   const isLoading = status === ClientConnectionStatus.Connecting;
   const isConnected = status === ClientConnectionStatus.Connected;

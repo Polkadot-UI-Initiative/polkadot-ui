@@ -6,5 +6,16 @@ export const networkIndicatorExample: ComponentExample = {
   href: "/docs/components/network-indicator",
   code: "network-indicator",
   description: "Show current network and status",
-  component: <NetworkIndicator chainId="paseo" at="best" />,
+  component: (
+    <div className="flex items-center gap-2 flex-col">
+      <NetworkIndicator chainId="paseo" at="best" />
+      <NetworkIndicator chainId="paseoPeople" at="finalized" />
+    </div>
+  ),
+  tsx: `
+    <div className="flex items-center gap-2 flex-col">
+      <NetworkIndicator chainId="paseo" at="best" />
+      <NetworkIndicator chainId="paseoPeople" at="finalized" />
+    </div>
+`,
 };

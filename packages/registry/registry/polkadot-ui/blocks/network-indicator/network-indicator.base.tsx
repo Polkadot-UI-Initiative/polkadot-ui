@@ -17,6 +17,7 @@ import {
 export interface NetworkIndicatorBaseProps<TNetworkId extends string> {
   chainId: TNetworkId;
   showBlockNumber?: boolean;
+  showLogo?: boolean;
   at: "best" | "finalized";
   className?: string;
   services: NetworkIndicatorServices<TNetworkId>;
@@ -31,6 +32,7 @@ export interface NetworkIndicatorServices<TNetworkId extends string> {
 export function NetworkIndicatorBase<TNetworkId extends string>({
   chainId,
   showBlockNumber = true,
+  showLogo = true,
   at = "best",
   className,
   services,
@@ -45,8 +47,12 @@ export function NetworkIndicatorBase<TNetworkId extends string>({
   const Trigger = useMemo(() => {
     return (
       <div className="tabular-nums font-light h-6 border-foreground/20 border rounded-md px-2 text-[12px] cursor-default flex items-center gap-1">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={network?.logo} alt={network?.name} className="w-3 h-3" />
+        {showLogo && network?.logo && (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={network?.logo} alt={network?.name} className="w-3 h-3" />
+          </>
+        )}
         {connectionStatus === ClientConnectionStatus.Connected &&
           showBlockNumber &&
           blockNumber && (
