@@ -16,8 +16,8 @@ export function HeroSection() {
           </Link>
         </Button>
         <h1 className="text-center text-3xl font-bold leading-tight tracking-tight md:text-6xl lg:leading-[1.1]">
-          Ship <span className="text-gradient">nicer</span> Polkadot <br /> Apps{" "}
-          <span className="text-gradient italic">faster</span>
+          Ship <span className="text-gradient">better</span> Polkadot <br />{" "}
+          Apps <span className="text-gradient italic">faster</span>
         </h1>
         <span className="max-w-[750px] text-center text-lg text-muted-foreground sm:text-lg my-8">
           Deliver great UX with ready-made, typesafe Polkadot components. Fully
