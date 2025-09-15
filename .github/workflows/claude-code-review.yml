@@ -31,6 +31,17 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Debug - Check if API key exists
+        run: |
+          if [ -z "${{ secrets.ANTHROPIC_API_KEY }}" ]; then
+            echo "❌ ANTHROPIC_API_KEY is not set or empty"
+            exit 1
+          else
+            echo "✅ ANTHROPIC_API_KEY is available (length: ${#ANTHROPIC_API_KEY})"
+          fi
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
       - name: Run Claude Code Review
         id: claude-review
         uses: anthropics/claude-code-action@v1
