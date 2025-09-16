@@ -20,7 +20,7 @@ export function ComponentsSection() {
   return (
     <section className="mx-8 space-y-6 py-8 md:py-8 lg:py-12" id="components">
       {/* Examples grid */}
-      <div className="w-full grid justify-center gap-4 sm:grid-cols-1 lg:grid-cols-3 md:grid-cols-2 2xl:grid-cols-4 auto-rows-fr">
+      <div className="w-full grid justify-center gap-4 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 auto-rows-fr">
         {USED_LIBRARY === "papi" && (
           <PolkadotProviderPapi>{ComponentExamples}</PolkadotProviderPapi>
         )}
