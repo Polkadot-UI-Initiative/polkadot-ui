@@ -1,6 +1,7 @@
 import { AddressInput } from "@/registry/polkadot-ui/blocks/address-input/components/address-input.dedot";
 import { Label } from "@/registry/polkadot-ui/ui/label";
 import type { ComponentExample } from "../types.examples";
+import { paseoPeople } from "typink";
 
 export const addressInputExample: ComponentExample = {
   name: "Address Input",
@@ -12,6 +13,7 @@ export const addressInputExample: ComponentExample = {
     <div className="flex flex-col gap-2 w-full">
       <Label>Address</Label>
       <AddressInput
+        identityChain={paseoPeople.id}
         className="w-full"
         truncate={8}
         format="both"
@@ -20,4 +22,15 @@ export const addressInputExample: ComponentExample = {
       />
     </div>
   ),
+  tsx: `import { paseoPeople } from "typink";
+import { AddressInput } from "@/components/polkadot-ui/address-input/address-input.dedot";
+
+<AddressInput
+  identityChain={paseoPeople.id}
+  className="w-full"
+  truncate={8}
+  format="both"
+  required={false}
+  placeholder="Enter an address or search for an identity"
+/>`,
 };
