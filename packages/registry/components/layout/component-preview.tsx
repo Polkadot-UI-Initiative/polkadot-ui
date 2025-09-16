@@ -65,7 +65,7 @@ export function ComponentPreview({
             <Button
               size="xs"
               variant="secondary"
-              className="absolute top-1 left-7 z-10"
+              className="absolute top -1 left-7 z-10"
               onClick={() => {
                 navigator.clipboard.writeText(componentInfo.tsx || "");
                 setIsCopied(true);
@@ -74,7 +74,7 @@ export function ComponentPreview({
             >
               {isCopied ? <Check size={10} /> : <Copy size={10} />}
             </Button>
-            <div className="text-xs relative w-full h-full overflow-auto">
+            <div className="text-xs relative w-full h-full overflow-auto flex items-center justify-center">
               <ShikiHighlighter
                 showLineNumbers
                 language="tsx"
