@@ -1,4 +1,3 @@
-import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import { DemoTxButton } from "./example-tx-button";
 import type { ComponentExample } from "../types.examples";
 
@@ -8,9 +7,5 @@ export const txButtonExample: ComponentExample = {
   code: "tx-button",
   description:
     "Button component for sending arbitrary transactions. Supports all chains, all signers with default notification. Fees and error states are handled by the component.",
-  component: (
-    <ClientOnly>
-      <DemoTxButton />
-    </ClientOnly>
-  ),
+  component: <DemoTxButton />,
 };

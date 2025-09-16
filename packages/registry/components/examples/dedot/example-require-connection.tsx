@@ -18,10 +18,10 @@ export const requireConnectionExample: ComponentExample = {
       <RequireConnection
         chainId="paseo"
         fallback={
-          <Card className="bg-white/5 border border-border w-full">
+          <Card className="bg-primary text-background border border-border w-full h-30">
             <CardHeader>
               <CardTitle>⛓️‍💥 Not Connected to Paseo</CardTitle>
-              <CardDescription className="text-xs font-normal">
+              <CardDescription className="text-xs font-normal text-background">
                 Make sure your app is connected to Paseo to continue. This is
                 the content that will be displayed when you are not connected to
                 Paseo.
@@ -30,10 +30,10 @@ export const requireConnectionExample: ComponentExample = {
           </Card>
         }
       >
-        <Card className="bg-background border border-border w-full h-full">
+        <Card className="bg-primary text-background border border-border w-full h-30">
           <CardHeader>
             <CardTitle>⚡️ Connected to Paseo</CardTitle>
-            <CardDescription className="text-xs font-normal">
+            <CardDescription className="text-xs font-normal text-background">
               You are connected to Paseo. This is the content that will be
               displayed when you are connected to Paseo.
             </CardDescription>

@@ -21,6 +21,8 @@ import {
   PolkadotProvider,
   usePapi,
 } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
+import { DEFAULT_CALLER } from "@/registry/polkadot-ui/lib/utils";
+import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 
 type TxButtonProps = TxButtonBaseProps & {
   transaction: PapiTransaction<object, string, string, unknown>;
@@ -28,6 +30,14 @@ type TxButtonProps = TxButtonBaseProps & {
 };
 
 export function TxButton(props: TxButtonProps) {
+  return (
+    <ClientOnly fallback={<Button onClick={() => {}} {...props} />}>
+      <TxButtonInner {...props} />
+    </ClientOnly>
+  );
+}
+
+export function TxButtonInner(props: TxButtonProps) {
   const {
     transaction,
     networkId,
@@ -60,7 +70,9 @@ export function TxButton(props: TxButtonProps) {
   const [txStatus, setTxStatus] = useState<TxStatusLike>(null);
   const [showResult, setShowResult] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const balanceFree = useSpendableBalance(selectedAccount?.address ?? "");
+  const balanceFree = useSpendableBalance(
+    selectedAccount?.address ?? DEFAULT_CALLER
+  );
 
   const isError = !!submitError || !!feeError || !isValidNetwork;
   const status = txStatus?.type;
@@ -92,7 +104,7 @@ export function TxButton(props: TxButtonProps) {
     setFee(null);
 
     transaction
-      ?.getEstimatedFees(selectedAccount?.address ?? "")
+      ?.getEstimatedFees(selectedAccount?.address ?? DEFAULT_CALLER)
       .then((fee) => setFee(fee))
       .catch((error) =>
         setFeeError(error instanceof Error ? error.message : String(error))

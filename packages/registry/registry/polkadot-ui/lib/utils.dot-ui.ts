@@ -180,3 +180,21 @@ export const formatBalance = ({
 
   return unit ? `${finalNumber} ${unit}` : finalNumber;
 };
+
+export function formatPlanck(
+  value: bigint | null | undefined,
+  decimals = 0
+): string {
+  if (value == null) return "—";
+  const isNegative = value < 0n;
+  const abs = isNegative ? -value : value;
+  if (decimals <= 0) return `${isNegative ? "-" : ""}${abs.toString()}`;
+  const s = abs.toString().padStart(decimals + 1, "0");
+  const i = s.length - decimals;
+  const integerPart = s.slice(0, i);
+  const fractionPart = s.slice(i).replace(/0+$/, "");
+  const result = fractionPart
+    ? `${integerPart}.${fractionPart.slice(0, 4)}`
+    : integerPart;
+  return isNegative ? `-${result}` : result;
+}

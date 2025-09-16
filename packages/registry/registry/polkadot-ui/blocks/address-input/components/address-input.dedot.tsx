@@ -13,6 +13,7 @@ import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.d
 import { useIdentity } from "@/registry/polkadot-ui/blocks/address-input/hooks/use-identity.dedot";
 import { useIdentitySearch } from "@/registry/polkadot-ui/blocks/address-input/hooks/use-search-identity.dedot";
 import { usePolkadotClient } from "typink";
+import { Input } from "@/registry/polkadot-ui/ui/input";
 
 export type AddressInputProps = Omit<AddressInputBaseProps, "services">;
 
@@ -34,7 +35,7 @@ function AddressInputInner(props: AddressInputProps) {
 
 export function AddressInput(props: AddressInputProps) {
   return (
-    <ClientOnly>
+    <ClientOnly fallback={<Input {...props} onChange={() => {}} />}>
       <AddressInputInner {...props} />
     </ClientOnly>
   );

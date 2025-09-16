@@ -1,5 +1,5 @@
 "use client";
-import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
+
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import {
   WalletSelectBase,
@@ -21,20 +21,18 @@ export function WalletSelect(props: WalletSelectProps) {
   } = useTypink();
 
   return (
-    <ClientOnly>
-      <WalletSelectBase
-        {...props}
-        services={{
-          accounts,
-          wallets,
-          connectedWallets,
-          connectedAccount,
-          connectWallet,
-          disconnect,
-          setConnectedAccount,
-        }}
-      />
-    </ClientOnly>
+    <WalletSelectBase
+      {...props}
+      services={{
+        accounts,
+        wallets,
+        connectedWallets,
+        connectedAccount,
+        connectWallet,
+        disconnect,
+        setConnectedAccount,
+      }}
+    />
   );
 }
 
