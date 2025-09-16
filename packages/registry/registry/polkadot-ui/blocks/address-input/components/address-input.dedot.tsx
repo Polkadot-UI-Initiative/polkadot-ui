@@ -42,7 +42,7 @@ function AddressInputInner(props: AddressInputProps) {
 
 export function AddressInput(props: AddressInputProps) {
   return (
-    <ClientOnly fallback={<Input {...props} onChange={() => {}} />}>
+    <ClientOnly fallback={<Input onChange={() => {}} />}>
       <AddressInputInner {...props} />
     </ClientOnly>
   );
