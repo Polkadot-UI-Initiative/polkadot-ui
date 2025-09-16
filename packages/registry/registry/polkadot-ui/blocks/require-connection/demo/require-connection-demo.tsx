@@ -33,7 +33,8 @@ export default function RequireConnectionDemo<TChainId extends string>({
             Require Connection
           </h1>
           <p className="text-gray-600 text-lg">
-            Conditionally render content based on blockchain connection status
+            Render children only when a connection to a blockchain is
+            established
           </p>
           <p className="text-sm text-primary mt-2">
             Using {libraryName} provider

@@ -1,10 +1,3 @@
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
 import { RequireAccount } from "@/registry/polkadot-ui/blocks/require-account/components/require-account.dedot";
 import type { ComponentExample } from "../types.examples";
 import { useTypink } from "typink";
@@ -14,40 +7,46 @@ export const requireAccountExample: ComponentExample = {
   href: "/docs/components/require-account",
   code: "require-account",
   description: "Render children only when an account is selected",
-  component: (
+  component: <Component />,
+  tsx: `function Component() {
+  const { connectedAccount } = useTypink();
+  return (
     <div className="w-full space-y-3">
       <RequireAccount
         chainId="paseo"
         fallback={
-          <Card className="bg-primary text-background border border-border w-full h-30">
-            <CardHeader>
-              <CardTitle>👤 No Account Selected</CardTitle>
-              <CardDescription className="text-xs font-normal text-background">
-                Please select an account to continue.
-              </CardDescription>
-            </CardHeader>
-          </Card>
+          <div className="border border-accent w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md">
+            Please select an account to continue.
+          </div>
         }
       >
-        <Card className="bg-primary text-background border border-border w-full h-30">
-          <CardHeader>
-            <CardTitle>✅ Account Selected</CardTitle>
-            <CardContent className="text-xs font-normal text-background">
-              <Component />
-            </CardContent>
-          </CardHeader>
-        </Card>
+        <div className="border border-accent w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md flex-col">
+          <div>Account name: {connectedAccount?.name}</div>
+          <div>Wallet: {connectedAccount?.source}</div>
+        </div>
       </RequireAccount>
     </div>
-  ),
+  );
+}`,
 };
 
 function Component() {
   const { connectedAccount } = useTypink();
   return (
-    <div>
-      <div>Account name: {connectedAccount?.name}</div>
-      <div>Wallet: {connectedAccount?.source}</div>
+    <div className="w-full space-y-3">
+      <RequireAccount
+        chainId="paseo"
+        fallback={
+          <div className="border border-accent w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md">
+            Please select an account to continue.
+          </div>
+        }
+      >
+        <div className="border border-accent w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md flex-col">
+          <div>Account name: {connectedAccount?.name}</div>
+          <div>Wallet: {connectedAccount?.source}</div>
+        </div>
+      </RequireAccount>
     </div>
   );
 }
