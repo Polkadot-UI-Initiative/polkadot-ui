@@ -21,4 +21,5 @@ export const walletSelectExample: ComponentExample = {
       <WalletSelect variant="default" />
     </div>
   ),
+  tsx: `<WalletSelect />`,
 };

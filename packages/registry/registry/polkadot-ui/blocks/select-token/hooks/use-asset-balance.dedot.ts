@@ -34,9 +34,6 @@ export function useAssetBalance(args: UseAssetBalanceArgs): AssetBalanceResult {
         const query = client.query.assets.account;
 
         const account = await query([assetId, address]);
-        console.log("aaaassetId", assetId);
-        console.log("aaaaddress", address);
-        console.log("aaaaccount", account);
         const raw = (account as unknown as { balance?: unknown })?.balance;
         if (typeof raw === "bigint") return raw;
         if (typeof raw === "number") return BigInt(raw);
