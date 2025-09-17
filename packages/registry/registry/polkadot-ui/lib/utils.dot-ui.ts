@@ -206,3 +206,44 @@ export function camelToSnakeCase(str: string): string {
 export function snakeToCamelCase(str: string): string {
   return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
 }
+
+export function camelToKebabCase(str: string): string {
+  return str.replace(/([A-Z])/g, "-$1").toLowerCase();
+}
+
+export function snakeToKebabCase(str: string): string {
+  return str.replace(/_/g, "-");
+}
+
+/**
+ * Generate token ID in the format: chainId:substrate-assets:assetId
+ * @param chainId - Chain identifier (can be camelCase or snake_case, will be converted to kebab-case)
+ * @param assetId - Asset identifier
+ * @returns Formatted token ID
+ */
+export function generateTokenId(chainId: string, assetId: string): string {
+  // Check if chainId contains underscores (snake_case) or camelCase
+  const kebabChainId = chainId.includes("_")
+    ? snakeToKebabCase(chainId)
+    : camelToKebabCase(chainId);
+  return `${kebabChainId}:substrate-assets:${assetId}`;
+}
+
+/**
+ * Parse token ID to extract chainId and assetId
+ * @param tokenId - Token ID in format: chainId:substrate-assets:assetId
+ * @returns Object with chainId and assetId, or null if invalid format
+ */
+export function parseTokenId(
+  tokenId: string
+): { chainId: string; assetId: string } | null {
+  const parts = tokenId.split(":");
+  if (parts.length !== 3 || parts[1] !== "substrate-assets") {
+    return null;
+  }
+
+  return {
+    chainId: parts[0],
+    assetId: parts[2],
+  };
+}

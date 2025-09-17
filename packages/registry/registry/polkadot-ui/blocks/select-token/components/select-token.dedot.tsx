@@ -14,6 +14,7 @@ import {
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { paseoAssetHub } from "typink";
 import { camelToSnakeCase } from "@/registry/polkadot-ui/lib/utils.dot-ui";
+import { useTokensByAssetIds } from "@/lib/hooks/use-chaindata-json";
 
 export type SelectTokenProps = Omit<SelectTokenBaseProps, "services"> &
   React.ComponentProps<typeof Select>;
@@ -25,6 +26,24 @@ export function SelectTokenInner(props: SelectTokenProps) {
   const { assets, isLoading } = useAssetMetadata({
     chainId: props.chainId,
     assetIds: props.assetIds,
+  });
+
+  const {
+    tokens: chainTokens,
+    isLoading: tokensLoading,
+    error: tokensError,
+  } = useTokensByAssetIds(
+    props.chainId ? camelToSnakeCase(props.chainId) : paseoAssetHub.id,
+    props.assetIds
+  );
+
+  console.log({
+    assets,
+    chainId: props.chainId,
+    assetIds: props.assetIds,
+    chainTokens,
+    tokensLoading,
+    tokensError,
   });
   const { connectedAccount } = useTypink();
 
