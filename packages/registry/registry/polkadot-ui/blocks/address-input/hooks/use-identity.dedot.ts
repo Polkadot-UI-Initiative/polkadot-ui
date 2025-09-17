@@ -2,7 +2,10 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { hasPositiveIdentityJudgement } from "@/registry/polkadot-ui/lib/utils.dot-ui";
+import {
+  camelToSnakeCase,
+  hasPositiveIdentityJudgement,
+} from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import {
   usePolkadotClient,
   paseoPeople,
@@ -22,8 +25,9 @@ export function useIdentity(
   address: string,
   identityChain: NetworkId = paseoPeople.id
 ) {
-  const { client: peopleClient, status: peopleStatus } =
-    usePolkadotClient(identityChain);
+  const { client: peopleClient, status: peopleStatus } = usePolkadotClient(
+    identityChain ? camelToSnakeCase(identityChain) : paseoPeople.id
+  );
 
   return useQuery({
     queryKey: ["polkadot-identity-dedot", address, identityChain],

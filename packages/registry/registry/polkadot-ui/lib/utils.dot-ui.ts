@@ -198,3 +198,11 @@ export function formatPlanck(
     : integerPart;
   return isNegative ? `-${result}` : result;
 }
+
+export function camelToSnakeCase(str: string): string {
+  return str.replace(/([A-Z])/g, "_$1").toLowerCase();
+}
+
+export function snakeToCamelCase(str: string): string {
+  return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+}
