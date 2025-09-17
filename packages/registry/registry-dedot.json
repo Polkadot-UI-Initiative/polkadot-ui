@@ -4,6 +4,47 @@
   "homepage": "https://polkadot-ui.com",
   "items": [
     {
+      "name": "tx-button",
+      "type": "registry:component",
+      "title": "Tx Button (dedot)",
+      "description": "A button that triggers a transaction and shows status updates in a notification.",
+      "dependencies": [
+        "dedot",
+        "typink",
+        "lucide-react",
+        "@tanstack/react-query",
+        "class-variance-authority",
+        "sonner"
+      ],
+      "registryDependencies": ["button", "skeleton"],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/tx-button/components/tx-button.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/tx-button/components/tx-button.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dedot.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/tx-notification/components/tx-notification.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "tx-notification",
       "type": "registry:component",
       "title": "Tx Notification (dedot)",
@@ -47,47 +88,6 @@
         {
           "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
           "type": "registry:lib"
-        }
-      ]
-    },
-    {
-      "name": "tx-button",
-      "type": "registry:component",
-      "title": "Tx Button (dedot)",
-      "description": "A button that triggers a transaction and shows status updates in a notification.",
-      "dependencies": [
-        "dedot",
-        "typink",
-        "lucide-react",
-        "@tanstack/react-query",
-        "class-variance-authority",
-        "sonner"
-      ],
-      "registryDependencies": ["button", "skeleton"],
-      "files": [
-        {
-          "path": "registry/polkadot-ui/blocks/tx-button/components/tx-button.dedot.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/polkadot-ui/blocks/tx-button/components/tx-button.base.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "registry/polkadot-ui/lib/types.dedot.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
-          "type": "registry:lib"
-        },
-        {
-          "path": "registry/polkadot-ui/blocks/tx-notification/components/tx-notification.tsx",
-          "type": "registry:component"
         }
       ]
     },

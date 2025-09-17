@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Copy, Check } from "lucide-react";
+import dedotRegistry from "@/registry-dedot.json";
 
 const packageManagers = [
   {
@@ -64,22 +65,28 @@ const packageManagers = [
   },
 ];
 
-const blocks = [
-  "address-input",
-  "require-connection",
-  "tx-button",
-  "tx-notification",
-  "network-indicator",
-  "address-input",
-  "require-connection",
-  "require-account",
-];
+interface RegistryFile {
+  items?: Array<{
+    name?: string;
+    type?: string;
+  }>;
+}
 
 export function AnimatedCodeBlock() {
   const [activeTab, setActiveTab] = useState("npm");
   const [currentBlock, setCurrentBlock] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+
+  const blocks = useMemo(() => {
+    const reg = (dedotRegistry as RegistryFile) ?? { items: [] };
+    const names = (reg.items ?? [])
+      .filter(
+        (i) => i?.type === "registry:component" && typeof i?.name === "string"
+      )
+      .map((i) => i.name as string);
+    return Array.from(new Set(names));
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -91,12 +98,12 @@ export function AnimatedCodeBlock() {
     }, 4000); // Slower rotation - 4 seconds
 
     return () => clearInterval(interval);
-  }, []);
+  }, [blocks.length]);
 
   const currentCommand =
     packageManagers.find((pm) => pm.name === activeTab)?.command ||
     packageManagers[0].command;
-  const blockName = blocks[currentBlock];
+  const blockName = blocks[currentBlock] ?? "address-input";
   const fullCommand = `${currentCommand} ${blockName}`;
 
   const handleCopy = async () => {
