@@ -1,8 +1,11 @@
+import type React from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
-import { TokenMetadata } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-metadata.dedot";
-import { formatBalance } from "@/registry/polkadot-ui/lib/utils.dot-ui";
+import {
+  formatTokenBalance,
+  formatTokenPrice,
+} from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { TokenInfo } from "@/lib/hooks/use-chaindata-json";
 import { NetworkInfoLike } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import {
@@ -15,28 +18,26 @@ import {
 } from "@/components/ui/dialog";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import type React from "react";
 
 export interface SelectTokenDialogServices {
   isConnected: boolean;
   isLoading: boolean;
   isDisabled: boolean;
-  items: TokenMetadata[];
+  chainTokens: TokenInfo[];
   connectedAccount?: { address?: string } | null;
-  chainTokens?: TokenInfo[];
   network?: NetworkInfoLike;
+  balances?: Record<number, bigint | null>;
 }
 
-export interface SelectTokenDialogProps<TChainId extends string = string> {
-  chainId: TChainId;
+export interface SelectTokenDialogProps {
+  chainId: string;
   assetIds: number[];
   withBalance: boolean;
   services: SelectTokenDialogServices;
   fallback?: React.ReactNode;
 }
 
-export interface SelectTokenDialogBaseProps<TChainId extends string = string>
-  extends SelectTokenDialogProps<TChainId> {
+export interface SelectTokenDialogBaseProps extends SelectTokenDialogProps {
   value?: number;
   onChange?: (assetId: number) => void;
   className?: string;
@@ -118,7 +119,7 @@ function TokenLogoWithNetwork({
         <div
           className={cn(
             network,
-            "absolute -bottom-1 -right-1 rounded-full overflow-hidden border-2 border-white bg-white"
+            "absolute -bottom-1 -right-1 rounded-full overflow-hidden"
           )}
         >
           <>
@@ -135,7 +136,7 @@ function TokenLogoWithNetwork({
   );
 }
 
-export function SelectTokenDialogBase<TChainId extends string = string>({
+export function SelectTokenDialogBase({
   value,
   onChange,
   placeholder = "Select Token",
@@ -143,21 +144,19 @@ export function SelectTokenDialogBase<TChainId extends string = string>({
   withBalance,
   services,
   ...props
-}: SelectTokenDialogBaseProps<TChainId> & React.ComponentProps<typeof Button>) {
+}: SelectTokenDialogBaseProps & React.ComponentProps<typeof Button>) {
   const {
-    items,
     connectedAccount,
     isDisabled,
     isConnected,
     isLoading,
     chainTokens,
     network,
+    balances,
   } = services;
 
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedToken, setSelectedToken] = useState<TokenMetadata | null>(
-    null
-  );
+  const [selectedToken, setSelectedToken] = useState<TokenInfo | null>(null);
 
   // Helper function to get token logo from chainTokens
   const getTokenLogo = (assetId: number): string | undefined => {
@@ -175,10 +174,12 @@ export function SelectTokenDialogBase<TChainId extends string = string>({
 
   // Initialize selectedToken when items are loaded or value changes
   const displayToken = useMemo(() => {
-    if (items.length > 0) {
+    if (chainTokens && chainTokens.length > 0) {
       // If we have a value prop, try to find the matching token
       if (value != null) {
-        const foundToken = items.find((item) => item.assetId === value);
+        const foundToken = chainTokens.find(
+          (token) => Number(token.assetId) === (value as number)
+        );
         if (foundToken) {
           setSelectedToken(foundToken);
           return foundToken;
@@ -187,7 +188,7 @@ export function SelectTokenDialogBase<TChainId extends string = string>({
       // If we already have a selected token and it exists in items, keep it
       if (
         selectedToken &&
-        items.find((item) => item.assetId === selectedToken.assetId)
+        chainTokens.find((token) => token.id === selectedToken.id)
       ) {
         return selectedToken;
       }
@@ -195,24 +196,26 @@ export function SelectTokenDialogBase<TChainId extends string = string>({
       return null;
     }
     return null;
-  }, [value, items, selectedToken]);
+  }, [value, chainTokens, selectedToken]);
 
-  const handleTokenSelect = (token: TokenMetadata) => {
+  const handleTokenSelect = (token: TokenInfo) => {
     setSelectedToken(token);
-    onChange?.(token.assetId);
+    onChange?.(Number(token.id));
     setIsOpen(false);
   };
 
-  // Generate dummy balance for tokens
-  const generateDummyBalance = (assetId: number) => {
-    // Use assetId as seed for consistent dummy values
-    const seed = assetId * 123456789;
-    const balance = (seed % 100000) + 10000; // Random balance between 10,000 - 110,000
-    return BigInt(balance * Math.pow(10, 12)); // Convert to BigInt with 12 decimals
+  // Helper function to get actual balance for a token
+  const getTokenBalance = (assetId: number): bigint | null => {
+    if (!balances || !connectedAccount?.address) return null;
+    return balances[assetId] ?? null;
   };
 
   const isComponentDisabled =
-    isDisabled || !isConnected || (props.disabled ?? false) || isLoading;
+    isDisabled ||
+    !isConnected ||
+    (props.disabled ?? false) ||
+    isLoading ||
+    chainTokens?.length === 0;
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -221,7 +224,7 @@ export function SelectTokenDialogBase<TChainId extends string = string>({
           variant="outline"
           disabled={isComponentDisabled}
           className={cn(
-            "justify-between min-w-[140px] font-normal",
+            "justify-between min-w-[140px] font-normal py-5",
             !displayToken && "text-muted-foreground",
             className
           )}
@@ -231,23 +234,16 @@ export function SelectTokenDialogBase<TChainId extends string = string>({
             {displayToken ? (
               <>
                 <TokenLogoWithNetwork
-                  tokenLogo={getTokenLogo(displayToken.assetId)}
+                  tokenLogo={getTokenLogo(Number(displayToken.assetId))}
                   networkLogo={network?.logo}
                   tokenSymbol={displayToken.symbol}
                   size="sm"
                 />
                 <div className="flex flex-col items-start">
-                  <span className="font-medium">
-                    {displayToken.symbol ?? displayToken.name}
+                  <span className="font-medium">{displayToken.symbol}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {displayToken.name}
                   </span>
-                  {connectedAccount?.address && (
-                    <span className="text-xs text-muted-foreground">
-                      {formatBalance({
-                        value: generateDummyBalance(displayToken.assetId),
-                        decimals: displayToken.decimals ?? 12,
-                      })}
-                    </span>
-                  )}
                 </div>
               </>
             ) : (
@@ -270,11 +266,11 @@ export function SelectTokenDialogBase<TChainId extends string = string>({
           </DialogDescription>
         </DialogHeader>
         <div className="max-h-[400px] overflow-y-auto">
-          {items.map((token) => {
+          {chainTokens?.map((token) => {
             const isSelected = selectedToken?.assetId === token.assetId;
             return (
               <div
-                key={token.assetId}
+                key={token.id}
                 className={cn(
                   "w-full flex items-center gap-3 px-4 py-3 text-left transition-colors rounded-md border",
                   isSelected
@@ -284,7 +280,7 @@ export function SelectTokenDialogBase<TChainId extends string = string>({
                 onClick={() => handleTokenSelect(token)}
               >
                 <TokenLogoWithNetwork
-                  tokenLogo={getTokenLogo(token.assetId)}
+                  tokenLogo={getTokenLogo(Number(token.assetId))}
                   networkLogo={network?.logo}
                   tokenSymbol={token.symbol}
                   size="md"
@@ -296,10 +292,10 @@ export function SelectTokenDialogBase<TChainId extends string = string>({
                     </span>
                     {connectedAccount?.address && withBalance && (
                       <span className="text-sm font-medium">
-                        {formatBalance({
-                          value: generateDummyBalance(token.assetId),
-                          decimals: token.decimals ?? 12,
-                        })}
+                        {formatTokenBalance(
+                          getTokenBalance(Number(token.assetId)),
+                          token.decimals
+                        )}
                       </span>
                     )}
                   </div>
@@ -310,14 +306,10 @@ export function SelectTokenDialogBase<TChainId extends string = string>({
                     {connectedAccount?.address && withBalance && (
                       <span className="text-xs text-muted-foreground">
                         ≈ $
-                        {(
-                          Number(
-                            formatBalance({
-                              value: generateDummyBalance(token.assetId),
-                              decimals: token.decimals ?? 12,
-                            })
-                          ) * 6.5
-                        ).toFixed(2)}
+                        {formatTokenPrice(
+                          getTokenBalance(Number(token.assetId)),
+                          token.decimals
+                        )}
                       </span>
                     )}
                   </div>

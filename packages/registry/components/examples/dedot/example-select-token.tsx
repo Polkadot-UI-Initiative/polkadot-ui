@@ -12,7 +12,7 @@ export const selectTokenExample: ComponentExample = {
       {/* Asset Hub Paseo sample IDs from Substrate Assets explorer */}
       <SelectTokenWithProvider
         chainId={paseoAssetHub.id}
-        assetIds={[1984, 8, 27]}
+        assetIds={[1984, 1337, 7777]}
         className="w-full"
         withBalance
         disabled={false}

@@ -11,6 +11,7 @@ export interface TokenInfo {
   symbol: string;
   decimals: number;
   name: string;
+  assetId: string;
   coingeckoId?: string;
   logo?: string;
 }
@@ -74,8 +75,6 @@ export function useChaindata(): UseChaindataResult {
         }
 
         const chaindata: ChaindataResponse = await response.json();
-
-        console.log("Fetched chaindata:", chaindata);
 
         if (isMounted) {
           setData({
@@ -192,14 +191,11 @@ export function useTokensByAssetIds(chainId: string, assetIds: number[]) {
       generateTokenId(chainId, String(assetId))
     );
 
-    console.log("Expected token IDs:", expectedTokenIds);
-
     // Filter tokens that match the expected token IDs
     const matchedTokens = tokens.filter((token) =>
       expectedTokenIds.includes(token.id)
     );
 
-    console.log("Matched tokens:", matchedTokens);
     setFilteredTokens(matchedTokens);
   }, [chainId, assetIds, tokens]);
 

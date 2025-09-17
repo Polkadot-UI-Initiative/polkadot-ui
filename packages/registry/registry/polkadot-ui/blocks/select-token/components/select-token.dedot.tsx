@@ -2,9 +2,12 @@
 
 import { useMemo } from "react";
 import type React from "react";
-import { Select } from "@/components/ui/select";
+import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { ClientConnectionStatus, usePolkadotClient, useTypink } from "typink";
 import { useAssetMetadata } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-metadata.dedot";
+import { useAssetBalances } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-balance.dedot";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   type SelectTokenBaseProps,
@@ -28,29 +31,28 @@ export function SelectTokenInner(props: SelectTokenProps) {
     assetIds: props.assetIds,
   });
 
-  const {
-    tokens: chainTokens,
-    isLoading: tokensLoading,
-    error: tokensError,
-  } = useTokensByAssetIds(
+  const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
     props.chainId ? camelToSnakeCase(props.chainId) : paseoAssetHub.id,
     props.assetIds
   );
-
-  console.log({
-    assets,
-    chainId: props.chainId,
+  const { connectedAccount, supportedNetworks } = useTypink();
+  const { isLoading: tokenBalancesLoading, balances } = useAssetBalances({
+    chainId: props.chainId ? camelToSnakeCase(props.chainId) : paseoAssetHub.id,
     assetIds: props.assetIds,
-    chainTokens,
-    tokensLoading,
-    tokensError,
+    address: connectedAccount?.address ?? "",
   });
-  const { connectedAccount } = useTypink();
+
+  // Get network info for network logo (similar to network-indicator)
+  const network = supportedNetworks.find(
+    (n) =>
+      n.id ===
+      (props.chainId ? camelToSnakeCase(props.chainId) : paseoAssetHub.id)
+  );
 
   const services = useMemo(
     () => ({
       isConnected: status === ClientConnectionStatus.Connected,
-      isLoading,
+      isLoading: isLoading || tokensLoading || tokenBalancesLoading,
       items: assets ?? [],
       connectedAccount,
       isDisabled:
@@ -58,24 +60,49 @@ export function SelectTokenInner(props: SelectTokenProps) {
         status !== ClientConnectionStatus.Connected ||
         !client ||
         props.assetIds.length === 0,
+      chainTokens: chainTokens ?? [],
+      balances,
+      network,
     }),
     [
       status,
       isLoading,
+      tokensLoading,
+      tokenBalancesLoading,
       assets,
       connectedAccount,
       props.disabled,
       client,
       props.assetIds,
+      chainTokens,
+      balances,
+      network,
     ]
   );
 
   return <SelectTokenBase {...props} services={services} />;
 }
 
+function SelectTokenFallback(props: SelectTokenProps) {
+  return (
+    <Select disabled>
+      <SelectTrigger
+        className={cn("min-w-[140px] text-muted-foreground", props.className)}
+      >
+        <div className="flex items-center gap-2">
+          {/* Loading skeleton for token logo */}
+          <div className="w-5 h-5 bg-muted rounded-full animate-pulse" />
+          <SelectValue placeholder="Loading tokens..." />
+        </div>
+        <Loader2 className="h-4 w-4 animate-spin ml-auto" />
+      </SelectTrigger>
+    </Select>
+  );
+}
+
 export function SelectToken(props: SelectTokenProps) {
   return (
-    <ClientOnly fallback={<Select {...props} />}>
+    <ClientOnly fallback={<SelectTokenFallback {...props} />}>
       <SelectTokenInner {...props} />
     </ClientOnly>
   );

@@ -247,3 +247,44 @@ export function parseTokenId(
     assetId: parts[2],
   };
 }
+
+/**
+ * Format token balance with proper handling of null values
+ * @param balance - Token balance in bigint format
+ * @param decimals - Number of decimals for the token
+ * @returns Formatted balance string or "0" if balance is null
+ */
+export function formatTokenBalance(
+  balance: bigint | null,
+  decimals: number = 12
+): string {
+  if (balance === null) return "0";
+
+  return formatBalance({
+    value: balance,
+    decimals,
+  });
+}
+
+/**
+ * Convert token balance to USD price using a conversion rate
+ * @param balance - Token balance in bigint format
+ * @param decimals - Number of decimals for the token
+ * @param conversionRate - USD conversion rate (default: 6.5)
+ * @returns Formatted USD price string or "0.00" if balance is null
+ */
+export function formatTokenPrice(
+  balance: bigint | null,
+  decimals: number = 12,
+  //TODO: create a hook to get the conversion rate from API call
+  conversionRate: number = 6.5
+): string {
+  if (balance === null) return "0.00";
+
+  const formattedBalance = formatBalance({
+    value: balance,
+    decimals,
+  });
+
+  return (Number(formattedBalance) * conversionRate).toFixed(2);
+}
