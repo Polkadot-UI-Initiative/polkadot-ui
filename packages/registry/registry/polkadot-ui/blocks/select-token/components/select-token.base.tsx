@@ -1,66 +1,86 @@
-"use client";
-
-import { useMemo } from "react";
-import type React from "react";
 import {
   Select,
-  SelectContent,
-  SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectContent,
+  SelectItem,
 } from "@/components/ui/select";
-import { ClientConnectionStatus, usePolkadotClient, useTypink } from "typink";
-import { useAssetMetadata } from "./hooks/use-asset-metadata.dedot";
-import { useAssetBalance } from "./hooks/use-asset-balance.dedot";
 import { Loader2 } from "lucide-react";
-import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
-import { formatBalance } from "../../lib/utils.dot-ui";
+import { useAssetBalance } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-balance.dedot";
+import { formatBalance } from "@/registry/polkadot-ui/lib/utils.dot-ui";
+import { TokenMetadata } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-metadata.dedot";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-export function SelectToken(
-  props: SelectTokenProps & React.ComponentProps<typeof Select>
-) {
+export interface SelectTokenServices {
+  isConnected: boolean;
+  isLoading: boolean;
+  isDisabled: boolean;
+  items: TokenMetadata[];
+  connectedAccount?: { address?: string } | null;
+}
+
+export interface SelectTokenProps<TChainId extends string = string> {
+  chainId: TChainId;
+  assetIds: number[];
+  withBalance: boolean;
+  services: SelectTokenServices;
+  fallback?: React.ReactNode;
+}
+
+export interface SelectTokenBaseProps<TChainId extends string = string>
+  extends SelectTokenProps<TChainId> {
+  value?: number;
+  onChange?: (assetId: number) => void;
+  placeholder?: string;
+  className?: string;
+}
+
+export interface SelectTokenProviderProps {
+  children: React.ReactNode;
+  queryClient?: QueryClient;
+}
+
+const defaultQueryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    },
+  },
+});
+
+export function SelectTokenProvider({
+  children,
+  queryClient = defaultQueryClient,
+}: SelectTokenProviderProps) {
   return (
-    <ClientOnly fallback={<Select {...props} />}>
-      <SelectTokenInner {...props} />
-    </ClientOnly>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 }
 
-export function SelectTokenInner({
+export function SelectTokenBase<TChainId extends string = string>({
   chainId,
-  assetIds,
   value,
   onChange,
   placeholder = "Select token",
-  withBalance = false,
   className,
-  ...selectProps
-}: SelectTokenProps & React.ComponentProps<typeof Select>) {
-  const { client, status } = usePolkadotClient(chainId);
-
-  const isConnected = status === ClientConnectionStatus.Connected;
-  const isDisabled =
-    (selectProps.disabled ?? false) ||
-    !isConnected ||
-    !client ||
-    assetIds.length === 0;
-
-  const { assets, isLoading } = useAssetMetadata({ chainId, assetIds });
-  const items = useMemo(() => assets ?? [], [assets]);
-  const { connectedAccount } = useTypink();
+  withBalance,
+  services,
+  ...props
+}: SelectTokenBaseProps<TChainId> & React.ComponentProps<typeof Select>) {
+  const { isConnected, isLoading, items, connectedAccount, isDisabled } =
+    services;
 
   const handleValueChange = (v: string) => {
-    selectProps.onValueChange?.(v);
+    props.onValueChange?.(v);
     onChange?.(Number(v));
   };
 
   return (
     <Select
-      {...selectProps}
+      {...props}
       value={
-        value != null
-          ? String(value)
-          : (selectProps as { value?: string }).value
+        value != null ? String(value) : (props as { value?: string }).value
       }
       onValueChange={handleValueChange}
       disabled={isDisabled || isLoading}
@@ -91,16 +111,7 @@ export function SelectTokenInner({
   );
 }
 
-export interface SelectTokenProps {
-  chainId: string;
-  assetIds: number[];
-  value?: number;
-  onChange?: (assetId: number) => void;
-  placeholder?: string;
-  disabled?: boolean;
-  className?: string;
-  withBalance?: boolean;
-}
+SelectTokenBase.displayName = "SelectTokenBase";
 
 function TokenSelectItem({
   assetId,
