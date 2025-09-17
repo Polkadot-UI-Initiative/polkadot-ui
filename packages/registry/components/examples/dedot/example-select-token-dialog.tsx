@@ -12,7 +12,7 @@ export const selectTokenDialogExample: ComponentExample = {
       {/* Asset Hub Paseo sample IDs from Substrate Assets explorer */}
       <SelectTokenDialogWithProvider
         chainId={paseoAssetHub.id}
-        assetIds={[1984, 8, 27]}
+        assetIds={[1984, 1337, 7777]}
         className="w-full"
         withBalance
         disabled={false}

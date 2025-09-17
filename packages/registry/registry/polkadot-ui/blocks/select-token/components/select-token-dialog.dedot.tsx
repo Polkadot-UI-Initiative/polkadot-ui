@@ -14,6 +14,7 @@ import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.d
 import { paseoAssetHub } from "typink";
 import { camelToSnakeCase } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { Button } from "@/components/ui/button";
+import { useTokensByAssetIds } from "@/lib/hooks/use-chaindata-json";
 
 export type SelectTokenDialogProps = Omit<
   SelectTokenDialogBaseProps,
@@ -29,20 +30,45 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
     chainId: props.chainId,
     assetIds: props.assetIds,
   });
-  const { connectedAccount } = useTypink();
+  const { connectedAccount, supportedNetworks } = useTypink();
+
+  // Get chainTokens from chaindata for token logos
+  const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
+    props.chainId ? camelToSnakeCase(props.chainId) : paseoAssetHub.id,
+    props.assetIds
+  );
+
+  // Get network info for network logo (similar to network-indicator)
+  const network = supportedNetworks.find(
+    (n) =>
+      n.id ===
+      (props.chainId ? camelToSnakeCase(props.chainId) : paseoAssetHub.id)
+  );
 
   const services = useMemo(
     () => ({
       isConnected: status === ClientConnectionStatus.Connected,
-      isLoading,
+      isLoading: isLoading || tokensLoading,
       items: assets ?? [],
       connectedAccount,
       isDisabled:
         status !== ClientConnectionStatus.Connected ||
         !client ||
         props.assetIds.length === 0,
+      chainTokens: chainTokens ?? [],
+      network,
     }),
-    [status, isLoading, assets, connectedAccount, client, props.assetIds]
+    [
+      status,
+      isLoading,
+      tokensLoading,
+      assets,
+      connectedAccount,
+      client,
+      props.assetIds,
+      chainTokens,
+      network,
+    ]
   );
 
   return <SelectTokenDialogBase {...props} services={services} />;

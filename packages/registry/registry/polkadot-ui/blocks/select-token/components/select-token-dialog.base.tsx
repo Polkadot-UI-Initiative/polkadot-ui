@@ -3,6 +3,8 @@ import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
 import { TokenMetadata } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-metadata.dedot";
 import { formatBalance } from "@/registry/polkadot-ui/lib/utils.dot-ui";
+import { TokenInfo } from "@/lib/hooks/use-chaindata-json";
+import { NetworkInfoLike } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import {
   Dialog,
   DialogTrigger,
@@ -21,6 +23,8 @@ export interface SelectTokenDialogServices {
   isDisabled: boolean;
   items: TokenMetadata[];
   connectedAccount?: { address?: string } | null;
+  chainTokens?: TokenInfo[];
+  network?: NetworkInfoLike;
 }
 
 export interface SelectTokenDialogProps<TChainId extends string = string> {
@@ -62,8 +66,76 @@ export function SelectTokenDialogProvider({
   );
 }
 
+// Token logo with network overlay component
+interface TokenLogoWithNetworkProps {
+  tokenLogo?: string;
+  networkLogo?: string;
+  tokenSymbol?: string;
+  size?: "sm" | "md" | "lg";
+  className?: string;
+}
+
+function TokenLogoWithNetwork({
+  tokenLogo,
+  networkLogo,
+  tokenSymbol,
+  size = "md",
+  className,
+}: TokenLogoWithNetworkProps) {
+  const sizeClasses = {
+    sm: { main: "w-5 h-5", network: "w-[10px] h-[10px]", text: "text-xs" },
+    md: { main: "w-8 h-8", network: "w-4 h-4", text: "text-sm" },
+    lg: { main: "w-12 h-12", network: "w-6 h-6", text: "text-base" },
+  };
+
+  const { main, network, text } = sizeClasses[size];
+
+  return (
+    <div className={cn("relative flex-shrink-0", className)}>
+      {/* Main token logo (4x size) */}
+      <div className={cn(main, "rounded-full overflow-hidden")}>
+        {tokenLogo ? (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={tokenLogo}
+              alt={tokenSymbol || "Token"}
+              className="w-full h-full object-cover"
+            />
+          </>
+        ) : (
+          // Fallback gradient with symbol
+          <div className="w-full h-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center">
+            <span className={cn("font-bold text-white", text)}>
+              {tokenSymbol?.[0] || "?"}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Network logo overlay (1x size, positioned at bottom-right) */}
+      {networkLogo && (
+        <div
+          className={cn(
+            network,
+            "absolute -bottom-1 -right-1 rounded-full overflow-hidden border-2 border-white bg-white"
+          )}
+        >
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={networkLogo}
+              alt="Network"
+              className="w-full h-full object-cover"
+            />
+          </>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function SelectTokenDialogBase<TChainId extends string = string>({
-  chainId,
   value,
   onChange,
   placeholder = "Select Token",
@@ -72,13 +144,34 @@ export function SelectTokenDialogBase<TChainId extends string = string>({
   services,
   ...props
 }: SelectTokenDialogBaseProps<TChainId> & React.ComponentProps<typeof Button>) {
-  const { items, connectedAccount, isDisabled, isConnected, isLoading } =
-    services;
+  const {
+    items,
+    connectedAccount,
+    isDisabled,
+    isConnected,
+    isLoading,
+    chainTokens,
+    network,
+  } = services;
 
   const [isOpen, setIsOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState<TokenMetadata | null>(
     null
   );
+
+  // Helper function to get token logo from chainTokens
+  const getTokenLogo = (assetId: number): string | undefined => {
+    if (!chainTokens) return undefined;
+    const chainToken = chainTokens.find((token) => {
+      // Extract assetId from token.id (format: chainId:substrate-assets:assetId)
+      const parts = token.id.split(":");
+      if (parts.length === 3 && parts[1] === "substrate-assets") {
+        return parseInt(parts[2]) === assetId;
+      }
+      return false;
+    });
+    return chainToken?.logo;
+  };
 
   // Initialize selectedToken when items are loaded or value changes
   const displayToken = useMemo(() => {
@@ -137,11 +230,12 @@ export function SelectTokenDialogBase<TChainId extends string = string>({
           <div className="flex items-center gap-2">
             {displayToken ? (
               <>
-                <div className="w-5 h-5 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center">
-                  <span className="text-xs font-bold text-white">
-                    {displayToken.symbol?.[0]}
-                  </span>
-                </div>
+                <TokenLogoWithNetwork
+                  tokenLogo={getTokenLogo(displayToken.assetId)}
+                  networkLogo={network?.logo}
+                  tokenSymbol={displayToken.symbol}
+                  size="sm"
+                />
                 <div className="flex flex-col items-start">
                   <span className="font-medium">
                     {displayToken.symbol ?? displayToken.name}
@@ -189,11 +283,12 @@ export function SelectTokenDialogBase<TChainId extends string = string>({
                 )}
                 onClick={() => handleTokenSelect(token)}
               >
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center flex-shrink-0">
-                  <span className="text-sm font-bold text-white">
-                    {token.symbol?.[0]}
-                  </span>
-                </div>
+                <TokenLogoWithNetwork
+                  tokenLogo={getTokenLogo(token.assetId)}
+                  networkLogo={network?.logo}
+                  tokenSymbol={token.symbol}
+                  size="md"
+                />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
                     <span className="font-medium">
