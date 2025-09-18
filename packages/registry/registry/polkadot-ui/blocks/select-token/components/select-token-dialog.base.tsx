@@ -187,7 +187,7 @@ export function SelectTokenDialogBase({
 
   const handleTokenSelect = (token: TokenInfo) => {
     setSelectedToken(token);
-    onChange?.(Number(token.id));
+    onChange?.(Number(token.assetId));
     setIsOpen(false);
   };
 
