@@ -203,13 +203,13 @@ export function SelectTokenDialogBase({
       <DialogTrigger asChild>
         <Button
           variant="outline"
+          {...props}
           disabled={isComponentDisabled}
           className={cn(
             tokenSelectionStyles.trigger.base,
             !displayToken && tokenSelectionStyles.trigger.placeholder,
             className
           )}
-          {...props}
         >
           <div className={tokenSelectionStyles.trigger.content}>
             {displayToken ? (
