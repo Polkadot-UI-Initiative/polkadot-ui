@@ -1,9 +1,10 @@
 /**
- * Simple React hook for fetching chaindata directly from GitHub JSON
+ * React hook for fetching chaindata directly from GitHub JSON
  * This fetches from https://raw.githubusercontent.com/TalismanSociety/chaindata/main/pub/v4/chaindata.json
  */
 
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { generateTokenId } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 
 export interface TokenInfo {
@@ -43,147 +44,90 @@ export interface UseChaindataResult {
   tokens: TokenInfo[];
   isLoading: boolean;
   error: string | null;
+  isError: boolean;
+  isRetrying: boolean;
+  failureCount: number;
 }
 
 const CHAINDATA_URL =
   "https://raw.githubusercontent.com/TalismanSociety/chaindata/main/pub/v4/chaindata.json";
 
+// Fetch function with timeout and abort signal support
+const fetchChaindata = async ({
+  signal,
+}: {
+  signal?: AbortSignal;
+}): Promise<ChaindataResponse> => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+
+  // Combine external abort signal with timeout
+  if (signal) {
+    signal.addEventListener("abort", () => controller.abort());
+  }
+
+  try {
+    const response = await fetch(CHAINDATA_URL, {
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    clearTimeout(timeoutId);
+    throw error;
+  }
+};
+
 /**
- * Hook to fetch chaindata from GitHub JSON
+ * Fetch chaindata from GitHub JSON
  */
 export function useChaindata(): UseChaindataResult {
-  const [data, setData] = useState<UseChaindataResult>({
-    chains: [],
-    tokens: [],
-    isLoading: true,
-    error: null,
-  });
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchChaindata = async () => {
-      try {
-        setData((prev) => ({ ...prev, isLoading: true, error: null }));
-
-        const response = await fetch(CHAINDATA_URL);
-
-        if (!response.ok) {
-          throw new Error(
-            `Failed to fetch chaindata: ${response.status} ${response.statusText}`
-          );
-        }
-
-        const chaindata: ChaindataResponse = await response.json();
-
-        if (isMounted) {
-          setData({
-            chains: chaindata.networks || [],
-            tokens: chaindata.tokens || [],
-            isLoading: false,
-            error: null,
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching chaindata:", error);
-        if (isMounted) {
-          setData((prev) => ({
-            ...prev,
-            isLoading: false,
-            error: error instanceof Error ? error.message : "Unknown error",
-          }));
-        }
-      }
-    };
-
-    fetchChaindata();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  return data;
-}
-
-/**
- * Hook to get tokens for a specific chain
- */
-export function useTokensForChain(chainId?: string) {
-  const { chains, tokens, isLoading, error } = useChaindata();
-
-  const [filteredTokens, setFilteredTokens] = useState<TokenInfo[]>([]);
-
-  useEffect(() => {
-    if (!chainId || !tokens.length) {
-      setFilteredTokens([]);
-      return;
-    }
-
-    // Filter tokens that belong to the specified chain
-    // This assumes token IDs follow a pattern like "chainId:token-type" or similar
-    const chainTokens = tokens.filter(
-      (token) =>
-        token.id.startsWith(chainId + ":") || token.id.includes(chainId)
-    );
-
-    setFilteredTokens(chainTokens);
-  }, [chainId, tokens]);
+  const { data, isLoading, error, isError, failureCount, isRefetching } =
+    useQuery({
+      queryKey: ["chaindata"],
+      queryFn: fetchChaindata,
+      retry: 3,
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000), // Exponential backoff
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: true,
+    });
 
   return {
-    tokens: filteredTokens,
-    allTokens: tokens,
-    chains,
+    chains: data?.networks || [],
+    tokens: data?.tokens || [],
     isLoading,
-    error,
+    error: error
+      ? error instanceof Error
+        ? error.message
+        : String(error)
+      : null,
+    isError,
+    isRetrying: isRefetching,
+    failureCount,
   };
 }
 
 /**
- * Hook to search tokens by symbol or name
- */
-export function useTokenSearch(query: string) {
-  const { tokens, isLoading, error } = useChaindata();
-
-  const [searchResults, setSearchResults] = useState<TokenInfo[]>([]);
-
-  useEffect(() => {
-    if (!query.trim() || !tokens.length) {
-      setSearchResults([]);
-      return;
-    }
-
-    const lowerQuery = query.toLowerCase();
-    const results = tokens.filter(
-      (token) =>
-        token.symbol.toLowerCase().includes(lowerQuery) ||
-        token.name.toLowerCase().includes(lowerQuery) ||
-        token.id.toLowerCase().includes(lowerQuery)
-    );
-
-    setSearchResults(results);
-  }, [query, tokens]);
-
-  return {
-    results: searchResults,
-    isLoading,
-    error,
-  };
-}
-
-/**
- * Hook to get specific tokens by assetIds for a chain
+ * Get specific tokens by assetIds for a chain
  * Filters tokens using the pattern: chainId:substrate-assets:assetId
+ * This won't grab the native token for the chain
  */
 export function useTokensByAssetIds(chainId: string, assetIds: number[]) {
-  const { tokens, isLoading, error } = useChaindata();
+  const { tokens, isLoading, error, isError, isRetrying, failureCount } =
+    useChaindata();
 
-  const [filteredTokens, setFilteredTokens] = useState<TokenInfo[]>([]);
-
-  useEffect(() => {
+  // Memoize the filtered tokens calculation
+  const filteredTokens = useMemo(() => {
     if (!chainId || !assetIds.length || !tokens.length) {
-      setFilteredTokens([]);
-      return;
+      return [];
     }
 
     // Convert assetIds to strings and generate expected token IDs
@@ -192,16 +136,15 @@ export function useTokensByAssetIds(chainId: string, assetIds: number[]) {
     );
 
     // Filter tokens that match the expected token IDs
-    const matchedTokens = tokens.filter((token) =>
-      expectedTokenIds.includes(token.id)
-    );
-
-    setFilteredTokens(matchedTokens);
+    return tokens.filter((token) => expectedTokenIds.includes(token.id));
   }, [chainId, assetIds, tokens]);
 
   return {
     tokens: filteredTokens,
     isLoading,
     error,
+    isError,
+    isRetrying,
+    failureCount,
   };
 }
