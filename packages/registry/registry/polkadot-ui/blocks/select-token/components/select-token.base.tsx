@@ -241,10 +241,10 @@ function TokenSelectItem({
           size="sm"
         />
         <span className="font-medium">
-          {token.symbol}{" "}
           {connectedAccount?.address &&
             withBalance &&
-            formatTokenBalance(balance, token.decimals)}
+            formatTokenBalance(balance, token.decimals)}{" "}
+          {token.symbol}
         </span>
       </div>
     </SelectItem>

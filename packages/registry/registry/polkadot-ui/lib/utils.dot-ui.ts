@@ -1,5 +1,13 @@
 import { decodeAddress, encodeAddress } from "@polkadot/keyring";
 import { ethers } from "ethers";
+import type { TokenInfo } from "@/lib/hooks/use-chaindata-json";
+
+export interface TokenMetadata {
+  assetId: number;
+  name: string;
+  symbol: string;
+  decimals: number;
+}
 
 // Helper function to safely extract text from papi encoded types
 export const extractText = (value: unknown): string | undefined => {
@@ -270,14 +278,14 @@ export function formatTokenBalance(
  * Convert token balance to USD price using a conversion rate
  * @param balance - Token balance in bigint format
  * @param decimals - Number of decimals for the token
- * @param conversionRate - USD conversion rate (default: 6.5)
+ * @param conversionRate - USD conversion rate (default: 1 for stablecoins)
  * @returns Formatted USD price string or "0.00" if balance is null
  */
 export function formatTokenPrice(
   balance: bigint | null,
   decimals: number = 12,
   //TODO: create a hook to get the conversion rate from API call
-  conversionRate: number = 6.5
+  conversionRate: number = 1
 ): string {
   if (balance === null) return "0.00";
 
@@ -287,4 +295,39 @@ export function formatTokenPrice(
   });
 
   return (Number(formattedBalance) * conversionRate).toFixed(2);
+}
+
+/**
+ * Create default chain tokens from asset metadata
+ * This ensures we always have token data even when chaindata is incomplete
+ */
+export function createDefaultChainTokens(
+  assets: TokenMetadata[],
+  chainId: string
+): TokenInfo[] {
+  return assets.map((asset) => ({
+    id: generateTokenId(chainId, String(asset.assetId)),
+    symbol: asset.symbol,
+    decimals: asset.decimals,
+    name: asset.name,
+    assetId: String(asset.assetId),
+  }));
+}
+
+/**
+ * Merge default tokens with chaindata tokens, preferring chaindata when available
+ * This ensures we always have the same number of tokens as assetIds
+ */
+export function mergeWithChaindataTokens(
+  defaultTokens: TokenInfo[],
+  chaindataTokens: TokenInfo[]
+): TokenInfo[] {
+  return defaultTokens.map((defaultToken) => {
+    // Find matching token from chaindata by assetId
+    const chaindataToken = chaindataTokens.find(
+      (token) => token.assetId === defaultToken.assetId
+    );
+    // Use chaindata token if found, otherwise use default
+    return chaindataToken || defaultToken;
+  });
 }

@@ -13,7 +13,11 @@ import {
 } from "./select-token-dialog.base";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { paseoAssetHub } from "typink";
-import { camelToSnakeCase } from "@/registry/polkadot-ui/lib/utils.dot-ui";
+import {
+  camelToSnakeCase,
+  createDefaultChainTokens,
+  mergeWithChaindataTokens,
+} from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { Button } from "@/components/ui/button";
 import { useTokensByAssetIds } from "@/lib/hooks/use-chaindata-json";
 import { Loader2 } from "lucide-react";
@@ -29,7 +33,7 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
   const { client, status } = usePolkadotClient(
     props.chainId ? camelToSnakeCase(props.chainId) : paseoAssetHub.id
   );
-  const { isLoading } = useAssetMetadata({
+  const { assets, isLoading } = useAssetMetadata({
     chainId: props.chainId,
     assetIds: props.assetIds,
   });
@@ -53,8 +57,17 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
       (props.chainId ? camelToSnakeCase(props.chainId) : paseoAssetHub.id)
   );
 
-  const services = useMemo(
-    () => ({
+  const services = useMemo(() => {
+    const chainIdForTokens = props.chainId
+      ? camelToSnakeCase(props.chainId)
+      : paseoAssetHub.id;
+    const defaultTokens = createDefaultChainTokens(assets, chainIdForTokens);
+    const finalTokens = mergeWithChaindataTokens(
+      defaultTokens,
+      chainTokens ?? []
+    );
+
+    return {
       isConnected: status === ClientConnectionStatus.Connected,
       isLoading: isLoading || tokensLoading || tokenBalancesLoading,
       connectedAccount,
@@ -62,23 +75,24 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
         status !== ClientConnectionStatus.Connected ||
         !client ||
         props.assetIds.length === 0,
-      chainTokens: chainTokens ?? [],
+      chainTokens: finalTokens,
       network,
       balances,
-    }),
-    [
-      status,
-      isLoading,
-      tokensLoading,
-      tokenBalancesLoading,
-      connectedAccount,
-      client,
-      props.assetIds,
-      chainTokens,
-      network,
-      balances,
-    ]
-  );
+    };
+  }, [
+    status,
+    isLoading,
+    tokensLoading,
+    tokenBalancesLoading,
+    connectedAccount,
+    client,
+    props.assetIds,
+    props.chainId,
+    chainTokens,
+    assets,
+    network,
+    balances,
+  ]);
 
   return <SelectTokenDialogBase {...props} services={services} />;
 }

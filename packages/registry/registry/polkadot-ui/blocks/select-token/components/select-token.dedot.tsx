@@ -16,7 +16,11 @@ import {
 } from "./select-token.base";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { paseoAssetHub } from "typink";
-import { camelToSnakeCase } from "@/registry/polkadot-ui/lib/utils.dot-ui";
+import {
+  camelToSnakeCase,
+  createDefaultChainTokens,
+  mergeWithChaindataTokens,
+} from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { useTokensByAssetIds } from "@/lib/hooks/use-chaindata-json";
 
 export type SelectTokenProps = Omit<SelectTokenBaseProps, "services"> &
@@ -49,8 +53,20 @@ export function SelectTokenInner(props: SelectTokenProps) {
       (props.chainId ? camelToSnakeCase(props.chainId) : paseoAssetHub.id)
   );
 
-  const services = useMemo(
-    () => ({
+  const services = useMemo(() => {
+    const chainIdForTokens = props.chainId
+      ? camelToSnakeCase(props.chainId)
+      : paseoAssetHub.id;
+    const defaultTokens = createDefaultChainTokens(
+      assets ?? [],
+      chainIdForTokens
+    );
+    const finalTokens = mergeWithChaindataTokens(
+      defaultTokens,
+      chainTokens ?? []
+    );
+
+    return {
       isConnected: status === ClientConnectionStatus.Connected,
       isLoading: isLoading || tokensLoading || tokenBalancesLoading,
       items: assets ?? [],
@@ -60,25 +76,25 @@ export function SelectTokenInner(props: SelectTokenProps) {
         status !== ClientConnectionStatus.Connected ||
         !client ||
         props.assetIds.length === 0,
-      chainTokens: chainTokens ?? [],
+      chainTokens: finalTokens,
       balances,
       network,
-    }),
-    [
-      status,
-      isLoading,
-      tokensLoading,
-      tokenBalancesLoading,
-      assets,
-      connectedAccount,
-      props.disabled,
-      client,
-      props.assetIds,
-      chainTokens,
-      balances,
-      network,
-    ]
-  );
+    };
+  }, [
+    status,
+    isLoading,
+    tokensLoading,
+    tokenBalancesLoading,
+    assets,
+    connectedAccount,
+    props.disabled,
+    props.chainId,
+    client,
+    props.assetIds,
+    chainTokens,
+    balances,
+    network,
+  ]);
 
   return <SelectTokenBase {...props} services={services} />;
 }
