@@ -19,7 +19,7 @@ import {
   mergeWithChaindataTokens,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { Button } from "@/components/ui/button";
-import { useTokensByAssetIds } from "@/lib/hooks/use-chaindata-json";
+import { useTokensByAssetIds } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-chaindata-json.dedot";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 

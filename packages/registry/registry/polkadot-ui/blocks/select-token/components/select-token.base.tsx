@@ -13,7 +13,7 @@ import {
   getTokenBalance,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { TokenMetadata } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-metadata.dedot";
-import { TokenInfo } from "@/lib/hooks/use-chaindata-json";
+import { TokenInfo } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-chaindata-json.dedot";
 import { NetworkInfoLike } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { TokenLogoWithNetwork } from "./shared-token-components";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";

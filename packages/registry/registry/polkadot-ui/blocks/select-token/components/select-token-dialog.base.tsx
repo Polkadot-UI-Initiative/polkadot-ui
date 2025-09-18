@@ -12,7 +12,7 @@ import {
   TokenLogoWithNetwork,
   tokenSelectionStyles,
 } from "./shared-token-components";
-import { TokenInfo } from "@/lib/hooks/use-chaindata-json";
+import { TokenInfo } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-chaindata-json.dedot";
 import { NetworkInfoLike } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import {
   Dialog,

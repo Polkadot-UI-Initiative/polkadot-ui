@@ -21,7 +21,7 @@ import {
   createDefaultChainTokens,
   mergeWithChaindataTokens,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { useTokensByAssetIds } from "@/lib/hooks/use-chaindata-json";
+import { useTokensByAssetIds } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-chaindata-json.dedot";
 
 export type SelectTokenProps = Omit<SelectTokenBaseProps, "services"> &
   React.ComponentProps<typeof Select>;
