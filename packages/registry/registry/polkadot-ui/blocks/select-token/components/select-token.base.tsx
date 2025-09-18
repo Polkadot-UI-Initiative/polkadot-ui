@@ -7,11 +7,15 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { formatTokenBalance } from "@/registry/polkadot-ui/lib/utils.dot-ui";
+import {
+  formatTokenBalance,
+  getTokenLogo,
+  getTokenBalance,
+} from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { TokenMetadata } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-metadata.dedot";
 import { TokenInfo } from "@/lib/hooks/use-chaindata-json";
 import { NetworkInfoLike } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import { TokenLogoWithNetwork } from "./shared-token-components";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export interface SelectTokenServices {
@@ -64,75 +68,6 @@ export function SelectTokenProvider({
   );
 }
 
-// Token logo with network overlay component
-interface TokenLogoWithNetworkProps {
-  tokenLogo?: string;
-  networkLogo?: string;
-  tokenSymbol?: string;
-  size?: "sm" | "md" | "lg";
-  className?: string;
-}
-
-function TokenLogoWithNetwork({
-  tokenLogo,
-  networkLogo,
-  tokenSymbol,
-  size = "md",
-  className,
-}: TokenLogoWithNetworkProps) {
-  const sizeClasses = {
-    sm: { main: "w-5 h-5", network: "w-[10px] h-[10px]", text: "text-xs" },
-    md: { main: "w-8 h-8", network: "w-4 h-4", text: "text-sm" },
-    lg: { main: "w-12 h-12", network: "w-6 h-6", text: "text-base" },
-  };
-
-  const { main, network, text } = sizeClasses[size];
-
-  return (
-    <div className={cn("relative flex-shrink-0", className)}>
-      {/* Main token logo */}
-      <div className={cn(main, "rounded-full overflow-hidden")}>
-        {tokenLogo ? (
-          <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={tokenLogo}
-              alt={tokenSymbol || "Token"}
-              className="w-full h-full object-cover"
-            />
-          </>
-        ) : (
-          // Fallback gradient with symbol
-          <div className="w-full h-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center">
-            <span className={cn("font-bold text-white", text)}>
-              {tokenSymbol?.[0] || "?"}
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Network logo overlay */}
-      {networkLogo && (
-        <div
-          className={cn(
-            network,
-            "absolute -bottom-1 -right-1 rounded-full overflow-hidden"
-          )}
-        >
-          <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={networkLogo}
-              alt="Network"
-              className="w-full h-full object-cover"
-            />
-          </>
-        </div>
-      )}
-    </div>
-  );
-}
-
 export function SelectTokenBase<TChainId extends string = string>({
   value,
   onChange,
@@ -155,26 +90,6 @@ export function SelectTokenBase<TChainId extends string = string>({
   const handleValueChange = (v: string) => {
     props.onValueChange?.(v);
     onChange?.(Number(v));
-  };
-
-  // Helper function to get token logo from chainTokens
-  const getTokenLogo = (assetId: number): string | undefined => {
-    if (!chainTokens) return undefined;
-    const chainToken = chainTokens.find((token) => {
-      // Extract assetId from token.id (format: chainId:substrate-assets:assetId)
-      const parts = token.id.split(":");
-      if (parts.length === 3 && parts[1] === "substrate-assets") {
-        return parseInt(parts[2]) === assetId;
-      }
-      return false;
-    });
-    return chainToken?.logo;
-  };
-
-  // Helper function to get actual balance for a token
-  const getTokenBalance = (assetId: number): bigint | null => {
-    if (!balances || !connectedAccount?.address) return null;
-    return balances[assetId] ?? null;
   };
 
   return (
@@ -200,8 +115,12 @@ export function SelectTokenBase<TChainId extends string = string>({
             key={token.id}
             token={token}
             network={network}
-            balance={getTokenBalance(Number(token.assetId))}
-            tokenLogo={getTokenLogo(Number(token.assetId))}
+            balance={getTokenBalance(
+              balances,
+              connectedAccount,
+              Number(token.assetId)
+            )}
+            tokenLogo={getTokenLogo(chainTokens, Number(token.assetId))}
             withBalance={withBalance}
             connectedAccount={connectedAccount}
           />

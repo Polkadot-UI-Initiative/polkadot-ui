@@ -5,7 +5,13 @@ import { ChevronDown } from "lucide-react";
 import {
   formatTokenBalance,
   formatTokenPrice,
+  getTokenLogo,
+  getTokenBalance,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
+import {
+  TokenLogoWithNetwork,
+  tokenSelectionStyles,
+} from "./shared-token-components";
 import { TokenInfo } from "@/lib/hooks/use-chaindata-json";
 import { NetworkInfoLike } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import {
@@ -67,71 +73,67 @@ export function SelectTokenDialogProvider({
   );
 }
 
-// Token logo with network overlay component
-interface TokenLogoWithNetworkProps {
+interface TokenDialogItemProps {
+  token: TokenInfo;
+  isSelected?: boolean;
+  onClick?: () => void;
+  withBalance?: boolean;
+  balance?: bigint | null;
   tokenLogo?: string;
-  networkLogo?: string;
-  tokenSymbol?: string;
-  size?: "sm" | "md" | "lg";
+  network?: NetworkInfoLike;
+  connectedAccount?: { address?: string } | null;
   className?: string;
+  logoSize?: "sm" | "md" | "lg";
 }
 
-function TokenLogoWithNetwork({
+function TokenDialogItem({
+  token,
+  isSelected = false,
+  onClick,
+  withBalance = false,
+  balance,
   tokenLogo,
-  networkLogo,
-  tokenSymbol,
-  size = "md",
+  network,
+  connectedAccount,
   className,
-}: TokenLogoWithNetworkProps) {
-  const sizeClasses = {
-    sm: { main: "w-5 h-5", network: "w-[10px] h-[10px]", text: "text-xs" },
-    md: { main: "w-8 h-8", network: "w-4 h-4", text: "text-sm" },
-    lg: { main: "w-12 h-12", network: "w-6 h-6", text: "text-base" },
-  };
-
-  const { main, network, text } = sizeClasses[size];
+  logoSize = "md",
+}: TokenDialogItemProps) {
+  const styles = tokenSelectionStyles.tokenItem;
+  const contentStyles = tokenSelectionStyles.tokenContent;
 
   return (
-    <div className={cn("relative flex-shrink-0", className)}>
-      {/* Main token logo (4x size) */}
-      <div className={cn(main, "rounded-full overflow-hidden")}>
-        {tokenLogo ? (
-          <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={tokenLogo}
-              alt={tokenSymbol || "Token"}
-              className="w-full h-full object-cover"
-            />
-          </>
-        ) : (
-          // Fallback gradient with symbol
-          <div className="w-full h-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center">
-            <span className={cn("font-bold text-white", text)}>
-              {tokenSymbol?.[0] || "?"}
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Network logo overlay (1x size, positioned at bottom-right) */}
-      {networkLogo && (
-        <div
-          className={cn(
-            network,
-            "absolute -bottom-1 -right-1 rounded-full overflow-hidden"
-          )}
-        >
-          <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={networkLogo}
-              alt="Network"
-              className="w-full h-full object-cover"
-            />
-          </>
-        </div>
+    <div
+      className={cn(
+        styles.base,
+        isSelected ? styles.selected : styles.unselected,
+        className
       )}
+      onClick={onClick}
+    >
+      <TokenLogoWithNetwork
+        tokenLogo={tokenLogo}
+        networkLogo={network?.logo}
+        tokenSymbol={token.symbol}
+        size={logoSize}
+      />
+      <div className={contentStyles.container}>
+        <div className={contentStyles.primaryRow}>
+          <div className={contentStyles.symbol}>{token.symbol}</div>
+          {connectedAccount?.address && withBalance && (
+            <span className={contentStyles.balance}>
+              {formatTokenBalance(balance ?? null, token.decimals)}
+            </span>
+          )}
+        </div>
+        <div className={contentStyles.secondaryRow}>
+          <span className={contentStyles.name}>{token.name}</span>
+          {connectedAccount?.address && withBalance && (
+            <span className={contentStyles.price}>
+              ≈ ${formatTokenPrice(balance ?? null, token.decimals)}
+            </span>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
@@ -158,24 +160,8 @@ export function SelectTokenDialogBase({
   const [isOpen, setIsOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState<TokenInfo | null>(null);
 
-  // Helper function to get token logo from chainTokens
-  const getTokenLogo = (assetId: number): string | undefined => {
-    if (!chainTokens) return undefined;
-    const chainToken = chainTokens.find((token) => {
-      // Extract assetId from token.id (format: chainId:substrate-assets:assetId)
-      const parts = token.id.split(":");
-      if (parts.length === 3 && parts[1] === "substrate-assets") {
-        return parseInt(parts[2]) === assetId;
-      }
-      return false;
-    });
-    return chainToken?.logo;
-  };
-
-  // Initialize selectedToken when items are loaded or value changes
   const displayToken = useMemo(() => {
     if (chainTokens && chainTokens.length > 0) {
-      // If we have a value prop, try to find the matching token
       if (value != null) {
         const foundToken = chainTokens.find(
           (token) => Number(token.assetId) === (value as number)
@@ -185,14 +171,15 @@ export function SelectTokenDialogBase({
           return foundToken;
         }
       }
-      // If we already have a selected token and it exists in items, keep it
+
       if (
         selectedToken &&
         chainTokens.find((token) => token.id === selectedToken.id)
       ) {
         return selectedToken;
       }
-      // Otherwise, don't auto-select any token - show placeholder
+
+      // Otherwise, no token is selected so show placeholder
       return null;
     }
     return null;
@@ -202,12 +189,6 @@ export function SelectTokenDialogBase({
     setSelectedToken(token);
     onChange?.(Number(token.id));
     setIsOpen(false);
-  };
-
-  // Helper function to get actual balance for a token
-  const getTokenBalance = (assetId: number): bigint | null => {
-    if (!balances || !connectedAccount?.address) return null;
-    return balances[assetId] ?? null;
   };
 
   const isComponentDisabled =
@@ -224,22 +205,25 @@ export function SelectTokenDialogBase({
           variant="outline"
           disabled={isComponentDisabled}
           className={cn(
-            "justify-between min-w-[140px] font-normal py-5",
-            !displayToken && "text-muted-foreground",
+            tokenSelectionStyles.trigger.base,
+            !displayToken && tokenSelectionStyles.trigger.placeholder,
             className
           )}
           {...props}
         >
-          <div className="flex items-center gap-2">
+          <div className={tokenSelectionStyles.trigger.content}>
             {displayToken ? (
               <>
                 <TokenLogoWithNetwork
-                  tokenLogo={getTokenLogo(Number(displayToken.assetId))}
+                  tokenLogo={getTokenLogo(
+                    chainTokens,
+                    Number(displayToken.assetId)
+                  )}
                   networkLogo={network?.logo}
                   tokenSymbol={displayToken.symbol}
                   size="sm"
                 />
-                <div className="flex flex-col items-start">
+                <div className={tokenSelectionStyles.trigger.tokenInfo}>
                   <span className="font-medium">{displayToken.symbol}</span>
                   <span className="text-xs text-muted-foreground">
                     {displayToken.name}
@@ -252,8 +236,8 @@ export function SelectTokenDialogBase({
           </div>
           <ChevronDown
             className={cn(
-              "h-4 w-4 transition-transform",
-              isOpen && "rotate-180"
+              tokenSelectionStyles.trigger.chevron,
+              isOpen && tokenSelectionStyles.trigger.chevronOpen
             )}
           />
         </Button>
@@ -269,52 +253,22 @@ export function SelectTokenDialogBase({
           {chainTokens?.map((token) => {
             const isSelected = selectedToken?.assetId === token.assetId;
             return (
-              <div
+              <TokenDialogItem
                 key={token.id}
-                className={cn(
-                  "w-full flex items-center gap-3 px-4 py-3 text-left transition-colors rounded-md border",
-                  isSelected
-                    ? "bg-primary/10 border-primary text-primary-foreground hover:bg-primary/20"
-                    : "border-transparent hover:bg-muted/50 focus:bg-muted/50 hover:border-border focus:border-border"
-                )}
+                token={token}
+                isSelected={isSelected}
                 onClick={() => handleTokenSelect(token)}
-              >
-                <TokenLogoWithNetwork
-                  tokenLogo={getTokenLogo(Number(token.assetId))}
-                  networkLogo={network?.logo}
-                  tokenSymbol={token.symbol}
-                  size="md"
-                />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">
-                      {token.symbol ?? token.name}
-                    </span>
-                    {connectedAccount?.address && withBalance && (
-                      <span className="text-sm font-medium">
-                        {formatTokenBalance(
-                          getTokenBalance(Number(token.assetId)),
-                          token.decimals
-                        )}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">
-                      {token.name ?? token.symbol}
-                    </span>
-                    {connectedAccount?.address && withBalance && (
-                      <span className="text-xs text-muted-foreground">
-                        ≈ $
-                        {formatTokenPrice(
-                          getTokenBalance(Number(token.assetId)),
-                          token.decimals
-                        )}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
+                withBalance={withBalance}
+                balance={getTokenBalance(
+                  balances,
+                  connectedAccount,
+                  Number(token.assetId)
+                )}
+                tokenLogo={getTokenLogo(chainTokens, Number(token.assetId))}
+                network={network}
+                connectedAccount={connectedAccount}
+                logoSize="md"
+              />
             );
           })}
         </div>

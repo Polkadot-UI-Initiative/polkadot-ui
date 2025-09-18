@@ -331,3 +331,41 @@ export function mergeWithChaindataTokens(
     return chaindataToken || defaultToken;
   });
 }
+
+/**
+ * Helper function to get token logo from chainTokens by assetId
+ * @param chainTokens - Array of chain tokens from chaindata
+ * @param assetId - Asset ID to find logo for
+ * @returns Token logo URL or undefined if not found
+ */
+export function getTokenLogo(
+  chainTokens: TokenInfo[] | undefined,
+  assetId: number
+): string | undefined {
+  if (!chainTokens) return undefined;
+  const chainToken = chainTokens.find((token) => {
+    // Extract assetId from token.id (format: chainId:substrate-assets:assetId)
+    const parts = token.id.split(":");
+    if (parts.length === 3 && parts[1] === "substrate-assets") {
+      return parseInt(parts[2]) === assetId;
+    }
+    return false;
+  });
+  return chainToken?.logo;
+}
+
+/**
+ * Helper function to get actual balance for a token
+ * @param balances - Record of balances by assetId
+ * @param connectedAccount - Connected account object
+ * @param assetId - Asset ID to get balance for
+ * @returns Token balance or null if not available
+ */
+export function getTokenBalance(
+  balances: Record<number, bigint | null> | undefined,
+  connectedAccount: { address?: string } | null | undefined,
+  assetId: number
+): bigint | null {
+  if (!balances || !connectedAccount?.address) return null;
+  return balances[assetId] ?? null;
+}
