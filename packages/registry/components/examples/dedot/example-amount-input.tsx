@@ -32,8 +32,9 @@ export const amountInputExample: ComponentExample = {
         <div className="flex flex-col gap-2 w-full">
           <Label>Amount</Label>
           <AmountInputWithProvider
+            withTokenSelector
             chainId="paseoAssetHub"
-            assetIds={[1, 2, 3]}
+            assetIds={[1984, 1337, 7777]}
             className="w-full"
             required={false}
             placeholder="Enter an amount"

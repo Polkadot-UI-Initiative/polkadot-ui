@@ -12,8 +12,10 @@ import {
   TokenLogoWithNetwork,
   tokenSelectionStyles,
 } from "./shared-token-components";
-import { TokenInfo } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-chaindata-json.dedot";
-import { NetworkInfoLike } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import {
+  TokenInfo,
+  NetworkInfoLike,
+} from "@/registry/polkadot-ui/lib/types.dot-ui";
 import {
   Dialog,
   DialogTrigger,
@@ -48,6 +50,7 @@ export interface SelectTokenDialogBaseProps extends SelectTokenDialogProps {
   onChange?: (assetId: number) => void;
   className?: string;
   placeholder?: string;
+  compact?: boolean;
 }
 
 export interface SelectTokenDialogProviderProps {
@@ -138,15 +141,41 @@ function TokenDialogItem({
   );
 }
 
+export function SelectTokenDialogCompactBase({
+  value,
+  onChange,
+  placeholder = "Token",
+  className,
+  withBalance,
+  services,
+  ...props
+}: SelectTokenDialogBaseProps &
+  Omit<React.ComponentProps<typeof Button>, "onChange">) {
+  return (
+    <SelectTokenDialogBase
+      {...props}
+      compact={true}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      className={className}
+      withBalance={withBalance}
+      services={services}
+    />
+  );
+}
+
 export function SelectTokenDialogBase({
   value,
   onChange,
   placeholder = "Select Token",
   className,
   withBalance,
+  compact = false,
   services,
   ...props
-}: SelectTokenDialogBaseProps & React.ComponentProps<typeof Button>) {
+}: SelectTokenDialogBaseProps &
+  Omit<React.ComponentProps<typeof Button>, "onChange">) {
   const {
     connectedAccount,
     isDisabled,
@@ -206,14 +235,18 @@ export function SelectTokenDialogBase({
           {...props}
           disabled={isComponentDisabled}
           className={cn(
-            tokenSelectionStyles.trigger.base,
-            !displayToken && tokenSelectionStyles.trigger.placeholder,
+            compact ? "h-10 max-w-fit" : tokenSelectionStyles.trigger.base,
+            !displayToken &&
+              !compact &&
+              tokenSelectionStyles.trigger.placeholder,
+            compact &&
+              "border-input bg-background hover:bg-accent hover:text-accent-foreground",
             className
           )}
         >
-          <div className={tokenSelectionStyles.trigger.content}>
-            {displayToken ? (
-              <>
+          {compact ? (
+            <>
+              {displayToken ? (
                 <TokenLogoWithNetwork
                   tokenLogo={getTokenLogo(
                     chainTokens,
@@ -223,23 +256,51 @@ export function SelectTokenDialogBase({
                   tokenSymbol={displayToken.symbol}
                   size="sm"
                 />
-                <div className={tokenSelectionStyles.trigger.tokenInfo}>
-                  <span className="font-medium">{displayToken.symbol}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {displayToken.name}
-                  </span>
-                </div>
-              </>
-            ) : (
-              <span>{placeholder}</span>
-            )}
-          </div>
-          <ChevronDown
-            className={cn(
-              tokenSelectionStyles.trigger.chevron,
-              isOpen && tokenSelectionStyles.trigger.chevronOpen
-            )}
-          />
+              ) : (
+                <span className="text-muted-foreground text-sm">
+                  {placeholder}
+                </span>
+              )}
+              <ChevronDown
+                className={cn(
+                  "h-4 w-4 opacity-50 transition-transform duration-200 flex-shrink-0",
+                  isOpen && "rotate-180"
+                )}
+              />
+            </>
+          ) : (
+            <>
+              <div className={tokenSelectionStyles.trigger.content}>
+                {displayToken ? (
+                  <>
+                    <TokenLogoWithNetwork
+                      tokenLogo={getTokenLogo(
+                        chainTokens,
+                        Number(displayToken.assetId)
+                      )}
+                      networkLogo={network?.logo}
+                      tokenSymbol={displayToken.symbol}
+                      size="sm"
+                    />
+                    <div className={tokenSelectionStyles.trigger.tokenInfo}>
+                      <span className="font-medium">{displayToken.symbol}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {displayToken.name}
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <span>{placeholder}</span>
+                )}
+              </div>
+              <ChevronDown
+                className={cn(
+                  tokenSelectionStyles.trigger.chevron,
+                  isOpen && tokenSelectionStyles.trigger.chevronOpen
+                )}
+              />
+            </>
+          )}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
