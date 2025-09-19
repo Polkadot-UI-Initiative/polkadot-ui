@@ -13,27 +13,26 @@ import {
   getTokenBalance,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { TokenMetadata } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-metadata.dedot";
-import { TokenInfo } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-chaindata-json.dedot";
-import { NetworkInfoLike } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import { TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import {
+  NetworkInfoLike,
+  BaseProviderProps,
+  BaseComponentServices,
+  BaseChainComponentProps,
+} from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { TokenLogoWithNetwork } from "./shared-token-components";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-export interface SelectTokenServices {
-  isConnected: boolean;
-  isLoading: boolean;
-  isDisabled: boolean;
+export interface SelectTokenServices<TNetworkId extends string = string>
+  extends BaseComponentServices<TNetworkId> {
   items: TokenMetadata[];
-  connectedAccount?: { address?: string } | null;
   chainTokens?: TokenInfo[];
-  balances?: Record<number, bigint | null>;
-  network?: NetworkInfoLike;
 }
 
-export interface SelectTokenProps<TChainId extends string = string> {
-  chainId: TChainId;
-  assetIds: number[];
+export interface SelectTokenProps<TChainId extends string = string>
+  extends BaseChainComponentProps<TChainId> {
   withBalance: boolean;
-  services: SelectTokenServices;
+  services: SelectTokenServices<TChainId>;
   fallback?: React.ReactNode;
 }
 
@@ -42,13 +41,9 @@ export interface SelectTokenBaseProps<TChainId extends string = string>
   value?: number;
   onChange?: (assetId: number) => void;
   placeholder?: string;
-  className?: string;
 }
 
-export interface SelectTokenProviderProps {
-  children: React.ReactNode;
-  queryClient?: QueryClient;
-}
+export type SelectTokenProviderProps = BaseProviderProps;
 
 const defaultQueryClient = new QueryClient({
   defaultOptions: {

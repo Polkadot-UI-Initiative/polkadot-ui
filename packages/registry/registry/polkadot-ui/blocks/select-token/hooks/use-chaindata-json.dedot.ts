@@ -6,33 +6,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { generateTokenId } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-
-export interface TokenInfo {
-  id: string;
-  symbol: string;
-  decimals: number;
-  name: string;
-  assetId: string;
-  coingeckoId?: string;
-  logo?: string;
-}
-
-export interface ChainInfo {
-  id: string;
-  name: string;
-  logo?: string;
-  nativeTokenId?: string;
-  nativeCurrency?: {
-    decimals: number;
-    symbol: string;
-    name: string;
-    coingeckoId?: string;
-    logo?: string;
-  };
-  platform?: string;
-  isTestnet?: boolean;
-  isDefault?: boolean;
-}
+import { ChainInfo, TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
 
 export interface ChaindataResponse {
   networks?: ChainInfo[];
