@@ -2,7 +2,12 @@
 
 import { useMemo } from "react";
 import { useQuery, useQueries } from "@tanstack/react-query";
-import { ClientConnectionStatus, usePolkadotClient } from "typink";
+import {
+  ClientConnectionStatus,
+  paseoAssetHub,
+  usePolkadotClient,
+} from "typink";
+import { camelToSnakeCase } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 
 export interface UseAssetBalanceArgs {
   chainId: string;
@@ -19,7 +24,9 @@ export interface AssetBalanceResult {
 
 export function useAssetBalance(args: UseAssetBalanceArgs): AssetBalanceResult {
   const { chainId, assetId, address, enabled = true } = args;
-  const { client, status } = usePolkadotClient(chainId);
+  const { client, status } = usePolkadotClient(
+    chainId ? camelToSnakeCase(chainId) : paseoAssetHub.id
+  );
 
   const isConnected = status === ClientConnectionStatus.Connected;
   const isEnabled =
@@ -83,7 +90,9 @@ export function useAssetBalances(
   args: UseAssetBalancesArgs
 ): AssetBalancesResult {
   const { chainId, assetIds, address, enabled = true } = args;
-  const { client, status } = usePolkadotClient(chainId);
+  const { client, status } = usePolkadotClient(
+    chainId ? camelToSnakeCase(chainId) : paseoAssetHub.id
+  );
 
   const isConnected = status === ClientConnectionStatus.Connected;
   const isEnabled =
