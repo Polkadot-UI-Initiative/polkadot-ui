@@ -1,4 +1,3 @@
-import type React from "react";
 import {
   InjectedSigner,
   NetworkId,
@@ -6,7 +5,6 @@ import {
   TypinkAccount,
   Wallet,
 } from "typink";
-import { QueryClient } from "@tanstack/react-query";
 
 // interfaces related to polkadot-ui will be used by papi + dedot
 export interface ChainConfig {
@@ -179,44 +177,4 @@ export interface ChainInfo {
   platform?: string;
   isTestnet?: boolean;
   isDefault?: boolean;
-}
-
-// Interface related to react query
-export interface BaseProviderProps {
-  children: React.ReactNode;
-  queryClient?: QueryClient;
-}
-
-// TODO: decide where to put three interfaces below
-export interface BaseComponentServices<TNetworkId extends string = string> {
-  // Connection status
-  isConnected?: boolean;
-  isLoading?: boolean;
-  isDisabled?: boolean;
-  connectedAccount?: { address?: string } | null;
-
-  chainTokens?: Array<TokenInfo>;
-  balances?: Record<number, bigint | null>;
-
-  network?: NetworkInfoLike<TNetworkId>;
-}
-
-export interface ExtendedComponentServices<TNetworkId extends string = string>
-  extends BaseComponentServices<TNetworkId> {
-  // Legacy props for backward compatibility
-  connected?: boolean;
-  symbol?: string;
-  decimals?: number;
-  supportedNetworks?: Array<NetworkInfoLike<TNetworkId>>;
-  fee?: bigint | null;
-  isFeeLoading?: boolean;
-  feeError?: string | null;
-  balanceFree?: bigint | null;
-}
-
-export interface BaseChainComponentProps<TChainId extends string = string> {
-  chainId?: TChainId;
-  assetIds?: number[];
-  disabled?: boolean;
-  className?: string;
 }

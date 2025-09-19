@@ -1,6 +1,6 @@
 import { decodeAddress, encodeAddress } from "@polkadot/keyring";
 import { ethers } from "ethers";
-import type { TokenInfo } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-chaindata-json.dedot";
+import { TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
 
 export interface TokenMetadata {
   assetId: number;

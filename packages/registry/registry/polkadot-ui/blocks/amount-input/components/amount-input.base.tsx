@@ -3,21 +3,52 @@ import { forwardRef, useEffect, useRef, useState } from "react";
 import type {
   AnyFn,
   TxAdapter,
-  BaseProviderProps,
-  ExtendedComponentServices,
-  BaseChainComponentProps,
+  TokenInfo,
 } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { Label } from "@/registry/polkadot-ui/ui/label";
 import { Input } from "@/registry/polkadot-ui/ui/input";
 import { SelectTokenDialogBase } from "@/registry/polkadot-ui/blocks/select-token/components/select-token-dialog.base";
 
-export type AmountInputServices<TNetworkId extends string = string> =
-  ExtendedComponentServices<TNetworkId>;
+export interface AmountInputServices<TNetworkId extends string = string> {
+  // Connection status
+  isConnected?: boolean;
+  isLoading?: boolean;
+  isDisabled?: boolean;
+  connectedAccount?: { address?: string } | null;
+
+  // Token/Asset data
+  chainTokens?: Array<TokenInfo>;
+  balances?: Record<number, bigint | null>;
+
+  // Network info
+  network?: {
+    id: TNetworkId;
+    decimals: number;
+    symbol: string;
+    name: string;
+    logo?: string;
+  };
+
+  // Legacy props for backward compatibility
+  connected?: boolean;
+  symbol?: string;
+  decimals?: number;
+  supportedNetworks?: Array<{
+    id: TNetworkId;
+    decimals: number;
+    symbol: string;
+    name: string;
+  }>;
+  fee?: bigint | null;
+  isFeeLoading?: boolean;
+  feeError?: string | null;
+  balanceFree?: bigint | null;
+}
 
 export interface AmountInputBaseProps<
   TTx extends TxAdapter<AnyFn> = TxAdapter<AnyFn>,
   TNetworkId extends string = string,
-> extends BaseChainComponentProps<TNetworkId> {
+> {
   value?: string;
   onChange?: (value: string) => void;
   label?: string;
@@ -30,10 +61,17 @@ export interface AmountInputBaseProps<
   withTokenSelector?: boolean;
   selectedTokenId?: number;
   onTokenChange?: (assetId: number) => void;
+  chainId?: string;
+  assetIds?: number[];
+  disabled?: boolean;
+  className?: string;
   services: AmountInputServices<TNetworkId>;
 }
 
-export type AmountInputProviderProps = BaseProviderProps;
+export interface AmountInputProviderProps {
+  children: React.ReactNode;
+  queryClient?: QueryClient;
+}
 
 const defaultQueryClient = new QueryClient({
   defaultOptions: {
