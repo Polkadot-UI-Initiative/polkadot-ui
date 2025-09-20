@@ -6,11 +6,12 @@ import {
   ClientConnectionStatus,
   paseoAssetHub,
   usePolkadotClient,
+  NetworkId,
 } from "typink";
-import { camelToSnakeCase } from "@/registry/polkadot-ui/lib/utils.dot-ui";
+import { parseBalanceLike } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 
 export interface UseAssetBalanceArgs {
-  chainId: string;
+  chainId: NetworkId;
   assetId: number;
   address: string;
   enabled?: boolean;
@@ -22,11 +23,13 @@ export interface AssetBalanceResult {
   error: Error | null;
 }
 
-export function useAssetBalance(args: UseAssetBalanceArgs): AssetBalanceResult {
-  const { chainId, assetId, address, enabled = true } = args;
-  const { client, status } = usePolkadotClient(
-    chainId ? camelToSnakeCase(chainId) : paseoAssetHub.id
-  );
+export function useAssetBalance({
+  chainId,
+  assetId,
+  address,
+  enabled = true,
+}: UseAssetBalanceArgs): AssetBalanceResult {
+  const { client, status } = usePolkadotClient(chainId ?? paseoAssetHub.id);
 
   const isConnected = status === ClientConnectionStatus.Connected;
   const isEnabled =
@@ -39,22 +42,9 @@ export function useAssetBalance(args: UseAssetBalanceArgs): AssetBalanceResult {
       if (!client) return null;
       try {
         const query = client.query.assets.account;
-
         const account = await query([assetId, address]);
         const raw = (account as unknown as { balance?: unknown })?.balance;
-        if (typeof raw === "bigint") return raw;
-        if (typeof raw === "number") return BigInt(raw);
-        if (
-          raw &&
-          typeof (raw as { toBigInt?: () => bigint }).toBigInt === "function"
-        )
-          return (raw as { toBigInt: () => bigint }).toBigInt();
-        if (
-          raw &&
-          typeof (raw as { toString?: () => string }).toString === "function"
-        )
-          return BigInt((raw as { toString: () => string }).toString());
-        return null;
+        return parseBalanceLike(raw);
       } catch (error) {
         console.error("Asset balance lookup failed:", error);
         return null;
@@ -90,9 +80,7 @@ export function useAssetBalances(
   args: UseAssetBalancesArgs
 ): AssetBalancesResult {
   const { chainId, assetIds, address, enabled = true } = args;
-  const { client, status } = usePolkadotClient(
-    chainId ? camelToSnakeCase(chainId) : paseoAssetHub.id
-  );
+  const { client, status } = usePolkadotClient(chainId ?? paseoAssetHub.id);
 
   const isConnected = status === ClientConnectionStatus.Connected;
   const isEnabled =
@@ -109,19 +97,7 @@ export function useAssetBalances(
 
           const account = await query([assetId, address]);
           const raw = (account as unknown as { balance?: unknown })?.balance;
-          if (typeof raw === "bigint") return raw;
-          if (typeof raw === "number") return BigInt(raw);
-          if (
-            raw &&
-            typeof (raw as { toBigInt?: () => bigint }).toBigInt === "function"
-          )
-            return (raw as { toBigInt: () => bigint }).toBigInt();
-          if (
-            raw &&
-            typeof (raw as { toString?: () => string }).toString === "function"
-          )
-            return BigInt((raw as { toString: () => string }).toString());
-          return null;
+          return parseBalanceLike(raw);
         } catch (error) {
           console.error(
             `Asset balance lookup failed for assetId ${assetId}:`,

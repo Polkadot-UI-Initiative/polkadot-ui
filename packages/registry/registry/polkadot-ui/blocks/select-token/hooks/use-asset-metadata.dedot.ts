@@ -8,7 +8,6 @@ import {
   usePolkadotClient,
 } from "typink";
 import { isHex, hexToU8a, u8aToString } from "@polkadot/util";
-import { camelToSnakeCase } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 
 export interface TokenMetadata {
   assetId: number;
@@ -24,9 +23,7 @@ export function useAssetMetadata({
   chainId: string;
   assetIds: number[];
 }) {
-  const { client, status } = usePolkadotClient(
-    chainId ? camelToSnakeCase(chainId) : paseoAssetHub.id
-  );
+  const { client, status } = usePolkadotClient(chainId ?? paseoAssetHub.id);
 
   const isConnected = status === ClientConnectionStatus.Connected;
 

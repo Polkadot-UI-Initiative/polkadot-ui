@@ -14,7 +14,6 @@ import {
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { paseoAssetHub } from "typink";
 import {
-  camelToSnakeCase,
   createDefaultChainTokens,
   mergeWithChaindataTokens,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
@@ -31,7 +30,7 @@ export type SelectTokenDialogProps = Omit<
 
 export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
   const { client, status } = usePolkadotClient(
-    props.chainId ? camelToSnakeCase(props.chainId) : paseoAssetHub.id
+    props.chainId ?? paseoAssetHub.id
   );
   const { assets, isLoading } = useAssetMetadata({
     chainId: props.chainId,
@@ -46,21 +45,17 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
 
   // Get chainTokens from chaindata for token logos
   const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
-    props.chainId ? camelToSnakeCase(props.chainId) : paseoAssetHub.id,
+    props.chainId ?? paseoAssetHub.id,
     props.assetIds
   );
 
   // Get network info for network logo (similar to network-indicator)
   const network = supportedNetworks.find(
-    (n) =>
-      n.id ===
-      (props.chainId ? camelToSnakeCase(props.chainId) : paseoAssetHub.id)
+    (n) => n.id === (props.chainId ?? paseoAssetHub.id)
   );
 
   const services = useMemo(() => {
-    const chainIdForTokens = props.chainId
-      ? camelToSnakeCase(props.chainId)
-      : paseoAssetHub.id;
+    const chainIdForTokens = props.chainId ?? paseoAssetHub.id;
     const defaultTokens = createDefaultChainTokens(assets, chainIdForTokens);
     const finalTokens = mergeWithChaindataTokens(
       defaultTokens,

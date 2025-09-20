@@ -207,14 +207,6 @@ export function formatPlanck(
   return isNegative ? `-${result}` : result;
 }
 
-export function camelToSnakeCase(str: string): string {
-  return str.replace(/([A-Z])/g, "_$1").toLowerCase();
-}
-
-export function snakeToCamelCase(str: string): string {
-  return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
-}
-
 export function camelToKebabCase(str: string): string {
   return str.replace(/([A-Z])/g, "-$1").toLowerCase();
 }
@@ -352,6 +344,50 @@ export function getTokenLogo(
     return false;
   });
   return chainToken?.logo;
+}
+
+/**
+ * Normalize various numeric-like representations into bigint
+ * Accepts bigint, number, objects exposing toBigInt(), or toString() returning a base-10 string
+ */
+export function parseBalanceLike(value: unknown): bigint | null {
+  // bigint
+  if (typeof value === "bigint") return value >= 0n ? value : null;
+
+  // number → require finite, non-negative, and floor to integer
+  if (typeof value === "number") {
+    if (Number.isFinite(value) && value >= 0) return BigInt(Math.floor(value));
+    return null;
+  }
+
+  // toBigInt()
+  if (
+    value &&
+    typeof (value as { toBigInt?: () => bigint }).toBigInt === "function"
+  ) {
+    try {
+      const v = (value as { toBigInt: () => bigint }).toBigInt();
+      return typeof v === "bigint" && v >= 0n ? v : null;
+    } catch {
+      return null;
+    }
+  }
+
+  // string-like via toString(): must be decimal digits or 0x-hex, non-negative
+  if (
+    value &&
+    typeof (value as { toString?: () => string }).toString === "function"
+  ) {
+    try {
+      const str = (value as { toString: () => string }).toString();
+      if (/^\d+$/.test(str) || /^0x[0-9a-fA-F]+$/.test(str)) return BigInt(str);
+      return null;
+    } catch {
+      return null;
+    }
+  }
+
+  return null;
 }
 
 /**

@@ -12,7 +12,6 @@ import {
   useTypink,
   ClientConnectionStatus,
 } from "typink";
-import { camelToSnakeCase } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { useAssetMetadata } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-metadata.dedot";
 import { useTokensByAssetIds } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-chaindata-json.dedot";
 import { useAssetBalances } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-balance.dedot";
@@ -24,7 +23,7 @@ function AmountInputInner(props: AmountInputProps) {
   const assetIds = useMemo(() => props.assetIds ?? [], [props.assetIds]);
 
   const { client, status } = usePolkadotClient(
-    props.chainId ? camelToSnakeCase(props.chainId) : paseoAssetHub.id
+    props.chainId ?? paseoAssetHub.id
   );
   const { isLoading } = useAssetMetadata({
     chainId: chainId,
@@ -39,15 +38,13 @@ function AmountInputInner(props: AmountInputProps) {
 
   // Get chainTokens from chaindata for token logos
   const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
-    props.chainId ? camelToSnakeCase(props.chainId) : paseoAssetHub.id,
+    props.chainId ?? paseoAssetHub.id,
     assetIds
   );
 
   // Get network info for network logo
   const network = supportedNetworks.find(
-    (n) =>
-      n.id ===
-      (props.chainId ? camelToSnakeCase(props.chainId) : paseoAssetHub.id)
+    (n) => n.id === (props.chainId ?? paseoAssetHub.id)
   );
 
   const services = useMemo(() => {

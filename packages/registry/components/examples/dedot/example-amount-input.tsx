@@ -8,6 +8,7 @@ import { AmountInputWithProvider } from "@/registry/polkadot-ui/blocks/amount-in
 import { RequireAccount } from "@/registry/polkadot-ui/blocks/require-account/components/require-account.dedot";
 import type { ComponentExample } from "../types.examples";
 import { Label } from "@/registry/polkadot-ui/ui/label";
+import { paseoAssetHub } from "typink";
 
 export const amountInputExample: ComponentExample = {
   name: "Amount Input",
@@ -17,7 +18,7 @@ export const amountInputExample: ComponentExample = {
   component: (
     <div className="w-full space-y-3">
       <RequireAccount
-        chainId="paseo"
+        chainId={paseoAssetHub.id}
         fallback={
           <Card className="bg-white/5 border border-border w-full">
             <CardHeader>
