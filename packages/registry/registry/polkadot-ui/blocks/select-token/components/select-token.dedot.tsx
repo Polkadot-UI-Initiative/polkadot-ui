@@ -12,7 +12,6 @@ import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   type SelectTokenBaseProps,
   SelectTokenBase,
-  SelectTokenProvider,
 } from "./select-token.base";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { paseoAssetHub } from "typink";
@@ -123,9 +122,7 @@ export function SelectToken(props: SelectTokenProps) {
 export function SelectTokenWithProvider(props: SelectTokenProps) {
   return (
     <PolkadotProvider>
-      <SelectTokenProvider>
-        <SelectToken {...props} />
-      </SelectTokenProvider>
+      <SelectToken {...props} />
     </PolkadotProvider>
   );
 }

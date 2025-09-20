@@ -37,7 +37,28 @@ const fetchChaindata = async ({
 
   // Combine external abort signal with timeout
   if (signal) {
-    signal.addEventListener("abort", () => controller.abort());
+    // Avoid accumulating listeners across retries by using once:true
+    // and also clean up explicitly in both try and catch paths
+    const onAbort = () => controller.abort();
+    signal.addEventListener("abort", onAbort, { once: true });
+    try {
+      const response = await fetch(CHAINDATA_URL, {
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+      signal.removeEventListener?.("abort", onAbort);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      clearTimeout(timeoutId);
+      signal.removeEventListener?.("abort", onAbort);
+      throw error;
+    }
   }
 
   try {

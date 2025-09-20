@@ -1,4 +1,5 @@
 import type React from "react";
+import { useMemo } from "react";
 import {
   Select,
   SelectTrigger,
@@ -16,7 +17,6 @@ import { TokenMetadata } from "@/registry/polkadot-ui/blocks/select-token/hooks/
 import { TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { NetworkInfoLike } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { TokenLogoWithNetwork } from "./shared-token-components";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export interface SelectTokenServices {
   isConnected: boolean;
@@ -45,29 +45,6 @@ export interface SelectTokenBaseProps<TChainId extends string = string>
   className?: string;
 }
 
-export interface SelectTokenProviderProps {
-  children: React.ReactNode;
-  queryClient?: QueryClient;
-}
-
-const defaultQueryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-      staleTime: 5 * 60 * 1000, // 5 minutes
-    },
-  },
-});
-
-export function SelectTokenProvider({
-  children,
-  queryClient = defaultQueryClient,
-}: SelectTokenProviderProps) {
-  return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
-}
-
 export function SelectTokenBase<TChainId extends string = string>({
   value,
   onChange,
@@ -86,6 +63,15 @@ export function SelectTokenBase<TChainId extends string = string>({
     balances,
     network,
   } = services;
+
+  // Memoize filtered tokens based on optional assetIds to avoid work on each render
+  const tokenOptions = useMemo(() => {
+    const all = chainTokens ?? [];
+    const ids = (props.assetIds ?? []).map((id) => Number(id));
+    if (!ids.length) return all;
+    const allowed = new Set(ids);
+    return all.filter((t) => allowed.has(Number(t.assetId)));
+  }, [chainTokens, props.assetIds]);
 
   const handleValueChange = (v: string) => {
     props.onValueChange?.(v);
@@ -110,7 +96,7 @@ export function SelectTokenBase<TChainId extends string = string>({
         </div>
       </SelectTrigger>
       <SelectContent>
-        {chainTokens?.map((token) => (
+        {tokenOptions?.map((token) => (
           <TokenSelectItem
             key={token.id}
             token={token}
@@ -120,7 +106,7 @@ export function SelectTokenBase<TChainId extends string = string>({
               connectedAccount,
               Number(token.assetId)
             )}
-            tokenLogo={getTokenLogo(chainTokens, Number(token.assetId))}
+            tokenLogo={getTokenLogo(tokenOptions, Number(token.assetId))}
             withBalance={withBalance}
             connectedAccount={connectedAccount}
           />

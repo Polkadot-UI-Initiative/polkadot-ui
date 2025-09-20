@@ -9,7 +9,6 @@ import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   type SelectTokenDialogBaseProps,
   SelectTokenDialogBase,
-  SelectTokenDialogProvider,
 } from "./select-token-dialog.base";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { paseoAssetHub } from "typink";
@@ -123,9 +122,7 @@ export function SelectTokenDialog(props: SelectTokenDialogProps) {
 export function SelectTokenDialogWithProvider(props: SelectTokenDialogProps) {
   return (
     <PolkadotProvider>
-      <SelectTokenDialogProvider>
-        <SelectTokenDialog {...props} />
-      </SelectTokenDialogProvider>
+      <SelectTokenDialog {...props} />
     </PolkadotProvider>
   );
 }

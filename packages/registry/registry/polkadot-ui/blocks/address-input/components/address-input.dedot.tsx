@@ -4,7 +4,6 @@ import { useMemo } from "react";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   AddressInputBase,
-  AddressInputProvider,
   type AddressInputBaseProps,
 } from "@/registry/polkadot-ui/blocks/address-input/components/address-input.base";
 // Import Dedot-specific hooks
@@ -52,9 +51,7 @@ export function AddressInput(props: AddressInputProps) {
 export function AddressInputWithProvider(props: AddressInputProps) {
   return (
     <PolkadotProvider>
-      <AddressInputProvider>
-        <AddressInput {...props} />
-      </AddressInputProvider>
+      <AddressInput {...props} />
     </PolkadotProvider>
   );
 }

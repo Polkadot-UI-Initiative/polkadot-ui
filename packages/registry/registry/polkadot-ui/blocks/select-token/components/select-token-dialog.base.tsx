@@ -24,7 +24,6 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 
 export interface SelectTokenDialogServices {
@@ -55,27 +54,7 @@ export interface SelectTokenDialogBaseProps extends SelectTokenDialogProps {
 
 export interface SelectTokenDialogProviderProps {
   children: React.ReactNode;
-  queryClient?: QueryClient;
 }
-
-const defaultQueryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-      staleTime: 5 * 60 * 1000, // 5 minutes
-    },
-  },
-});
-
-export function SelectTokenDialogProvider({
-  children,
-  queryClient = defaultQueryClient,
-}: SelectTokenDialogProviderProps) {
-  return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
-}
-
 interface TokenDialogItemProps {
   token: TokenInfo;
   isSelected?: boolean;
@@ -321,7 +300,7 @@ export function SelectTokenDialogBase({
         </DialogHeader>
         <div className="max-h-[400px] overflow-y-auto">
           {chainTokens?.map((token) => {
-            const isSelected = selectedToken?.assetId === token.assetId;
+            const isSelected = displayToken?.assetId === token.assetId;
             return (
               <TokenDialogItem
                 key={token.id}

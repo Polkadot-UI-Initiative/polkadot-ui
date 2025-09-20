@@ -1,9 +1,11 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+"use client";
+
 import { forwardRef, useEffect, useRef, useState } from "react";
 import type { TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { Label } from "@/registry/polkadot-ui/ui/label";
 import { Input } from "@/registry/polkadot-ui/ui/input";
 import { SelectTokenDialogBase } from "@/registry/polkadot-ui/blocks/select-token/components/select-token-dialog.base";
+import { cn } from "@/registry/polkadot-ui/lib/utils";
 
 export interface AmountInputServices<TNetworkId extends string = string> {
   // Connection status
@@ -27,6 +29,7 @@ export interface AmountInputServices<TNetworkId extends string = string> {
 }
 
 export interface AmountInputBaseProps<TNetworkId extends string = string> {
+  id?: string;
   value?: string;
   onChange?: (value: string) => void;
   label?: string;
@@ -43,29 +46,6 @@ export interface AmountInputBaseProps<TNetworkId extends string = string> {
   disabled?: boolean;
   className?: string;
   services: AmountInputServices<TNetworkId>;
-}
-
-export interface AmountInputProviderProps {
-  children: React.ReactNode;
-  queryClient?: QueryClient;
-}
-
-const defaultQueryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-      staleTime: 5 * 60 * 1000, // 5 minutes
-    },
-  },
-});
-
-export function AmountInputProvider({
-  children,
-  queryClient = defaultQueryClient,
-}: AmountInputProviderProps) {
-  return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
 }
 
 const AmountInputWithTokenSelectorBase = forwardRef(
@@ -112,8 +92,13 @@ const AmountInputWithTokenSelectorBase = forwardRef(
     };
 
     const [selectedTokenId, setSelectedTokenId] = useState<number | undefined>(
-      undefined
+      props.selectedTokenId
     );
+
+    // Keep internal token state in sync with prop changes
+    useEffect(() => {
+      setSelectedTokenId(props.selectedTokenId);
+    }, [props.selectedTokenId]);
 
     const handleTokenChange = (assetId: number) => {
       setSelectedTokenId(assetId);
@@ -122,7 +107,7 @@ const AmountInputWithTokenSelectorBase = forwardRef(
 
     return (
       <div className="space-y-1 w-full">
-        {props.label && <Label>{props.label}</Label>}
+        {props.label && <Label htmlFor={props.id}>{props.label}</Label>}
 
         <div className="relative">
           <Input
@@ -134,7 +119,7 @@ const AmountInputWithTokenSelectorBase = forwardRef(
             placeholder={placeholder}
             autoComplete="off"
             required={props.required}
-            className="pl-24"
+            className={cn("pl-24", props.className)}
           />
           <div className="absolute left-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
             <SelectTokenDialogBase
@@ -223,10 +208,11 @@ export const AmountInputSimpleBase = forwardRef(function AmountInputSimpleBase<
 
   return (
     <div className="space-y-1 w-full">
-      {props.label && <Label>{props.label}</Label>}
+      {props.label && <Label htmlFor={props.id}>{props.label}</Label>}
 
       <div className="relative">
         <Input
+          id={props.id}
           disabled={isDisabled || !isConnected || !connectedAccount}
           type="number"
           ref={inputRef}
@@ -235,7 +221,7 @@ export const AmountInputSimpleBase = forwardRef(function AmountInputSimpleBase<
           placeholder={placeholder}
           autoComplete="off"
           required={props.required}
-          className={props.className}
+          className={cn(props.className)}
         />
       </div>
     </div>

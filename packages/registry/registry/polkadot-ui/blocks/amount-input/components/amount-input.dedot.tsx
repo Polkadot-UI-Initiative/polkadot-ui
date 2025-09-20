@@ -3,7 +3,6 @@
 import { useMemo } from "react";
 import {
   AmountInputBase,
-  AmountInputProvider,
   type AmountInputBaseProps,
 } from "@/registry/polkadot-ui/blocks/amount-input/components/amount-input.base";
 import {
@@ -15,6 +14,7 @@ import {
 import { useAssetMetadata } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-metadata.dedot";
 import { useTokensByAssetIds } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-chaindata-json.dedot";
 import { useAssetBalances } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-balance.dedot";
+import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 
 export type AmountInputProps = Omit<AmountInputBaseProps, "services">;
 
@@ -84,9 +84,9 @@ export function AmountInput(props: AmountInputProps) {
 
 export function AmountInputWithProvider(props: AmountInputProps) {
   return (
-    <AmountInputProvider>
+    <PolkadotProvider>
       <AmountInput {...props} />
-    </AmountInputProvider>
+    </PolkadotProvider>
   );
 }
 
