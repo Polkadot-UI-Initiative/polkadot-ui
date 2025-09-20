@@ -8,6 +8,7 @@ import { RootProvider as FumadocsRootProvider } from "fumadocs-ui/provider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Unbounded } from "next/font/google";
 import "./globals.css";
+import { getRegistryItems } from "@/lib/utils";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,26 +37,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  type TweakItem = {
-    name: string;
-    title?: string;
-    type: string;
-    cssVars?: {
-      theme?: Record<string, string>;
-      light?: Record<string, string>;
-      dark?: Record<string, string>;
-    };
-  };
+  const registryItems = await getRegistryItems();
 
-  let registryItems: TweakItem[] = [];
-  try {
-    const res = await fetch("https://tweakcn.com/r/registry.json", {
-      cache: "force-cache",
-      next: { revalidate: 86400 },
-    });
-    const { items } = (await res.json()) as { items: TweakItem[] };
-    registryItems = items.filter((i) => i.type === "registry:style");
-  } catch {}
   return (
     <html
       lang="en"

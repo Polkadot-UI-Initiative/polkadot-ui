@@ -27,8 +27,8 @@ export function ComponentsSection() {
         {USED_LIBRARY === "dedot" && (
           <PolkadotProviderDedot>{ComponentExamples}</PolkadotProviderDedot>
         )}
-        <div className="flex flex-col items-center justify-center">
-          <span className="text-lg">What&apos;s missing here?</span>
+        <div className="flex flex-col items-center justify-center col-span-full h-48">
+          <span className="text-lg font-bold">What&apos;s missing here?</span>
           <Link
             href="https://github.com/Polkadot-UI-Initiative/polkadot-ui"
             className="text-xs text-primary hover:underline"

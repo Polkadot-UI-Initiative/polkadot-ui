@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/popover";
 import { truncateAddress } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { Identicon } from "@polkadot/react-identicon";
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import { Copy, Check, CircleCheck } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -277,10 +277,10 @@ function renderDetails({
   return (
     <div className="grid grid-cols-[70px_1fr] gap-y-1 gap-x-2">
       {rows.map((r) => (
-        <>
+        <Fragment key={r.label}>
           <div className="text-muted-foreground">{r.label}</div>
           <div className="font-mono truncate">{r.value}</div>
-        </>
+        </Fragment>
       ))}
     </div>
   );

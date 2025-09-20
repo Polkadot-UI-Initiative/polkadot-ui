@@ -66,7 +66,7 @@ export interface BasePolkadotContextValue<
   // TODO: remove this once we have a generic type for the chains
 
   /*
-   Wallet Connection Values + types 
+   Wallet Connection Values + types
    */
   wallets: TWallet[];
   connectWallet: (walletId: string) => void;
@@ -150,3 +150,31 @@ export interface TxAdapter<TxFn extends AnyFn = AnyFn> {
 }
 
 export type ExtractTxFn<TTx> = TTx extends TxAdapter<infer U> ? U : never;
+
+// Interface(s) related to Talisman's chaindata
+export interface TokenInfo {
+  id: string;
+  symbol: string;
+  decimals: number;
+  name: string;
+  assetId: string;
+  coingeckoId?: string;
+  logo?: string;
+}
+
+export interface ChainInfo {
+  id: string;
+  name: string;
+  logo?: string;
+  nativeTokenId?: string;
+  nativeCurrency?: {
+    decimals: number;
+    symbol: string;
+    name: string;
+    coingeckoId?: string;
+    logo?: string;
+  };
+  platform?: string;
+  isTestnet?: boolean;
+  isDefault?: boolean;
+}

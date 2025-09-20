@@ -7,6 +7,7 @@ import { requireAccountExample } from "./example-require-account";
 import { networkIndicatorExample } from "./example-network-indicator";
 import { amountInputExample } from "./example-amount-input";
 import { selectTokenExample } from "./example-select-token";
+import { selectTokenDialogExample } from "./example-select-token-dialog";
 import { transactionDetailsExample } from "./example-transaction-details";
 
 import { balanceDisplayExample } from "./example-balance-display";
@@ -27,13 +28,14 @@ export const examples: ComponentExample[] = [
   walletSelectExample,
   txButtonExample,
   addressInputExample,
+  accountInfoExample,
+  networkIndicatorExample,
   requireConnectionExample,
   requireAccountExample,
-  networkIndicatorExample,
   amountInputExample,
   selectTokenExample,
+  selectTokenDialogExample,
   transactionDetailsExample,
   balanceDisplayExample,
   nftCardExample,
-  accountInfoExample,
 ];
