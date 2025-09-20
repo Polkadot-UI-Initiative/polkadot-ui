@@ -167,7 +167,7 @@ export class ListCommand {
     if (registryUrl.includes("localhost")) {
       logger.subsection("Development Registry Issues:");
       logger.info("Make sure the registry development server is running:");
-      logger.command("cd registry-template-v4");
+      logger.command("cd polkadot-ui");
       logger.command("pnpm dev");
       logger.newline();
       logger.info("The server should be accessible at http://localhost:3000");
