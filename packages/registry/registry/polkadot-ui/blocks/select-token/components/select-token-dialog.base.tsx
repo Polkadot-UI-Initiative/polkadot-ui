@@ -25,7 +25,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export interface SelectTokenDialogServices {
   isConnected: boolean;
@@ -189,27 +189,36 @@ export function SelectTokenDialogBase({
   const [isOpen, setIsOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState<TokenInfo | null>(null);
 
+  // Keep selectedToken in sync with props.value and available chainTokens
+  useEffect(() => {
+    if (!chainTokens || chainTokens.length === 0) {
+      setSelectedToken(null);
+      return;
+    }
+    // If value is provided, prefer it
+    if (value != null) {
+      const next = chainTokens.find(
+        (token) => Number(token.assetId) === (value as number)
+      );
+      setSelectedToken(next ?? null);
+      return;
+    }
+    // If selectedToken became invalid due to token list change, clear it
+    if (selectedToken && !chainTokens.find((t) => t.id === selectedToken.id)) {
+      setSelectedToken(null);
+    }
+  }, [value, chainTokens, selectedToken]);
+
   const displayToken = useMemo(() => {
-    if (chainTokens && chainTokens.length > 0) {
-      if (value != null) {
-        const foundToken = chainTokens.find(
-          (token) => Number(token.assetId) === (value as number)
-        );
-        if (foundToken) {
-          setSelectedToken(foundToken);
-          return foundToken;
-        }
-      }
-
-      if (
-        selectedToken &&
-        chainTokens.find((token) => token.id === selectedToken.id)
-      ) {
-        return selectedToken;
-      }
-
-      // Otherwise, no token is selected so show placeholder
-      return null;
+    if (!chainTokens || chainTokens.length === 0) return null;
+    if (value != null) {
+      const found = chainTokens.find(
+        (token) => Number(token.assetId) === (value as number)
+      );
+      if (found) return found;
+    }
+    if (selectedToken && chainTokens.find((t) => t.id === selectedToken.id)) {
+      return selectedToken;
     }
     return null;
   }, [value, chainTokens, selectedToken]);

@@ -27,15 +27,24 @@ export function useAssetMetadata({
 
   const isConnected = status === ClientConnectionStatus.Connected;
 
+  const sortedIds = useMemo(() => {
+    const sanitized = assetIds
+      .map((id) =>
+        typeof id === "number" && Number.isFinite(id) ? Math.floor(id) : NaN
+      )
+      .filter((id) => Number.isInteger(id) && id >= 0) as number[];
+    return [...new Set(sanitized)].sort((a, b) => a - b);
+  }, [assetIds]);
+
   const queryResult = useQuery({
-    queryKey: ["dedot-assets-metadata", chainId, assetIds],
+    queryKey: ["dedot-assets-metadata", String(chainId), sortedIds],
     queryFn: async (): Promise<TokenMetadata[]> => {
       if (!client) return [];
 
       const query = client.query.assets.metadata;
 
       const results = await Promise.all(
-        assetIds.map(async (assetId) => {
+        sortedIds.map(async (assetId) => {
           try {
             const meta = await query(assetId);
             const name = decodeText(meta?.name);
@@ -63,7 +72,7 @@ export function useAssetMetadata({
 
       return results;
     },
-    enabled: isConnected && !!client && assetIds.length > 0,
+    enabled: isConnected && !!client && sortedIds.length > 0,
     staleTime: 5 * 60 * 1000,
   });
 

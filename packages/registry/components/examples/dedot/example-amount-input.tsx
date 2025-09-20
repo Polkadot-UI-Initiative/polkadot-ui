@@ -31,8 +31,9 @@ export const amountInputExample: ComponentExample = {
         }
       >
         <div className="flex flex-col gap-2 w-full">
-          <Label>Amount</Label>
+          <Label htmlFor="amount">Amount</Label>
           <AmountInput
+            id="amount"
             withTokenSelector
             chainId={paseoAssetHub.id}
             assetIds={[1984, 1337, 7777]}

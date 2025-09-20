@@ -36,7 +36,12 @@ export function useAssetBalance({
     enabled && isConnected && !!client && !!address && assetId != null;
 
   const queryResult = useQuery({
-    queryKey: ["dedot-asset-balance", chainId, assetId, address],
+    queryKey: [
+      "dedot-asset-balance",
+      String(chainId),
+      Number(assetId),
+      address,
+    ],
     enabled: isEnabled,
     queryFn: async (): Promise<bigint | null> => {
       if (!client) return null;
@@ -64,7 +69,7 @@ export function useAssetBalance({
 }
 
 export interface UseAssetBalancesArgs {
-  chainId: string;
+  chainId: NetworkId;
   assetIds: number[];
   address: string;
   enabled?: boolean;
@@ -86,9 +91,24 @@ export function useAssetBalances(
   const isEnabled =
     enabled && isConnected && !!client && !!address && assetIds.length > 0;
 
+  // Sanitize assetIds: integers >= 0 and unique, to prevent injection or malformed queries
+  const sortedIds = useMemo(() => {
+    const sanitized = assetIds
+      .map((id) =>
+        typeof id === "number" && Number.isFinite(id) ? Math.floor(id) : NaN
+      )
+      .filter((id) => Number.isInteger(id) && id >= 0) as number[];
+    return [...new Set(sanitized)].sort((a, b) => a - b);
+  }, [assetIds]);
+
   const queryResults = useQueries({
-    queries: assetIds.map((assetId) => ({
-      queryKey: ["dedot-asset-balance", chainId, assetId, address],
+    queries: sortedIds.map((assetId) => ({
+      queryKey: [
+        "dedot-asset-balance",
+        String(chainId),
+        Number(assetId),
+        address,
+      ],
       enabled: isEnabled,
       queryFn: async (): Promise<bigint | null> => {
         if (!client) return null;
@@ -116,7 +136,7 @@ export function useAssetBalances(
     let isLoading = false;
 
     queryResults.forEach((result, index) => {
-      const assetId = assetIds[index];
+      const assetId = sortedIds[index];
       balances[assetId] = (result.data as bigint | null) ?? null;
       errors[assetId] = (result.error as Error | null) ?? null;
       if (result.isLoading) {
@@ -129,5 +149,5 @@ export function useAssetBalances(
       isLoading,
       errors,
     };
-  }, [queryResults, assetIds]);
+  }, [queryResults, sortedIds]);
 }

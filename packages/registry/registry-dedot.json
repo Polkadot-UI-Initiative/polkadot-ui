@@ -21,36 +21,6 @@
       ]
     },
     {
-      "name": "account-info",
-      "type": "registry:component",
-      "title": "Address Info (dedot)",
-      "description": "Display identity information for an address using identity.identityOf.",
-      "dependencies": [
-        "dedot",
-        "typink",
-        "@tanstack/react-query",
-        "@polkadot/react-identicon"
-      ],
-      "files": [
-        {
-          "path": "registry/polkadot-ui/blocks/account-info/components/account-info.base.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/polkadot-ui/blocks/account-info/components/account-info.dedot.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/polkadot-ui/blocks/account-info/hooks/use-identity-of.dedot.ts",
-          "type": "registry:hook"
-        },
-        {
-          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
-          "type": "registry:lib"
-        }
-      ]
-    },
-    {
       "name": "tx-button",
       "type": "registry:component",
       "title": "Tx Button (dedot)",
@@ -88,23 +58,6 @@
         {
           "path": "registry/polkadot-ui/blocks/tx-notification/components/tx-notification.tsx",
           "type": "registry:component"
-        }
-      ]
-    },
-    {
-      "name": "tx-notification",
-      "type": "registry:component",
-      "title": "Tx Notification (dedot)",
-      "description": "A component that shows status updates in a notification.",
-      "dependencies": ["dedot", "typink", "lucide-react", "sonner"],
-      "files": [
-        {
-          "path": "registry/polkadot-ui/blocks/tx-notification/components/tx-notification.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
-          "type": "registry:lib"
         }
       ]
     },

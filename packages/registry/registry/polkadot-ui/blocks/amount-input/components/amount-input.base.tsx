@@ -1,10 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { forwardRef, useEffect, useRef, useState } from "react";
-import type {
-  AnyFn,
-  TxAdapter,
-  TokenInfo,
-} from "@/registry/polkadot-ui/lib/types.dot-ui";
+import type { TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { Label } from "@/registry/polkadot-ui/ui/label";
 import { Input } from "@/registry/polkadot-ui/ui/input";
 import { SelectTokenDialogBase } from "@/registry/polkadot-ui/blocks/select-token/components/select-token-dialog.base";
@@ -28,27 +24,9 @@ export interface AmountInputServices<TNetworkId extends string = string> {
     name: string;
     logo?: string;
   };
-
-  // Legacy props for backward compatibility
-  connected?: boolean;
-  symbol?: string;
-  decimals?: number;
-  supportedNetworks?: Array<{
-    id: TNetworkId;
-    decimals: number;
-    symbol: string;
-    name: string;
-  }>;
-  fee?: bigint | null;
-  isFeeLoading?: boolean;
-  feeError?: string | null;
-  balanceFree?: bigint | null;
 }
 
-export interface AmountInputBaseProps<
-  TTx extends TxAdapter<AnyFn> = TxAdapter<AnyFn>,
-  TNetworkId extends string = string,
-> {
+export interface AmountInputBaseProps<TNetworkId extends string = string> {
   value?: string;
   onChange?: (value: string) => void;
   label?: string;
@@ -56,7 +34,6 @@ export interface AmountInputBaseProps<
   decimals?: number;
   maxValue?: bigint;
   displayValue?: bigint;
-  tx?: TTx;
   required?: boolean;
   withTokenSelector?: boolean;
   selectedTokenId?: number;
@@ -92,10 +69,7 @@ export function AmountInputProvider({
 }
 
 const AmountInputWithTokenSelectorBase = forwardRef(
-  function AmountInputWithTokenSelectorBase<
-    TTx extends TxAdapter<AnyFn> = TxAdapter<AnyFn>,
-    TNetworkId extends string = string,
-  >(
+  function AmountInputWithTokenSelectorBase<TNetworkId extends string = string>(
     {
       value = "",
       onChange,
@@ -103,11 +77,11 @@ const AmountInputWithTokenSelectorBase = forwardRef(
       onTokenChange,
       services,
       ...props
-    }: AmountInputBaseProps<TTx, TNetworkId>,
+    }: AmountInputBaseProps<TNetworkId>,
     _ref: React.ForwardedRef<HTMLInputElement>
   ) {
     // Support both new and legacy service properties
-    const isConnected = services.isConnected ?? services.connected ?? false;
+    const isConnected = services.isConnected ?? false;
     const isDisabled = services.isDisabled ?? props.disabled ?? false;
     const connectedAccount = services.connectedAccount ?? null;
 
@@ -190,10 +164,9 @@ const AmountInputWithTokenSelectorBase = forwardRef(
 );
 
 export const AmountInputBase = forwardRef(function AmountInputBase<
-  TTx extends TxAdapter<AnyFn> = TxAdapter<AnyFn>,
   TNetworkId extends string = string,
 >(
-  props: AmountInputBaseProps<TTx, TNetworkId>,
+  props: AmountInputBaseProps<TNetworkId>,
   _ref: React.ForwardedRef<HTMLInputElement>
 ) {
   const { withTokenSelector = false } = props;
@@ -207,7 +180,6 @@ export const AmountInputBase = forwardRef(function AmountInputBase<
 });
 
 export const AmountInputSimpleBase = forwardRef(function AmountInputSimpleBase<
-  TTx extends TxAdapter<AnyFn> = TxAdapter<AnyFn>,
   TNetworkId extends string = string,
 >(
   {
@@ -216,11 +188,11 @@ export const AmountInputSimpleBase = forwardRef(function AmountInputSimpleBase<
     placeholder = "Enter amount",
     services,
     ...props
-  }: AmountInputBaseProps<TTx, TNetworkId>,
+  }: AmountInputBaseProps<TNetworkId>,
   _ref: React.ForwardedRef<HTMLInputElement>
 ) {
   // Support both new and legacy service properties
-  const isConnected = services.isConnected ?? services.connected ?? false;
+  const isConnected = services.isConnected ?? false;
   const isDisabled = services.isDisabled ?? props.disabled ?? false;
   const connectedAccount = services.connectedAccount ?? null;
 
