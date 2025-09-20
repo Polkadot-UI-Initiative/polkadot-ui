@@ -46,6 +46,7 @@ export interface AmountInputBaseProps<TNetworkId extends string = string> {
   disabled?: boolean;
   className?: string;
   services: AmountInputServices<TNetworkId>;
+  step?: number | string;
 }
 
 const AmountInputWithTokenSelectorBase = forwardRef(
@@ -62,7 +63,7 @@ const AmountInputWithTokenSelectorBase = forwardRef(
   ) {
     // Support both new and legacy service properties
     const isConnected = services.isConnected ?? false;
-    const isDisabled = services.isDisabled ?? props.disabled ?? false;
+    const isDisabled = Boolean(services.isDisabled) || Boolean(props.disabled);
     const connectedAccount = services.connectedAccount ?? null;
 
     const [inputAmount, setInputAmount] = useState(value);
@@ -120,6 +121,7 @@ const AmountInputWithTokenSelectorBase = forwardRef(
             autoComplete="off"
             required={props.required}
             min="0"
+            step={props.step}
             inputMode="decimal"
             className={cn("pl-24", props.className)}
           />
@@ -180,7 +182,7 @@ export const AmountInputSimpleBase = forwardRef(function AmountInputSimpleBase<
 ) {
   // Support both new and legacy service properties
   const isConnected = services.isConnected ?? false;
-  const isDisabled = services.isDisabled ?? props.disabled ?? false;
+  const isDisabled = Boolean(services.isDisabled) || Boolean(props.disabled);
   const connectedAccount = services.connectedAccount ?? null;
 
   const [inputAmount, setInputAmount] = useState(value);
@@ -215,6 +217,7 @@ export const AmountInputSimpleBase = forwardRef(function AmountInputSimpleBase<
       <div className="relative">
         <Input
           id={props.id}
+          step={props.step}
           disabled={isDisabled || !isConnected || !connectedAccount}
           type="number"
           ref={inputRef}
