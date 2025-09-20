@@ -37,6 +37,7 @@
     "@reactive-dot/core": "^0.46.1",
     "@reactive-dot/react": "^0.46.2",
     "@styleglide/theme-editor": "^0.0.15",
+    "@talismn/chaindata-js": "^0.0.7",
     "@tanstack/react-query": "^5.81.5",
     "@types/mdx": "^2.0.13",
     "@vercel/analytics": "^1.5.0",

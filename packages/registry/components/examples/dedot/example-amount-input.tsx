@@ -1,10 +1,47 @@
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { AmountInput } from "@/registry/polkadot-ui/blocks/amount-input/components/amount-input.dedot";
+import { RequireAccount } from "@/registry/polkadot-ui/blocks/require-account/components/require-account.dedot";
 import type { ComponentExample } from "../types.examples";
-import { ExamplePlaceholder } from "@/components/examples/placeholder";
+import { Label } from "@/registry/polkadot-ui/ui/label";
+import { paseoAssetHub } from "typink";
 
 export const amountInputExample: ComponentExample = {
   name: "Amount Input",
   href: "/docs/components/amount-input",
   code: "amount-input",
   description: "Input component for entering amounts",
-  component: <ExamplePlaceholder title="Amount Input" />,
+  component: (
+    <div className="w-full space-y-3">
+      <RequireAccount
+        chainId={paseoAssetHub.id}
+        fallback={
+          <Card className="bg-white/5 border border-border w-full">
+            <CardHeader>
+              <CardTitle>👤 No Account Selected</CardTitle>
+              <CardDescription className="text-xs font-normal">
+                Please select an account to continue with amount input.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        }
+      >
+        <div className="flex flex-col gap-2 w-full">
+          <Label>Amount</Label>
+          <AmountInput
+            withTokenSelector
+            chainId={paseoAssetHub.id}
+            assetIds={[1984, 1337, 7777]}
+            className="w-full"
+            required={false}
+            placeholder="Enter an amount"
+          />
+        </div>
+      </RequireAccount>
+    </div>
+  ),
 };
