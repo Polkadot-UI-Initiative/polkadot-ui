@@ -67,6 +67,7 @@
   "devDependencies": {
     "@dedot/chaintypes": "^0.132.0",
     "@eslint/eslintrc": "^3",
+    "@eslint/plugin-kit": ">=0.3.4",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
@@ -81,6 +82,7 @@
     "shadcn": "3.2.1",
     "shiki": "^3.12.2",
     "tailwindcss": "^4",
+    "tmp": ">=0.2.4",
     "ts-jest": "^29.1.2",
     "typescript": "^5"
   }
