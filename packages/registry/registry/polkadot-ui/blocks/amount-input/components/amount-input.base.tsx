@@ -119,6 +119,8 @@ const AmountInputWithTokenSelectorBase = forwardRef(
             placeholder={placeholder}
             autoComplete="off"
             required={props.required}
+            min="0"
+            inputMode="decimal"
             className={cn("pl-24", props.className)}
           />
           <div className="absolute left-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
@@ -221,6 +223,8 @@ export const AmountInputSimpleBase = forwardRef(function AmountInputSimpleBase<
           placeholder={placeholder}
           autoComplete="off"
           required={props.required}
+          min="0"
+          inputMode="decimal"
           className={cn(props.className)}
         />
       </div>
