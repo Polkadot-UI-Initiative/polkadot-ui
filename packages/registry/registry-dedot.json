@@ -21,36 +21,6 @@
       ]
     },
     {
-      "name": "account-info",
-      "type": "registry:component",
-      "title": "Address Info (dedot)",
-      "description": "Display identity information for an address using identity.identityOf.",
-      "dependencies": [
-        "dedot",
-        "typink",
-        "@tanstack/react-query",
-        "@polkadot/react-identicon"
-      ],
-      "files": [
-        {
-          "path": "registry/polkadot-ui/blocks/account-info/components/account-info.base.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/polkadot-ui/blocks/account-info/components/account-info.dedot.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/polkadot-ui/blocks/account-info/hooks/use-identity-of.dedot.ts",
-          "type": "registry:hook"
-        },
-        {
-          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
-          "type": "registry:lib"
-        }
-      ]
-    },
-    {
       "name": "tx-button",
       "type": "registry:component",
       "title": "Tx Button (dedot)",
@@ -88,6 +58,36 @@
         {
           "path": "registry/polkadot-ui/blocks/tx-notification/components/tx-notification.tsx",
           "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "account-info",
+      "type": "registry:component",
+      "title": "Address Info (dedot)",
+      "description": "Display identity information for an address using identity.identityOf.",
+      "dependencies": [
+        "dedot",
+        "typink",
+        "@tanstack/react-query",
+        "@polkadot/react-identicon"
+      ],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/account-info/components/account-info.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/account-info/components/account-info.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/account-info/hooks/use-identity-of.dedot.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
+          "type": "registry:lib"
         }
       ]
     },
@@ -295,6 +295,116 @@
         {
           "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
           "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "select-token",
+      "type": "registry:component",
+      "title": "Select Token (dedot)",
+      "description": "A dropdown component for selecting tokens with balance display, logo support, and asset metadata integration using Talisman's chaindata and dedot.",
+      "dependencies": [
+        "dedot",
+        "typink",
+        "@tanstack/react-query",
+        "lucide-react"
+      ],
+      "registryDependencies": ["select"],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/components/select-token.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/components/select-token.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/components/shared-token-components.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/hooks/use-asset-metadata.dedot.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/hooks/use-asset-balance.dedot.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/hooks/use-chaindata-json.dedot.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
+      "name": "select-token-dialog",
+      "type": "registry:component",
+      "title": "Select Token Dialog (dedot)",
+      "description": "A dialog component for selecting tokens with balance display, logo support, and asset metadata integration using Talisman's chaindata and dedot.",
+      "dependencies": [
+        "dedot",
+        "typink",
+        "@tanstack/react-query",
+        "lucide-react"
+      ],
+      "registryDependencies": ["button", "dialog"],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/components/select-token-dialog.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/components/select-token-dialog.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/components/shared-token-components.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/hooks/use-asset-metadata.dedot.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/hooks/use-asset-balance.dedot.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/hooks/use-chaindata-json.dedot.ts",
+          "type": "registry:hook"
         }
       ]
     },

@@ -22,8 +22,9 @@ export function useIdentity(
   address: string,
   identityChain: NetworkId = paseoPeople.id
 ) {
-  const { client: peopleClient, status: peopleStatus } =
-    usePolkadotClient(identityChain);
+  const { client: peopleClient, status: peopleStatus } = usePolkadotClient(
+    identityChain ?? paseoPeople.id
+  );
 
   return useQuery({
     queryKey: ["polkadot-identity-dedot", address, identityChain],

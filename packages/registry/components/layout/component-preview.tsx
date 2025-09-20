@@ -35,10 +35,10 @@ export function ComponentPreview({
         <CardTitle className="text-lg flex items-center justify-between">
           {componentInfo.name}{" "}
           {componentInfo.tsx && (
-            <div className="flex gap-1">
+            <div className="flex gap-0">
               <Button
                 size="xs"
-                className="h-[26px] rounded-xs"
+                className="h-[26px] w-22 rounded-sm rounded-r-none"
                 variant={view === "preview" ? "default" : "secondary"}
                 onClick={() => setView("preview")}
               >
@@ -46,7 +46,7 @@ export function ComponentPreview({
               </Button>
               <Button
                 size="xs"
-                className="h-[26px] rounded-xs"
+                className="h-[26px] w-22 rounded-sm rounded-l-none"
                 variant={view === "code" ? "default" : "secondary"}
                 onClick={() => setView("code")}
               >

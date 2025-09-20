@@ -3,7 +3,6 @@
 import { useMemo, type ReactElement } from "react";
 import {
   AddressInputBase,
-  AddressInputProvider,
   type AddressInputBaseProps,
   type AddressInputServices,
 } from "@/registry/polkadot-ui/blocks/address-input/components/address-input.base";
@@ -68,9 +67,7 @@ export function AddressInput(props: AddressInputProps) {
 export function AddressInputWithProvider(props: AddressInputProps) {
   return (
     <PolkadotProvider>
-      <AddressInputProvider>
-        <AddressInput {...props} />
-      </AddressInputProvider>
+      <AddressInput {...props} />
     </PolkadotProvider>
   );
 }

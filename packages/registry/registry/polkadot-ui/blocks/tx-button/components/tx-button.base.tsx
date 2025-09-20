@@ -296,7 +296,7 @@ export function TxButtonBase<
           </span>
         ) : isFeeLoading ? (
           <div className="flex items-center">
-            <Loader2 className="w-3 h-3 animate-spin" />
+            <Loader2 className="w-3 h-3 animate-spin pr-1" />
             <span>Estimating fees...</span>
           </div>
         ) : (

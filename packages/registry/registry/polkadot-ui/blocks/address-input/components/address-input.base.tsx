@@ -17,7 +17,6 @@ import { Label } from "@/registry/polkadot-ui/ui/label";
 import { Identicon } from "@polkadot/react-identicon";
 import { type IconTheme } from "@polkadot/react-identicon/types";
 import type { UseQueryResult } from "@tanstack/react-query";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { Check, CircleCheck, Copy, Loader2 } from "lucide-react";
 import { forwardRef, ReactNode, useEffect, useRef, useState } from "react";
@@ -75,27 +74,6 @@ export interface IdentityResult {
 // Provider wrapper interface
 export interface AddressInputProviderProps {
   children: ReactNode;
-  queryClient?: QueryClient;
-}
-
-// Default query client
-const defaultQueryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-      staleTime: 5 * 60 * 1000, // 5 minutes
-    },
-  },
-});
-
-// Generic provider wrapper component
-export function AddressInputProvider({
-  children,
-  queryClient = defaultQueryClient,
-}: AddressInputProviderProps) {
-  return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
 }
 
 export const AddressInputBase = forwardRef(function AddressInputBase<

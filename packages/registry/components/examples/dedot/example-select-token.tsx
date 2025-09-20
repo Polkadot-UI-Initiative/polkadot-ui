@@ -1,5 +1,5 @@
 import type { ComponentExample } from "../types.examples";
-import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/select-token.dedot";
+import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/components/select-token.dedot";
 import { paseoAssetHub } from "typink";
 
 export const selectTokenExample: ComponentExample = {
@@ -12,9 +12,10 @@ export const selectTokenExample: ComponentExample = {
       {/* Asset Hub Paseo sample IDs from Substrate Assets explorer */}
       <SelectToken
         chainId={paseoAssetHub.id}
-        assetIds={[1984, 8, 27]}
+        assetIds={[1984, 1337, 7777]}
         className="w-full"
         withBalance
+        disabled={false}
       />
     </div>
   ),
