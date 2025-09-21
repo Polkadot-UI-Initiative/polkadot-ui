@@ -12,16 +12,14 @@ import React, { useState, Fragment } from "react";
 import { Copy, Check, CircleCheck } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export interface AccountInfoServices<TNetworkId> {
-  useIdentityOf: (params: { chainId: TNetworkId; address: string }) => {
-    data: PolkadotIdentity | null;
-    isLoading: boolean;
-    error: Error | null;
-  };
+export interface AccountInfoServices {
+  identity: PolkadotIdentity | null;
+  isLoading: boolean;
+  error: Error | null;
 }
 
 export interface AccountInfoBaseProps<TNetworkId = string> {
-  chainId: TNetworkId;
+  chainId?: TNetworkId;
   address: string;
   showIcon?: boolean;
   iconTheme?: "polkadot" | "substrate" | "beachball" | "jdenticon";
@@ -29,7 +27,7 @@ export interface AccountInfoBaseProps<TNetworkId = string> {
   truncate?: number | boolean;
   withPopover?: boolean;
   className?: string;
-  services: AccountInfoServices<TNetworkId>;
+  services: AccountInfoServices;
 }
 
 export interface PolkadotIdentity {
@@ -56,7 +54,6 @@ export type AccountInfoField =
   | "verified";
 
 export function AccountInfoBase<TNetworkId extends string = string>({
-  chainId,
   address,
   showIcon = true,
   iconTheme = "polkadot",
@@ -66,10 +63,7 @@ export function AccountInfoBase<TNetworkId extends string = string>({
   className,
   services,
 }: AccountInfoBaseProps<TNetworkId>) {
-  const { data, isLoading, error } = services.useIdentityOf({
-    chainId,
-    address,
-  });
+  const { identity, isLoading, error } = services;
 
   const fieldsToShow =
     fields === "all"
@@ -89,7 +83,7 @@ export function AccountInfoBase<TNetworkId extends string = string>({
     return <AccountInfoSkeleton address={address} />;
   }
 
-  const rawName = data?.display ?? data?.legal ?? "";
+  const rawName = identity?.display ?? identity?.legal ?? "";
   const summaryAddress = truncate
     ? truncateAddress(address, truncate)
     : address;
@@ -97,16 +91,16 @@ export function AccountInfoBase<TNetworkId extends string = string>({
 
   const trigger = (
     <div className={cn("inline-flex items-center gap-2 p-2", className)}>
-      {showIcon && !data?.image && (
+      {showIcon && !identity?.image && (
         <Identicon value={address} size={28} theme={iconTheme} />
       )}
-      {showIcon && data?.image && (
+      {showIcon && identity?.image && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={data.image} alt={name} className="w-7 h-7 rounded-full" />
+        <img src={identity.image} alt={name} className="w-7 h-7 rounded-full" />
       )}
       <div className="flex flex-col leading-tight items-start text-left min-w-0 flex-1">
         <span className="text-sm inline-flex items-center gap-1 min-w-0">
-          {data?.verified && (
+          {identity?.verified && (
             <CircleCheck className="h-4 w-4 text-background fill-green-600 stroke-background" />
           )}
           <span className="truncate">
@@ -121,7 +115,7 @@ export function AccountInfoBase<TNetworkId extends string = string>({
   );
 
   if (!withPopover) {
-    const links = buildLinks({ data, fields: fieldsToShow });
+    const links = buildLinks({ identity, fields: fieldsToShow });
     return (
       <div className="inline-flex items-center gap-2">
         {trigger}
@@ -153,23 +147,27 @@ export function AccountInfoBase<TNetworkId extends string = string>({
       </PopoverTrigger>
       <PopoverContent align="center">
         <div className="flex items-center gap-2 mb-2">
-          {showIcon && !data?.image && (
+          {showIcon && !identity?.image && (
             <Identicon value={address} size={28} theme={iconTheme} />
           )}
-          {showIcon && data?.image && (
+          {showIcon && identity?.image && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={data.image} alt={name} className="w-7 h-7 rounded-full" />
+            <img
+              src={identity.image}
+              alt={name}
+              className="w-7 h-7 rounded-full"
+            />
           )}
           <HeaderWithCopy
             name={name}
             address={address}
             truncated={truncateAddress(address, truncate)}
-            isVerified={!!data?.verified}
+            isVerified={!!identity?.verified}
           />
         </div>
         {!isLoading && (
           <div className="text-xs space-y-1">
-            {renderDetails({ fields: fieldsToShow, data })}
+            {renderDetails({ fields: fieldsToShow, identity })}
           </div>
         )}
         {error && (
@@ -186,12 +184,12 @@ AccountInfoBase.displayName = "AccountInfoBase";
 
 function renderDetails({
   fields,
-  data,
+  identity,
 }: {
   fields: AccountInfoField[];
-  data: PolkadotIdentity | null | undefined;
+  identity: PolkadotIdentity | null | undefined;
 }) {
-  if (!data) return null;
+  if (!identity) return null;
   const safe = (v?: string) => (v && v !== "[object Object]" ? v : undefined);
   const rows: { label: string; value: React.ReactNode }[] = [];
   const push = (label: string, v?: string | React.ReactNode) => {
@@ -204,23 +202,23 @@ function renderDetails({
     if (v) rows.push({ label, value: v });
   };
   for (const f of fields) {
-    if (f === "legal") push("Legal", data.legal);
+    if (f === "legal") push("Legal", identity.legal);
     if (f === "email")
       push(
         "Email",
-        data.email ? (
+        identity.email ? (
           <a
-            href={`mailto:${data.email}`}
+            href={`mailto:${identity.email}`}
             className="underline"
             target="_blank"
             rel="noopener noreferrer"
           >
-            {data.email}
+            {identity.email}
           </a>
         ) : undefined
       );
     if (f === "twitter") {
-      const handle = data.twitter?.replace(/^@/, "");
+      const handle = identity.twitter?.replace(/^@/, "");
       push(
         "Twitter",
         handle ? (
@@ -238,42 +236,42 @@ function renderDetails({
     if (f === "github")
       push(
         "GitHub",
-        data.github ? (
+        identity.github ? (
           <a
-            href={`https://github.com/${data.github}`}
+            href={`https://github.com/${identity.github}`}
             className="underline"
             target="_blank"
             rel="noopener noreferrer"
           >
-            {data.github}
+            {identity.github}
           </a>
         ) : undefined
       );
     if (f === "discord")
       push(
         "Discord",
-        data.discord ? (
+        identity.discord ? (
           <a
-            href={`https://discord.com/users/${encodeURIComponent(data.discord)}`}
+            href={`https://discord.com/users/${encodeURIComponent(identity.discord)}`}
             className="underline"
             target="_blank"
             rel="noopener noreferrer"
           >
-            {data.discord}
+            {identity.discord}
           </a>
         ) : undefined
       );
     if (f === "matrix")
       push(
         "Matrix",
-        data.matrix ? (
+        identity.matrix ? (
           <a
-            href={`https://matrix.to/#/${encodeURIComponent(data.matrix)}`}
+            href={`https://matrix.to/#/${encodeURIComponent(identity.matrix)}`}
             className="underline"
             target="_blank"
             rel="noopener noreferrer"
           >
-            {data.matrix}
+            {identity.matrix}
           </a>
         ) : undefined
       );
@@ -292,13 +290,13 @@ function renderDetails({
 }
 
 function buildLinks({
-  data,
+  identity,
   fields,
 }: {
-  data: PolkadotIdentity | null | undefined;
+  identity: PolkadotIdentity | null | undefined;
   fields: AccountInfoField[];
 }): { label: string; href: string; text?: string }[] {
-  if (!data) return [];
+  if (!identity) return [];
   const links: { label: string; href: string; text?: string }[] = [];
   const add = (label: string, href?: string, text?: string) => {
     if (href) links.push({ label, href, text });
@@ -307,11 +305,11 @@ function buildLinks({
   if (fields.includes("email"))
     add(
       "Email",
-      data.email ? `mailto:${data.email}` : undefined,
-      data.email ?? undefined
+      identity.email ? `mailto:${identity.email}` : undefined,
+      identity.email ?? undefined
     );
   if (fields.includes("twitter")) {
-    const handle = data.twitter?.replace(/^@/, "");
+    const handle = identity.twitter?.replace(/^@/, "");
     add(
       "Twitter",
       handle ? `https://x.com/${handle}` : undefined,
@@ -321,24 +319,24 @@ function buildLinks({
   if (fields.includes("github"))
     add(
       "GitHub",
-      data.github ? `https://github.com/${data.github}` : undefined,
-      data.github ?? undefined
+      identity.github ? `https://github.com/${identity.github}` : undefined,
+      identity.github ?? undefined
     );
   if (fields.includes("discord"))
     add(
       "Discord",
-      data.discord
-        ? `https://discord.com/users/${encodeURIComponent(data.discord)}`
+      identity.discord
+        ? `https://discord.com/users/${encodeURIComponent(identity.discord)}`
         : undefined,
-      data.discord ?? undefined
+      identity.discord ?? undefined
     );
   if (fields.includes("matrix"))
     add(
       "Matrix",
-      data.matrix
-        ? `https://matrix.to/#/${encodeURIComponent(data.matrix)}`
+      identity.matrix
+        ? `https://matrix.to/#/${encodeURIComponent(identity.matrix)}`
         : undefined,
-      data.matrix ?? undefined
+      identity.matrix ?? undefined
     );
 
   return links;

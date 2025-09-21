@@ -14,19 +14,35 @@ import {
 
 import { BookText, Check, Code, Copy, Eye } from "lucide-react";
 import Link from "next/link";
-import { isValidElement, ReactElement, ReactNode, useState } from "react";
+import React, {
+  isValidElement,
+  ReactElement,
+  ReactNode,
+  useState,
+} from "react";
 
 import { useTheme } from "next-themes";
 import ShikiHighlighter from "react-shiki";
 
 export function ComponentPreview({
   componentInfo,
+  withDocs = true,
+  ComponentWrapper,
 }: {
   componentInfo: ComponentExample;
+  withDocs?: boolean;
+  ComponentWrapper?: React.ReactElement;
 }) {
   const [view, setView] = useState<"preview" | "code">("preview");
   const [isCopied, setIsCopied] = useState(false);
   const { theme } = useTheme();
+
+  const previewContent =
+    ComponentWrapper &&
+    isValidElement(ComponentWrapper) &&
+    ComponentWrapper.type !== React.Fragment
+      ? React.cloneElement(ComponentWrapper, undefined, componentInfo.component)
+      : componentInfo.component;
 
   return (
     <Card
@@ -61,7 +77,7 @@ export function ComponentPreview({
       </CardHeader>
       <CardContent className="flex items-center justify-center flex-1 min-h-0 relative">
         {view === "preview" ? (
-          componentInfo.component
+          previewContent
         ) : (
           <>
             <div
@@ -95,14 +111,16 @@ export function ComponentPreview({
         )}
       </CardContent>
       <CardFooter className="mt-auto flex items-center pt-2 gap-2">
-        <Button asChild size="sm" variant="secondary">
-          <Link
-            href={componentInfo.href}
-            className="text-primary hover:underline"
-          >
-            <BookText /> Docs →
-          </Link>
-        </Button>
+        {withDocs && componentInfo.href && (
+          <Button asChild size="sm" variant="secondary">
+            <Link
+              href={componentInfo.href}
+              className="text-primary hover:underline"
+            >
+              <BookText /> Docs →
+            </Link>
+          </Button>
+        )}
         <OpenInV0Button
           name={componentInfo.code}
           title={componentInfo.name}

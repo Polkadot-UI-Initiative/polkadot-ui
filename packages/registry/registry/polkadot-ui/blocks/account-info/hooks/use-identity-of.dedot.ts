@@ -18,11 +18,11 @@ export interface PolkadotIdentity {
 }
 
 export function useIdentityOf({
-  chainId,
   address,
+  chainId,
 }: {
-  chainId: string;
   address: string;
+  chainId?: string;
 }) {
   const { client, status } = usePolkadotClient(chainId);
   const isConnected = status === ClientConnectionStatus.Connected;
