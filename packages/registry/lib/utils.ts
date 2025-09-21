@@ -16,7 +16,7 @@ type TweakItem = {
   };
 };
 
-export async function getGitHubStars(repo: string): Promise<number> {
+export async function getGitHubStars(repo: string): Promise<number | null> {
   let stars = null;
   const url = `https://api.github.com/repos/${repo}`;
   try {
