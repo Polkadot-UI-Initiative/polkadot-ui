@@ -1,16 +1,16 @@
 "use client";
 
-import { cn } from "@/registry/polkadot-ui/lib/utils";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/registry/polkadot-ui/lib/utils";
 import { truncateAddress } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { Identicon } from "@polkadot/react-identicon";
-import React, { useState, Fragment } from "react";
-import { Copy, Check, CircleCheck } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Check, CircleCheck, Copy } from "lucide-react";
+import React, { Fragment, useState } from "react";
 
 export interface AccountInfoServices {
   identity: PolkadotIdentity | null;

@@ -1,5 +1,5 @@
 import type { ComponentExample } from "../types.examples";
-import { AccountInfo } from "@/registry/polkadot-ui/blocks/account-info/components/account-info.dedot";
+import { AccountInfo } from "@/registry/polkadot-ui/blocks/account-info/account-info.dedot";
 import { polkadotPeople } from "typink";
 
 export const accountInfoExample: ComponentExample = {

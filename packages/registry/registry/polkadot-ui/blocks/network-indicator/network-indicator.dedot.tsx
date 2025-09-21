@@ -1,10 +1,13 @@
 "use client";
 
+import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
+import {
+  NetworkIndicatorBase,
+  NetworkIndicatorBaseProps,
+} from "@/registry/polkadot-ui/blocks/network-indicator/network-indicator.base";
+import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { useMemo } from "react";
 import { ClientConnectionStatus, useBlockInfo, useTypink } from "typink";
-import { NetworkIndicatorBaseProps } from "./network-indicator.base";
-import { NetworkIndicatorBase } from "./network-indicator.base";
-import { ClientOnly } from "../client-only";
 
 export type NetworkIndicatorProps<TNetworkId extends string> = Omit<
   NetworkIndicatorBaseProps<TNetworkId>,
@@ -39,4 +42,14 @@ export function NetworkIndicatorInner<TNetworkId extends string>(
   );
 
   return <NetworkIndicatorBase {...props} services={services} />;
+}
+
+export function NetworkIndicatorWithProvider(
+  props: NetworkIndicatorProps<string>
+) {
+  return (
+    <PolkadotProvider>
+      <NetworkIndicator {...props} />
+    </PolkadotProvider>
+  );
 }

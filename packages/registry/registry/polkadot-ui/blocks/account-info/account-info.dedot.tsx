@@ -1,14 +1,14 @@
 "use client";
 
-import { useMemo } from "react";
-import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   AccountInfoBase,
   AccountInfoSkeleton,
   type AccountInfoBaseProps,
-} from "@/registry/polkadot-ui/blocks/account-info/components/account-info.base";
-import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
+} from "@/registry/polkadot-ui/blocks/account-info/account-info.base";
+import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import { useIdentityOf } from "@/registry/polkadot-ui/hooks/use-identity-of.dedot";
+import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
+import { useMemo } from "react";
 import { polkadotPeople } from "typink";
 
 export type AccountInfoProps = Omit<AccountInfoBaseProps, "services">;

@@ -76,11 +76,11 @@
       "registryDependencies": ["popover", "skeleton"],
       "files": [
         {
-          "path": "registry/polkadot-ui/blocks/account-info/components/account-info.base.tsx",
+          "path": "registry/polkadot-ui/blocks/account-info/account-info.base.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/blocks/account-info/components/account-info.dedot.tsx",
+          "path": "registry/polkadot-ui/blocks/account-info/account-info.dedot.tsx",
           "type": "registry:component"
         },
         {
@@ -432,6 +432,14 @@
       "files": [
         {
           "path": "registry/polkadot-ui/blocks/network-indicator/network-indicator.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/network-indicator/network-indicator.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
           "type": "registry:component"
         },
         {

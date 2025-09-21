@@ -4,7 +4,7 @@ import { ComponentExample } from "../examples/types.examples";
 import { ComponentPreview } from "../layout/component-preview";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { accountInfoExample } from "../examples/dedot/example-account-info";
-import { AccountInfo } from "@/registry/polkadot-ui/blocks/account-info/components/account-info.dedot";
+import { AccountInfo } from "@/registry/polkadot-ui/blocks/account-info/account-info.dedot";
 import { DEFAULT_CALLER } from "@/registry/polkadot-ui/lib/utils";
 
 export const accountInfoExamples: ComponentExample[] = [
