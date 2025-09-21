@@ -16,6 +16,22 @@ type TweakItem = {
   };
 };
 
+export async function getGitHubStars(repo: string): Promise<number> {
+  let stars = null;
+  const url = `https://api.github.com/repos/${repo}`;
+  try {
+    const res = await fetch(url, {
+      cache: "force-cache",
+      next: { revalidate: 86400 },
+    });
+    const data = await res.json();
+    stars = data.stargazers_count;
+  } catch (error) {
+    console.error("Failed to fetch GitHub stars for repo:", repo, error);
+  }
+  return stars;
+}
+
 export async function getRegistryItems(): Promise<TweakItem[]> {
   let registryItems: TweakItem[] = [];
   const url = "https://tweakcn.com/r/registry.json";

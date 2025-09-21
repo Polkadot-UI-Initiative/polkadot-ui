@@ -8,7 +8,7 @@ import { RootProvider as FumadocsRootProvider } from "fumadocs-ui/provider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Unbounded } from "next/font/google";
 import "./globals.css";
-import { getRegistryItems } from "@/lib/utils";
+import { getGitHubStars, getRegistryItems } from "@/lib/utils";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +38,11 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const registryItems = await getRegistryItems();
+  const githubStars = await getGitHubStars(
+    "Polkadot-UI-Initiative/polkadot-ui"
+  );
+
+  console.log("rendering layout", githubStars);
 
   return (
     <html
@@ -51,7 +56,10 @@ export default async function RootLayout({
         <FumadocsRootProvider>
           <ThemeProvider>
             <div className="relative flex min-h-screen flex-col">
-              <Navigation registryItems={registryItems} />
+              <Navigation
+                registryItems={registryItems}
+                githubStars={githubStars}
+              />
               <main className="flex-1">{children}</main>
               <Footer />
               {/* <MouseFollower /> */}

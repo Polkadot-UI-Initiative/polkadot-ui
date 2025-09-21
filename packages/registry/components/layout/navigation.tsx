@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
-import { GitHubStars } from "@/components/github-stars";
 import { Search } from "lucide-react";
 import { useSearchContext } from "fumadocs-ui/provider";
 import { Logo } from "../logo";
@@ -20,11 +19,14 @@ export interface NavigationProps {
       dark?: Record<string, string>;
     };
   }>;
+  githubStars?: number;
 }
 
-export function Navigation({ registryItems }: NavigationProps) {
+export function Navigation({ registryItems, githubStars }: NavigationProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { setOpenSearch } = useSearchContext();
+
+  console.log("rendering navigation");
 
   const navItems = [
     { name: "Docs", href: "/docs" },
@@ -131,7 +133,11 @@ export function Navigation({ registryItems }: NavigationProps) {
                   />
                 </svg>
                 <span className="sr-only">GitHub</span>
-                <GitHubStars repo="Polkadot-UI-Initiative/polkadot-ui" />
+                {typeof githubStars === "number" && (
+                  <span className="ml-1 text-xs text-muted-foreground">
+                    {githubStars.toLocaleString()}
+                  </span>
+                )}
               </Button>
             </Link>
           </nav>

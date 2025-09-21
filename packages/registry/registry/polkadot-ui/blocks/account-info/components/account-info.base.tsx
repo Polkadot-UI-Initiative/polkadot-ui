@@ -25,7 +25,7 @@ export interface AccountInfoBaseProps<TNetworkId = string> {
   address: string;
   showIcon?: boolean;
   iconTheme?: "polkadot" | "substrate" | "beachball" | "jdenticon";
-  fields?: AccountInfoField[]; // fields shown in popover details
+  fields?: AccountInfoField[] | "all"; // fields shown in popover details
   truncate?: number | boolean;
   withPopover?: boolean;
   className?: string;
@@ -60,16 +60,7 @@ export function AccountInfoBase<TNetworkId extends string = string>({
   address,
   showIcon = true,
   iconTheme = "polkadot",
-  fields = [
-    "display",
-    "legal",
-    "twitter",
-    "github",
-    "email",
-    "matrix",
-    "discord",
-    "verified",
-  ],
+  fields = "all",
   truncate = 6,
   withPopover = true,
   className,
@@ -79,6 +70,20 @@ export function AccountInfoBase<TNetworkId extends string = string>({
     chainId,
     address,
   });
+
+  const fieldsToShow =
+    fields === "all"
+      ? ([
+          "display",
+          "legal",
+          "twitter",
+          "github",
+          "email",
+          "matrix",
+          "discord",
+          "verified",
+        ] as AccountInfoField[])
+      : fields;
 
   if (isLoading) {
     return <AccountInfoSkeleton address={address} />;
@@ -116,7 +121,7 @@ export function AccountInfoBase<TNetworkId extends string = string>({
   );
 
   if (!withPopover) {
-    const links = buildLinks({ data, fields });
+    const links = buildLinks({ data, fields: fieldsToShow });
     return (
       <div className="inline-flex items-center gap-2">
         {trigger}
@@ -164,7 +169,7 @@ export function AccountInfoBase<TNetworkId extends string = string>({
         </div>
         {!isLoading && (
           <div className="text-xs space-y-1">
-            {renderDetails({ fields, data })}
+            {renderDetails({ fields: fieldsToShow, data })}
           </div>
         )}
         {error && (

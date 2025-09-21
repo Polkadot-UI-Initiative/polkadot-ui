@@ -1,21 +1,22 @@
 "use client";
 
 import { ComponentExample } from "../examples/types.examples";
+import { OpenInV0Button } from "../open-in-v0-button";
 import { Button } from "../ui/button";
 import {
   Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
 } from "../ui/card";
-import { OpenInV0Button } from "../open-in-v0-button";
 
-import Link from "next/link";
 import { BookText, Check, Code, Copy, Eye } from "lucide-react";
+import Link from "next/link";
 import { isValidElement, ReactElement, ReactNode, useState } from "react";
 
+import { useTheme } from "next-themes";
 import ShikiHighlighter from "react-shiki";
 
 export function ComponentPreview({
@@ -25,6 +26,7 @@ export function ComponentPreview({
 }) {
   const [view, setView] = useState<"preview" | "code">("preview");
   const [isCopied, setIsCopied] = useState(false);
+  const { theme } = useTheme();
 
   return (
     <Card
@@ -65,7 +67,7 @@ export function ComponentPreview({
             <Button
               size="xs"
               variant="secondary"
-              className="absolute top -1 left-7 z-10"
+              className="absolute top-1 left-7 z-10"
               onClick={() => {
                 navigator.clipboard.writeText(componentInfo.tsx || "");
                 setIsCopied(true);
@@ -74,12 +76,15 @@ export function ComponentPreview({
             >
               {isCopied ? <Check size={10} /> : <Copy size={10} />}
             </Button>
-            <div className="text-xs relative w-full h-full overflow-auto flex items-center justify-center">
+            <div
+              className="relative w-full h-full overflow-auto text-xs rounded-md"
+              style={{ scrollbarGutter: "stable both-edges" }}
+            >
               <ShikiHighlighter
                 showLineNumbers
                 language="tsx"
-                theme="nord"
-                className="text-xs w-full"
+                theme={theme === "dark" ? "github-dark" : "one-light"}
+                className="text-xs inline-block min-w-max"
               >
                 {componentInfo.tsx || ""}
               </ShikiHighlighter>
