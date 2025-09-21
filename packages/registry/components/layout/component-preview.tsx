@@ -64,30 +64,32 @@ export function ComponentPreview({
           componentInfo.component
         ) : (
           <>
-            <Button
-              size="xs"
-              variant="secondary"
-              className="absolute top-1 left-7 z-10"
-              onClick={() => {
-                navigator.clipboard.writeText(componentInfo.tsx || "");
-                setIsCopied(true);
-                setTimeout(() => setIsCopied(false), 2000);
-              }}
-            >
-              {isCopied ? <Check size={10} /> : <Copy size={10} />}
-            </Button>
             <div
-              className="relative w-full h-full overflow-auto text-xs rounded-md"
+              className="relative w-full h-full flex justify-center text-xs rounded-md overflow-hidden"
               style={{ scrollbarGutter: "stable both-edges" }}
             >
-              <ShikiHighlighter
-                showLineNumbers
-                language="tsx"
-                theme={theme === "dark" ? "github-dark" : "one-light"}
-                className="text-xs inline-block min-w-max"
-              >
-                {componentInfo.tsx || ""}
-              </ShikiHighlighter>
+              <div className="overflow-auto relative">
+                <Button
+                  size="xs"
+                  variant="secondary"
+                  className="absolute top-1 left-1 z-10"
+                  onClick={() => {
+                    navigator.clipboard.writeText(componentInfo.tsx || "");
+                    setIsCopied(true);
+                    setTimeout(() => setIsCopied(false), 2000);
+                  }}
+                >
+                  {isCopied ? <Check size={10} /> : <Copy size={10} />}
+                </Button>
+                <ShikiHighlighter
+                  showLineNumbers
+                  language="tsx"
+                  theme={theme === "dark" ? "github-dark" : "one-light"}
+                  className="text-xs inline-block min-w-max w-full"
+                >
+                  {componentInfo.tsx || ""}
+                </ShikiHighlighter>
+              </div>
             </div>
           </>
         )}
