@@ -1,4 +1,4 @@
-import type { ComponentExample } from "../types.examples";
+import type { ComponentExample } from "@/components/examples/types.examples";
 import { ExamplePlaceholder } from "@/components/examples/placeholder";
 
 export const nftCardExample: ComponentExample = {

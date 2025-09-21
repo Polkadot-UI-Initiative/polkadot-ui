@@ -1,30 +1,48 @@
 "use client";
 
 import { ComponentExample } from "../examples/types.examples";
+import { OpenInV0Button } from "../open-in-v0-button";
 import { Button } from "../ui/button";
 import {
   Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
 } from "../ui/card";
-import { OpenInV0Button } from "../open-in-v0-button";
 
-import Link from "next/link";
 import { BookText, Check, Code, Copy, Eye } from "lucide-react";
-import { isValidElement, ReactElement, ReactNode, useState } from "react";
+import Link from "next/link";
+import React, {
+  isValidElement,
+  ReactElement,
+  ReactNode,
+  useState,
+} from "react";
 
+import { useTheme } from "next-themes";
 import ShikiHighlighter from "react-shiki";
 
 export function ComponentPreview({
   componentInfo,
+  withDocs = true,
+  ComponentWrapper,
 }: {
   componentInfo: ComponentExample;
+  withDocs?: boolean;
+  ComponentWrapper?: React.ReactElement;
 }) {
   const [view, setView] = useState<"preview" | "code">("preview");
   const [isCopied, setIsCopied] = useState(false);
+  const { theme } = useTheme();
+
+  const previewContent =
+    ComponentWrapper &&
+    isValidElement(ComponentWrapper) &&
+    ComponentWrapper.type !== React.Fragment
+      ? React.cloneElement(ComponentWrapper, undefined, componentInfo.component)
+      : componentInfo.component;
 
   return (
     <Card
@@ -59,43 +77,50 @@ export function ComponentPreview({
       </CardHeader>
       <CardContent className="flex items-center justify-center flex-1 min-h-0 relative">
         {view === "preview" ? (
-          componentInfo.component
+          previewContent
         ) : (
           <>
-            <Button
-              size="xs"
-              variant="secondary"
-              className="absolute top -1 left-7 z-10"
-              onClick={() => {
-                navigator.clipboard.writeText(componentInfo.tsx || "");
-                setIsCopied(true);
-                setTimeout(() => setIsCopied(false), 2000);
-              }}
+            <div
+              className="relative w-full h-full flex justify-center text-xs rounded-md overflow-hidden"
+              style={{ scrollbarGutter: "stable both-edges" }}
             >
-              {isCopied ? <Check size={10} /> : <Copy size={10} />}
-            </Button>
-            <div className="text-xs relative w-full h-full overflow-auto flex items-center justify-center">
-              <ShikiHighlighter
-                showLineNumbers
-                language="tsx"
-                theme="nord"
-                className="text-xs w-full"
-              >
-                {componentInfo.tsx || ""}
-              </ShikiHighlighter>
+              <div className="overflow-auto relative">
+                <Button
+                  size="xs"
+                  variant="secondary"
+                  className="absolute top-1 left-1 z-10"
+                  onClick={() => {
+                    navigator.clipboard.writeText(componentInfo.tsx || "");
+                    setIsCopied(true);
+                    setTimeout(() => setIsCopied(false), 2000);
+                  }}
+                >
+                  {isCopied ? <Check size={10} /> : <Copy size={10} />}
+                </Button>
+                <ShikiHighlighter
+                  showLineNumbers
+                  language="tsx"
+                  theme={theme === "dark" ? "github-dark" : "one-light"}
+                  className="text-xs inline-block min-w-max w-full"
+                >
+                  {componentInfo.tsx || ""}
+                </ShikiHighlighter>
+              </div>
             </div>
           </>
         )}
       </CardContent>
       <CardFooter className="mt-auto flex items-center pt-2 gap-2">
-        <Button asChild size="sm" variant="secondary">
-          <Link
-            href={componentInfo.href}
-            className="text-primary hover:underline"
-          >
-            <BookText /> Docs →
-          </Link>
-        </Button>
+        {withDocs && componentInfo.href && (
+          <Button asChild size="sm" variant="secondary">
+            <Link
+              href={componentInfo.href}
+              className="text-primary hover:underline"
+            >
+              <BookText /> Docs →
+            </Link>
+          </Button>
+        )}
         <OpenInV0Button
           name={componentInfo.code}
           title={componentInfo.name}

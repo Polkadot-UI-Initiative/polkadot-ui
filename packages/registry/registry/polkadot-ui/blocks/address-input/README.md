@@ -54,7 +54,7 @@ function MyComponent() {
 | `format`             | `"ss58" \| "eth" \| "both"`          | `"ss58"` | Address format(s) to accept          |
 | `withIdentityLookup` | `boolean`                            | `true`   | Enable Polkadot identity lookup      |
 | `withEnsLookup`      | `boolean`                            | `false`  | Enable ENS lookup (TODO)             |
-| `onIdentityFound`    | `(identity: IdentityResult) => void` | -        | Called when identity is found        |
+| `onIdentitySelected` | `(identity: IdentityResult) => void` | -        | Called when identity is found        |
 | `ethProviderUrl`     | `string`                             | -        | Ethereum RPC URL for ENS             |
 | `truncate`           | `boolean \| number`                  | `false`  | Truncate display (true=8 chars)      |
 | `showIdenticon`      | `boolean`                            | `true`   | Show address identicon               |
@@ -98,7 +98,7 @@ function MyComponent() {
 ```tsx
 <AddressInput
   format="ss58"
-  onIdentityFound={(identity) => {
+  onIdentitySelected={(identity) => {
     console.log("Found identity:", identity.data.display);
   }}
 />

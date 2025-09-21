@@ -48,7 +48,7 @@ export interface AddressInputBaseProps<TNetworkId = string> {
   withIdentitySearch?: boolean;
   withEnsLookup?: boolean;
   withCopyButton?: boolean;
-  onIdentityFound?: (identity: IdentityResult) => void;
+  onIdentitySelected?: (identity: IdentityResult) => void;
   ethProviderUrl?: string;
   truncate?: boolean | number;
   showIdenticon?: boolean;
@@ -87,7 +87,7 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
     withIdentityLookup = true,
     withIdentitySearch = true,
     withCopyButton = true,
-    onIdentityFound,
+    onIdentitySelected,
     // withEnsLookup = false, // TODO: Implement ENS lookup
     // ethProviderUrl, // TODO: Implement ENS lookup
     truncate = 8,
@@ -193,13 +193,13 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
 
   // Notify parent element when identity is found
   useEffect(() => {
-    if (currentIdentity && onIdentityFound) {
-      onIdentityFound({
+    if (currentIdentity && onIdentitySelected) {
+      onIdentitySelected({
         type: "polkadot",
         data: currentIdentity,
       });
     }
-  }, [currentIdentity, onIdentityFound]);
+  }, [currentIdentity, onIdentitySelected]);
 
   // Loading states
   const isIdentityLoading = polkadotIdentity.isLoading;
@@ -295,11 +295,11 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
     inputRef.current?.blur();
 
     // Trigger identity found callback
-    if (onIdentityFound) {
+    if (onIdentitySelected) {
       const selectedResult = identitySearch.data?.find(
         (result) => result.address === address
       );
-      onIdentityFound({
+      onIdentitySelected({
         type: "polkadot",
         data: {
           display,

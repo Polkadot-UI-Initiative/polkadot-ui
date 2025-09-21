@@ -1,6 +1,6 @@
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 
-import type { ComponentExample } from "../types.examples";
+import type { ComponentExample } from "@/components/examples/types.examples";
 import { useChainIds, useClient } from "@reactive-dot/react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { TxButton } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.papi";

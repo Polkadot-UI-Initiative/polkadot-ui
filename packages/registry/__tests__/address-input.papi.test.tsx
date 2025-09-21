@@ -309,8 +309,8 @@ describe("AddressInput", () => {
       });
     });
 
-    it("calls onIdentityFound when identity is discovered", async () => {
-      const mockOnIdentityFound = jest.fn();
+    it("calls onIdentitySelected when identity is discovered", async () => {
+      const mockonIdentitySelected = jest.fn();
       const mockIdentity = {
         data: {
           display: "Alice",
@@ -328,7 +328,7 @@ describe("AddressInput", () => {
           <AddressInput
             format="ss58"
             withIdentityLookup={true}
-            onIdentityFound={mockOnIdentityFound}
+            onIdentitySelected={mockonIdentitySelected}
           />
         </TestWrapper>
       );
@@ -339,7 +339,7 @@ describe("AddressInput", () => {
       });
 
       await waitFor(() => {
-        expect(mockOnIdentityFound).toHaveBeenCalledWith({
+        expect(mockonIdentitySelected).toHaveBeenCalledWith({
           type: "polkadot",
           data: mockIdentity.data,
         });

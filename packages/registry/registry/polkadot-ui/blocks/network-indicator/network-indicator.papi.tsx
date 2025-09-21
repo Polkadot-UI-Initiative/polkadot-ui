@@ -1,11 +1,13 @@
 "use client";
 
-import { useMemo } from "react";
-import { NetworkIndicatorBaseProps } from "./network-indicator.base";
-import { NetworkIndicatorBase } from "./network-indicator.base";
-import { config } from "@/registry/polkadot-ui/reactive-dot.config";
 import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
+import { config } from "@/registry/polkadot-ui/reactive-dot.config";
 import { ChainId } from "@reactive-dot/core";
+import { useMemo } from "react";
+import {
+  NetworkIndicatorBase,
+  NetworkIndicatorBaseProps,
+} from "./network-indicator.base";
 
 export type NetworkIndicatorProps<TNetworkId extends string> = Omit<
   NetworkIndicatorBaseProps<TNetworkId>,

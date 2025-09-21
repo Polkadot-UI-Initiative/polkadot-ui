@@ -1,5 +1,5 @@
 import type { ComponentExample } from "../types.examples";
-import { AccountInfo } from "@/registry/polkadot-ui/blocks/account-info/components/account-info.dedot";
+import { AccountInfo } from "@/registry/polkadot-ui/blocks/account-info/account-info.dedot";
 import { polkadotPeople } from "typink";
 
 export const accountInfoExample: ComponentExample = {
@@ -9,44 +9,50 @@ export const accountInfoExample: ComponentExample = {
   description: "Display identity name and optional fields for an address",
   component: (
     <div className="flex items-center justify-center h-full flex-col gap-4">
-      <AccountInfo
-        chainId={polkadotPeople.id}
-        address="5CwW67PPdZQQCcdWJVaRJCepSQSrtKUumDAGa7UZbBKwd9R2"
-        fields={[
-          "display",
-          "twitter",
-          "matrix",
-          "discord",
-          "github",
-          "verified",
-        ]}
-      />
-      <AccountInfo
-        chainId={polkadotPeople.id}
-        address="1dsrQjL34njJ4Y8FXGyxeLnmunPZ6XAvid9jSQe9S4pTUh2"
-        fields={[
-          "display",
-          "twitter",
-          "matrix",
-          "discord",
-          "github",
-          "verified",
-          "image",
-        ]}
-      />
-      <AccountInfo
-        chainId={polkadotPeople.id}
-        address="1hFmn2CuqXqxHgKDqqs2xRBpsPkiRXzJfcLbfDgsW7qgmpA"
-        fields={[
-          "display",
-          "twitter",
-          "matrix",
-          "discord",
-          "github",
-          "verified",
-          "image",
-        ]}
-      />
+      {[
+        "1dsrQjL34njJ4Y8FXGyxeLnmunPZ6XAvid9jSQe9S4pTUh2",
+        "1hFmn2CuqXqxHgKDqqs2xRBpsPkiRXzJfcLbfDgsW7qgmpA",
+      ].map((address) => (
+        <AccountInfo
+          key={address}
+          chainId={polkadotPeople.id}
+          address={address}
+          fields={[
+            "display",
+            "twitter",
+            "matrix",
+            "discord",
+            "github",
+            "verified",
+            "image",
+          ]}
+        />
+      ))}
     </div>
   ),
+  tsx: `import { AccountInfo } from "@/components/account-info.dedot";
+import { polkadotPeople } from "typink";
+
+<div className="flex items-center justify-center h-full flex-col gap-4">
+{[
+  "1dsrQjL34njJ4Y8FXGyxeLnmunPZ6XAvid9jSQe9S4pTUh2",
+  "1hFmn2CuqXqxHgKDqqs2xRBpsPkiRXzJfcLbfDgsW7qgmpA",
+].map((address) => (
+  <AccountInfo
+    key={address}
+    chainId={polkadotPeople.id}
+    address={address}
+    fields={[
+      "display",
+      "twitter",
+      "matrix",
+      "discord",
+      "github",
+      "verified",
+      "image",
+    ]}
+  />
+))}
+</div>
+  `,
 };
