@@ -26,8 +26,6 @@ export function Navigation({ registryItems, githubStars }: NavigationProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { setOpenSearch } = useSearchContext();
 
-  console.log("rendering navigation");
-
   const navItems = [
     { name: "Docs", href: "/docs" },
     { name: "Components", href: "/docs/components" },

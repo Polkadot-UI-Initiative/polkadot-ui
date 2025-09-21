@@ -1,6 +1,6 @@
 import { AddressInput } from "@/registry/polkadot-ui/blocks/address-input/components/address-input.papi";
 import { Label } from "@/registry/polkadot-ui/ui/label";
-import type { ComponentExample } from "../types.examples";
+import type { ComponentExample } from "@/components/examples/types.examples";
 
 export const addressInputExample: ComponentExample = {
   name: "Address Input",

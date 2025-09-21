@@ -96,7 +96,7 @@ function MyComponent() {
 ```tsx
 <AddressInput
   format="ss58"
-  identityChain="paseoPeople"  // Specify which chain to use for identity lookup
+  identityChain="paseo_people"  // Specify which chain to use for identity lookup
   withIdentityLookup={true}
 />
 ```
@@ -233,7 +233,7 @@ function MyComponent() {
 | `disabled` | `boolean` | `false` | Disable the input |
 | `format` | `"ss58" \| "eth" \| "both"` | `"ss58"` | Address format(s) to accept |
 | `withIdentityLookup` | `boolean` | `true` | Enable Polkadot identity lookup |
-| `identityChain` | `ChainIdWithIdentity` | `"paseoPeople"` | Chain to use for identity lookups |
+| `identityChain` | `ChainIdWithIdentity` | `"paseo_people"` | Chain to use for identity lookups |
 | `onIdentityFound` | `(identity: IdentityResult) => void` | - | Called when identity is found |
 | `truncate` | `boolean \| number` | `false` | Truncate display (true=8 chars) |
 | `showIdenticon` | `boolean` | `true` | Show address identicon |
@@ -262,7 +262,7 @@ When `withIdentityLookup` is enabled:
 
 The `identityChain` prop allows you to specify which chain to use for identity lookups. This is particularly useful in multi-chain environments where different chains may have different identity registries:
 
-- **`paseoPeople`** (default): Paseo People chain for testnet identities
+- **`paseo_people`** (default): Paseo People chain for testnet identities
 - **`kusamaPeople`**: Kusama People chain for Kusama identities  
 - **`polkadot_people`**: Polkadot People chain for mainnet identities
 

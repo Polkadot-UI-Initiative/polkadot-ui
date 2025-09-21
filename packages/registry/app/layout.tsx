@@ -3,12 +3,12 @@ import { Footer } from "@/components/layout/footer";
 import { Navigation } from "@/components/layout/navigation";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { getRegistryItems } from "@/lib/utils";
 import { Analytics } from "@vercel/analytics/next";
 import { RootProvider as FumadocsRootProvider } from "fumadocs-ui/provider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Unbounded } from "next/font/google";
 import "./globals.css";
-import { getGitHubStars, getRegistryItems } from "@/lib/utils";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,11 +38,11 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const registryItems = await getRegistryItems();
-  const githubStars = await getGitHubStars(
-    "Polkadot-UI-Initiative/polkadot-ui"
-  );
+  // const githubStars = await getGitHubStars(
+  //   "Polkadot-UI-Initiative/polkadot-ui"
+  // );
 
-  console.log("rendering layout", githubStars);
+  const githubStars = 0;
 
   return (
     <html

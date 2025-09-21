@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { ClientConnectionStatus, useBlockInfo, useTypink } from "typink";
 import { NetworkIndicatorBaseProps } from "./network-indicator.base";
 import { NetworkIndicatorBase } from "./network-indicator.base";
+import { ClientOnly } from "../client-only";
 
 export type NetworkIndicatorProps<TNetworkId extends string> = Omit<
   NetworkIndicatorBaseProps<TNetworkId>,
@@ -11,6 +12,16 @@ export type NetworkIndicatorProps<TNetworkId extends string> = Omit<
 >;
 
 export function NetworkIndicator<TNetworkId extends string>(
+  props: NetworkIndicatorProps<TNetworkId>
+) {
+  return (
+    <ClientOnly>
+      <NetworkIndicatorInner {...props} />
+    </ClientOnly>
+  );
+}
+
+export function NetworkIndicatorInner<TNetworkId extends string>(
   props: NetworkIndicatorProps<TNetworkId>
 ) {
   const { chainId } = props;

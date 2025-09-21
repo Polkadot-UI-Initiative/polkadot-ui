@@ -1,4 +1,4 @@
-import type { ComponentExample } from "../types.examples";
+import type { ComponentExample } from "@/components/examples/types.examples";
 import { NetworkIndicator } from "@/registry/polkadot-ui/blocks/network-indicator/network-indicator.papi";
 
 export const networkIndicatorExample: ComponentExample = {
