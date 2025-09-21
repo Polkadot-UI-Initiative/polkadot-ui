@@ -6,9 +6,9 @@ import {
   AccountInfoBase,
   AccountInfoSkeleton,
   type AccountInfoBaseProps,
-} from "./account-info.base";
+} from "@/registry/polkadot-ui/blocks/account-info/components/account-info.base";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
-import { useIdentityOf } from "@/registry/polkadot-ui/blocks/account-info/hooks/use-identity-of.dedot";
+import { useIdentityOf } from "@/registry/polkadot-ui/hooks/use-identity-of.dedot";
 import { polkadotPeople } from "typink";
 
 export type AccountInfoProps = Omit<AccountInfoBaseProps, "services">;
