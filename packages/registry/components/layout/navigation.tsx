@@ -19,7 +19,7 @@ export interface NavigationProps {
       dark?: Record<string, string>;
     };
   }>;
-  githubStars?: number;
+  githubStars?: number | null;
 }
 
 export function Navigation({ registryItems, githubStars }: NavigationProps) {

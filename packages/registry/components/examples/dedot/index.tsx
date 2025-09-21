@@ -11,7 +11,7 @@ import { txButtonExample } from "./example-tx-button";
 import { walletSelectExample } from "./example-wallet-select";
 import { accountInfoExample } from "./example-account-info";
 import { balanceDisplayExample } from "./example-balance-display";
-import { nftCardExample } from "./example-nft-card";
+// import { nftCardExample } from "./example-nft-card";
 
 export const examples: ComponentExample[] = [
   walletSelectExample,
@@ -26,5 +26,5 @@ export const examples: ComponentExample[] = [
   requireAccountExample,
   transactionDetailsExample,
   balanceDisplayExample,
-  nftCardExample,
+  // nftCardExample,
 ];

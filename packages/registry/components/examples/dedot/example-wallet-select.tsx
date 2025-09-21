@@ -11,9 +11,15 @@ export const walletSelectExample: ComponentExample = {
       Wallet connection and account selection. We provide a minimal working
       example of a connection component. If you want more features like e.g.
       WalletConnect, try{" "}
+      <Link href="https://dotconnect.dev/" className="underline">
+        dotConnect
+      </Link>
+      (papi) or
+      <br />
       <Link href="https://www.lunolab.xyz/" className="underline">
         LunoKit
-      </Link>
+      </Link>{" "}
+      (dedot)
     </>
   ),
   component: (
