@@ -1,6 +1,6 @@
 import { RequireAccount } from "@/registry/polkadot-ui/blocks/require-account/components/require-account.dedot";
 import type { ComponentExample } from "../types.examples";
-import { useTypink } from "typink";
+import { paseo, useTypink } from "typink";
 
 export const requireAccountExample: ComponentExample = {
   name: "Require Account",
@@ -8,26 +8,19 @@ export const requireAccountExample: ComponentExample = {
   code: "require-account",
   description: "Render children only when an account is selected",
   component: <Component />,
-  tsx: `function Component() {
-  const { connectedAccount } = useTypink();
-  return (
-    <div className="w-full space-y-3">
-      <RequireAccount
-        chainId="paseo"
-        fallback={
-          <div className="border border-accent w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md">
-            Please select an account to continue.
-          </div>
-        }
-      >
-        <div className="border border-accent w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md flex-col">
-          <div>Account name: {connectedAccount?.name}</div>
-          <div>Wallet: {connectedAccount?.source}</div>
-        </div>
-      </RequireAccount>
+  tsx: `import { RequireAccount } from "@/components/require-account.dedot";
+import { paseo } from "typink";
+
+<RequireAccount
+  chainId={paseo.id}
+  fallback={
+    <div>
+      Please select an account to continue.
     </div>
-  );
-}`,
+  }
+>
+  <div>You are connected with some account</div>
+</RequireAccount>`,
 };
 
 function Component() {
@@ -35,7 +28,7 @@ function Component() {
   return (
     <div className="w-full space-y-3">
       <RequireAccount
-        chainId="paseo"
+        chainId={paseo.id}
         fallback={
           <div className="border border-accent w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md">
             Please select an account to continue.

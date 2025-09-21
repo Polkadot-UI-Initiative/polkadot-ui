@@ -21,5 +21,7 @@ export const walletSelectExample: ComponentExample = {
       <WalletSelect variant="default" />
     </div>
   ),
-  tsx: `<WalletSelect />`,
+  tsx: `import { WalletSelect } from "@/components/connect-wallet.dedot";
+
+<WalletSelect />`,
 };

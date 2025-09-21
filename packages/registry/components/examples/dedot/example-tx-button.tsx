@@ -12,6 +12,28 @@ export const txButtonExample: ComponentExample = {
   description:
     "Button component for sending arbitrary transactions. Supports all chains, all signers with default notification. Fees and error states are handled by the component.",
   component: <DemoTxButton />,
+  tsx: `import { TxButton } from "@/components/tx-button.dedot";
+import { paseo } from "typink";
+
+export function RemarkTxButton() {
+  const tx = useTx((tx) => tx.system.remark);
+
+  return (
+    <TxButton
+      tx={tx}
+      args={["Hello World from polkadot-ui"]}
+      className="w-full"
+      notifications={{
+        title: "Remark Welcome Message",
+      }}
+      networkId={paseo.id}
+    >
+      Remark a message on{" "}
+      <img src={paseo.logo} alt={paseo.name} className="w-4 h-4" />
+    </TxButton>
+  );
+}
+`,
 };
 
 export function DemoTxButton() {

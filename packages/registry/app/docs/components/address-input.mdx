@@ -38,7 +38,7 @@ npx polkadot-ui@latest add address-input
   <TabsContent value="preview"><AddressInputWithProvider /></TabsContent>
   <TabsContent value="code" className="my-0">
 ```tsx
-import { AddressInput } from "@/components/ui/address-input";
+import { AddressInput } from "@/components/address-input.dedot";
 
 function MyComponent() {
   const [address, setAddress] = useState("");
@@ -88,7 +88,7 @@ function MyComponent() {
   <TabsContent value="preview">
     <AddressInputWithProvider 
       format="ss58"
-      identityChain="paseoPeople"
+      identityChain="paseo_people"
       withIdentityLookup={true}
     />
   </TabsContent>

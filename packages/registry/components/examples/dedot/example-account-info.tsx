@@ -30,7 +30,7 @@ export const accountInfoExample: ComponentExample = {
       ))}
     </div>
   ),
-  tsx: `import { AccountInfo } from "@/registry/polkadot-ui/blocks/account-info/components/account-info.dedot";
+  tsx: `import { AccountInfo } from "@/components/account-info.dedot";
 import { polkadotPeople } from "typink";
 
 <div className="flex items-center justify-center h-full flex-col gap-4">

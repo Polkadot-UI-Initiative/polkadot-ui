@@ -23,7 +23,7 @@ export const addressInputExample: ComponentExample = {
     </div>
   ),
   tsx: `import { paseoPeople } from "typink";
-import { AddressInput } from "@/components/polkadot-ui/address-input/address-input.dedot";
+import { AddressInput } from "@/components/address-input.dedot";
 
 <AddressInput
   identityChain={paseoPeople.id}
