@@ -3,9 +3,8 @@ title: Require Account
 description: A component that renders content only when an account is selected.
 ---
 
-import { RequireAccountWithProvider } from "@/registry/polkadot-ui/blocks/require-account/components/require-account.dedot";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { User, UserX, Loader2 } from "lucide-react";
+import { RequireAccountDocs } from "@/components/docs/docs-require-account";
 
 ## Introduction
 
@@ -19,88 +18,7 @@ npx polkadot-ui@latest add require-account
 
 ## Usage
 
-### Basic Example
-
-<Tabs defaultValue="preview" className="max-w-[600px]">
-  <TabsList>
-    <TabsTrigger value="preview">Preview</TabsTrigger>
-    <TabsTrigger value="code">Code</TabsTrigger>
-  </TabsList>
-  <TabsContent value="preview">
-    <RequireAccountWithProvider
-      chainId="paseo"
-      fallback={
-        <div className="flex items-center gap-2 text-muted-foreground">
-          <UserX className="w-4 h-4" />
-          <span>Please select an account to continue</span>
-        </div>
-      }
-    >
-      <div className="flex items-center gap-2 text-green-600">
-        <User className="w-4 h-4" />
-        <span>🎉 Account selected! This content is now visible.</span>
-      </div>
-    </RequireAccountWithProvider>
-  </TabsContent>
-  <TabsContent value="code" className="my-0">
-```tsx
-import { RequireAccount } from "@/components/ui/require-account";
-
-function MyComponent() {
-  return (
-    <RequireAccount
-      chainId="paseo"
-      fallback={<div>Please select an account to continue</div>}
-    >
-      <div>🎉 Account selected! This content is now visible.</div>
-    </RequireAccount>
-  );
-}
-```
-</TabsContent>
-</Tabs>
-
-### With Loading State
-
-<Tabs defaultValue="preview" className="max-w-[600px]">
-  <TabsList>
-    <TabsTrigger value="preview">Preview</TabsTrigger>
-    <TabsTrigger value="code">Code</TabsTrigger>
-  </TabsList>
-  <TabsContent value="preview">
-    <RequireAccountWithProvider
-      chainId="paseoPeople"
-      loadingFallback={
-        <div className="flex items-center gap-2 text-blue-600">
-          <Loader2 className="w-4 h-4 animate-spin" />
-          <span>Resolving accounts...</span>
-        </div>
-      }
-      fallback={
-        <div className="flex items-center gap-2 text-muted-foreground">
-          <UserX className="w-4 h-4" />
-          <span>No account selected</span>
-        </div>
-      }
-    >
-      <div className="flex items-center gap-2 text-green-600">
-        <User className="w-4 h-4" />
-        <span>Account present</span>
-      </div>
-    </RequireAccountWithProvider>
-  </TabsContent>
-  <TabsContent value="code" className="my-0">
-```tsx
-<RequireAccount
-    chainId="paseoPeople"
-  loadingFallback={<div>Resolving accounts...</div>}
-  fallback={<div>No account selected</div>}
->
-  <PeopleChainFeatures />
-</RequireAccount>
-```
-</TabsContent>
-</Tabs>
+<RequireAccountDocs/>
 
 ## Props
 

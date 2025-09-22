@@ -3,7 +3,7 @@
 import {
   RequireConnectionBase,
   type RequireConnectionBaseProps,
-} from "@/registry/polkadot-ui/blocks/require-connection/components/require-connection.base";
+} from "@/registry/polkadot-ui/blocks/require-connection/require-connection.base";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import { ClientConnectionStatus, usePolkadotClient, useTypink } from "typink";

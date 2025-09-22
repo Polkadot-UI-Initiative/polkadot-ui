@@ -12,7 +12,7 @@ export default async function Home() {
   return (
     <div className="flex flex-col">
       <HeroSection />
-      <ComponentsSection />
+      <ComponentsSection usedLibrary="dedot" />
     </div>
   );
 }

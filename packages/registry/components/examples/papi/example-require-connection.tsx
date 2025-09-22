@@ -4,7 +4,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { RequireConnection } from "@/registry/polkadot-ui/blocks/require-connection/components/require-connection.papi";
+import { RequireConnection } from "@/registry/polkadot-ui/blocks/require-connection/require-connection.papi";
 import type { ComponentExample } from "@/components/examples/types.examples";
 
 export const requireConnectionExample: ComponentExample = {

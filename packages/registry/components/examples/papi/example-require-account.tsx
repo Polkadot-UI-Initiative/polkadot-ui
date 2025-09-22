@@ -5,7 +5,7 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { RequireAccount } from "@/registry/polkadot-ui/blocks/require-account/components/require-account.papi";
+import { RequireAccount } from "@/registry/polkadot-ui/blocks/require-account/require-account.papi";
 import type { ComponentExample } from "@/components/examples/types.examples";
 import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 
