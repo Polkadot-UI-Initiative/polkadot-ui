@@ -170,7 +170,7 @@
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/hooks/use-identity.dedot.ts",
+          "path": "registry/polkadot-ui/hooks/use-identity-of.dedot.ts",
           "type": "registry:hook"
         },
         {

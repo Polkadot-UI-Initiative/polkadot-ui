@@ -6,12 +6,15 @@ import {
   type AccountInfoBaseProps,
 } from "@/registry/polkadot-ui/blocks/account-info/account-info.base";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
-import { useIdentityOf } from "@/registry/polkadot-ui/hooks/use-identity-of.dedot";
-import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
+import { useIdentityOf } from "@/registry/polkadot-ui/hooks/use-identity-of.papi";
+import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { useMemo } from "react";
-import { polkadotPeople } from "typink";
+import { config } from "@/registry/polkadot-ui/reactive-dot.config";
 
-export type AccountInfoProps = Omit<AccountInfoBaseProps, "services">;
+export type AccountInfoProps = Omit<
+  AccountInfoBaseProps<keyof typeof config.chains>,
+  "services"
+>;
 
 function AccountInfoInner(props: AccountInfoProps) {
   const {
@@ -20,8 +23,9 @@ function AccountInfoInner(props: AccountInfoProps) {
     error,
   } = useIdentityOf({
     address: props.address,
-    chainId: props.chainId || polkadotPeople.id,
+    chainId: (props.chainId as keyof typeof config.chains) ?? "paseoPeople",
   });
+
   const services = useMemo(
     () => ({
       identity: identity ?? null,
@@ -31,14 +35,11 @@ function AccountInfoInner(props: AccountInfoProps) {
     [identity, isLoading, error]
   );
 
+  const resolvedChain =
+    (props.chainId as keyof typeof config.chains) ?? "paseoPeople";
+
   return (
-    <>
-      <AccountInfoBase
-        services={services}
-        chainId={props.chainId || polkadotPeople.id}
-        {...props}
-      />
-    </>
+    <AccountInfoBase services={services} chainId={resolvedChain} {...props} />
   );
 }
 

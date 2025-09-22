@@ -27,7 +27,7 @@
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/hooks/use-identity.papi.ts",
+          "path": "registry/polkadot-ui/hooks/use-identity-of.papi.ts",
           "type": "registry:hook"
         },
         {
@@ -54,10 +54,6 @@
         },
         {
           "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "registry/polkadot-ui/lib/types.papi.ts",
           "type": "registry:lib"
         }
       ]
@@ -88,10 +84,6 @@
         },
         {
           "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "registry/polkadot-ui/lib/types.papi.ts",
           "type": "registry:lib"
         }
       ]

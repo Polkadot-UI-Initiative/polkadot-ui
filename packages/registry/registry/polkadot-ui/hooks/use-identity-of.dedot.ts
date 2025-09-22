@@ -1,21 +1,10 @@
 "use client";
 
-import { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 import { ClientConnectionStatus, usePolkadotClient } from "typink";
+import { PolkadotIdentity } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { isHex, hexToU8a, u8aToString } from "@polkadot/util";
-
-export interface PolkadotIdentity {
-  display?: string;
-  legal?: string;
-  email?: string;
-  twitter?: string;
-  github?: string;
-  discord?: string;
-  matrix?: string;
-  image?: string;
-  verified: boolean;
-}
+import { hasPositiveIdentityJudgement } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 
 export function useIdentityOf({
   address,
@@ -23,7 +12,7 @@ export function useIdentityOf({
 }: {
   address: string;
   chainId?: string;
-}) {
+}): UseQueryResult<PolkadotIdentity | null, Error> {
   const { client, status } = usePolkadotClient(chainId);
   const isConnected = status === ClientConnectionStatus.Connected;
 
@@ -36,46 +25,14 @@ export function useIdentityOf({
         const result = await client.query.identity.identityOf(address);
         if (!result) return null;
 
-        interface RawIdentityInfo {
-          display?: unknown;
-          legal?: unknown;
-          email?: unknown;
-          twitter?: unknown;
-          github?: unknown;
-          discord?: unknown;
-          matrix?: unknown;
-          image?: unknown;
-        }
-        interface RawIdentity {
-          info?: RawIdentityInfo;
-          judgements?: unknown[];
-        }
-        const r = result as unknown as RawIdentity;
-        const info: RawIdentityInfo =
-          r.info ??
-          (result as unknown as { info?: RawIdentityInfo }).info ??
-          {};
-        const judgements = (r.judgements as unknown[]) ?? [];
-
-        const hasPositive = Array.isArray(judgements)
-          ? judgements.some((j) => {
-              const arr = j as unknown as [unknown, unknown];
-              const second = arr?.[1] as unknown;
-              const type = (second as { type?: string })?.type ?? second;
-              return type === "Reasonable" || type === "KnownGood";
-            })
-          : false;
-
         const identity: PolkadotIdentity = {
-          display: decodeText(info?.display),
-          legal: decodeText(info?.legal),
-          email: decodeText(info?.email),
-          twitter: decodeText(info?.twitter),
-          github: decodeText(info?.github),
-          discord: decodeText(info?.discord),
-          matrix: decodeText(info?.matrix),
-          image: decodeText(info?.image),
-          verified: hasPositive,
+          display: decodeText(result?.info?.display),
+          legal: decodeText(result?.info?.legal),
+          email: decodeText(result?.info?.email),
+          twitter: decodeText(result?.info?.twitter),
+          matrix: decodeText(result?.info?.riot),
+          image: decodeText(result?.info?.image),
+          verified: hasPositiveIdentityJudgement(result?.judgements),
         };
 
         return identity;
@@ -89,12 +46,7 @@ export function useIdentityOf({
     retry: 1,
   });
 
-  const data = useMemo(() => queryResult.data ?? null, [queryResult.data]);
-  return {
-    data,
-    isLoading: queryResult.isLoading,
-    error: (queryResult.error as Error) ?? null,
-  } as const;
+  return queryResult as UseQueryResult<PolkadotIdentity | null, Error>;
 }
 
 function decodeText(data: unknown): string | undefined {

@@ -22,14 +22,6 @@ import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui"
 import { ChainId } from "@reactive-dot/core";
 import { BlockInfo } from "polkadot-api";
 
-// export const SUPPORTED_NETWORKS = [
-//   paseo,
-//   paseoAssetHub,
-//   paseoPeople,
-//   polkadot,
-//   polkadotPeople,
-// ];
-
 export type SupportedChainId = keyof typeof config.chains;
 
 const queryClient = new QueryClient();

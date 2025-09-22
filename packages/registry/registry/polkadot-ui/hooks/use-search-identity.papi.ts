@@ -2,11 +2,11 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
+import { hasIdentityPallet } from "@/registry/polkadot-ui/hooks/use-identity-of.papi";
 import {
   extractText,
   hasPositiveIdentityJudgement,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { type ChainIdWithIdentity } from "@/registry/polkadot-ui/lib/types.papi";
 import {
   ClientConnectionStatus,
   type IdentitySearchResult,
@@ -15,7 +15,7 @@ import { config } from "@/registry/polkadot-ui/reactive-dot.config";
 
 export function useIdentitySearch(
   displayName: string | null | undefined,
-  identityChain: ChainIdWithIdentity = "paseoPeople"
+  identityChain: keyof typeof config.chains = "paseoPeople"
 ) {
   const { status, client } = usePapi(identityChain);
   //TODO use the status directly
@@ -29,7 +29,7 @@ export function useIdentitySearch(
     queryKey: ["identity-search", displayName, identityChain],
     queryFn: async (): Promise<IdentitySearchResult[]> => {
       if (
-        !peopleApi ||
+        !hasIdentityPallet(peopleApi) ||
         !displayName ||
         displayName.length < 3 ||
         isLoading ||
@@ -41,6 +41,8 @@ export function useIdentitySearch(
       try {
         // Get all identity entries
         const entries = await peopleApi.query.Identity.IdentityOf.getEntries();
+
+        console.log("entries", entries);
 
         const MAX_RESULTS = 10;
         const matches: IdentitySearchResult[] = [];
@@ -90,7 +92,10 @@ export function useIdentitySearch(
       }
     },
     enabled:
-      !!peopleApi && !!displayName && displayName.length >= 3 && isConnected,
+      hasIdentityPallet(peopleApi) &&
+      !!displayName &&
+      displayName.length >= 3 &&
+      isConnected,
     staleTime: 5 * 60 * 1000, // 5 minutes - identities don't change often
     gcTime: 10 * 60 * 1000, // 10 minutes - keep cached longer for search
   });

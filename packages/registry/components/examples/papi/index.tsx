@@ -11,6 +11,7 @@ import { networkIndicatorExample } from "./example-network-indicator";
 import { balanceDisplayExample } from "./example-balance-display";
 import { nftCardExample } from "./example-nft-card";
 import DedotDemo from "@/registry/polkadot-ui/blocks/dedot-demo/dedot-demo";
+import { accountInfoExample } from "./example-account-info";
 
 export const demoExample: ComponentExample = {
   name: "Dedot Demo",
@@ -27,6 +28,7 @@ export const examples: ComponentExample[] = [
   connectWalletExample,
   requireConnectionExample,
   requireAccountExample,
+  accountInfoExample,
   amountInputExample,
   selectTokenExample,
   transactionDetailsExample,
