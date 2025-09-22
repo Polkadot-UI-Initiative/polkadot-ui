@@ -241,8 +241,11 @@ export function SelectTokenDialogBase({
   };
 
   const filteredTokens = useMemo(() => {
-    return chainTokens?.filter((token) =>
-      token.symbol.toLowerCase().includes(searchQuery.toLowerCase())
+    return chainTokens?.filter(
+      (token) =>
+        // Search by symbol or name
+        token.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        token.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [chainTokens, searchQuery]);
 
