@@ -39,8 +39,9 @@ export interface SelectTokenDialogServices {
 
 export interface SelectTokenDialogProps {
   assetIds: number[];
-  withBalance: boolean;
   services: SelectTokenDialogServices;
+  withBalance?: boolean;
+  withSearch?: boolean;
   chainId?: string;
   fallback?: React.ReactNode;
   balancePrecision?: number;
@@ -135,8 +136,6 @@ export function SelectTokenDialogCompactBase({
   className,
   withBalance,
   services,
-  chainId,
-  assetIds,
   fallback,
   balancePrecision = 2,
   ...props
@@ -152,8 +151,6 @@ export function SelectTokenDialogCompactBase({
       className={className}
       withBalance={withBalance}
       services={services}
-      chainId={chainId}
-      assetIds={assetIds}
       fallback={fallback}
       balancePrecision={balancePrecision}
     />
@@ -166,16 +163,14 @@ export function SelectTokenDialogBase({
   placeholder = "Select Token",
   className,
   withBalance,
+  withSearch = false,
   compact = false,
   services,
   variant,
   disabled,
-  chainId,
-  assetIds,
-  fallback,
   balancePrecision = 2,
   ...props
-}: SelectTokenDialogBaseProps &
+}: Omit<SelectTokenDialogBaseProps, "assetIds" | "chainId"> &
   Omit<React.ComponentProps<typeof Button>, "onChange">) {
   const {
     connectedAccount,
@@ -241,8 +236,11 @@ export function SelectTokenDialogBase({
   };
 
   const filteredTokens = useMemo(() => {
-    return chainTokens?.filter((token) =>
-      token.symbol.toLowerCase().includes(searchQuery.toLowerCase())
+    return chainTokens?.filter(
+      (token) =>
+        // Search by symbol or name
+        token.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        token.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [chainTokens, searchQuery]);
 
@@ -329,11 +327,13 @@ export function SelectTokenDialogBase({
             Choose a token from your available balance
           </DialogDescription>
         </DialogHeader>
-        <Input
-          value={searchQuery}
-          onChange={handleSearchChange}
-          placeholder="Search for a token"
-        />
+        {withSearch && (
+          <Input
+            value={searchQuery}
+            onChange={handleSearchChange}
+            placeholder="Search for a token"
+          />
+        )}
         <div className="max-h-[400px] overflow-y-auto">
           {filteredTokens && filteredTokens.length > 0 ? (
             filteredTokens?.map((token) => {
