@@ -1,9 +1,3 @@
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
 import { RequireConnection } from "@/registry/polkadot-ui/blocks/require-connection/require-connection.papi";
 import type { ComponentExample } from "@/components/examples/types.examples";
 
@@ -11,31 +5,39 @@ export const requireConnectionExample: ComponentExample = {
   name: "Require Connection",
   href: "/docs/components/require-connection",
   code: "require-connection",
-  description: "Render content based on blockchain connection status",
+  description: "Render children only when a connection is established",
   component: (
     <div className="w-full space-y-3">
       <RequireConnection
         chainId={"paseo"}
         fallback={
-          <Card className="bg-primary text-background border border-border w-full h-30">
-            <CardHeader>
-              <CardTitle>⛓️‍💥 Not Connected to Paseo</CardTitle>
-              <CardDescription className="text-xs font-normal text-background">
-                Make sure your app is connected to Paseo to continue.
-              </CardDescription>
-            </CardHeader>
-          </Card>
+          <div className="border border-accent w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md p-4 text-center">
+            Make sure your app is connected to Paseo to continue. This is the
+            content that will be displayed when you are not connected to Paseo.
+          </div>
         }
       >
-        <Card className="bg-primary text-background border border-border w-full h-full h-30">
-          <CardHeader>
-            <CardTitle>⚡️ Connected to Paseo</CardTitle>
-            <CardDescription className="text-xs font-normal text-background">
-              Content you see when you are connected to Paseo.
-            </CardDescription>
-          </CardHeader>
-        </Card>
+        <div className="border border-accent w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md p-4 text-center">
+          ✅ You are connected to Paseo. This is the content that will be
+          displayed when you are connected to Paseo.
+        </div>
       </RequireConnection>
     </div>
   ),
+  tsx: `import { RequireConnection } from "@/components/require-connection.papi";
+
+<RequireConnection
+  chainId="paseo"
+  fallback={
+    <div className="border border-accent w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md p-4 text-center">
+      Make sure your app is connected to Paseo to continue. This is the
+      content that will be displayed when you are not connected to Paseo.
+    </div>
+  }
+>
+  <div className="border border-accent w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md p-4 text-center">
+    ✅ You are connected to Paseo. This is the content that will be
+    displayed when you are connected to Paseo.
+  </div>
+</RequireConnection>`,
 };

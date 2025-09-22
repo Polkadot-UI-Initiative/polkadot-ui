@@ -14,6 +14,7 @@ AddressInput is a comprehensive input component for Polkadot and Ethereum addres
 
 - ✅ **Address Validation**: Real-time validation for SS58 (Polkadot) and Ethereum addresses
 - ✅ **Identity Lookup**: Automatic Polkadot identity resolution using PAPI
+- ✅ **Identity Search**: Search by display name; results only include validated identities
 - ✅ **Visual Feedback**: Color-coded validation states and loading indicators
 - ✅ **Flexible Formats**: Support for SS58, Ethereum, or both address types
 - ✅ **TypeScript**: Full type safety with comprehensive interfaces
@@ -40,6 +41,7 @@ npx polkadot-ui@latest add address-input
 | `disabled` | `boolean` | `false` | Disable the input |
 | `format` | `"ss58" \| "eth" \| "both"` | `"ss58"` | Address format(s) to accept |
 | `withIdentityLookup` | `boolean` | `true` | Enable Polkadot identity lookup |
+| `withIdentitySearch` | `boolean` | `true` | Enable display-name search; results only include validated identities |
 | `identityChain` | `ChainIdWithIdentity` | `"paseo_people"` | Chain to use for identity lookups |
 | `onIdentitySelected` | `(identity: IdentityResult) => void` | - | Called when identity is found |
 | `truncate` | `boolean \| number` | `false` | Truncate display (true=8 chars) |
@@ -64,6 +66,13 @@ When `withIdentityLookup` is enabled:
 2. Displays identity name if found
 3. Shows verification status
 4. Includes "PAPI" badge to indicate API source
+
+### Identity Search
+
+- When `withIdentitySearch` is enabled (default), typing at least 3 characters shows a dropdown of identities matching the display name on the selected `identityChain`.
+- The search results only include identities that are validated/verified.
+- Selecting a result fills the address field with the corresponding account and triggers `onIdentitySelected`.
+- Keyboard navigation is supported (Arrow keys, Enter, Escape; Tab cycles results).
 
 ### Multi-Chain Identity Support
 

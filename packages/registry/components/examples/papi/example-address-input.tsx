@@ -17,7 +17,17 @@ export const addressInputExample: ComponentExample = {
         format="both"
         required={false}
         placeholder="Enter an address or search for an identity"
+        identityChain="polkadotPeople"
       />
     </div>
   ),
+  tsx: `import { AddressInput } from "@/components/address-input.papi";
+
+<AddressInput
+  className="w-full"
+  truncate={8}
+  format="both"
+  required={false}
+  placeholder="Enter an address or search for an identity"
+/>`,
 };
