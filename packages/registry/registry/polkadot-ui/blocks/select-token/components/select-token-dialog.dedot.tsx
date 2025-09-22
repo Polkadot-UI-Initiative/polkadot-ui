@@ -32,37 +32,36 @@ export type SelectTokenDialogProps = Omit<
   React.ComponentProps<typeof Button>;
 
 export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
+  const { chainId, assetIds, ...otherProps } = props;
   const { connectedAccount, supportedNetworks } = useTypink();
-  const { client, status } = usePolkadotClient(
-    props.chainId ?? paseoAssetHub.id
-  );
+  const { client, status } = usePolkadotClient(chainId ?? paseoAssetHub.id);
 
   const { assets, isLoading } = useAssetMetadata({
-    chainId: props.chainId ?? paseoAssetHub.id,
-    assetIds: props.assetIds,
+    chainId: chainId ?? paseoAssetHub.id,
+    assetIds: assetIds,
   });
 
   const { isLoading: tokenBalancesLoading, balances } = useAssetBalances({
-    chainId: props.chainId ?? paseoAssetHub.id,
-    assetIds: props.assetIds,
+    chainId: chainId ?? paseoAssetHub.id,
+    assetIds: assetIds,
     address: connectedAccount?.address ?? "",
   });
 
   // Get chainTokens from chaindata for token logos
   const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
-    props.chainId ?? paseoAssetHub.id,
-    props.assetIds
+    chainId ?? paseoAssetHub.id,
+    assetIds
   );
 
   // Get network info for network logo (similar to network-indicator)
   const network = supportedNetworks.find(
-    (n) => n.id === (props.chainId ?? paseoAssetHub.id)
+    (n) => n.id === (chainId ?? paseoAssetHub.id)
   );
 
   const services = useMemo(() => {
     const defaultTokens = createDefaultChainTokens(
       assets,
-      props.chainId ?? paseoAssetHub.id
+      chainId ?? paseoAssetHub.id
     );
     const finalTokens = mergeWithChaindataTokens(
       defaultTokens,
@@ -76,7 +75,7 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
       isDisabled:
         status !== ClientConnectionStatus.Connected ||
         !client ||
-        props.assetIds.length === 0,
+        assetIds.length === 0,
       chainTokens: finalTokens,
       network,
       balances,
@@ -88,15 +87,15 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
     tokenBalancesLoading,
     connectedAccount,
     client,
-    props.assetIds,
-    props.chainId,
+    assetIds,
+    chainId,
     chainTokens,
     assets,
     network,
     balances,
   ]);
 
-  return <SelectTokenDialogBase {...props} services={services} />;
+  return <SelectTokenDialogBase {...otherProps} services={services} />;
 }
 
 function SelectTokenDialogFallback(props: SelectTokenDialogProps) {

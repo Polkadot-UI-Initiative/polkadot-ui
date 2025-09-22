@@ -127,9 +127,8 @@ const AmountInputWithTokenSelectorBase = forwardRef(
           />
           <div className="absolute left-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
             <SelectTokenDialogBase
-              chainId={props.chainId || ""}
-              assetIds={props.assetIds || []}
-              withBalance={false}
+              withBalance
+              withSearch
               compact={true}
               value={selectedTokenId}
               onChange={handleTokenChange}
