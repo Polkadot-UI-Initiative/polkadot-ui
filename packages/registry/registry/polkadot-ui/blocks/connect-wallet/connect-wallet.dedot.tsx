@@ -2,14 +2,14 @@
 
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import {
-  WalletSelectBase,
-  type WalletSelectBaseProps,
-} from "@/registry/polkadot-ui/blocks/connect-wallet/components/connect-wallet.base";
+  ConnectWalletBase,
+  type ConnectWalletBaseProps,
+} from "@/registry/polkadot-ui/blocks/connect-wallet/connect-wallet.base";
 import { useTypink } from "typink";
 
-export type WalletSelectProps = Omit<WalletSelectBaseProps, "services">;
+export type ConnectWalletProps = Omit<ConnectWalletBaseProps, "services">;
 
-export function WalletSelect(props: WalletSelectProps) {
+export function ConnectWallet(props: ConnectWalletProps) {
   const {
     accounts,
     wallets,
@@ -21,7 +21,7 @@ export function WalletSelect(props: WalletSelectProps) {
   } = useTypink();
 
   return (
-    <WalletSelectBase
+    <ConnectWalletBase
       {...props}
       services={{
         accounts,
@@ -36,10 +36,10 @@ export function WalletSelect(props: WalletSelectProps) {
   );
 }
 
-export function WalletSelectWithProvider(props: WalletSelectProps) {
+export function ConnectWalletWithProvider(props: ConnectWalletProps) {
   return (
     <PolkadotProvider>
-      <WalletSelect {...props} />
+      <ConnectWallet {...props} />
     </PolkadotProvider>
   );
 }

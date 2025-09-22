@@ -1,4 +1,4 @@
-import { AddressInput } from "@/registry/polkadot-ui/blocks/address-input/components/address-input.dedot";
+import { AddressInput } from "@/registry/polkadot-ui/blocks/address-input/address-input.dedot";
 import { Label } from "@/registry/polkadot-ui/ui/label";
 import type { ComponentExample } from "../types.examples";
 import { paseoPeople } from "typink";

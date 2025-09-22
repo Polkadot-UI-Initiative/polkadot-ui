@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Identicon from "@polkadot/react-identicon";
 import { ArrowLeft } from "lucide-react";
-import { type ViewSelectAccountProps } from "@/registry/polkadot-ui/blocks/connect-wallet/components/connect-wallet.base";
+import { type ViewSelectAccountProps } from "@/registry/polkadot-ui/blocks/connect-wallet/connect-wallet.base";
 
 function truncateAddress(
   address: string,

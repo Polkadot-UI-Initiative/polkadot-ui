@@ -1,0 +1,30 @@
+---
+title: Connect Wallet
+description: A customizable connect wallet component.
+---
+
+import { ConnectWalletDocs } from "@/components/docs/docs-connect-wallet";
+import { InfoBox } from "@/components/docs/info-box";
+import Link from "next/link";
+
+## Introduction
+
+Connect Wallet is a customizable connect wallet component that allows you to select a wallet and account. It stores the selected account in local storage.
+
+<InfoBox variant="warning">
+At the current stage, this component is not a fully featured wallet selector. It is a minimal working example of a customizable wallet selector. If you want more features like e.g. WalletConnect, try{" "}
+<Link href="https://dotconnect.dev/" className="underline">dotConnect</Link> (papi) or{" "}
+<Link href="https://www.lunolab.xyz/" className="underline">LunoKit</Link> (dedot)
+</InfoBox>
+
+## Installation
+
+```bash
+npx polkadot-ui@latest add connect-wallet
+```
+
+## Usage
+
+### Basic Example
+
+<ConnectWalletDocs />
