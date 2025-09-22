@@ -85,10 +85,6 @@ export function useIdentityOf({
           await peopleApi.query.Identity.IdentityOf.getValue(address);
         if (!raw) return null;
 
-        const identity: IdentityOfValue =
-          await peopleApi.query.Identity.IdentityOf.getValue(address);
-        if (!identity) return null;
-
         const info = raw.info;
         const judgements = raw.judgements;
 
@@ -110,10 +106,13 @@ export function useIdentityOf({
           image: parseIdentityData(info?.image),
           verified:
             // is some judgement is Reasonable or KnownGood, then the identity is verified
-            judgements.some(([, judgement]) => {
-              const type = judgement.type;
-              return type === "Reasonable" || type === "KnownGood";
-            }) ?? false,
+            (Array.isArray(judgements)
+              ? judgements.some(([, judgement]) => {
+                  const type = (judgement as { type?: string } | undefined)
+                    ?.type;
+                  return type === "Reasonable" || type === "KnownGood";
+                })
+              : false) ?? false,
         };
       } catch (e) {
         console.error("useIdentityOf (papi) failed", e);

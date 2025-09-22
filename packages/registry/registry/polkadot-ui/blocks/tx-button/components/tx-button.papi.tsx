@@ -134,6 +134,7 @@ export function TxButtonInner(props: TxButtonProps) {
         notifications.descriptions?.signing ??
         "Please sign the transaction in your wallet",
     });
+
     transaction.signSubmitAndWatch(signer).subscribe({
       next: (ev) => {
         setTxStatus({ type: ev.type });

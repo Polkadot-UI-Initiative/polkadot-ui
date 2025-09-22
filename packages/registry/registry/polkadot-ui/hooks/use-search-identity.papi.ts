@@ -42,8 +42,6 @@ export function useIdentitySearch(
         // Get all identity entries
         const entries = await peopleApi.query.Identity.IdentityOf.getEntries();
 
-        console.log("entries", entries);
-
         const MAX_RESULTS = 10;
         const matches: IdentitySearchResult[] = [];
 
