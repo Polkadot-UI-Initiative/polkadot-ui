@@ -162,19 +162,19 @@
       "registryDependencies": ["input", "label", "badge", "button"],
       "files": [
         {
-          "path": "registry/polkadot-ui/blocks/address-input/components/address-input.dedot.tsx",
+          "path": "registry/polkadot-ui/blocks/address-input/address-input.dedot.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/blocks/address-input/components/address-input.base.tsx",
+          "path": "registry/polkadot-ui/blocks/address-input/address-input.base.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/blocks/address-input/hooks/use-identity.dedot.ts",
+          "path": "registry/polkadot-ui/hooks/use-identity.dedot.ts",
           "type": "registry:hook"
         },
         {
-          "path": "registry/polkadot-ui/blocks/address-input/hooks/use-search-identity.dedot.ts",
+          "path": "registry/polkadot-ui/hooks/use-search-identity.dedot.ts",
           "type": "registry:hook"
         },
         {

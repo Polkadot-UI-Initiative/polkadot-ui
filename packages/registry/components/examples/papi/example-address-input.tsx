@@ -1,4 +1,4 @@
-import { AddressInput } from "@/registry/polkadot-ui/blocks/address-input/components/address-input.papi";
+import { AddressInput } from "@/registry/polkadot-ui/blocks/address-input/address-input.papi";
 import { Label } from "@/registry/polkadot-ui/ui/label";
 import type { ComponentExample } from "@/components/examples/types.examples";
 

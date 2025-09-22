@@ -29,7 +29,7 @@ export const requireAccountExample: ComponentExample = {
           </Card>
         }
       >
-        <Card className="bg-primary text-background border border-border w-full h-full h-30">
+        <Card className="bg-primary text-background border border-border w-full h-30">
           <CardHeader>
             <CardTitle>✅ Account Selected</CardTitle>
             <CardContent className="text-xs font-normal text-background">
