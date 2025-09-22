@@ -1,7 +1,7 @@
 "use client";
 
 import { useTx } from "typink";
-import { WalletSelect } from "@/registry/polkadot-ui/blocks/connect-wallet/components/connect-wallet.dedot";
+import { WalletSelect } from "@/registry/polkadot-ui/blocks/connect-wallet/connect-wallet.dedot";
 import { TxButton as TxButtonDedot } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.dedot";
 import { PolkadotProvider as PolkadotProviderDedot } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 

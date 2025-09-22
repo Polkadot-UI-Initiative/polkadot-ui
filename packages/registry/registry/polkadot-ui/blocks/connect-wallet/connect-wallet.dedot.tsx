@@ -4,7 +4,7 @@ import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.d
 import {
   WalletSelectBase,
   type WalletSelectBaseProps,
-} from "@/registry/polkadot-ui/blocks/connect-wallet/components/connect-wallet.base";
+} from "@/registry/polkadot-ui/blocks/connect-wallet/connect-wallet.base";
 import { useTypink } from "typink";
 
 export type WalletSelectProps = Omit<WalletSelectBaseProps, "services">;

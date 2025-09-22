@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 
 import { DialogFooter } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { type ViewSelectWalletProps } from "@/registry/polkadot-ui/blocks/connect-wallet/components/connect-wallet.base";
+import { type ViewSelectWalletProps } from "@/registry/polkadot-ui/blocks/connect-wallet/connect-wallet.base";
 import { ArrowRight, Plus, Zap, ZapOff } from "lucide-react";
 import Image from "next/image";
 

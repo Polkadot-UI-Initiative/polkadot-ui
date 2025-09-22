@@ -3,7 +3,7 @@ import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   WalletSelectBase,
   type WalletSelectBaseProps,
-} from "@/registry/polkadot-ui/blocks/connect-wallet/components/connect-wallet.base";
+} from "@/registry/polkadot-ui/blocks/connect-wallet/connect-wallet.base";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { useMemo, useCallback } from "react";

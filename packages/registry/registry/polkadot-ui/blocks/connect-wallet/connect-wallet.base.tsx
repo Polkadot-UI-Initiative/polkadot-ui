@@ -3,8 +3,8 @@
 import * as React from "react";
 import { Button, type ButtonProps } from "@/components/ui/button";
 import { Identicon } from "@polkadot/react-identicon";
-import { ViewSelectWallet } from "@/registry/polkadot-ui/blocks/connect-wallet/components/view-select-wallet";
-import { ViewSelectAccount } from "@/registry/polkadot-ui/blocks/connect-wallet/components/view-select-account";
+import { ViewSelectWallet } from "@/registry/polkadot-ui/blocks/connect-wallet/view-select-wallet";
+import { ViewSelectAccount } from "@/registry/polkadot-ui/blocks/connect-wallet/view-select-account";
 import { Wallet as WalletIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {

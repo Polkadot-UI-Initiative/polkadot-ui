@@ -278,19 +278,19 @@
           "target": "app/demo/polkadot-ui/connect-wallet/page.tsx"
         },
         {
-          "path": "registry/polkadot-ui/blocks/connect-wallet/components/connect-wallet.base.tsx",
+          "path": "registry/polkadot-ui/blocks/connect-wallet/connect-wallet.base.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/blocks/connect-wallet/components/connect-wallet.dedot.tsx",
+          "path": "registry/polkadot-ui/blocks/connect-wallet/connect-wallet.dedot.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/blocks/connect-wallet/components/view-select-wallet.tsx",
+          "path": "registry/polkadot-ui/blocks/connect-wallet/view-select-wallet.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/blocks/connect-wallet/components/view-select-account.tsx",
+          "path": "registry/polkadot-ui/blocks/connect-wallet/view-select-account.tsx",
           "type": "registry:component"
         },
         {
