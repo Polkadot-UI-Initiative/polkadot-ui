@@ -152,6 +152,8 @@ export function SelectTokenDialogBase({
   withBalance,
   compact = false,
   services,
+  variant,
+  disabled,
   ...props
 }: SelectTokenDialogBaseProps &
   Omit<React.ComponentProps<typeof Button>, "onChange">) {
@@ -211,7 +213,7 @@ export function SelectTokenDialogBase({
   const isComponentDisabled =
     isDisabled ||
     !isConnected ||
-    (props.disabled ?? false) ||
+    (disabled ?? false) ||
     isLoading ||
     chainTokens?.length === 0;
 
@@ -219,9 +221,8 @@ export function SelectTokenDialogBase({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
-          //TODO pass other button props
-          variant={props.variant ?? "outline"}
-          disabled={props.disabled ?? isComponentDisabled}
+          variant={variant ?? "outline"}
+          disabled={disabled ?? isComponentDisabled}
           className={cn(
             compact ? "h-10 max-w-fit" : tokenSelectionStyles.trigger.base,
             !displayToken &&
@@ -231,6 +232,7 @@ export function SelectTokenDialogBase({
               "border-input bg-background hover:bg-accent hover:text-accent-foreground",
             className
           )}
+          {...props}
         >
           {compact ? (
             <>
