@@ -8,10 +8,12 @@ import { PolkadotProvider as PolkadotProviderPapi } from "@/registry/polkadot-ui
 import { PolkadotProvider as PolkadotProviderDedot } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { ComponentPreview } from "./component-preview";
 
-const USED_LIBRARY: "papi" | "dedot" = "dedot";
-
-export function ComponentsSection() {
-  const examples = USED_LIBRARY === "papi" ? papiExamples : dedotExamples;
+export function ComponentsSection({
+  usedLibrary = "dedot",
+}: {
+  usedLibrary?: "papi" | "dedot";
+}) {
+  const examples = usedLibrary === "papi" ? papiExamples : dedotExamples;
 
   const ComponentExamples = examples.map((example) => {
     return <ComponentPreview key={example.name} componentInfo={example} />;
@@ -21,10 +23,10 @@ export function ComponentsSection() {
     <section className="mx-8 space-y-6 py-8 md:py-8 lg:py-12" id="components">
       {/* Examples grid */}
       <div className="w-full grid justify-center gap-4 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 auto-rows-fr">
-        {USED_LIBRARY === "papi" && (
+        {usedLibrary === "papi" && (
           <PolkadotProviderPapi>{ComponentExamples}</PolkadotProviderPapi>
         )}
-        {USED_LIBRARY === "dedot" && (
+        {usedLibrary === "dedot" && (
           <PolkadotProviderDedot>{ComponentExamples}</PolkadotProviderDedot>
         )}
         <div className="flex flex-col items-center justify-center col-span-full h-48">
