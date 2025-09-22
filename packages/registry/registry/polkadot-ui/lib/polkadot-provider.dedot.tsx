@@ -8,6 +8,7 @@ import {
   paseoAssetHub,
   paseoPeople,
   polkadot,
+  polkadotAssetHub,
   polkadotPeople,
   TypinkProvider,
 } from "typink";
@@ -18,6 +19,7 @@ export const SUPPORTED_NETWORKS = [
   paseoAssetHub,
   paseoPeople,
   polkadot,
+  polkadotAssetHub,
   polkadotPeople,
 ];
 
