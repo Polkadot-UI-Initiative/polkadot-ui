@@ -30,7 +30,7 @@ export interface AccountInfo {
   source: string;
 }
 
-export interface WalletSelectServices {
+export interface ConnectWalletServices {
   wallets: WalletInfo[];
   connectedWallets: WalletInfo[];
   accounts: AccountInfo[];
@@ -59,17 +59,17 @@ export interface ViewSelectAccountProps<
   setConnectedAccount: (account: TAccount) => void;
 }
 
-export interface WalletSelectBaseProps extends Omit<ButtonProps, "children"> {
+export interface ConnectWalletBaseProps extends Omit<ButtonProps, "children"> {
   placeholder?: string;
-  services: WalletSelectServices;
+  services: ConnectWalletServices;
 }
 
-export function WalletSelectBase({
+export function ConnectWalletBase({
   className,
   placeholder,
   services,
   ...buttonProps
-}: WalletSelectBaseProps) {
+}: ConnectWalletBaseProps) {
   const {
     accounts,
     wallets,

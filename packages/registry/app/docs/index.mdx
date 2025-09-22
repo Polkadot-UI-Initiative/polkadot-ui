@@ -2,11 +2,12 @@
 title: Getting Started
 ---
 
-import { ComponentList } from '@/components/component-list'
+import { ComponentList } from '@/components/docs/component-list'
+import { InfoBox } from '@/components/docs/info-box'
 
 ## Introduction
 
-Dot UI is a comprehensive component library for building Polkadot applications. Think of it as **shadcn/ui for Web3** - a collection of beautifully designed, accessible components specifically tailored for the Polkadot ecosystem.
+Polkadot UI is a comprehensive component library for building Polkadot applications. Think of it as **shadcn/ui for Web3** - a collection of beautifully designed, accessible components specifically tailored for the Polkadot ecosystem.
 
 ### Key Features
 
@@ -22,7 +23,7 @@ Dot UI is a comprehensive component library for building Polkadot applications. 
 The fastest way to get started is to add a component to your existing project:
 
 ```bash
-npx polkadot-ui@latest add address-input
+npx polkadot-ui@latest add <component-name>
 ```
 
 This single command will:
@@ -34,7 +35,7 @@ This single command will:
 Then use it immediately with the self-contained version:
 
 ```tsx
-import { AddressInputWithProvider } from "@/components/ui/address-input"
+import { AddressInput } from "@/components/ui/address-input"
 import { useState } from "react"
 
 export default function MyApp() {
@@ -43,7 +44,7 @@ export default function MyApp() {
   return (
     <div className="p-8">
       <h1>My Polkadot App</h1>
-      <AddressInputWithProvider 
+      <AddressInput
         value={address} 
         onChange={setAddress}
         placeholder="Enter Polkadot address..."
@@ -56,6 +57,20 @@ export default function MyApp() {
   )
 }
 ```
+
+To use the component in your own project, you need to wrap your app or parts of it in a provider like this:
+
+```tsx
+import { PolkadotProvider } from "@/lib/providers/polkadot-provider.dedot"
+
+export default function RootLayout({ children }) {
+  return <PolkadotProvider>{children}</PolkadotProvider>
+}
+```
+
+<InfoBox variant="info">
+Every component is available in a self-contained version e.g. `<AddressInputWithProvider />`. It does not require any additional setup and is meant for demo purpses. If you want to use the component in your own project, don't use the self-contained version as it will duplicate chain connections.
+</InfoBox>
 
 ### Available Components
 

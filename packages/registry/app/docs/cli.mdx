@@ -3,7 +3,7 @@ title: CLI
 description: CLI is the command line interface for the Polkadot UI Initiative.
 ---
 
-import { ComponentList } from '@/components/component-list'
+import { ComponentList } from '@/components/docs/component-list'
 
 ## Introduction
 
@@ -15,6 +15,23 @@ The fastest way to get started is to add a component to your project:
 
 ```bash
 npx polkadot-ui@latest add <component-name>
+```
+
+This single command will:
+- Install the component and all dependencies
+- Set up Polkadot API configuration
+- Configure providers and chain connections
+- Generate TypeScript types
+
+Then use it immediately with the self-contained version:
+
+```tsx
+import { AddressInputWithProvider } from "@/components/ui/address-input"
+import { useState } from "react"
+
+function MyComponent() {
+  return <AddressInputWithProvider />;
+}
 ```
 
 <ComponentList />

@@ -1,16 +1,16 @@
 "use client";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
-  WalletSelectBase,
-  type WalletSelectBaseProps,
+  ConnectWalletBase,
+  type ConnectWalletBaseProps,
 } from "@/registry/polkadot-ui/blocks/connect-wallet/connect-wallet.base";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { useMemo, useCallback } from "react";
 
-export type WalletSelectProps = Omit<WalletSelectBaseProps, "services">;
+export type ConnectWalletProps = Omit<ConnectWalletBaseProps, "services">;
 
-export function WalletSelect() {
+export function ConnectWallet() {
   const {
     accounts,
     wallets,
@@ -102,7 +102,7 @@ export function WalletSelect() {
         disconnect: handleDisconnect,
         connectedAccount: mappedConnectedAccount,
         setConnectedAccount: handleSetConnectedAccount,
-      }) satisfies WalletSelectBaseProps["services"],
+      }) satisfies ConnectWalletBaseProps["services"],
     [
       mappedAccounts,
       mappedWallets,
@@ -116,15 +116,15 @@ export function WalletSelect() {
 
   return (
     <ClientOnly>
-      <WalletSelectBase services={services} />
+      <ConnectWalletBase services={services} />
     </ClientOnly>
   );
 }
 
-export function WalletSelectWithProvider(props: WalletSelectProps) {
+export function ConnectWalletWithProvider(props: ConnectWalletProps) {
   return (
     <PolkadotProvider>
-      <WalletSelect {...props} />
+      <ConnectWallet {...props} />
     </PolkadotProvider>
   );
 }
