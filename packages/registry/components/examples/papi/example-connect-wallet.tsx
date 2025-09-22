@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { WalletSelect } from "@/registry/polkadot-ui/blocks/connect-wallet/components/connect-wallet.papi";
+import { ConnectWallet } from "@/registry/polkadot-ui/blocks/connect-wallet/connect-wallet.papi";
 import type { ComponentExample } from "@/components/examples/types.examples";
 
-export const walletSelectExample: ComponentExample = {
+export const connectWalletExample: ComponentExample = {
   name: "Wallet & Account Selection",
   href: "/docs/components/wallet-select",
   code: "wallet-select",
@@ -18,7 +18,7 @@ export const walletSelectExample: ComponentExample = {
   ),
   component: (
     <div className="flex flex-col gap-2">
-      <WalletSelect />
+      <ConnectWallet />
     </div>
   ),
 };

@@ -42,6 +42,9 @@ export function Navigation({ registryItems, githubStars }: NavigationProps) {
             <span className="hidden font-bold sm:inline-block">
               polkadot-ui
             </span>
+            <span className="text-pink-500 font-bold text-[10px] -translate-y-1">
+              alpha
+            </span>
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
             {navItems.map((item) => (

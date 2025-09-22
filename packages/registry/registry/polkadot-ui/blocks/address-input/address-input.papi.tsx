@@ -5,12 +5,12 @@ import {
   AddressInputBase,
   type AddressInputBaseProps,
   type AddressInputServices,
-} from "@/registry/polkadot-ui/blocks/address-input/components/address-input.base";
+} from "@/registry/polkadot-ui/blocks/address-input/address-input.base";
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 
 // Import PAPI-specific hooks
-import { useIdentity as papiUseIdentity } from "@/registry/polkadot-ui/blocks/address-input/hooks/use-identity.papi";
-import { useIdentitySearch as papiUseIdentitySearch } from "@/registry/polkadot-ui/blocks/address-input/hooks/use-search-identity.papi";
+import { useIdentity as papiUseIdentity } from "@/registry/polkadot-ui/hooks/use-identity.papi";
+import { useIdentitySearch as papiUseIdentitySearch } from "@/registry/polkadot-ui/hooks/use-search-identity.papi";
 
 import { type ChainIdWithIdentity } from "@/registry/polkadot-ui/lib/types.papi";
 import {

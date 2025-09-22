@@ -3,8 +3,8 @@
 import * as React from "react";
 import { Button, type ButtonProps } from "@/components/ui/button";
 import { Identicon } from "@polkadot/react-identicon";
-import { ViewSelectWallet } from "@/registry/polkadot-ui/blocks/connect-wallet/components/view-select-wallet";
-import { ViewSelectAccount } from "@/registry/polkadot-ui/blocks/connect-wallet/components/view-select-account";
+import { ViewSelectWallet } from "@/registry/polkadot-ui/blocks/connect-wallet/view-select-wallet";
+import { ViewSelectAccount } from "@/registry/polkadot-ui/blocks/connect-wallet/view-select-account";
 import { Wallet as WalletIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -30,7 +30,7 @@ export interface AccountInfo {
   source: string;
 }
 
-export interface WalletSelectServices {
+export interface ConnectWalletServices {
   wallets: WalletInfo[];
   connectedWallets: WalletInfo[];
   accounts: AccountInfo[];
@@ -59,17 +59,17 @@ export interface ViewSelectAccountProps<
   setConnectedAccount: (account: TAccount) => void;
 }
 
-export interface WalletSelectBaseProps extends Omit<ButtonProps, "children"> {
+export interface ConnectWalletBaseProps extends Omit<ButtonProps, "children"> {
   placeholder?: string;
-  services: WalletSelectServices;
+  services: ConnectWalletServices;
 }
 
-export function WalletSelectBase({
+export function ConnectWalletBase({
   className,
   placeholder,
   services,
   ...buttonProps
-}: WalletSelectBaseProps) {
+}: ConnectWalletBaseProps) {
   const {
     accounts,
     wallets,

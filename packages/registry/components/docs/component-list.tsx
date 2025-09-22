@@ -22,7 +22,7 @@ export function ComponentList() {
   useEffect(() => {
     async function fetchComponents() {
       try {
-        const response = await fetch("/registry-papi.json");
+        const response = await fetch("/registry-dedot.json");
         if (!response.ok) {
           throw new Error("Failed to fetch registry");
         }

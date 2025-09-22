@@ -5,11 +5,11 @@ import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   AddressInputBase,
   type AddressInputBaseProps,
-} from "@/registry/polkadot-ui/blocks/address-input/components/address-input.base";
+} from "@/registry/polkadot-ui/blocks/address-input/address-input.base";
 // Import Dedot-specific hooks
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
-import { useIdentity } from "@/registry/polkadot-ui/blocks/address-input/hooks/use-identity.dedot";
-import { useIdentitySearch } from "@/registry/polkadot-ui/blocks/address-input/hooks/use-search-identity.dedot";
+import { useIdentity } from "@/registry/polkadot-ui/hooks/use-identity.dedot";
+import { useIdentitySearch } from "@/registry/polkadot-ui/hooks/use-search-identity.dedot";
 import { NetworkId, paseoPeople, usePolkadotClient } from "typink";
 import { Input } from "@/registry/polkadot-ui/ui/input";
 

@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { WalletSelect } from "@/registry/polkadot-ui/blocks/connect-wallet/components/connect-wallet.dedot";
+import { ConnectWallet } from "@/registry/polkadot-ui/blocks/connect-wallet/connect-wallet.dedot";
 import type { ComponentExample } from "../types.examples";
 
-export const walletSelectExample: ComponentExample = {
+export const connectWalletExample: ComponentExample = {
   name: "Wallet & Account Selection",
   href: "/docs/components/wallet-select",
   code: "wallet-select",
@@ -13,9 +13,8 @@ export const walletSelectExample: ComponentExample = {
       WalletConnect, try{" "}
       <Link href="https://dotconnect.dev/" className="underline">
         dotConnect
-      </Link>
-      (papi) or
-      <br />
+      </Link>{" "}
+      (papi) or{" "}
       <Link href="https://www.lunolab.xyz/" className="underline">
         LunoKit
       </Link>{" "}
@@ -24,10 +23,10 @@ export const walletSelectExample: ComponentExample = {
   ),
   component: (
     <div className="flex flex-col gap-2">
-      <WalletSelect variant="default" />
+      <ConnectWallet variant="default" />
     </div>
   ),
-  tsx: `import { WalletSelect } from "@/components/connect-wallet.dedot";
+  tsx: `import { ConnectWallet } from "@/components/connect-wallet.dedot";
 
-<WalletSelect />`,
+<ConnectWallet />`,
 };
