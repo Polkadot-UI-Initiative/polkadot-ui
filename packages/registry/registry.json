@@ -19,19 +19,19 @@
       "registryDependencies": ["input", "label", "badge", "button"],
       "files": [
         {
-          "path": "registry/polkadot-ui/blocks/address-input/components/address-input.papi.tsx",
+          "path": "registry/polkadot-ui/blocks/address-input/address-input.papi.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/blocks/address-input/components/address-input.base.tsx",
+          "path": "registry/polkadot-ui/blocks/address-input/address-input.base.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/blocks/address-input/hooks/use-identity.papi.ts",
+          "path": "registry/polkadot-ui/hooks/use-identity.papi.ts",
           "type": "registry:hook"
         },
         {
-          "path": "registry/polkadot-ui/blocks/address-input/hooks/use-search-identity.papi.ts",
+          "path": "registry/polkadot-ui/hooks/use-search-identity.papi.ts",
           "type": "registry:hook"
         },
         {
@@ -71,17 +71,11 @@
       "registryDependencies": [],
       "files": [
         {
-          "path": "registry/polkadot-ui/blocks/require-connection/demo/page.papi.tsx",
-          "type": "registry:page",
-          "target": "app/demo/polkadot-ui/require-connection/page.tsx"
-        },
-
-        {
-          "path": "registry/polkadot-ui/blocks/require-connection/components/require-connection.papi.tsx",
+          "path": "registry/polkadot-ui/blocks/require-connection/require-connection.papi.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/blocks/require-connection/components/require-connection.base.tsx",
+          "path": "registry/polkadot-ui/blocks/require-connection/require-connection.base.tsx",
           "type": "registry:component"
         },
         {

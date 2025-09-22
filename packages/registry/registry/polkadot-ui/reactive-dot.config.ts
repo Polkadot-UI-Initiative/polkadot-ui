@@ -1,7 +1,11 @@
-import { paseo, paseo_people } from "@polkadot-api/descriptors";
-import { getWsProvider } from "polkadot-api/ws-provider/web";
+import {
+  paseo,
+  paseo_people,
+  polkadot_people,
+} from "@polkadot-api/descriptors";
 import { defineConfig } from "@reactive-dot/core";
 import { InjectedWalletProvider } from "@reactive-dot/core/wallets.js";
+import { getWsProvider } from "polkadot-api/ws-provider/web";
 
 export const config = defineConfig({
   ssr: true,
@@ -23,6 +27,15 @@ export const config = defineConfig({
       symbol: "PAS",
       decimals: 10,
       logo: "https://paseo.network/logo.png",
+    },
+    polkadotPeople: {
+      name: "Polkadot People",
+      descriptor: polkadot_people,
+      provider: getWsProvider("wss://sys.ibp.network/people-polkadot"),
+      explorerUrl: "https://people-polkadot.subscan.io",
+      symbol: "DOT",
+      decimals: 10,
+      logo: "https://polkadot.network/logo.png",
     },
   },
   wallets: [new InjectedWalletProvider()],

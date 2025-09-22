@@ -19,6 +19,12 @@
       "metadata": ".papi/metadata/paseo_people.scale",
       "genesis": "0xe6c30d6e148f250b887105237bcaa5cb9f16dd203bf7b5b9d4f1da7387cb86ec",
       "codeHash": "0x08900cf7113b3e152f7887796b5311f01a6eda32684425c0d2794b542c9dd739"
+    },
+    "polkadot_people": {
+      "chain": "polkadot_people",
+      "metadata": ".papi/metadata/polkadot_people.scale",
+      "genesis": "0x67fa177a097bfa18f77ea95ab56e9bcdfeb0e5b8a40e46298bb93e16b6fc5008",
+      "codeHash": "0xd05d6b6d1a9bb0cdd0f472a6fab2685aa84fc5203911b7fab132fd10b1867562"
     }
   }
 }

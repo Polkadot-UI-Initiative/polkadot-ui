@@ -21,4 +21,7 @@ export const connectWalletExample: ComponentExample = {
       <ConnectWallet />
     </div>
   ),
+  tsx: `import { ConnectWallet } from "@/components/connect-wallet.papi";
+
+<ConnectWallet />`,
 };
