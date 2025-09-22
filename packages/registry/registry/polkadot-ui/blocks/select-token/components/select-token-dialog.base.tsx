@@ -1,6 +1,7 @@
 import type React from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Input } from "@/registry/polkadot-ui/ui/input";
 import { ChevronDown } from "lucide-react";
 import {
   formatTokenBalance,
@@ -170,6 +171,8 @@ export function SelectTokenDialogBase({
   const [isOpen, setIsOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState<TokenInfo | null>(null);
 
+  const [searchQuery, setSearchQuery] = useState("");
+
   // Keep selectedToken in sync with props.value and available chainTokens
   useEffect(() => {
     if (!chainTokens || chainTokens.length === 0) {
@@ -216,6 +219,17 @@ export function SelectTokenDialogBase({
     (disabled ?? false) ||
     isLoading ||
     chainTokens?.length === 0;
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredTokens = useMemo(() => {
+    return chainTokens?.filter((token) =>
+      token.symbol.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [chainTokens, searchQuery]);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -300,28 +314,37 @@ export function SelectTokenDialogBase({
             Choose a token from your available balance
           </DialogDescription>
         </DialogHeader>
+        <Input
+          value={searchQuery}
+          onChange={handleSearchChange}
+          placeholder="Search for a token"
+        />
         <div className="max-h-[400px] overflow-y-auto">
-          {chainTokens?.map((token) => {
-            const isSelected = displayToken?.assetId === token.assetId;
-            return (
-              <TokenDialogItem
-                key={token.id}
-                token={token}
-                isSelected={isSelected}
-                onClick={() => handleTokenSelect(token)}
-                withBalance={withBalance}
-                balance={getTokenBalance(
-                  balances,
-                  connectedAccount,
-                  Number(token.assetId)
-                )}
-                tokenLogo={getTokenLogo(chainTokens, Number(token.assetId))}
-                network={network}
-                connectedAccount={connectedAccount}
-                logoSize="md"
-              />
-            );
-          })}
+          {filteredTokens && filteredTokens.length > 0 ? (
+            filteredTokens?.map((token) => {
+              const isSelected = displayToken?.assetId === token.assetId;
+              return (
+                <TokenDialogItem
+                  key={token.id}
+                  token={token}
+                  isSelected={isSelected}
+                  onClick={() => handleTokenSelect(token)}
+                  withBalance={withBalance}
+                  balance={getTokenBalance(
+                    balances,
+                    connectedAccount,
+                    Number(token.assetId)
+                  )}
+                  tokenLogo={getTokenLogo(chainTokens, Number(token.assetId))}
+                  network={network}
+                  connectedAccount={connectedAccount}
+                  logoSize="md"
+                />
+              );
+            })
+          ) : (
+            <div className="text-muted-foreground">No tokens found</div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
