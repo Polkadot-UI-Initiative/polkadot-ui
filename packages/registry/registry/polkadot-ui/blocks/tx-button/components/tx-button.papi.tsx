@@ -114,7 +114,7 @@ export function TxButtonInner(props: TxButtonProps) {
       });
   }, [transaction, selectedAccount]);
 
-  if (!signer) return "no signer";
+  if (!signer) return "Please select an account";
 
   const handleClick = () => {
     setSubmitError(null);
