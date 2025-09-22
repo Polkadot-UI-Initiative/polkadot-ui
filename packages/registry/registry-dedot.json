@@ -120,11 +120,11 @@
       "registryDependencies": ["button", "dialog"],
       "files": [
         {
-          "path": "registry/polkadot-ui/blocks/require-account/components/require-account.base.tsx",
+          "path": "registry/polkadot-ui/blocks/require-account/require-account.base.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/blocks/require-account/components/require-account.dedot.tsx",
+          "path": "registry/polkadot-ui/blocks/require-account/require-account.dedot.tsx",
           "type": "registry:component"
         },
         {
@@ -224,20 +224,11 @@
       "registryDependencies": ["button", "dialog"],
       "files": [
         {
-          "path": "registry/polkadot-ui/blocks/require-connection/demo/page.dedot.tsx",
-          "type": "registry:page",
-          "target": "app/require-connection/page.tsx"
-        },
-        {
-          "path": "registry/polkadot-ui/blocks/require-connection/demo/require-connection-demo.tsx",
+          "path": "registry/polkadot-ui/blocks/require-connection/require-connection.base.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/blocks/require-connection/components/require-connection.base.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/polkadot-ui/blocks/require-connection/components/require-connection.dedot.tsx",
+          "path": "registry/polkadot-ui/blocks/require-connection/require-connection.dedot.tsx",
           "type": "registry:component"
         },
         {

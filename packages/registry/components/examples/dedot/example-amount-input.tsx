@@ -5,7 +5,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { AmountInput } from "@/registry/polkadot-ui/blocks/amount-input/components/amount-input.dedot";
-import { RequireAccount } from "@/registry/polkadot-ui/blocks/require-account/components/require-account.dedot";
+import { RequireAccount } from "@/registry/polkadot-ui/blocks/require-account/require-account.dedot";
 import type { ComponentExample } from "../types.examples";
 import { Label } from "@/registry/polkadot-ui/ui/label";
 import { paseoAssetHub } from "typink";

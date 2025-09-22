@@ -2,7 +2,7 @@
 
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { ClientConnectionStatus, useTypink, paseoPeople } from "typink";
-import { RequireConnection } from "@/registry/polkadot-ui/blocks/require-connection/components/require-connection.dedot";
+import { RequireConnection } from "@/registry/polkadot-ui/blocks/require-connection/require-connection.dedot";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 
 export default function DedotDemo() {

@@ -1,4 +1,4 @@
-import { RequireConnection } from "@/registry/polkadot-ui/blocks/require-connection/components/require-connection.dedot";
+import { RequireConnection } from "@/registry/polkadot-ui/blocks/require-connection/require-connection.dedot";
 import type { ComponentExample } from "../types.examples";
 
 export const requireConnectionExample: ComponentExample = {
