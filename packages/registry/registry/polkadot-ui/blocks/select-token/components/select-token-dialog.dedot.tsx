@@ -2,7 +2,12 @@
 
 import { useMemo } from "react";
 import type React from "react";
-import { ClientConnectionStatus, usePolkadotClient, useTypink } from "typink";
+import {
+  ClientConnectionStatus,
+  paseoAssetHub,
+  usePolkadotClient,
+  useTypink,
+} from "typink";
 import { useAssetMetadata } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-metadata.dedot";
 import { useAssetBalances } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-balance.dedot";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
@@ -11,7 +16,6 @@ import {
   SelectTokenDialogBase,
 } from "./select-token-dialog.base";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
-import { paseoAssetHub } from "typink";
 import {
   createDefaultChainTokens,
   mergeWithChaindataTokens,
@@ -28,16 +32,18 @@ export type SelectTokenDialogProps = Omit<
   React.ComponentProps<typeof Button>;
 
 export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
+  const { connectedAccount, supportedNetworks } = useTypink();
   const { client, status } = usePolkadotClient(
     props.chainId ?? paseoAssetHub.id
   );
+
   const { assets, isLoading } = useAssetMetadata({
-    chainId: props.chainId,
+    chainId: props.chainId ?? paseoAssetHub.id,
     assetIds: props.assetIds,
   });
-  const { connectedAccount, supportedNetworks } = useTypink();
+
   const { isLoading: tokenBalancesLoading, balances } = useAssetBalances({
-    chainId: props.chainId,
+    chainId: props.chainId ?? paseoAssetHub.id,
     assetIds: props.assetIds,
     address: connectedAccount?.address ?? "",
   });
@@ -54,8 +60,10 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
   );
 
   const services = useMemo(() => {
-    const chainIdForTokens = props.chainId ?? paseoAssetHub.id;
-    const defaultTokens = createDefaultChainTokens(assets, chainIdForTokens);
+    const defaultTokens = createDefaultChainTokens(
+      assets,
+      props.chainId ?? paseoAssetHub.id
+    );
     const finalTokens = mergeWithChaindataTokens(
       defaultTokens,
       chainTokens ?? []

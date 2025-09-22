@@ -1,6 +1,7 @@
 import type React from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Input } from "@/registry/polkadot-ui/ui/input";
 import { ChevronDown } from "lucide-react";
 import {
   formatTokenBalance,
@@ -37,11 +38,12 @@ export interface SelectTokenDialogServices {
 }
 
 export interface SelectTokenDialogProps {
-  chainId: string;
   assetIds: number[];
   withBalance: boolean;
   services: SelectTokenDialogServices;
+  chainId?: string;
   fallback?: React.ReactNode;
+  balancePrecision?: number;
 }
 
 export interface SelectTokenDialogBaseProps extends SelectTokenDialogProps {
@@ -66,6 +68,7 @@ interface TokenDialogItemProps {
   connectedAccount?: { address?: string } | null;
   className?: string;
   logoSize?: "sm" | "md" | "lg";
+  balancePrecision?: number;
 }
 
 function TokenDialogItem({
@@ -79,6 +82,7 @@ function TokenDialogItem({
   connectedAccount,
   className,
   logoSize = "md",
+  balancePrecision = 2,
 }: TokenDialogItemProps) {
   const styles = tokenSelectionStyles.tokenItem;
   const contentStyles = tokenSelectionStyles.tokenContent;
@@ -103,7 +107,11 @@ function TokenDialogItem({
           <div className={contentStyles.symbol}>{token.symbol}</div>
           {connectedAccount?.address && withBalance && (
             <span className={contentStyles.balance}>
-              {formatTokenBalance(balance ?? null, token.decimals)}
+              {formatTokenBalance(
+                balance ?? null,
+                token.decimals,
+                balancePrecision
+              )}
             </span>
           )}
         </div>
@@ -127,6 +135,10 @@ export function SelectTokenDialogCompactBase({
   className,
   withBalance,
   services,
+  chainId,
+  assetIds,
+  fallback,
+  balancePrecision = 2,
   ...props
 }: SelectTokenDialogBaseProps &
   Omit<React.ComponentProps<typeof Button>, "onChange">) {
@@ -140,6 +152,10 @@ export function SelectTokenDialogCompactBase({
       className={className}
       withBalance={withBalance}
       services={services}
+      chainId={chainId}
+      assetIds={assetIds}
+      fallback={fallback}
+      balancePrecision={balancePrecision}
     />
   );
 }
@@ -152,6 +168,12 @@ export function SelectTokenDialogBase({
   withBalance,
   compact = false,
   services,
+  variant,
+  disabled,
+  chainId,
+  assetIds,
+  fallback,
+  balancePrecision = 2,
   ...props
 }: SelectTokenDialogBaseProps &
   Omit<React.ComponentProps<typeof Button>, "onChange">) {
@@ -167,6 +189,8 @@ export function SelectTokenDialogBase({
 
   const [isOpen, setIsOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState<TokenInfo | null>(null);
+
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Keep selectedToken in sync with props.value and available chainTokens
   useEffect(() => {
@@ -209,19 +233,25 @@ export function SelectTokenDialogBase({
   };
 
   const isComponentDisabled =
-    isDisabled ||
-    !isConnected ||
-    (props.disabled ?? false) ||
-    isLoading ||
-    chainTokens?.length === 0;
+    isDisabled || !isConnected || isLoading || chainTokens?.length === 0;
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredTokens = useMemo(() => {
+    return chainTokens?.filter((token) =>
+      token.symbol.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [chainTokens, searchQuery]);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
-          //TODO pass other button props
-          variant={props.variant ?? "outline"}
-          disabled={props.disabled ?? isComponentDisabled}
+          variant={variant ?? "outline"}
+          disabled={isComponentDisabled || !!disabled}
           className={cn(
             compact ? "h-10 max-w-fit" : tokenSelectionStyles.trigger.base,
             !displayToken &&
@@ -231,6 +261,7 @@ export function SelectTokenDialogBase({
               "border-input bg-background hover:bg-accent hover:text-accent-foreground",
             className
           )}
+          {...props}
         >
           {compact ? (
             <>
@@ -298,28 +329,41 @@ export function SelectTokenDialogBase({
             Choose a token from your available balance
           </DialogDescription>
         </DialogHeader>
+        <Input
+          value={searchQuery}
+          onChange={handleSearchChange}
+          placeholder="Search for a token"
+        />
         <div className="max-h-[400px] overflow-y-auto">
-          {chainTokens?.map((token) => {
-            const isSelected = displayToken?.assetId === token.assetId;
-            return (
-              <TokenDialogItem
-                key={token.id}
-                token={token}
-                isSelected={isSelected}
-                onClick={() => handleTokenSelect(token)}
-                withBalance={withBalance}
-                balance={getTokenBalance(
-                  balances,
-                  connectedAccount,
-                  Number(token.assetId)
-                )}
-                tokenLogo={getTokenLogo(chainTokens, Number(token.assetId))}
-                network={network}
-                connectedAccount={connectedAccount}
-                logoSize="md"
-              />
-            );
-          })}
+          {filteredTokens && filteredTokens.length > 0 ? (
+            filteredTokens?.map((token) => {
+              const isSelected = displayToken?.assetId === token.assetId;
+              return (
+                <TokenDialogItem
+                  key={token.id}
+                  token={token}
+                  isSelected={isSelected}
+                  onClick={() => handleTokenSelect(token)}
+                  withBalance={withBalance}
+                  balance={getTokenBalance(
+                    balances,
+                    connectedAccount,
+                    Number(token.assetId)
+                  )}
+                  tokenLogo={getTokenLogo(chainTokens, Number(token.assetId))}
+                  network={network}
+                  connectedAccount={connectedAccount}
+                  logoSize="md"
+                  balancePrecision={balancePrecision}
+                />
+              );
+            })
+          ) : (
+            <div className="text-center py-8 text-muted-foreground">
+              <p>No tokens found for &quot;{searchQuery}&quot;</p>
+              <p className="text-sm mt-2">Try adjusting your search terms</p>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
