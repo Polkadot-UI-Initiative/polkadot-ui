@@ -1,8 +1,3 @@
-"use client";
-
-import { X } from "lucide-react";
-import { useState } from "react";
-
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -13,20 +8,7 @@ interface BannerProps {
   defaultVisible?: boolean;
 }
 
-export const Banner = ({
-  title,
-  defaultVisible = true,
-  buttonText,
-  buttonUrl,
-}: BannerProps) => {
-  const [isVisible, setIsVisible] = useState(defaultVisible);
-
-  const handleClose = () => {
-    setIsVisible(false);
-  };
-
-  if (!isVisible) return null;
-
+export const Banner = ({ title, buttonText, buttonUrl }: BannerProps) => {
   return (
     <section className="bg-orange-500 w-full p-4">
       <div className="container">
