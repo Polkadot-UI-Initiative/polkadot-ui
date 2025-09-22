@@ -38,11 +38,12 @@ export interface SelectTokenDialogServices {
 }
 
 export interface SelectTokenDialogProps {
-  chainId: string;
   assetIds: number[];
   withBalance: boolean;
   services: SelectTokenDialogServices;
+  chainId?: string;
   fallback?: React.ReactNode;
+  balancePrecision?: number;
 }
 
 export interface SelectTokenDialogBaseProps extends SelectTokenDialogProps {
@@ -67,6 +68,7 @@ interface TokenDialogItemProps {
   connectedAccount?: { address?: string } | null;
   className?: string;
   logoSize?: "sm" | "md" | "lg";
+  balancePrecision?: number;
 }
 
 function TokenDialogItem({
@@ -80,6 +82,7 @@ function TokenDialogItem({
   connectedAccount,
   className,
   logoSize = "md",
+  balancePrecision = 2,
 }: TokenDialogItemProps) {
   const styles = tokenSelectionStyles.tokenItem;
   const contentStyles = tokenSelectionStyles.tokenContent;
@@ -104,7 +107,11 @@ function TokenDialogItem({
           <div className={contentStyles.symbol}>{token.symbol}</div>
           {connectedAccount?.address && withBalance && (
             <span className={contentStyles.balance}>
-              {formatTokenBalance(balance ?? null, token.decimals)}
+              {formatTokenBalance(
+                balance ?? null,
+                token.decimals,
+                balancePrecision
+              )}
             </span>
           )}
         </div>
@@ -128,6 +135,10 @@ export function SelectTokenDialogCompactBase({
   className,
   withBalance,
   services,
+  chainId,
+  assetIds,
+  fallback,
+  balancePrecision = 2,
   ...props
 }: SelectTokenDialogBaseProps &
   Omit<React.ComponentProps<typeof Button>, "onChange">) {
@@ -141,6 +152,10 @@ export function SelectTokenDialogCompactBase({
       className={className}
       withBalance={withBalance}
       services={services}
+      chainId={chainId}
+      assetIds={assetIds}
+      fallback={fallback}
+      balancePrecision={balancePrecision}
     />
   );
 }
@@ -155,6 +170,10 @@ export function SelectTokenDialogBase({
   services,
   variant,
   disabled,
+  chainId,
+  assetIds,
+  fallback,
+  balancePrecision = 2,
   ...props
 }: SelectTokenDialogBaseProps &
   Omit<React.ComponentProps<typeof Button>, "onChange">) {
@@ -339,6 +358,7 @@ export function SelectTokenDialogBase({
                   network={network}
                   connectedAccount={connectedAccount}
                   logoSize="md"
+                  balancePrecision={balancePrecision}
                 />
               );
             })

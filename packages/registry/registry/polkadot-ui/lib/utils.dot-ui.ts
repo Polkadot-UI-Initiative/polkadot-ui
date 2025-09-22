@@ -252,17 +252,20 @@ export function parseTokenId(
  * Format token balance with proper handling of null values
  * @param balance - Token balance in bigint format
  * @param decimals - Number of decimals for the token
+ * @param precision - Number of decimal places to display (defaults to 2)
  * @returns Formatted balance string or "0" if balance is null
  */
 export function formatTokenBalance(
   balance: bigint | null,
-  decimals: number = 12
+  decimals: number = 12,
+  precision: number = 2
 ): string {
   if (balance === null) return "0";
 
   return formatBalance({
     value: balance,
     decimals,
+    nDecimals: precision,
   });
 }
 
