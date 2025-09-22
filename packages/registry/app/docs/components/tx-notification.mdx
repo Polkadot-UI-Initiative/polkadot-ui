@@ -1,6 +1,28 @@
 ---
-title: Transaction Notification
+title: Tx Notification
 description: A comprehensive transaction lifecycle component with real-time status updates and block explorer integration.
 ---
 
-Todo Coming Soon
+import { TxNotificationDocs } from "@/components/docs/docs-tx-notification";
+
+## Introduction
+
+`tx-notification` provides a simple API to show toast notifications for the full transaction lifecycle — from signing to submission, inclusion, and finalization. It integrates with your chain metadata to show a chain logo and optional explorer link.
+
+## Installation
+
+```bash
+npx polkadot-ui@latest add tx-notification
+```
+
+## Usage
+
+<TxNotificationDocs/>
+
+## API
+
+- `beginTxStatusNotification({ network, title, description, toastId? })`: Shows an initial loading toast and returns a `toastId`.
+- `txStatusNotification({ result, toastId, network, successDuration?, title?, titles?, descriptions? })`: Updates the toast based on the tx status (`Broadcasting` → `BestChainBlockIncluded` → `Finalized`).
+- `cancelTxStatusNotification({ toastId, network, title?, description? })`: Replaces the toast with an error/cancelled state.
+
+All examples above focus on dedot, but the API is provider-agnostic as long as you pass `result.status.type` and a compatible `network` object.
