@@ -16,7 +16,6 @@ export const selectTokenDialogExample: ComponentExample = {
         assetIds={[1984, 8, 27]}
         className="w-full"
         withBalance
-        disabled={false}
       />
     </div>
   ),
