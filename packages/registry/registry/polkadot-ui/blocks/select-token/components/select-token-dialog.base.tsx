@@ -233,11 +233,7 @@ export function SelectTokenDialogBase({
   };
 
   const isComponentDisabled =
-    isDisabled ||
-    !isConnected ||
-    (disabled ?? false) ||
-    isLoading ||
-    chainTokens?.length === 0;
+    isDisabled || !isConnected || isLoading || chainTokens?.length === 0;
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -255,7 +251,7 @@ export function SelectTokenDialogBase({
       <DialogTrigger asChild>
         <Button
           variant={variant ?? "outline"}
-          disabled={disabled ?? isComponentDisabled}
+          disabled={isComponentDisabled || !!disabled}
           className={cn(
             compact ? "h-10 max-w-fit" : tokenSelectionStyles.trigger.base,
             !displayToken &&
@@ -363,7 +359,10 @@ export function SelectTokenDialogBase({
               );
             })
           ) : (
-            <div className="text-muted-foreground">No tokens found</div>
+            <div className="text-center py-8 text-muted-foreground">
+              <p>No tokens found for &quot;{searchQuery}&quot;</p>
+              <p className="text-sm mt-2">Try adjusting your search terms</p>
+            </div>
           )}
         </div>
       </DialogContent>
