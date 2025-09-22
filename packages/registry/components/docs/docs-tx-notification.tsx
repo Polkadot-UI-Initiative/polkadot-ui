@@ -12,47 +12,76 @@ import {
 } from "@/registry/polkadot-ui/blocks/tx-notification/components/tx-notification";
 import { useTypink } from "typink";
 import { Button } from "@/components/ui/button";
+import { useEffect, useRef } from "react";
+
+const TIMEOUT_CONFIG = {
+  SIGNING_TO_BROADCASTING: 800,
+  BROADCASTING_TO_INCLUDED: 1600,
+  INCLUDED_TO_FINALIZED: 2400,
+} as const;
 
 function DemoBasic() {
   const { supportedNetworks } = useTypink();
   const network = supportedNetworks?.[0];
+  const timersRef = useRef<Array<ReturnType<typeof setTimeout>>>([]);
+
+  const clearTimers = () => {
+    timersRef.current.forEach((t) => clearTimeout(t));
+    timersRef.current = [];
+  };
+
+  useEffect(() => {
+    return () => clearTimers();
+  }, []);
 
   function simulate() {
+    clearTimers();
+    if (!network) {
+      console.warn("TxNotification demo: no network available");
+      return;
+    }
+
     const id = beginTxStatusNotification({
-      network: network!,
+      network,
       title: defaultTitles.signing,
       description: defaultDescriptions.signing,
     });
 
-    setTimeout(() => {
-      txStatusNotification({
-        title: defaultTitles.submitting,
-        result: { status: { type: "Broadcasting" } },
-        toastId: id,
-        network,
-        successDuration: 3000,
-      });
-    }, 800);
+    timersRef.current.push(
+      setTimeout(() => {
+        txStatusNotification({
+          title: defaultTitles.submitting,
+          result: { status: { type: "Broadcasting" } },
+          toastId: id,
+          network,
+          successDuration: 3000,
+        });
+      }, TIMEOUT_CONFIG.SIGNING_TO_BROADCASTING)
+    );
 
-    setTimeout(() => {
-      txStatusNotification({
-        title: defaultTitles.included,
-        result: { status: { type: "BestChainBlockIncluded" } },
-        toastId: id,
-        network,
-        successDuration: 3000,
-      });
-    }, 1600);
+    timersRef.current.push(
+      setTimeout(() => {
+        txStatusNotification({
+          title: defaultTitles.included,
+          result: { status: { type: "BestChainBlockIncluded" } },
+          toastId: id,
+          network,
+          successDuration: 3000,
+        });
+      }, TIMEOUT_CONFIG.BROADCASTING_TO_INCLUDED)
+    );
 
-    setTimeout(() => {
-      txStatusNotification({
-        title: defaultTitles.finalized,
-        result: { status: { type: "Finalized" } },
-        toastId: id,
-        network,
-        successDuration: 4000,
-      });
-    }, 2400);
+    timersRef.current.push(
+      setTimeout(() => {
+        txStatusNotification({
+          title: defaultTitles.finalized,
+          result: { status: { type: "Finalized" } },
+          toastId: id,
+          network,
+          successDuration: 4000,
+        });
+      }, TIMEOUT_CONFIG.INCLUDED_TO_FINALIZED)
+    );
   }
 
   return (
@@ -67,63 +96,85 @@ function DemoBasic() {
 function DemoCustomText() {
   const { supportedNetworks } = useTypink();
   const network = supportedNetworks?.[0];
+  const timersRef = useRef<Array<ReturnType<typeof setTimeout>>>([]);
+
+  const clearTimers = () => {
+    timersRef.current.forEach((t) => clearTimeout(t));
+    timersRef.current = [];
+  };
+
+  useEffect(() => {
+    return () => clearTimers();
+  }, []);
 
   function simulate() {
+    clearTimers();
+    if (!network) {
+      console.warn("TxNotification demo: no network available");
+      return;
+    }
+
     const id = beginTxStatusNotification({
-      network: network!,
+      network,
       title: "Awaiting wallet signature",
       description: "Confirm the transaction in your wallet",
     });
 
-    setTimeout(() => {
-      txStatusNotification({
-        title: "Submitting to network...",
-        titles: {
-          submitting: "Submitting to network...",
-          included: "Included in best block",
-          finalized: "Finalized successfully",
-          error: "Failed to submit",
-        },
-        descriptions: {
-          submitting: "Your transaction is being propagated",
-          included: "Explorer link available",
-          finalized: "Funds moved. You can close this now.",
-          error: "Something went wrong",
-        },
-        result: { status: { type: "Broadcasting" } },
-        toastId: id,
-        network,
-        successDuration: 4000,
-      });
-    }, 800);
+    timersRef.current.push(
+      setTimeout(() => {
+        txStatusNotification({
+          title: "Submitting to network...",
+          titles: {
+            submitting: "Submitting to network...",
+            included: "Included in best block",
+            finalized: "Finalized successfully",
+            error: "Failed to submit",
+          },
+          descriptions: {
+            submitting: "Your transaction is being propagated",
+            included: "Explorer link available",
+            finalized: "Funds moved. You can close this now.",
+            error: "Something went wrong",
+          },
+          result: { status: { type: "Broadcasting" } },
+          toastId: id,
+          network,
+          successDuration: 4000,
+        });
+      }, TIMEOUT_CONFIG.SIGNING_TO_BROADCASTING)
+    );
 
-    setTimeout(() => {
-      txStatusNotification({
-        title: "Included in best block",
-        titles: {
-          included: "Included in best block",
-        },
-        descriptions: {
-          included: "You can inspect on the explorer",
-        },
-        result: { status: { type: "BestChainBlockIncluded" } },
-        toastId: id,
-        network,
-        successDuration: 4000,
-      });
-    }, 1600);
+    timersRef.current.push(
+      setTimeout(() => {
+        txStatusNotification({
+          title: "Included in best block",
+          titles: {
+            included: "Included in best block",
+          },
+          descriptions: {
+            included: "You can inspect on the explorer",
+          },
+          result: { status: { type: "BestChainBlockIncluded" } },
+          toastId: id,
+          network,
+          successDuration: 4000,
+        });
+      }, TIMEOUT_CONFIG.BROADCASTING_TO_INCLUDED)
+    );
 
-    setTimeout(() => {
-      txStatusNotification({
-        title: "🎉 Finalized",
-        titles: { finalized: "🎉 Finalized" },
-        descriptions: { finalized: "All done" },
-        result: { status: { type: "Finalized" } },
-        toastId: id,
-        network,
-        successDuration: 4000,
-      });
-    }, 2400);
+    timersRef.current.push(
+      setTimeout(() => {
+        txStatusNotification({
+          title: "🎉 Finalized",
+          titles: { finalized: "🎉 Finalized" },
+          descriptions: { finalized: "All done" },
+          result: { status: { type: "Finalized" } },
+          toastId: id,
+          network,
+          successDuration: 4000,
+        });
+      }, TIMEOUT_CONFIG.INCLUDED_TO_FINALIZED)
+    );
   }
 
   return (
@@ -138,22 +189,40 @@ function DemoCustomText() {
 function DemoError() {
   const { supportedNetworks } = useTypink();
   const network = supportedNetworks?.[0];
+  const timersRef = useRef<Array<ReturnType<typeof setTimeout>>>([]);
+
+  const clearTimers = () => {
+    timersRef.current.forEach((t) => clearTimeout(t));
+    timersRef.current = [];
+  };
+
+  useEffect(() => {
+    return () => clearTimers();
+  }, []);
 
   function simulate() {
+    clearTimers();
+    if (!network) {
+      console.warn("TxNotification demo: no network available");
+      return;
+    }
+
     const id = beginTxStatusNotification({
-      network: network!,
+      network,
       title: defaultTitles.signing,
       description: defaultDescriptions.signing,
     });
 
-    setTimeout(() => {
-      cancelTxStatusNotification({
-        toastId: id,
-        network,
-        title: "Transaction cancelled",
-        description: "User rejected in wallet",
-      });
-    }, 1000);
+    timersRef.current.push(
+      setTimeout(() => {
+        cancelTxStatusNotification({
+          toastId: id,
+          network,
+          title: "Transaction cancelled",
+          description: "User rejected in wallet",
+        });
+      }, TIMEOUT_CONFIG.SIGNING_TO_BROADCASTING)
+    );
   }
 
   return (

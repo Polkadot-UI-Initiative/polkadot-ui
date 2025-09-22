@@ -29,5 +29,6 @@ export const addressInputExample: ComponentExample = {
   format="both"
   required={false}
   placeholder="Enter an address or search for an identity"
+  identityChain="polkadotPeople" // the key of the chain in the reactive-dot.config.ts
 />`,
 };
