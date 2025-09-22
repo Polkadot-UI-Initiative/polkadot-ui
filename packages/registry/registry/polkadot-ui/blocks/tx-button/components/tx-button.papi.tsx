@@ -269,6 +269,7 @@ export function TxButtonInner(props: TxButtonProps) {
 }
 
 export function TxButtonWithProvider(props: TxButtonProps) {
+  // Keep for standalone usage outside the gallery. Avoid using inside ComponentsSection.
   return (
     <PolkadotProvider>
       <TxButton {...props} />

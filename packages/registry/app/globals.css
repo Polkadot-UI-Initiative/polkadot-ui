@@ -155,6 +155,9 @@
   .text-fast-shadow {
     text-shadow: -10px 0 0 var(--polkadot-pink);
   }
+  .bg-gradient {
+    @apply bg-gradient-to-tr from-[var(--polkadot-pink)] to-[var(--polkadot-violet)];
+  }
 }
 
 /* Fix sidebar positioning for fixed header */

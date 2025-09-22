@@ -15,12 +15,12 @@ function MyComponent() {
     <RequireAccount
       chainId="paseo"
       fallback={
-        <div className="border border-accent w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md">
+        <div className="border border-foreground/10 w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md">
           Please select an account to continue.
         </div>
       }
     >
-      <div className="border border-accent w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md flex-col">
+      <div className="border border-foreground/10 w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md flex-col">
         <div>Account name: Jane Doe</div>
         <div>Wallet: Talisman</div>
       </div>
@@ -36,12 +36,12 @@ function Component() {
       <RequireAccount
         chainId="paseo"
         fallback={
-          <div className="border border-accent w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md">
+          <div className="border border-foreground/10 w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md">
             Please select an account to continue.
           </div>
         }
       >
-        <div className="border border-accent w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md flex-col">
+        <div className="border border-foreground/10 w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md flex-col">
           <div>Account name: {selectedAccount?.name}</div>
           <div>Wallet: {selectedAccount?.wallet.name}</div>
         </div>
