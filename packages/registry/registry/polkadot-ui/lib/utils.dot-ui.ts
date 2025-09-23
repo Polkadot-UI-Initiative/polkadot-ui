@@ -229,6 +229,12 @@ export function generateTokenId(chainId: string, assetId: string): string {
   return `${kebabChainId}:substrate-assets:${assetId}`;
 }
 
+export function chainIdToCamelCase(chainId: string): string {
+  return chainId.includes("_")
+    ? snakeToKebabCase(chainId)
+    : camelToKebabCase(chainId);
+}
+
 /**
  * Parse token ID to extract chainId and assetId
  * @param tokenId - Token ID in format: chainId:substrate-assets:assetId
@@ -407,4 +413,10 @@ export function getTokenBalance(
 ): bigint | null {
   if (!balances || !connectedAccount?.address) return null;
   return balances[assetId] ?? null;
+}
+
+export function safeStringify(value: unknown): string {
+  return JSON.stringify(value, (_, v) =>
+    typeof v === "bigint" ? v.toString() : v
+  );
 }

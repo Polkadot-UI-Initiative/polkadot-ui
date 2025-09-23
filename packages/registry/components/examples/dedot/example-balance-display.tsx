@@ -1,10 +1,71 @@
+import { BalanceDisplay } from "@/registry/polkadot-ui/blocks/balance-display/balance-display.dedot";
 import type { ComponentExample } from "../types.examples";
-import { ExamplePlaceholder } from "@/components/examples/placeholder";
+import { polkadotAssetHub, useTypink } from "typink";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 
 export const balanceDisplayExample: ComponentExample = {
   name: "Balance Display",
   href: "/docs/components/balance-display",
   code: "balance-display",
   description: "Formatted on-chain balance with fiat value",
-  component: <ExamplePlaceholder title="Balance Display" />,
+  component: (
+    <ClientOnly>
+      <BalanceDisplayComponent />
+    </ClientOnly>
+  ),
 };
+
+export function BalanceDisplayComponent() {
+  const [accountAddress, setAccountAddress] = useState<string>(
+    "14xmwinmCEz6oRrFdczHKqHgWNMiCysE2KrA4jXXAAM1Eogk"
+  );
+  const { connectedAccount } = useTypink();
+
+  return (
+    <>
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-row gap-2">
+          <Button
+            size="sm"
+            onClick={() =>
+              setAccountAddress(
+                "14xmwinmCEz6oRrFdczHKqHgWNMiCysE2KrA4jXXAAM1Eogk"
+              )
+            }
+            variant={
+              accountAddress ===
+              "14xmwinmCEz6oRrFdczHKqHgWNMiCysE2KrA4jXXAAM1Eogk"
+                ? "default"
+                : "secondary"
+            }
+          >
+            Polkadot Treasury
+          </Button>
+          <Button
+            size="sm"
+            disabled={!connectedAccount}
+            onClick={() => setAccountAddress(connectedAccount?.address ?? "")}
+            variant={
+              connectedAccount?.address === accountAddress
+                ? "default"
+                : "secondary"
+            }
+          >
+            Connected Account
+          </Button>
+        </div>
+
+        <BalanceDisplay
+          tokenId={"native"}
+          compareTokenId={1337} //USDC
+          networkId={polkadotAssetHub.id}
+          precision={2}
+          tokenConversionRate={4.5 / 1}
+          accountAddress={accountAddress}
+        />
+      </div>
+    </>
+  );
+}

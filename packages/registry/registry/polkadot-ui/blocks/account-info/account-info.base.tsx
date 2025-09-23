@@ -12,6 +12,11 @@ import { Identicon } from "@polkadot/react-identicon";
 import { Check, CircleCheck, Copy } from "lucide-react";
 import React, { Fragment, useState } from "react";
 import { PolkadotIdentity } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export interface AccountInfoServices {
   identity: PolkadotIdentity | null;
@@ -348,6 +353,7 @@ function HeaderWithCopy({
   isVerified: boolean;
 }) {
   const [copied, setCopied] = useState(false);
+  const [tooltipOpen, setTooltipOpen] = useState(false);
   async function onCopy() {
     try {
       await navigator.clipboard.writeText(address);
@@ -365,7 +371,15 @@ function HeaderWithCopy({
         {name}
       </span>
       <span className="text-xs text-muted-foreground font-mono inline-flex items-center gap-1">
-        {truncated}
+        <Tooltip open={tooltipOpen}>
+          <TooltipTrigger
+            onMouseEnter={() => setTooltipOpen(true)}
+            onMouseLeave={() => setTooltipOpen(false)}
+          >
+            {truncated}
+          </TooltipTrigger>
+          <TooltipContent>{address}</TooltipContent>
+        </Tooltip>
         <button
           type="button"
           aria-label="Copy address"
