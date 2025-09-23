@@ -6,6 +6,7 @@ import {
 } from "./balance-display.base";
 import { useTypink, useBalance, NetworkId } from "typink";
 import { useTokensByAssetIds } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-chaindata-json.dedot";
+import { useAssetBalance } from "../select-token/hooks/use-asset-balance.dedot";
 
 export type BalanceDisplayProps = Omit<
   BalanceDisplayBaseProps,
@@ -26,46 +27,48 @@ export function BalanceDisplay(props: BalanceDisplayProps) {
 }
 
 export function BalanceDisplayInner(props: BalanceDisplayProps) {
-  let tokenId = props.tokenId;
-  let compareTokenId = props.compareTokenId;
-
-  if (tokenId === "native") {
-    tokenId = 0;
-  }
-  if (compareTokenId === "native") {
-    compareTokenId = 0;
-  }
-
   const { supportedNetworks } = useTypink();
-  const balance = useBalance(props.accountAddress, {
-    networkId: props.networkId,
+  const balance = useAssetBalance({
+    address: props.accountAddress,
+    chainId: props.networkId,
+    assetId: typeof props.tokenId === "number" ? props.tokenId : 0,
   });
+  // const balance = useBalance(props.accountAddress, {
+  //   networkId: props.networkId,
+  // });
   const targetNetwork = supportedNetworks.find((n) => n.id === props.networkId);
 
-  const tokens = useTokensByAssetIds(
-    targetNetwork?.id ?? "",
-    [compareTokenId],
-    {
-      includeNative: tokenId === 0 || compareTokenId === 0,
-    }
-  );
+  const chainId = targetNetwork?.id ?? "";
+  const isTokenNative = props.tokenId === "native";
+  const isCompareNative = props.compareTokenId === "native";
 
-  let token = tokens.tokens[0];
-  let compareToken = tokens.tokens[0];
+  const requestedAssetIds: number[] = [];
+  if (!isTokenNative && typeof props.tokenId === "number")
+    requestedAssetIds.push(props.tokenId);
+  if (!isCompareNative && typeof props.compareTokenId === "number")
+    requestedAssetIds.push(props.compareTokenId);
 
-  if (tokenId !== 0) {
-    token = tokens.tokens[0];
-  } else {
-    token = tokens.tokens[0];
-  }
+  const tokens = useTokensByAssetIds(chainId, requestedAssetIds, {
+    includeNative: isTokenNative || isCompareNative,
+  });
 
-  if (compareTokenId == 0) {
-    compareToken = tokens.tokens[0];
-  } else if (tokens.tokens.length === 2) {
-    compareToken = tokens.tokens[1];
-  } else {
-    compareToken = tokens.tokens[0];
-  }
+  const nativeToken = tokens.tokens[0]; // includeNative places native first
+  const findByAssetId = (id: number) =>
+    tokens.tokens.find((t) => t.assetId === String(id));
+
+  const token = isTokenNative
+    ? nativeToken
+    : typeof props.tokenId === "number"
+      ? (findByAssetId(props.tokenId) ?? tokens.tokens[0])
+      : tokens.tokens[0];
+
+  const compareToken = isCompareNative
+    ? nativeToken
+    : typeof props.compareTokenId === "number"
+      ? (findByAssetId(props.compareTokenId) ??
+        tokens.tokens[1] ??
+        tokens.tokens[0])
+      : (tokens.tokens[1] ?? tokens.tokens[0]);
 
   return (
     <ClientOnly fallback={<BalanceDisplaySkeletonBase />}>
@@ -73,6 +76,7 @@ export function BalanceDisplayInner(props: BalanceDisplayProps) {
         token={token}
         compareToken={compareToken}
         balance={balance?.free}
+        precision={props.precision}
         tokenConversionRate={props.tokenConversionRate}
       />
     </ClientOnly>

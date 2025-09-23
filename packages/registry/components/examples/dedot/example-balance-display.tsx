@@ -58,6 +58,15 @@ export function BalanceDisplayComponent() {
         </div>
 
         <BalanceDisplay
+          tokenId={1337}
+          compareTokenId={"native"}
+          networkId={polkadotAssetHub.id}
+          precision={4}
+          tokenConversionRate={1 / 4.5}
+          accountAddress={accountAddress}
+        />
+
+        <BalanceDisplay
           tokenId={"native"}
           compareTokenId={1337} //USDC
           networkId={polkadotAssetHub.id}
