@@ -4,6 +4,7 @@ import { polkadotAssetHub, useTypink } from "typink";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
+import { useSubscanDotPrice } from "@/registry/polkadot-ui/hooks/use-subscan-dot-price";
 
 export const balanceDisplayExample: ComponentExample = {
   name: "Balance Display",
@@ -22,6 +23,11 @@ export function BalanceDisplayComponent() {
     "14xmwinmCEz6oRrFdczHKqHgWNMiCysE2KrA4jXXAAM1Eogk"
   );
   const { connectedAccount } = useTypink();
+
+  console.log(accountAddress);
+  console.log(connectedAccount);
+
+  const { data: price } = useSubscanDotPrice();
 
   return (
     <>
@@ -56,22 +62,21 @@ export function BalanceDisplayComponent() {
             Connected Account
           </Button>
         </div>
-
-        <BalanceDisplay
-          tokenId={1337}
-          compareTokenId={"native"}
-          networkId={polkadotAssetHub.id}
-          precision={4}
-          tokenConversionRate={1 / 4.5}
-          accountAddress={accountAddress}
-        />
-
+        {/* DOT price: {price} */}
         <BalanceDisplay
           tokenId={"native"}
           compareTokenId={1337} //USDC
           networkId={polkadotAssetHub.id}
           precision={2}
-          tokenConversionRate={4.5 / 1}
+          tokenConversionRate={price}
+          accountAddress={accountAddress}
+        />
+        <BalanceDisplay
+          tokenId={1337}
+          compareTokenId={"native"}
+          networkId={polkadotAssetHub.id}
+          precision={4}
+          tokenConversionRate={price}
           accountAddress={accountAddress}
         />
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { useQuery, useQueries } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   ClientConnectionStatus,
   paseoAssetHub,
@@ -9,6 +9,7 @@ import {
   NetworkId,
 } from "typink";
 import { parseBalanceLike } from "@/registry/polkadot-ui/lib/utils.dot-ui";
+import { AccountId32Like } from "dedot/codecs";
 
 export interface UseAssetBalanceArgs {
   chainId: NetworkId;
@@ -101,53 +102,36 @@ export function useAssetBalances(
     return [...new Set(sanitized)].sort((a, b) => a - b);
   }, [assetIds]);
 
-  const queryResults = useQueries({
-    queries: sortedIds.map((assetId) => ({
-      queryKey: [
-        "dedot-asset-balance",
-        String(chainId),
-        Number(assetId),
-        address,
-      ],
-      enabled: isEnabled,
-      queryFn: async (): Promise<bigint | null> => {
-        if (!client) return null;
-        try {
-          const query = client.query.assets.account;
-
-          const account = await query([assetId, address]);
-          const raw = (account as unknown as { balance?: unknown })?.balance;
-          return parseBalanceLike(raw);
-        } catch (error) {
-          console.error(
-            `Asset balance lookup failed for assetId ${assetId}:`,
-            error
-          );
-          return null;
-        }
-      },
-      staleTime: 30_000,
-    })),
+  const batched = useQuery({
+    queryKey: ["dedot-asset-balances", String(chainId), address, sortedIds],
+    enabled: isEnabled,
+    queryFn: async (): Promise<unknown[]> => {
+      if (!client) return [];
+      const keys = sortedIds.map(
+        (assetId) => [assetId, address] as [number, AccountId32Like]
+      );
+      const rows = await client.query.assets.account.multi(keys);
+      return rows;
+    },
+    staleTime: 30_000,
   });
 
   return useMemo(() => {
     const balances: Record<number, bigint | null> = {};
     const errors: Record<number, Error | null> = {};
-    let isLoading = false;
 
-    queryResults.forEach((result, index) => {
-      const assetId = sortedIds[index];
-      balances[assetId] = (result.data as bigint | null) ?? null;
-      errors[assetId] = (result.error as Error | null) ?? null;
-      if (result.isLoading) {
-        isLoading = true;
-      }
+    sortedIds.forEach((assetId, index) => {
+      const row = batched.data?.[index];
+      balances[assetId] = parseBalanceLike(
+        (row as unknown as { balance?: unknown })?.balance
+      );
+      errors[assetId] = (batched.error as Error | null) ?? null;
     });
 
     return {
       balances,
-      isLoading,
+      isLoading: batched.isLoading,
       errors,
     };
-  }, [queryResults, sortedIds]);
+  }, [batched.data, batched.error, batched.isLoading, sortedIds]);
 }
