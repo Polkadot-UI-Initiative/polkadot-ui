@@ -14,8 +14,18 @@ export const selectTokenExample: ComponentExample = {
         assetIds={[1984, 1337, 7777]}
         className="w-full"
         withBalance
-        disabled={false}
       />
     </div>
   ),
+  tsx: `import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/components/select-token.dedot";
+import { paseoAssetHub } from "typink";
+
+<div className="w-[260px]">
+  <SelectToken
+    chainId={paseoAssetHub.id}
+    assetIds={[1984, 1337, 7777]}
+    className="w-full"
+    withBalance
+  />
+</div>`,
 };

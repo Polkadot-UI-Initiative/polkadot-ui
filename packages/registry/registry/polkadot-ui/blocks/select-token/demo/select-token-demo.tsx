@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
-import { SelectTokenProps } from "../components/select-token.dedot";
+import { SelectTokenProps } from "@/registry/polkadot-ui/blocks/select-token/components/select-token.dedot";
 
 interface SelectTokenDemoProps {
   Provider: React.ComponentType<{ children: ReactNode }>;

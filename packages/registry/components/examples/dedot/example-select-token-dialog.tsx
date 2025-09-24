@@ -19,4 +19,17 @@ export const selectTokenDialogExample: ComponentExample = {
       />
     </div>
   ),
+  tsx: `import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/components/select-token-dialog.dedot";
+import { paseoAssetHub } from "typink";
+
+<div className="w-[260px]">
+  <SelectTokenDialog
+    chainId={paseoAssetHub.id}
+    assetIds={[1984, 8, 27]}
+    className="w-full"
+    withBalance
+    withSearch
+    balancePrecision={3}
+  />
+</div>`,
 };
