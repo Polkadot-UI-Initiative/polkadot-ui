@@ -1,10 +1,212 @@
 ---
 title: Select Token Dialog
-description: Token selection UI dialog with search and balances. Coming soon.
+description:
+  A comprehensive token selection dialog with search, balance display, and asset
+  filtering.
 ---
 
-import { ExamplePlaceholder } from "@/components/examples/placeholder";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SelectTokenDialogDocs } from "@/components/docs/docs-select-token-dialog";
 
-## Coming soon
+## Introduction
 
-<ExamplePlaceholder title="Select Token Dialog" />
+SelectTokenDialog is a comprehensive dialog component for selecting tokens from
+supported chains with real-time balance display and search functionality.
+
+## Features
+
+- **Asset IDs Definition**: Define which tokens to include by specific asset IDs
+- **Balance Display**: Show real-time token balances for connected accounts
+- **Search Functionality**: Search through available tokens by name or symbol
+- **Multi-Chain Support**: Works with different Substrate-based chains
+- **Native Token Support**: Optionally include native chain tokens
+- **TypeScript**: Full type safety with comprehensive interfaces
+- **Customizable**: Flexible styling, button variants, and precision settings
+
+## Installation
+
+```bash
+npx polkadot-ui@latest add select-token-dialog
+```
+
+## Usage
+
+TODO
+
+## Props
+
+| Prop               | Type                        | Default           | Description                           |
+| ------------------ | --------------------------- | ----------------- | ------------------------------------- |
+| `assetIds`         | `number[]`                  | -                 | Array of asset IDs to filter tokens   |
+| `chainId`          | `string`                    | `"paseoAssetHub"` | Chain ID to fetch tokens from         |
+| `value`            | `number`                    | -                 | Currently selected token asset ID     |
+| `onChange`         | `(assetId: number) => void` | -                 | Called when token selection changes   |
+| `placeholder`      | `string`                    | `"Select Token"`  | Button placeholder text               |
+| `withBalance`      | `boolean`                   | `false`           | Show token balances                   |
+| `withSearch`       | `boolean`                   | `false`           | Enable search functionality in dialog |
+| `includeNative`    | `boolean`                   | `true`            | Include native chain token            |
+| `balancePrecision` | `number`                    | `2`               | Decimal precision for balance display |
+| `variant`          | `ButtonVariant`             | `"outline"`       | Button style variant                  |
+| `disabled`         | `boolean`                   | `false`           | Disable the component                 |
+| `className`        | `string`                    | -                 | Additional CSS classes                |
+| `fallback`         | `React.ReactNode`           | -                 | Fallback content when loading         |
+
+## Connection States
+
+The component shows different states based on wallet connection:
+
+- **Connected**: Shows available tokens with balances
+- **Disconnected**: Button is disabled with loading state
+- **Loading**: Shows spinner while fetching token data
+- **No Tokens**: Shows empty state when no tokens match filters
+
+## Token Filtering
+
+### Asset IDs
+
+Specify which tokens to include using the `assetIds` prop:
+
+```tsx
+<SelectTokenDialog
+  chainId="paseoAssetHub"
+  assetIds={[1984, 8, 27]} // Only show these specific tokens
+  withBalance
+/>
+```
+
+### Native Token Inclusion
+
+Control whether to include the chain's native token:
+
+```tsx
+<SelectTokenDialog
+  chainId="paseoAssetHub"
+  assetIds={[1984, 8]}
+  includeNative={true} // Include native token, default is true
+  withBalance
+/>
+```
+
+## Search Functionality
+
+When `withSearch` is enabled:
+
+1. Users can search by token name or symbol
+2. Search is case-insensitive
+3. Results update in real-time
+4. Shows "No tokens found" state for empty results
+
+```tsx
+<SelectTokenDialog
+  chainId="paseoAssetHub"
+  assetIds={[1984, 8, 27, 1337, 2125]}
+  withSearch
+  withBalance
+/>
+```
+
+## Balance Display
+
+When `withBalance` is enabled:
+
+- Shows formatted token balances for connected accounts
+- Balances update automatically when account changes
+- Precision controlled by `balancePrecision` prop
+- Handles loading states gracefully
+
+```tsx
+<SelectTokenDialog
+  chainId="paseoAssetHub"
+  assetIds={[1984, 8, 27]}
+  withBalance
+  balancePrecision={4} // Show 4 decimal places
+/>
+```
+
+## Multi-Chain Support
+
+The component supports different Asset Hub chains:
+
+- **`paseoAssetHub`**: Paseo Asset Hub (testnet)
+- **`kusamaAssetHub`**: Kusama Asset Hub
+- **`polkadotAssetHub`**: Polkadot Asset Hub
+
+```tsx
+<SelectTokenDialog
+  chainId="kusamaAssetHub"
+  assetIds={[1000, 2000]}
+  withBalance
+/>
+```
+
+## Token Information
+
+Each token includes:
+
+- **Symbol**: Token ticker (e.g., "USDT", "DOT")
+- **Name**: Full token name
+- **Decimals**: Token precision
+- **Logo**: Token icon (when available)
+- **Balance**: User's current balance
+- **Asset ID**: On-chain asset identifier
+
+## Styling Options
+
+### Button Variants
+
+Use different button styles:
+
+```tsx
+<SelectTokenDialog
+  variant="secondary" // or "outline", "ghost", etc.
+  className="w-[200px]"
+/>
+```
+
+### Balance Precision
+
+Control decimal places shown:
+
+```tsx
+<SelectTokenDialog
+  withBalance
+  balancePrecision={6} // Show up to 6 decimal places
+/>
+```
+
+## Error Handling
+
+The component handles various error states:
+
+- **Network disconnection**: Shows appropriate loading state
+- **Failed token fetching**: Graceful degradation
+- **Invalid asset IDs**: Filters out non-existent tokens
+- **Balance fetch errors**: Shows tokens without balance info
+
+## Provider Requirements
+
+The component requires a PolkadotProvider wrapper:
+
+```tsx
+import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
+
+<PolkadotProvider>
+  <SelectTokenDialog
+    chainId="paseoAssetHub"
+    assetIds={[1984, 8, 27]}
+    withBalance
+  />
+</PolkadotProvider>;
+```
+
+Alternatively, use the component with provider included:
+
+```tsx
+import { SelectTokenDialogWithProvider } from "@/registry/polkadot-ui/blocks/select-token/components/select-token-dialog.dedot";
+
+<SelectTokenDialogWithProvider
+  chainId="paseoAssetHub"
+  assetIds={[1984, 8, 27]}
+  withBalance
+/>;
+```
