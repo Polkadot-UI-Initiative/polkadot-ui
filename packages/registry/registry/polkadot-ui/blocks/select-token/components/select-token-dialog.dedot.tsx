@@ -9,7 +9,10 @@ import {
   useTypink,
 } from "typink";
 import { useAssetMetadata } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-metadata.dedot";
-import { useAssetBalances } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-balance.dedot";
+import {
+  useAssetBalances,
+  useNativeBalance,
+} from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-balance.dedot";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   type SelectTokenDialogBaseProps,
@@ -24,6 +27,10 @@ import { Button } from "@/components/ui/button";
 import { useTokensByAssetIds } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-chaindata-json.dedot";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  NATIVE_TOKEN_KEY,
+  NATIVE_TOKEN_ID,
+} from "@/registry/polkadot-ui/blocks/select-token/components/shared-token-components";
 
 export type SelectTokenDialogProps = Omit<
   SelectTokenDialogBaseProps,
@@ -32,7 +39,8 @@ export type SelectTokenDialogProps = Omit<
   React.ComponentProps<typeof Button>;
 
 export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
-  const { chainId, assetIds, ...otherProps } = props;
+  // by default, add native token to the list of tokens with includeNative
+  const { chainId, assetIds, includeNative = true, ...otherProps } = props;
   const { connectedAccount, supportedNetworks } = useTypink();
   const { client, status } = usePolkadotClient(chainId ?? paseoAssetHub.id);
 
@@ -47,13 +55,20 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
     address: connectedAccount?.address ?? "",
   });
 
-  // Get chainTokens from chaindata for token logos
+  const { free: nativeBalance, isLoading: nativeBalanceLoading } =
+    useNativeBalance({
+      chainId: chainId ?? paseoAssetHub.id,
+      address: connectedAccount?.address ?? "",
+    });
+
   const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
     chainId ?? paseoAssetHub.id,
-    assetIds
+    assetIds,
+    {
+      includeNative,
+    }
   );
 
-  // Get network info for network logo (similar to network-indicator)
   const network = supportedNetworks.find(
     (n) => n.id === (chainId ?? paseoAssetHub.id)
   );
@@ -68,31 +83,51 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
       chainTokens ?? []
     );
 
+    const hasNativeToken =
+      includeNative &&
+      finalTokens.some(
+        (token) =>
+          token.id === NATIVE_TOKEN_ID || token.assetId === NATIVE_TOKEN_ID
+      );
+    const combinedBalances: Record<number, bigint | null> = {
+      ...balances,
+    };
+
+    if (hasNativeToken) {
+      combinedBalances[NATIVE_TOKEN_KEY] = nativeBalance;
+    }
+
     return {
       isConnected: status === ClientConnectionStatus.Connected,
-      isLoading: isLoading || tokensLoading || tokenBalancesLoading,
+      isLoading:
+        isLoading ||
+        tokensLoading ||
+        tokenBalancesLoading ||
+        nativeBalanceLoading,
       connectedAccount,
       isDisabled:
         status !== ClientConnectionStatus.Connected ||
         !client ||
-        assetIds.length === 0,
+        finalTokens.length === 0,
       chainTokens: finalTokens,
       network,
-      balances,
+      balances: combinedBalances,
     };
   }, [
     status,
     isLoading,
     tokensLoading,
     tokenBalancesLoading,
+    nativeBalanceLoading,
     connectedAccount,
     client,
-    assetIds,
     chainId,
     chainTokens,
     assets,
     network,
     balances,
+    nativeBalance,
+    includeNative,
   ]);
 
   return <SelectTokenDialogBase {...otherProps} services={services} />;

@@ -10,7 +10,6 @@ import {
 import { Loader2 } from "lucide-react";
 import {
   formatTokenBalance,
-  getTokenLogo,
   getTokenBalance,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { TokenMetadata } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-metadata.dedot";
@@ -34,6 +33,7 @@ export interface SelectTokenProps<TChainId extends string = string> {
   assetIds: number[];
   withBalance: boolean;
   services: SelectTokenServices;
+  includeNative?: boolean;
   fallback?: React.ReactNode;
 }
 
@@ -67,10 +67,19 @@ export function SelectTokenBase<TChainId extends string = string>({
   // Memoize filtered tokens based on optional assetIds to avoid work on each render
   const tokenOptions = useMemo(() => {
     const all = chainTokens ?? [];
-    const ids = (props.assetIds ?? []).map((id) => Number(id));
-    if (!ids.length) return all;
-    const allowed = new Set(ids);
-    return all.filter((t) => allowed.has(Number(t.assetId)));
+    const assetIds = props.assetIds ?? [];
+    if (!assetIds.length) return all;
+
+    const allowedNumericIds = new Set(assetIds);
+
+    return all.filter((token) => {
+      if (token.assetId === "substrate-native") {
+        return true;
+      }
+
+      const numericAssetId = Number(token.assetId);
+      return !isNaN(numericAssetId) && allowedNumericIds.has(numericAssetId);
+    });
   }, [chainTokens, props.assetIds]);
 
   const handleValueChange = (v: string) => {
@@ -101,12 +110,8 @@ export function SelectTokenBase<TChainId extends string = string>({
             key={token.id}
             token={token}
             network={network}
-            balance={getTokenBalance(
-              balances,
-              connectedAccount,
-              Number(token.assetId)
-            )}
-            tokenLogo={getTokenLogo(tokenOptions, Number(token.assetId))}
+            balance={getTokenBalance(balances, connectedAccount, token.assetId)}
+            tokenLogo={token.logo}
             withBalance={withBalance}
             connectedAccount={connectedAccount}
           />
@@ -135,7 +140,7 @@ function TokenSelectItem({
 }) {
   return (
     <SelectItem
-      value={token.assetId}
+      value={token.assetId ?? token.id}
       className="flex items-center justify-between w-full gap-3 p-3"
     >
       <div className="flex items-center gap-2">
