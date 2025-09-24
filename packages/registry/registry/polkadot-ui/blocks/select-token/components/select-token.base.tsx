@@ -35,6 +35,7 @@ export interface SelectTokenProps<TChainId extends string = string> {
   services: SelectTokenServices;
   includeNative?: boolean;
   fallback?: React.ReactNode;
+  balancePrecision?: number;
 }
 
 export interface SelectTokenBaseProps<TChainId extends string = string>
@@ -52,6 +53,7 @@ export function SelectTokenBase<TChainId extends string = string>({
   className,
   withBalance,
   services,
+  balancePrecision = 2,
   ...props
 }: SelectTokenBaseProps<TChainId> & React.ComponentProps<typeof Select>) {
   const {
@@ -114,6 +116,7 @@ export function SelectTokenBase<TChainId extends string = string>({
             tokenLogo={token.logo}
             withBalance={withBalance}
             connectedAccount={connectedAccount}
+            balancePrecision={balancePrecision}
           />
         ))}
       </SelectContent>
@@ -130,6 +133,7 @@ function TokenSelectItem({
   network,
   tokenLogo,
   connectedAccount,
+  balancePrecision = 2,
 }: {
   token: TokenInfo;
   withBalance: boolean;
@@ -137,6 +141,7 @@ function TokenSelectItem({
   network?: NetworkInfoLike;
   tokenLogo?: string;
   connectedAccount?: { address?: string } | null;
+  balancePrecision?: number;
 }) {
   return (
     <SelectItem
@@ -153,7 +158,7 @@ function TokenSelectItem({
         <span className="font-medium">
           {connectedAccount?.address &&
             withBalance &&
-            formatTokenBalance(balance, token.decimals)}{" "}
+            formatTokenBalance(balance, token.decimals, balancePrecision)}{" "}
           {token.symbol}
         </span>
       </div>
