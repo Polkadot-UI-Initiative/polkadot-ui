@@ -9,7 +9,6 @@ export const selectTokenExample: ComponentExample = {
   description: "Token selection with search and balances",
   component: (
     <div className="w-[260px]">
-      {/* Asset Hub Paseo sample IDs from Substrate Assets explorer */}
       <SelectToken
         chainId={paseoAssetHub.id}
         assetIds={[1984, 1337, 7777]}

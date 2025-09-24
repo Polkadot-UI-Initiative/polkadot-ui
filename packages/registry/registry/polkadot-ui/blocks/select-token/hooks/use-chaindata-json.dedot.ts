@@ -6,7 +6,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import {
-  chainIdToCamelCase,
+  chainIdToKebabCase,
   generateTokenId,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { ChainInfo, TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
@@ -150,7 +150,7 @@ export function useTokensByAssetIds(
     if (!options?.includeNative)
       return { resultTokens: matched, logicError: null };
 
-    const network = chains.find((c) => c.id === chainIdToCamelCase(chainId));
+    const network = chains.find((c) => c.id === chainIdToKebabCase(chainId));
     const native = network?.nativeCurrency;
 
     if (!native) return { resultTokens: matched, logicError: null };
