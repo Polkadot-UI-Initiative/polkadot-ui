@@ -446,6 +446,14 @@
           "type": "registry:hook"
         },
         {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/hooks/use-chaindata-json.dedot.ts",
+          "type": "registry:hook"
+        },
+        {
           "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
           "type": "registry:lib"
         },

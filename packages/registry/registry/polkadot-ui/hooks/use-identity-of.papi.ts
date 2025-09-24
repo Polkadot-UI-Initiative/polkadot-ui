@@ -70,12 +70,12 @@ export function useIdentityOf({
 }): UseQueryResult<PolkadotIdentity | null, Error> {
   const { status, client } = usePapi(chainId);
   const isConnected = status === ClientConnectionStatus.Connected;
+  const isEnabled = isConnected && !!client && !!address;
 
   const queryResult = useQuery({
     queryKey: ["papi-identity-of", chainId, address],
     queryFn: async (): Promise<PolkadotIdentity | null> => {
-      if (!client || !address || !isConnected) return null;
-      const typedApiUnknown = client.getTypedApi(
+      const typedApiUnknown = client!.getTypedApi(
         config.chains[chainId].descriptor
       );
       if (!hasIdentityPallet(typedApiUnknown)) return null;
@@ -121,7 +121,7 @@ export function useIdentityOf({
         return null;
       }
     },
-    enabled: isConnected && !!client && !!address,
+    enabled: isEnabled,
     staleTime: 5 * 60 * 1000,
     retry: 1,
   });

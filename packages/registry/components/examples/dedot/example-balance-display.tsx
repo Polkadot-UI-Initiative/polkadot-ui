@@ -23,10 +23,6 @@ export function BalanceDisplayComponent() {
     "14xmwinmCEz6oRrFdczHKqHgWNMiCysE2KrA4jXXAAM1Eogk"
   );
   const { connectedAccount } = useTypink();
-
-  console.log(accountAddress);
-  console.log(connectedAccount);
-
   const { data: price } = useSubscanDotPrice();
 
   return (
@@ -76,7 +72,7 @@ export function BalanceDisplayComponent() {
           compareTokenId={"native"}
           networkId={polkadotAssetHub.id}
           precision={4}
-          tokenConversionRate={price}
+          tokenConversionRate={1 / (price ?? 1)}
           accountAddress={accountAddress}
         />
       </div>

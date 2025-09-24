@@ -1,12 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 
-export function useSubscanDotPrice() {
+export function useSubscanDotPrice(apiKey?: string) {
   return useQuery<number | null>({
     queryKey: ["subscan-dot-price"],
     queryFn: async () => {
-      console.log("Fetching dot price");
       const myHeaders = new Headers();
-      myHeaders.append("x-api-key", "4d0c8ba32dde4a06bda83d52af49120f");
+
+      const subscanApiKey = apiKey || process.env.SUBSCAN_API_KEY;
+      if (!subscanApiKey) {
+        throw new Error("SUBSCAN_API_KEY is not set");
+      }
+      myHeaders.append("x-api-key", subscanApiKey);
 
       const response = await fetch(
         "https://polkadot.api.subscan.io/api/scan/token",
@@ -23,9 +27,24 @@ export function useSubscanDotPrice() {
       if (!Number.isFinite(priceNumber)) return null;
       return priceNumber;
     },
-    staleTime: 1000 * 60 * 0.5, // 30 seconds
+    staleTime: 1000 * 60 * 1, // 1 minute
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
+    retry: (failureCount, error) => {
+      if (
+        error instanceof Error &&
+        error.message.includes("SUBSCAN_API_KEY is not set")
+      )
+        return false;
+      return failureCount < 5;
+    },
+    retryDelay: (attemptIndex) => {
+      const baseDelayMs = 1000;
+      const maxDelayMs = 30000;
+      const exp = Math.min(maxDelayMs, baseDelayMs * 2 ** attemptIndex);
+      const jitter = Math.random() * 0.3 * exp;
+      return exp + jitter;
+    },
   });
 }

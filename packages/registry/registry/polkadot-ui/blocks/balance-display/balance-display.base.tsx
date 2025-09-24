@@ -2,7 +2,11 @@
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
-import { formatTokenBalance } from "@/registry/polkadot-ui/lib/utils.dot-ui";
+import {
+  formatTokenBalance,
+  getTokenDecimals,
+  FIAT_CENTS_PER_UNIT,
+} from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { cn } from "@/lib/utils";
 
 export interface BalanceDisplayBaseProps {
@@ -37,9 +41,12 @@ export function BalanceDisplayBase(props: BalanceDisplayBaseProps) {
     )
       return undefined;
 
-    const centsPerToken = BigInt(Math.round(tokenConversionRate * 100)); // e.g., 450n
-    const base = 10n ** BigInt(token?.decimals ?? 12);
-    const cents = (balance * centsPerToken) / base;
+    const scaleFactor = 1_000_000;
+    const scaledRate = BigInt(Math.round(tokenConversionRate * scaleFactor));
+    const base = 10n ** BigInt(getTokenDecimals(token));
+    const cents =
+      (balance * scaledRate * BigInt(FIAT_CENTS_PER_UNIT)) /
+      (base * BigInt(scaleFactor));
     return cents;
   })();
 
@@ -73,7 +80,7 @@ export function TokenDisplay({
 
   const formatted =
     typeof balance === "bigint"
-      ? formatTokenBalance(balance, token?.decimals ?? 12, precision)
+      ? formatTokenBalance(balance, getTokenDecimals(token), precision)
       : undefined;
 
   return (
