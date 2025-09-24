@@ -7,7 +7,10 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ClientConnectionStatus, usePolkadotClient, useTypink } from "typink";
 import { useAssetMetadata } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-metadata.dedot";
-import { useAssetBalances } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-balance.dedot";
+import {
+  useAssetBalances,
+  useNativeBalance,
+} from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-balance.dedot";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   type SelectTokenBaseProps,
@@ -25,32 +28,44 @@ export type SelectTokenProps = Omit<SelectTokenBaseProps, "services"> &
   React.ComponentProps<typeof Select>;
 
 export function SelectTokenInner(props: SelectTokenProps) {
+  // by default, add native token to the list of tokens with includeNative
+  const { includeNative = true, ...restProps } = props;
   const { client, status } = usePolkadotClient(
-    props.chainId ?? paseoAssetHub.id
-  );
-  const { assets, isLoading } = useAssetMetadata({
-    chainId: props.chainId,
-    assetIds: props.assetIds,
-  });
-
-  const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
-    props.chainId ?? paseoAssetHub.id,
-    props.assetIds
+    restProps.chainId ?? paseoAssetHub.id
   );
   const { connectedAccount, supportedNetworks } = useTypink();
+
+  const { assets, isLoading } = useAssetMetadata({
+    chainId: restProps.chainId,
+    assetIds: restProps.assetIds,
+  });
+
   const { isLoading: tokenBalancesLoading, balances } = useAssetBalances({
-    chainId: props.chainId ?? paseoAssetHub.id,
-    assetIds: props.assetIds,
+    chainId: restProps.chainId ?? paseoAssetHub.id,
+    assetIds: restProps.assetIds,
     address: connectedAccount?.address ?? "",
   });
 
-  // Get network info for network logo (similar to network-indicator)
+  const { free: nativeBalance, isLoading: nativeBalanceLoading } =
+    useNativeBalance({
+      chainId: restProps.chainId ?? paseoAssetHub.id,
+      address: connectedAccount?.address ?? "",
+    });
+
+  const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
+    restProps.chainId ?? paseoAssetHub.id,
+    restProps.assetIds,
+    {
+      includeNative,
+    }
+  );
+
   const network = supportedNetworks.find(
-    (n) => n.id === (props.chainId ?? paseoAssetHub.id)
+    (n) => n.id === (restProps.chainId ?? paseoAssetHub.id)
   );
 
   const services = useMemo(() => {
-    const chainIdForTokens = props.chainId ?? paseoAssetHub.id;
+    const chainIdForTokens = restProps.chainId ?? paseoAssetHub.id;
     const defaultTokens = createDefaultChainTokens(
       assets ?? [],
       chainIdForTokens
@@ -60,18 +75,33 @@ export function SelectTokenInner(props: SelectTokenProps) {
       chainTokens ?? []
     );
 
+    const hasNativeToken = finalTokens.some((token) =>
+      token.assetId.includes("substrate-native")
+    );
+    const combinedBalances: Record<number, bigint | null> = {
+      ...balances,
+    };
+
+    if (hasNativeToken) {
+      combinedBalances[-1] = nativeBalance;
+    }
+
     return {
       isConnected: status === ClientConnectionStatus.Connected,
-      isLoading: isLoading || tokensLoading || tokenBalancesLoading,
+      isLoading:
+        isLoading ||
+        tokensLoading ||
+        tokenBalancesLoading ||
+        nativeBalanceLoading,
       items: assets ?? [],
       connectedAccount,
       isDisabled:
-        (props.disabled ?? false) ||
+        (restProps.disabled ?? false) ||
         status !== ClientConnectionStatus.Connected ||
         !client ||
-        props.assetIds.length === 0,
+        restProps.assetIds.length === 0,
       chainTokens: finalTokens,
-      balances,
+      balances: combinedBalances,
       network,
     };
   }, [
@@ -79,18 +109,20 @@ export function SelectTokenInner(props: SelectTokenProps) {
     isLoading,
     tokensLoading,
     tokenBalancesLoading,
+    nativeBalanceLoading,
     assets,
     connectedAccount,
-    props.disabled,
-    props.chainId,
+    restProps.disabled,
+    restProps.chainId,
     client,
-    props.assetIds,
+    restProps.assetIds,
     chainTokens,
     balances,
+    nativeBalance,
     network,
   ]);
 
-  return <SelectTokenBase {...props} services={services} />;
+  return <SelectTokenBase {...restProps} services={services} />;
 }
 
 function SelectTokenFallback(props: SelectTokenProps) {
