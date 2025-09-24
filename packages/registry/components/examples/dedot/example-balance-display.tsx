@@ -1,9 +1,10 @@
+"use client";
+
 import { BalanceDisplay } from "@/registry/polkadot-ui/blocks/balance-display/balance-display.dedot";
 import type { ComponentExample } from "../types.examples";
 import { polkadotAssetHub, useTypink } from "typink";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import { useSubscanDotPrice } from "@/registry/polkadot-ui/hooks/use-subscan-dot-price";
 
 export const balanceDisplayExample: ComponentExample = {
@@ -11,11 +12,7 @@ export const balanceDisplayExample: ComponentExample = {
   href: "/docs/components/balance-display",
   code: "balance-display",
   description: "Formatted on-chain balance with fiat value",
-  component: (
-    <ClientOnly>
-      <BalanceDisplayComponent />
-    </ClientOnly>
-  ),
+  component: <BalanceDisplayComponent />,
 };
 
 export function BalanceDisplayComponent() {

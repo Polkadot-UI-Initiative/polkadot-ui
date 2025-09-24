@@ -1,3 +1,5 @@
+"use client";
+
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 
 import type { ComponentExample } from "@/components/examples/types.examples";

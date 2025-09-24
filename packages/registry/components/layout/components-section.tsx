@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 
 import { examples as papiExamples } from "../examples/papi";
@@ -16,7 +14,7 @@ export function ComponentsSection({
   const examples = usedLibrary === "papi" ? papiExamples : dedotExamples;
 
   const ComponentExamples = examples.map((example) => {
-    return <ComponentPreview key={example.name} componentInfo={example} />;
+    return <ComponentPreview key={example.code} componentInfo={example} />;
   });
 
   return (

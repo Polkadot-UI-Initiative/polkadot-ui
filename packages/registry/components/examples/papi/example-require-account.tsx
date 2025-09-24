@@ -1,3 +1,5 @@
+"use client";
+
 import { RequireAccount } from "@/registry/polkadot-ui/blocks/require-account/require-account.papi";
 import type { ComponentExample } from "@/components/examples/types.examples";
 import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";

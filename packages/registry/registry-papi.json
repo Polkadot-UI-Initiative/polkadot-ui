@@ -35,16 +35,6 @@
           "type": "registry:hook"
         },
         {
-          "path": "registry/polkadot-ui/blocks/address-input/demo/page.papi.tsx",
-          "type": "registry:page",
-          "target": "app/demo/polkadot-ui/address-input/page.tsx"
-        },
-        {
-          "path": "registry/polkadot-ui/blocks/address-input/demo/address-input-demo.tsx",
-          "type": "registry:component",
-          "target": "app/demo/polkadot-ui/address-input/address-input-demo.tsx"
-        },
-        {
           "path": "registry/polkadot-ui/lib/polkadot-provider.papi.tsx",
           "type": "registry:lib"
         },
@@ -201,11 +191,6 @@
         {
           "path": "registry/polkadot-ui/blocks/connect-wallet/connect-wallet.papi.tsx",
           "type": "registry:component"
-        },
-        {
-          "path": "registry/polkadot-ui/blocks/connect-wallet/demo/page.papi.tsx",
-          "type": "registry:page",
-          "target": "app/demo/polkadot-ui/connect-wallet/page.tsx"
         }
       ]
     },

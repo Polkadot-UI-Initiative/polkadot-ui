@@ -1,7 +1,8 @@
-import { useTypink } from "typink";
+"use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useTypink } from "typink";
 import { RemarkButton } from "@/components/examples/dedot/remark-button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import type { ComponentExample } from "../types.examples";
 

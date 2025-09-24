@@ -55,13 +55,11 @@ export interface ThemeToggleProps {
 export function ThemeToggle({ initialItems }: ThemeToggleProps) {
   const { theme, setTheme } = useTheme();
   const { switchTheme } = useTweakcn();
-  const [mounted, setMounted] = useState(false);
   const [selected, setSelected] = useState<string>("");
   const [items, setItems] = useState<TweakItem[]>([]);
 
   useEffect(() => {
     let cancelled = false;
-    setMounted(true);
     if (initialItems && initialItems.length) {
       setItems(initialItems);
       setSelected("default");
@@ -82,15 +80,6 @@ export function ThemeToggle({ initialItems }: ThemeToggleProps) {
       cancelled = true;
     };
   }, [initialItems, switchTheme]);
-
-  if (!mounted) {
-    return (
-      <Button variant="ghost" size="sm" className="h-9 w-9 px-0">
-        <div className="h-4 w-4" />
-        <span className="sr-only">Toggle theme</span>
-      </Button>
-    );
-  }
 
   return (
     <Popover>
