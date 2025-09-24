@@ -36,7 +36,6 @@ export class ListCommand {
 
     try {
       const registryInfo = await this.registry.getRegistryInfo();
-      console.log(registryInfo);
 
       if (!registryInfo.isConnected) {
         spinner.fail("Registry connection failed");
@@ -50,9 +49,8 @@ export class ListCommand {
         throw new Error("Registry connection failed");
       }
 
-      spinner.succeed(
-        `Connected to registry (${registryInfo.componentCount} components available)`
-      );
+      // Keep this generic to avoid confusion when we later show counts across libraries
+      spinner.succeed("Connected to registry");
 
       if (this.options.dev) {
         logger.detail("Using development registry");

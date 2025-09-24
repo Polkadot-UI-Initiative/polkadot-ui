@@ -65,7 +65,14 @@ async function buildRegistries() {
 
   try {
     execSync("shadcn build", { stdio: "inherit" });
-    console.log("✅ PAPI registry built successfully\n");
+    // Count built items from registry-papi.json
+    const papi = JSON.parse(
+      await import("fs").then((fs) =>
+        fs.readFileSync("registry-papi.json", "utf8")
+      )
+    );
+    const papiCount = Array.isArray(papi.items) ? papi.items.length : 0;
+    console.log(`✅ PAPI registry built successfully (${papiCount} items)\n`);
 
     // Move generated files to papi-specific directory
     await moveFilesToDirectory("public/r", "public/r/papi");
@@ -84,7 +91,14 @@ async function buildRegistries() {
 
   try {
     execSync("shadcn build", { stdio: "inherit" });
-    console.log("✅ Dedot registry built successfully\n");
+    // Count built items from registry-dedot.json
+    const dedot = JSON.parse(
+      await import("fs").then((fs) =>
+        fs.readFileSync("registry-dedot.json", "utf8")
+      )
+    );
+    const dedotCount = Array.isArray(dedot.items) ? dedot.items.length : 0;
+    console.log(`✅ Dedot registry built successfully (${dedotCount} items)\n`);
 
     // Move generated files to dedot-specific directory
     await moveFilesToDirectory("public/r", "public/r/dedot");

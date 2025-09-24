@@ -20,7 +20,7 @@ export type BalanceDisplayProps = Omit<
 
 export function BalanceDisplay(props: BalanceDisplayProps) {
   return (
-    <ClientOnly>
+    <ClientOnly fallback={<BalanceDisplaySkeletonBase />}>
       <BalanceDisplayInner {...props} />
     </ClientOnly>
   );
@@ -28,14 +28,14 @@ export function BalanceDisplay(props: BalanceDisplayProps) {
 
 export function BalanceDisplayInner(props: BalanceDisplayProps) {
   const { supportedNetworks } = useTypink();
-  const balance = useAssetBalance({
+  const nativeBalance = useBalance(props.accountAddress, {
+    networkId: props.networkId,
+  });
+  const assetBalance = useAssetBalance({
     address: props.accountAddress,
     chainId: props.networkId,
     assetId: typeof props.tokenId === "number" ? props.tokenId : 0,
   });
-  // const balance = useBalance(props.accountAddress, {
-  //   networkId: props.networkId,
-  // });
   const targetNetwork = supportedNetworks.find((n) => n.id === props.networkId);
 
   const chainId = targetNetwork?.id ?? "";
@@ -71,14 +71,12 @@ export function BalanceDisplayInner(props: BalanceDisplayProps) {
       : (tokens.tokens[1] ?? tokens.tokens[0]);
 
   return (
-    <ClientOnly fallback={<BalanceDisplaySkeletonBase />}>
-      <BalanceDisplayBase
-        token={token}
-        compareToken={compareToken}
-        balance={balance?.free}
-        precision={props.precision}
-        tokenConversionRate={props.tokenConversionRate}
-      />
-    </ClientOnly>
+    <BalanceDisplayBase
+      token={token}
+      compareToken={compareToken}
+      balance={isTokenNative ? nativeBalance?.free : assetBalance?.free}
+      precision={props.precision}
+      tokenConversionRate={props.tokenConversionRate}
+    />
   );
 }

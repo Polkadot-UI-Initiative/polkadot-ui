@@ -13,6 +13,16 @@ export interface TokenMetadata {
   decimals: number;
 }
 
+// Default decimals for DOT-like tokens (Planck precision)
+export const DEFAULT_TOKEN_DECIMALS = 12;
+
+// Fiat cents per unit (e.g., 1 USD = 100 cents)
+export const FIAT_CENTS_PER_UNIT = 100;
+
+export function getTokenDecimals(token: TokenInfo | null | undefined): number {
+  return token?.decimals ?? DEFAULT_TOKEN_DECIMALS;
+}
+
 // Helper function to safely extract text from papi encoded types
 export const extractText = (value: unknown): string | undefined => {
   // Check if value exists

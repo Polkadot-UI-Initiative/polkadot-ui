@@ -178,15 +178,6 @@
           "type": "registry:hook"
         },
         {
-          "path": "registry/polkadot-ui/blocks/address-input/demo/page.dedot.tsx",
-          "type": "registry:page",
-          "target": "app/demo/polkadot-ui/address-input/page.tsx"
-        },
-        {
-          "path": "registry/polkadot-ui/blocks/address-input/demo/address-input-demo.tsx",
-          "type": "registry:component"
-        },
-        {
           "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
           "type": "registry:lib"
         },
@@ -250,7 +241,7 @@
       ]
     },
     {
-      "name": "wallet-select",
+      "name": "connect-wallet",
       "type": "registry:component",
       "title": "Wallet Select (dedot)",
       "description": "A wallet connection component provided by Typink.",
@@ -263,11 +254,6 @@
       ],
       "registryDependencies": ["button", "dialog"],
       "files": [
-        {
-          "path": "registry/polkadot-ui/blocks/connect-wallet/demo/page.dedot.tsx",
-          "type": "registry:page",
-          "target": "app/demo/polkadot-ui/connect-wallet/page.tsx"
-        },
         {
           "path": "registry/polkadot-ui/blocks/connect-wallet/connect-wallet.base.tsx",
           "type": "registry:component"
@@ -286,10 +272,6 @@
         },
         {
           "path": "registry/polkadot-ui/blocks/client-only.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/polkadot-ui/blocks/connect-wallet/demo/connect-wallet-demo.tsx",
           "type": "registry:component"
         },
         {
@@ -435,6 +417,52 @@
         },
         {
           "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "balance-display",
+      "type": "registry:component",
+      "title": "Balance Display (dedot)",
+      "description": "Formatted on-chain balance with optional comparison currency.",
+      "dependencies": ["dedot", "typink", "@tanstack/react-query"],
+      "registryDependencies": ["skeleton"],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/balance-display/balance-display.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/balance-display/balance-display.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/hooks/use-asset-balance.dedot.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-subscan-dot-price.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/hooks/use-chaindata-json.dedot.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
           "type": "registry:lib"
         }
       ]
