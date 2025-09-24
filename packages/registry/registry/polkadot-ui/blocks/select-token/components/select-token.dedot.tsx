@@ -23,6 +23,10 @@ import {
   mergeWithChaindataTokens,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { useTokensByAssetIds } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-chaindata-json.dedot";
+import {
+  NATIVE_TOKEN_KEY,
+  NATIVE_TOKEN_ID,
+} from "@/registry/polkadot-ui/blocks/select-token/components/shared-token-components";
 
 export type SelectTokenProps = Omit<SelectTokenBaseProps, "services"> &
   React.ComponentProps<typeof Select>;
@@ -75,15 +79,18 @@ export function SelectTokenInner(props: SelectTokenProps) {
       chainTokens ?? []
     );
 
-    const hasNativeToken = finalTokens.some((token) =>
-      token.assetId.includes("substrate-native")
-    );
+    const hasNativeToken =
+      includeNative &&
+      finalTokens.some(
+        (token) =>
+          token.id === NATIVE_TOKEN_ID || token.assetId === NATIVE_TOKEN_ID
+      );
     const combinedBalances: Record<number, bigint | null> = {
       ...balances,
     };
 
     if (hasNativeToken) {
-      combinedBalances[-1] = nativeBalance;
+      combinedBalances[NATIVE_TOKEN_KEY] = nativeBalance;
     }
 
     return {

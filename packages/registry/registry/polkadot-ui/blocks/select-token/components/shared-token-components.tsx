@@ -94,3 +94,6 @@ export const tokenSelectionStyles = {
     chevronOpen: "rotate-180",
   },
 } as const;
+
+export const NATIVE_TOKEN_KEY = -1;
+export const NATIVE_TOKEN_ID = "substrate-native";

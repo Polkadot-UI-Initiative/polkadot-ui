@@ -27,6 +27,10 @@ import { Button } from "@/components/ui/button";
 import { useTokensByAssetIds } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-chaindata-json.dedot";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  NATIVE_TOKEN_KEY,
+  NATIVE_TOKEN_ID,
+} from "@/registry/polkadot-ui/blocks/select-token/components/shared-token-components";
 
 export type SelectTokenDialogProps = Omit<
   SelectTokenDialogBaseProps,
@@ -79,15 +83,18 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
       chainTokens ?? []
     );
 
-    const hasNativeToken = finalTokens.some((token) =>
-      token.assetId.includes("substrate-native")
-    );
+    const hasNativeToken =
+      includeNative &&
+      finalTokens.some(
+        (token) =>
+          token.id === NATIVE_TOKEN_ID || token.assetId === NATIVE_TOKEN_ID
+      );
     const combinedBalances: Record<number, bigint | null> = {
       ...balances,
     };
 
     if (hasNativeToken) {
-      combinedBalances[-1] = nativeBalance;
+      combinedBalances[NATIVE_TOKEN_KEY] = nativeBalance;
     }
 
     return {

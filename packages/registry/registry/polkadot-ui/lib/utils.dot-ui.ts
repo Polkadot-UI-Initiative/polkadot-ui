@@ -1,6 +1,10 @@
 import { decodeAddress, encodeAddress } from "@polkadot/keyring";
 import { ethers } from "ethers";
 import { TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import {
+  NATIVE_TOKEN_ID,
+  NATIVE_TOKEN_KEY,
+} from "@/registry/polkadot-ui/blocks/select-token/components/shared-token-components";
 
 export interface TokenMetadata {
   assetId: number;
@@ -409,14 +413,19 @@ export function getTokenBalance(
 ): bigint | null {
   if (!balances || !connectedAccount?.address) return null;
 
-  // Handle native token case
-  if (typeof assetId === "string" && assetId.includes("substrate-native")) {
-    return balances[-1] ?? null;
+  if (typeof assetId === "string") {
+    // Get native token balance
+    if (assetId === NATIVE_TOKEN_ID) {
+      return balances[NATIVE_TOKEN_KEY] ?? null;
+    }
+
+    const n = Number(assetId);
+    if (!Number.isFinite(n)) return null;
+    return balances[n] ?? null;
   }
 
-  // Handle numeric asset IDs
-  const numericAssetId =
-    typeof assetId === "number" ? assetId : Number(assetId);
+  // Get numeric asset ID
+  const numericAssetId = Number(assetId);
   if (isNaN(numericAssetId)) return null;
 
   return balances[numericAssetId] ?? null;
