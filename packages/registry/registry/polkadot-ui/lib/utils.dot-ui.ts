@@ -229,7 +229,7 @@ export function generateTokenId(chainId: string, assetId: string): string {
   return `${kebabChainId}:substrate-assets:${assetId}`;
 }
 
-export function chainIdToCamelCase(chainId: string): string {
+export function chainIdToKebabCase(chainId: string): string {
   return chainId.includes("_")
     ? snakeToKebabCase(chainId)
     : camelToKebabCase(chainId);
@@ -304,8 +304,18 @@ export function formatTokenPrice(
  */
 export function createDefaultChainTokens(
   assets: TokenMetadata[],
-  chainId: string
+  chainId: string,
+  includeNative: boolean = false
 ): TokenInfo[] {
+  if (includeNative) {
+    return assets.map((asset) => ({
+      id: generateTokenId(chainId, String(asset.assetId)),
+      symbol: asset.symbol,
+      decimals: asset.decimals,
+      name: asset.name,
+      assetId: String(asset.assetId),
+    }));
+  }
   return assets.map((asset) => ({
     id: generateTokenId(chainId, String(asset.assetId)),
     symbol: asset.symbol,
@@ -317,42 +327,28 @@ export function createDefaultChainTokens(
 
 /**
  * Merge default tokens with chaindata tokens, preferring chaindata when available
- * This ensures we always have the same number of tokens as assetIds
+ * Also includes native tokens from chaindata that aren't in defaultTokens
  */
 export function mergeWithChaindataTokens(
   defaultTokens: TokenInfo[],
   chaindataTokens: TokenInfo[]
 ): TokenInfo[] {
-  return defaultTokens.map((defaultToken) => {
-    // Find matching token from chaindata by assetId
+  const mergedTokens = defaultTokens.map((defaultToken) => {
     const chaindataToken = chaindataTokens.find(
       (token) => token.assetId === defaultToken.assetId
     );
-    // Use chaindata token if found, otherwise use default
     return chaindataToken || defaultToken;
   });
-}
 
-/**
- * Helper function to get token logo from chainTokens by assetId
- * @param chainTokens - Array of chain tokens from chaindata
- * @param assetId - Asset ID to find logo for
- * @returns Token logo URL or undefined if not found
- */
-export function getTokenLogo(
-  chainTokens: TokenInfo[] | undefined,
-  assetId: number
-): string | undefined {
-  if (!chainTokens) return undefined;
-  const chainToken = chainTokens.find((token) => {
-    // Extract assetId from token.id (format: chainId:substrate-assets:assetId)
-    const parts = token.id.split(":");
-    if (parts.length === 3 && parts[1] === "substrate-assets") {
-      return parseInt(parts[2]) === assetId;
-    }
-    return false;
-  });
-  return chainToken?.logo;
+  const defaultAssetIds = new Set(defaultTokens.map((token) => token.assetId));
+  const nativeTokensFromChaindata = chaindataTokens.filter(
+    (token) =>
+      token.assetId === "substrate-native" &&
+      !defaultAssetIds.has(token.assetId)
+  );
+
+  // Ensure native token is first
+  return [...nativeTokensFromChaindata, ...mergedTokens];
 }
 
 /**
@@ -403,16 +399,27 @@ export function parseBalanceLike(value: unknown): bigint | null {
  * Helper function to get actual balance for a token
  * @param balances - Record of balances by assetId
  * @param connectedAccount - Connected account object
- * @param assetId - Asset ID to get balance for
+ * @param assetId - Asset ID to get balance for (number or "substrate-native")
  * @returns Token balance or null if not available
  */
 export function getTokenBalance(
   balances: Record<number, bigint | null> | undefined,
   connectedAccount: { address?: string } | null | undefined,
-  assetId: number
+  assetId: number | string
 ): bigint | null {
   if (!balances || !connectedAccount?.address) return null;
-  return balances[assetId] ?? null;
+
+  // Handle native token case
+  if (typeof assetId === "string" && assetId.includes("substrate-native")) {
+    return balances[-1] ?? null;
+  }
+
+  // Handle numeric asset IDs
+  const numericAssetId =
+    typeof assetId === "number" ? assetId : Number(assetId);
+  if (isNaN(numericAssetId)) return null;
+
+  return balances[numericAssetId] ?? null;
 }
 
 export function safeStringify(value: unknown): string {

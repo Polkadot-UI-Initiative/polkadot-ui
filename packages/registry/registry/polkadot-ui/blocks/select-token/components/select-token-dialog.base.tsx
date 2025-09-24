@@ -6,7 +6,6 @@ import { ChevronDown } from "lucide-react";
 import {
   formatTokenBalance,
   formatTokenPrice,
-  getTokenLogo,
   getTokenBalance,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import {
@@ -42,6 +41,7 @@ export interface SelectTokenDialogProps {
   services: SelectTokenDialogServices;
   withBalance?: boolean;
   withSearch?: boolean;
+  includeNative?: boolean;
   chainId?: string;
   fallback?: React.ReactNode;
   balancePrecision?: number;
@@ -265,10 +265,7 @@ export function SelectTokenDialogBase({
             <>
               {displayToken ? (
                 <TokenLogoWithNetwork
-                  tokenLogo={getTokenLogo(
-                    chainTokens,
-                    Number(displayToken.assetId)
-                  )}
+                  tokenLogo={displayToken.logo}
                   networkLogo={network?.logo}
                   tokenSymbol={displayToken.symbol}
                   size="sm"
@@ -291,10 +288,7 @@ export function SelectTokenDialogBase({
                 {displayToken ? (
                   <>
                     <TokenLogoWithNetwork
-                      tokenLogo={getTokenLogo(
-                        chainTokens,
-                        Number(displayToken.assetId)
-                      )}
+                      tokenLogo={displayToken.logo}
                       networkLogo={network?.logo}
                       tokenSymbol={displayToken.symbol}
                       size="sm"
@@ -350,7 +344,7 @@ export function SelectTokenDialogBase({
                     connectedAccount,
                     token.assetId
                   )}
-                  tokenLogo={getTokenLogo(chainTokens, Number(token.assetId))}
+                  tokenLogo={token.logo}
                   network={network}
                   connectedAccount={connectedAccount}
                   logoSize="md"

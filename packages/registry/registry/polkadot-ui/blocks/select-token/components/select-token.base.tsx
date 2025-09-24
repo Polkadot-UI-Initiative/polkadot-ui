@@ -10,7 +10,6 @@ import {
 import { Loader2 } from "lucide-react";
 import {
   formatTokenBalance,
-  getTokenLogo,
   getTokenBalance,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { TokenMetadata } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-metadata.dedot";
@@ -102,7 +101,7 @@ export function SelectTokenBase<TChainId extends string = string>({
             token={token}
             network={network}
             balance={getTokenBalance(balances, connectedAccount, token.assetId)}
-            tokenLogo={getTokenLogo(tokenOptions, Number(token.assetId))}
+            tokenLogo={token.logo}
             withBalance={withBalance}
             connectedAccount={connectedAccount}
           />

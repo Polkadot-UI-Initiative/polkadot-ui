@@ -35,7 +35,8 @@ export type SelectTokenDialogProps = Omit<
   React.ComponentProps<typeof Button>;
 
 export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
-  const { chainId, assetIds, ...otherProps } = props;
+  // by default, add native token to the list of tokens with includeNative
+  const { chainId, assetIds, includeNative = true, ...otherProps } = props;
   const { connectedAccount, supportedNetworks } = useTypink();
   const { client, status } = usePolkadotClient(chainId ?? paseoAssetHub.id);
 
@@ -56,16 +57,14 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
       address: connectedAccount?.address ?? "",
     });
 
-  // Get chainTokens from chaindata for token logos
   const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
     chainId ?? paseoAssetHub.id,
     assetIds,
     {
-      includeNative: true,
+      includeNative,
     }
   );
 
-  // Get network info for network logo (similar to network-indicator)
   const network = supportedNetworks.find(
     (n) => n.id === (chainId ?? paseoAssetHub.id)
   );
@@ -80,16 +79,13 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
       chainTokens ?? []
     );
 
-    // Combine native balance with asset balances
-    // Check if finalTokens includes native token (assetId: "substrate-native")
-    const hasNativeToken = finalTokens.some(
-      (token) => token.assetId === "substrate-native"
+    const hasNativeToken = finalTokens.some((token) =>
+      token.assetId.includes("substrate-native")
     );
     const combinedBalances: Record<number, bigint | null> = {
       ...balances,
     };
 
-    // Add native token balance if present
     if (hasNativeToken) {
       combinedBalances[-1] = nativeBalance;
     }
