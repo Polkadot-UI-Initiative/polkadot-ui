@@ -164,7 +164,7 @@ export function BalanceSkeleton({
         className={cn(
           "w-16 min-h-4 rounded-sm bg-foreground",
           className,
-          small && "w-12 h-3"
+          small && "w-12 min-h-3"
         )}
       />
     </>
