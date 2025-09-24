@@ -127,6 +127,7 @@ export function SelectTokenInner(props: SelectTokenProps) {
     balances,
     nativeBalance,
     network,
+    includeNative,
   ]);
 
   return <SelectTokenBase {...restProps} services={services} />;

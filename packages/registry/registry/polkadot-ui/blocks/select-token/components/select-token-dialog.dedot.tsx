@@ -108,7 +108,7 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
       isDisabled:
         status !== ClientConnectionStatus.Connected ||
         !client ||
-        assetIds.length === 0,
+        finalTokens.length === 0,
       chainTokens: finalTokens,
       network,
       balances: combinedBalances,
@@ -121,7 +121,6 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
     nativeBalanceLoading,
     connectedAccount,
     client,
-    assetIds,
     chainId,
     chainTokens,
     assets,
