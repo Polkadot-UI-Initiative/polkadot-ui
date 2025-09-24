@@ -348,7 +348,7 @@ export function SelectTokenDialogBase({
                   balance={getTokenBalance(
                     balances,
                     connectedAccount,
-                    Number(token.assetId)
+                    token.assetId
                   )}
                   tokenLogo={getTokenLogo(chainTokens, Number(token.assetId))}
                   network={network}

@@ -151,3 +151,54 @@ export function useAssetBalances(
     };
   }, [queryResults, sortedIds]);
 }
+
+export interface UseNativeBalanceArgs {
+  chainId: NetworkId;
+  address: string;
+  enabled?: boolean;
+}
+
+export interface NativeBalanceResult {
+  free: bigint | null;
+  isLoading: boolean;
+  error: Error | null;
+}
+
+export function useNativeBalance({
+  chainId,
+  address,
+  enabled = true,
+}: UseNativeBalanceArgs): NativeBalanceResult {
+  const { client, status } = usePolkadotClient(chainId ?? paseoAssetHub.id);
+
+  const isConnected = status === ClientConnectionStatus.Connected;
+  const isEnabled = enabled && isConnected && !!client && !!address;
+
+  const queryResult = useQuery({
+    queryKey: ["dedot-native-balance", String(chainId), address],
+    enabled: isEnabled,
+    queryFn: async (): Promise<bigint | null> => {
+      if (!client) return null;
+      try {
+        const query = client.query.system.account;
+        const account = await query(address);
+        const raw = (account as unknown as { data?: { free?: unknown } })?.data
+          ?.free;
+        return parseBalanceLike(raw);
+      } catch (error) {
+        console.error("Native balance lookup failed:", error);
+        return null;
+      }
+    },
+    staleTime: 30_000,
+  });
+
+  return useMemo(
+    () => ({
+      free: (queryResult.data as bigint | null) ?? null,
+      isLoading: queryResult.isLoading,
+      error: (queryResult.error as Error | null) ?? null,
+    }),
+    [queryResult.data, queryResult.isLoading, queryResult.error]
+  );
+}

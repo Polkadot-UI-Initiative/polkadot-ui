@@ -9,7 +9,10 @@ import {
   useTypink,
 } from "typink";
 import { useAssetMetadata } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-metadata.dedot";
-import { useAssetBalances } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-balance.dedot";
+import {
+  useAssetBalances,
+  useNativeBalance,
+} from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-balance.dedot";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   type SelectTokenDialogBaseProps,
@@ -47,10 +50,19 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
     address: connectedAccount?.address ?? "",
   });
 
+  const { free: nativeBalance, isLoading: nativeBalanceLoading } =
+    useNativeBalance({
+      chainId: chainId ?? paseoAssetHub.id,
+      address: connectedAccount?.address ?? "",
+    });
+
   // Get chainTokens from chaindata for token logos
   const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
     chainId ?? paseoAssetHub.id,
-    assetIds
+    assetIds,
+    {
+      includeNative: true,
+    }
   );
 
   // Get network info for network logo (similar to network-indicator)
@@ -68,9 +80,27 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
       chainTokens ?? []
     );
 
+    // Combine native balance with asset balances
+    // Check if finalTokens includes native token (assetId: "substrate-native")
+    const hasNativeToken = finalTokens.some(
+      (token) => token.assetId === "substrate-native"
+    );
+    const combinedBalances: Record<number, bigint | null> = {
+      ...balances,
+    };
+
+    // Add native token balance if present
+    if (hasNativeToken) {
+      combinedBalances[-1] = nativeBalance;
+    }
+
     return {
       isConnected: status === ClientConnectionStatus.Connected,
-      isLoading: isLoading || tokensLoading || tokenBalancesLoading,
+      isLoading:
+        isLoading ||
+        tokensLoading ||
+        tokenBalancesLoading ||
+        nativeBalanceLoading,
       connectedAccount,
       isDisabled:
         status !== ClientConnectionStatus.Connected ||
@@ -78,13 +108,14 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
         assetIds.length === 0,
       chainTokens: finalTokens,
       network,
-      balances,
+      balances: combinedBalances,
     };
   }, [
     status,
     isLoading,
     tokensLoading,
     tokenBalancesLoading,
+    nativeBalanceLoading,
     connectedAccount,
     client,
     assetIds,
@@ -93,6 +124,7 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
     assets,
     network,
     balances,
+    nativeBalance,
   ]);
 
   return <SelectTokenDialogBase {...otherProps} services={services} />;

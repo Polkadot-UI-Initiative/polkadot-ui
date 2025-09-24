@@ -101,11 +101,7 @@ export function SelectTokenBase<TChainId extends string = string>({
             key={token.id}
             token={token}
             network={network}
-            balance={getTokenBalance(
-              balances,
-              connectedAccount,
-              Number(token.assetId)
-            )}
+            balance={getTokenBalance(balances, connectedAccount, token.assetId)}
             tokenLogo={getTokenLogo(tokenOptions, Number(token.assetId))}
             withBalance={withBalance}
             connectedAccount={connectedAccount}
@@ -135,7 +131,7 @@ function TokenSelectItem({
 }) {
   return (
     <SelectItem
-      value={token.assetId}
+      value={token.assetId ?? token.id}
       className="flex items-center justify-between w-full gap-3 p-3"
     >
       <div className="flex items-center gap-2">
