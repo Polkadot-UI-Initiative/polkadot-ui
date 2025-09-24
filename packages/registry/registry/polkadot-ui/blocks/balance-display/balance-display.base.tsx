@@ -13,7 +13,7 @@ export interface BalanceDisplayBaseProps {
   balance: bigint | null | undefined;
   precision?: number;
   token: TokenInfo | null | undefined;
-  // Optional compare token (e.g., USD), and conversion rate from base token to compare token
+  // Optional compare token (e.g., USDC), and conversion rate from base token to compare token
   compareToken?: TokenInfo | null | undefined;
   tokenConversionRate?: number | null | undefined;
   comparePrecision?: number | null | undefined;
@@ -24,13 +24,12 @@ export function BalanceDisplayBase(props: BalanceDisplayBaseProps) {
     balance,
     precision = 4,
     token,
-    compareToken = null,
-    tokenConversionRate = null,
+    compareToken,
+    tokenConversionRate,
     comparePrecision = null,
   } = props;
 
-  const showCompare =
-    compareToken !== undefined && tokenConversionRate !== undefined;
+  const showCompare = compareToken != null && tokenConversionRate != null;
 
   const compareAmount = (() => {
     if (

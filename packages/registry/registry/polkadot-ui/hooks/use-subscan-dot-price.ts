@@ -1,16 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 
 export function useSubscanDotPrice(apiKey?: string) {
+  const subscanApiKey = apiKey;
   return useQuery<number | null>({
     queryKey: ["subscan-dot-price"],
     queryFn: async () => {
       const myHeaders = new Headers();
 
-      const subscanApiKey = apiKey || "4d0c8ba32dde4a06bda83d52af49120f";
-      if (!subscanApiKey) {
-        throw new Error("SUBSCAN_API_KEY is not set");
+      if (subscanApiKey) {
+        myHeaders.append("x-api-key", subscanApiKey);
       }
-      myHeaders.append("x-api-key", subscanApiKey);
 
       const response = await fetch(
         "https://polkadot.api.subscan.io/api/scan/token",
@@ -31,14 +30,8 @@ export function useSubscanDotPrice(apiKey?: string) {
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
-    retry: (failureCount, error) => {
-      if (
-        error instanceof Error &&
-        error.message.includes("SUBSCAN_API_KEY is not set")
-      )
-        return false;
-      return failureCount < 5;
-    },
+    enabled: !!subscanApiKey,
+    retry: (failureCount) => failureCount < 5,
     retryDelay: (attemptIndex) => {
       const baseDelayMs = 1000;
       const maxDelayMs = 30000;
