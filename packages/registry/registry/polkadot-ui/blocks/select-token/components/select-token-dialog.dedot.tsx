@@ -128,6 +128,7 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
     network,
     balances,
     nativeBalance,
+    includeNative,
   ]);
 
   return <SelectTokenDialogBase {...otherProps} services={services} />;
