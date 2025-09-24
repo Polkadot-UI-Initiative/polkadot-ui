@@ -2,8 +2,8 @@
 
 import {
   ClientConnectionStatus,
+  PolkadotIdentity,
   type IdentitySearchResult,
-  type PolkadotIdentity,
 } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { cn } from "@/registry/polkadot-ui/lib/utils";
 import {
@@ -22,9 +22,10 @@ import { Check, CircleCheck, Copy, Loader2 } from "lucide-react";
 import { forwardRef, ReactNode, useEffect, useRef, useState } from "react";
 
 // Services interface for dependency injection
+
 export interface AddressInputServices<TNetworkId> {
   // Hook for fetching identity by address
-  useIdentity: (
+  useIdentityOf: (
     address: string,
     identityChain?: TNetworkId | undefined
   ) => UseQueryResult<PolkadotIdentity | null, Error>;
@@ -62,13 +63,7 @@ export interface AddressInputBaseProps<TNetworkId = string> {
 
 export interface IdentityResult {
   type: "polkadot" | "ens";
-  data: {
-    display?: string;
-    legal?: string;
-    email?: string;
-    twitter?: string;
-    verified?: boolean;
-  };
+  data: PolkadotIdentity;
 }
 
 // Provider wrapper interface
@@ -99,7 +94,7 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
   }: AddressInputBaseProps<TNetworkId>,
   _ref: React.ForwardedRef<HTMLInputElement>
 ) {
-  const { useIdentity, useIdentitySearch, clientStatus } = services;
+  const { useIdentityOf, useIdentitySearch, clientStatus } = services;
 
   const [inputValue, setInputValue] = useState(value);
   const [validationResult, setValidationResult] = useState<ValidationResult>();
@@ -148,7 +143,7 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
   }, [inputValue, validationResult, selectedFromSearch]);
 
   // Identity lookup (skip if selected from search to avoid redundant call)
-  const polkadotIdentity = useIdentity(
+  const polkadotIdentity = useIdentityOf(
     withIdentityLookup &&
       validationResult?.type === "ss58" &&
       !selectedFromSearch
@@ -283,7 +278,7 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
     }
   };
 
-  const handleSelectIdentity = (address: string, display: string) => {
+  const handleSelectIdentity = (address: string, display: string | number) => {
     setSelectedFromSearch(true);
     setInputValue(address);
     setShowDropdown(false);
@@ -302,7 +297,7 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
       onIdentitySelected({
         type: "polkadot",
         data: {
-          display,
+          display: typeof display === "number" ? String(display) : display,
           verified: selectedResult?.identity.verified || false,
         },
       });

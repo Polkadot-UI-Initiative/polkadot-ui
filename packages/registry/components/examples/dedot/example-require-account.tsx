@@ -30,12 +30,12 @@ function Component() {
       <RequireAccount
         chainId={paseo.id}
         fallback={
-          <div className="border border-accent w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md">
+          <div className="border border-foreground/10 w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md">
             Please select an account to continue.
           </div>
         }
       >
-        <div className="border border-accent w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md flex-col">
+        <div className="border border-foreground/10 w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md flex-col">
           <div>Account name: {connectedAccount?.name}</div>
           <div>Wallet: {connectedAccount?.source}</div>
         </div>

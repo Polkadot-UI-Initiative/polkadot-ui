@@ -9,10 +9,21 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
+  // {
+  // searchParams,
+  // }: {
+  //   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  // }
+
+  // const libRaw = (await searchParams).lib;
+  // const lib = ["papi", "dedot"].includes(libRaw as string)
+  //   ? (libRaw as "papi" | "dedot")
+  //   : "dedot";
+
   return (
     <div className="flex flex-col">
       <HeroSection />
-      <ComponentsSection usedLibrary="dedot" />
+      <ComponentsSection usedLibrary={"dedot"} />
     </div>
   );
 }

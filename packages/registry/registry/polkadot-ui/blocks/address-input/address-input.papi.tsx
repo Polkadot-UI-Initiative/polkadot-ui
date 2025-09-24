@@ -9,14 +9,15 @@ import {
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 
 // Import PAPI-specific hooks
-import { useIdentity as papiUseIdentity } from "@/registry/polkadot-ui/hooks/use-identity.papi";
-import { useIdentitySearch as papiUseIdentitySearch } from "@/registry/polkadot-ui/hooks/use-search-identity.papi";
+import { useIdentityOf } from "@/registry/polkadot-ui/hooks/use-identity-of.papi";
+import { useIdentitySearch } from "@/registry/polkadot-ui/hooks/use-search-identity.papi";
 
-import { type ChainIdWithIdentity } from "@/registry/polkadot-ui/lib/types.papi";
 import {
   PolkadotProvider,
   usePapi,
 } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
+// import { config } from "@/registry/polkadot-ui/reactive-dot.config";
+import type { ChainIdWithIdentity } from "@/registry/polkadot-ui/lib/types.papi";
 
 // Props type - removes services prop since we inject it
 export type AddressInputProps = Omit<
@@ -32,18 +33,15 @@ export function AddressInput(props: AddressInputProps) {
   // Simple services object with type-compatible wrappers
   const services = useMemo<AddressInputServices<ChainIdWithIdentity>>(
     () => ({
-      useIdentity: (address: string, identityChain?: ChainIdWithIdentity) => {
+      useIdentityOf: (address: string, identityChain?: ChainIdWithIdentity) => {
         const chain = identityChain ?? "paseoPeople";
-        return papiUseIdentity(address, chain);
+        return useIdentityOf({ address, chainId: chain });
       },
       useIdentitySearch: (
         displayName: string | null | undefined,
         identityChain?: ChainIdWithIdentity
       ) => {
-        return papiUseIdentitySearch(
-          displayName,
-          identityChain ?? "paseoPeople"
-        );
+        return useIdentitySearch(displayName, identityChain ?? "paseoPeople");
       },
       useProvider: () => ({
         isLoading,

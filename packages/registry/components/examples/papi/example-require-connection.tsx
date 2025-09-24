@@ -11,13 +11,13 @@ export const requireConnectionExample: ComponentExample = {
       <RequireConnection
         chainId={"paseo"}
         fallback={
-          <div className="border border-accent w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md p-4 text-center">
+          <div className="border border-foreground/10 w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md p-4 text-center">
             Make sure your app is connected to Paseo to continue. This is the
             content that will be displayed when you are not connected to Paseo.
           </div>
         }
       >
-        <div className="border border-accent w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md p-4 text-center">
+        <div className="border border-foreground/10 w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md p-4 text-center">
           ✅ You are connected to Paseo. This is the content that will be
           displayed when you are connected to Paseo.
         </div>
@@ -29,13 +29,13 @@ export const requireConnectionExample: ComponentExample = {
 <RequireConnection
   chainId="paseo"
   fallback={
-    <div className="border border-accent w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md p-4 text-center">
+    <div className="border border-foreground/10 w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md p-4 text-center">
       Make sure your app is connected to Paseo to continue. This is the
       content that will be displayed when you are not connected to Paseo.
     </div>
   }
 >
-  <div className="border border-accent w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md p-4 text-center">
+  <div className="border border-foreground/10 w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md p-4 text-center">
     ✅ You are connected to Paseo. This is the content that will be
     displayed when you are connected to Paseo.
   </div>

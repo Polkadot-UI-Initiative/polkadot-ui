@@ -79,28 +79,23 @@ export interface BasePolkadotContextValue<
   defaultCaller: string;
 }
 
-export interface FormattedIdentity {
-  display?: string;
-  email?: string;
-  legal?: string;
-  matrix?: string; // for papi
-  riot?: string; // for dedot
-  twitter?: string;
-  web?: string;
-  verified?: boolean;
-}
-
 export interface PolkadotIdentity {
-  display?: string;
-  legal?: string;
-  email?: string;
-  twitter?: string;
-  verified: boolean;
+  display?: string | number;
+  legal?: string | number;
+  email?: string | number;
+  twitter?: string | number;
+  github?: string | number;
+  discord?: string | number;
+  matrix?: string | number; // for papi
+  riot?: string | number; // for dedot (legacy)
+  web?: string | number;
+  image?: string | number;
+  verified?: boolean;
 }
 
 export interface IdentitySearchResult {
   address: string;
-  identity: FormattedIdentity;
+  identity: PolkadotIdentity;
 }
 
 export enum ClientConnectionStatus {

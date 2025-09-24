@@ -11,6 +11,12 @@ import { truncateAddress } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { Identicon } from "@polkadot/react-identicon";
 import { Check, CircleCheck, Copy } from "lucide-react";
 import React, { Fragment, useState } from "react";
+import { PolkadotIdentity } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export interface AccountInfoServices {
   identity: PolkadotIdentity | null;
@@ -28,18 +34,6 @@ export interface AccountInfoBaseProps<TNetworkId = string> {
   withPopover?: boolean;
   className?: string;
   services: AccountInfoServices;
-}
-
-export interface PolkadotIdentity {
-  display?: string;
-  legal?: string;
-  email?: string;
-  twitter?: string;
-  github?: string;
-  discord?: string;
-  matrix?: string;
-  image?: string;
-  verified: boolean;
 }
 
 export type AccountInfoField =
@@ -87,7 +81,8 @@ export function AccountInfoBase<TNetworkId extends string = string>({
   const summaryAddress = truncate
     ? truncateAddress(address, truncate)
     : address;
-  const name = rawName && rawName !== address ? rawName : summaryAddress;
+  const name =
+    rawName && rawName !== address ? rawName.toString() : summaryAddress;
 
   const trigger = (
     <div className={cn("inline-flex items-center gap-2 p-2", className)}>
@@ -96,7 +91,11 @@ export function AccountInfoBase<TNetworkId extends string = string>({
       )}
       {showIcon && identity?.image && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={identity.image} alt={name} className="w-7 h-7 rounded-full" />
+        <img
+          src={identity.image.toString()}
+          alt={name}
+          className="w-7 h-7 rounded-full"
+        />
       )}
       <div className="flex flex-col leading-tight items-start text-left min-w-0 flex-1">
         <span className="text-sm inline-flex items-center gap-1 min-w-0">
@@ -153,7 +152,7 @@ export function AccountInfoBase<TNetworkId extends string = string>({
           {showIcon && identity?.image && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={identity.image}
+              src={identity.image.toString()}
               alt={name}
               className="w-7 h-7 rounded-full"
             />
@@ -218,7 +217,7 @@ function renderDetails({
         ) : undefined
       );
     if (f === "twitter") {
-      const handle = identity.twitter?.replace(/^@/, "");
+      const handle = identity.twitter?.toString().replace(/^@/, "");
       push(
         "Twitter",
         handle ? (
@@ -306,10 +305,10 @@ function buildLinks({
     add(
       "Email",
       identity.email ? `mailto:${identity.email}` : undefined,
-      identity.email ?? undefined
+      identity.email?.toString() ?? undefined
     );
   if (fields.includes("twitter")) {
-    const handle = identity.twitter?.replace(/^@/, "");
+    const handle = identity.twitter?.toString().replace(/^@/, "");
     add(
       "Twitter",
       handle ? `https://x.com/${handle}` : undefined,
@@ -320,7 +319,7 @@ function buildLinks({
     add(
       "GitHub",
       identity.github ? `https://github.com/${identity.github}` : undefined,
-      identity.github ?? undefined
+      identity.github?.toString() ?? undefined
     );
   if (fields.includes("discord"))
     add(
@@ -328,7 +327,7 @@ function buildLinks({
       identity.discord
         ? `https://discord.com/users/${encodeURIComponent(identity.discord)}`
         : undefined,
-      identity.discord ?? undefined
+      identity.discord?.toString() ?? undefined
     );
   if (fields.includes("matrix"))
     add(
@@ -336,7 +335,7 @@ function buildLinks({
       identity.matrix
         ? `https://matrix.to/#/${encodeURIComponent(identity.matrix)}`
         : undefined,
-      identity.matrix ?? undefined
+      identity.matrix?.toString() ?? undefined
     );
 
   return links;
@@ -354,6 +353,7 @@ function HeaderWithCopy({
   isVerified: boolean;
 }) {
   const [copied, setCopied] = useState(false);
+  const [tooltipOpen, setTooltipOpen] = useState(false);
   async function onCopy() {
     try {
       await navigator.clipboard.writeText(address);
@@ -371,7 +371,15 @@ function HeaderWithCopy({
         {name}
       </span>
       <span className="text-xs text-muted-foreground font-mono inline-flex items-center gap-1">
-        {truncated}
+        <Tooltip open={tooltipOpen}>
+          <TooltipTrigger
+            onMouseEnter={() => setTooltipOpen(true)}
+            onMouseLeave={() => setTooltipOpen(false)}
+          >
+            {truncated}
+          </TooltipTrigger>
+          <TooltipContent>{address}</TooltipContent>
+        </Tooltip>
         <button
           type="button"
           aria-label="Copy address"

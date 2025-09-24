@@ -8,7 +8,7 @@ import {
 } from "@/registry/polkadot-ui/blocks/address-input/address-input.base";
 // Import Dedot-specific hooks
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
-import { useIdentity } from "@/registry/polkadot-ui/hooks/use-identity.dedot";
+import { useIdentityOf } from "@/registry/polkadot-ui/hooks/use-identity-of.dedot";
 import { useIdentitySearch } from "@/registry/polkadot-ui/hooks/use-search-identity.dedot";
 import { NetworkId, paseoPeople, usePolkadotClient } from "typink";
 import { Input } from "@/registry/polkadot-ui/ui/input";
@@ -23,7 +23,8 @@ function AddressInputInner(props: AddressInputProps) {
 
   const services = useMemo(
     () => ({
-      useIdentity,
+      useIdentityOf: (address: string, identityChain?: NetworkId) =>
+        useIdentityOf({ address, chainId: identityChain ?? paseoPeople.id }),
       useIdentitySearch,
       clientStatus: status,
       explorerUrl: "",

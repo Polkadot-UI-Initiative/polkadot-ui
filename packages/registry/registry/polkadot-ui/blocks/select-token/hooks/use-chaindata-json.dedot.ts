@@ -5,7 +5,10 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { generateTokenId } from "@/registry/polkadot-ui/lib/utils.dot-ui";
+import {
+  chainIdToCamelCase,
+  generateTokenId,
+} from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { ChainInfo, TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
 
 export interface ChaindataResponse {
@@ -113,30 +116,91 @@ export function useChaindata(): UseChaindataResult {
  * Filters tokens using the pattern: chainId:substrate-assets:assetId
  * This won't grab the native token for the chain
  */
-export function useTokensByAssetIds(chainId: string, assetIds: number[]) {
-  const { tokens, isLoading, error, isError, isRetrying, failureCount } =
-    useChaindata();
+export function useTokensByAssetIds(
+  chainId: string,
+  assetIds: number[],
+  options?: { includeNative?: boolean }
+) {
+  const {
+    tokens,
+    chains,
+    isLoading,
+    error: fetchError,
+    isError: fetchIsError,
+    isRetrying,
+    failureCount,
+  } = useChaindata();
 
   // Memoize the filtered tokens calculation
-  const filteredTokens = useMemo(() => {
-    if (!chainId || !assetIds.length || !tokens.length) {
-      return [];
-    }
+  const { resultTokens, logicError } = useMemo(() => {
+    if (!chainId || !tokens.length)
+      return {
+        resultTokens: [] as TokenInfo[],
+        logicError: null as string | null,
+      };
 
-    // Convert assetIds to strings and generate expected token IDs
-    const expectedTokenIds = assetIds.map((assetId) =>
-      generateTokenId(chainId, String(assetId))
+    const expectedTokenIds = new Set(
+      (assetIds || []).map((assetId) =>
+        generateTokenId(chainId, String(assetId))
+      )
     );
 
-    // Filter tokens that match the expected token IDs
-    return tokens.filter((token) => expectedTokenIds.includes(token.id));
-  }, [chainId, assetIds, tokens]);
+    const matched = tokens.filter((token) => expectedTokenIds.has(token.id));
+
+    if (!options?.includeNative)
+      return { resultTokens: matched, logicError: null };
+
+    const network = chains.find((c) => c.id === chainIdToCamelCase(chainId));
+    const native = network?.nativeCurrency;
+
+    if (!native) return { resultTokens: matched, logicError: null };
+
+    const assetIdFromTokenId = network?.nativeTokenId
+      ? network.nativeTokenId.split(":").slice(-1)[0] || "native"
+      : "native";
+
+    const nativeToken: TokenInfo = {
+      id:
+        network?.nativeTokenId || generateTokenId(chainId, assetIdFromTokenId),
+      symbol: native.symbol,
+      decimals: native.decimals,
+      name: native.name,
+      assetId: assetIdFromTokenId,
+      coingeckoId: native.coingeckoId,
+      logo: native.logo,
+    };
+
+    const isNativeInMatched = matched.some((t) => t.id === nativeToken.id);
+
+    if (isNativeInMatched) {
+      // both are native (requested native and includeNative) → surface logic error, keep native only
+      return {
+        resultTokens: [nativeToken],
+        logicError: "Both tokens are native",
+      };
+    }
+
+    // none is native → ensure native first, then first matched if exists
+    if (matched.length >= 1)
+      return { resultTokens: [nativeToken, matched[0]], logicError: null };
+
+    // fallback to just native
+    return { resultTokens: [nativeToken], logicError: null };
+  }, [chainId, tokens, chains, assetIds, options?.includeNative]);
 
   return {
-    tokens: filteredTokens,
+    tokens: resultTokens,
     isLoading,
-    error,
-    isError,
+    error:
+      logicError ??
+      (fetchError
+        ? typeof fetchError === "object" &&
+          fetchError &&
+          "message" in fetchError
+          ? ((fetchError as { message?: string }).message ?? String(fetchError))
+          : String(fetchError)
+        : null),
+    isError: fetchIsError || Boolean(logicError),
     isRetrying,
     failureCount,
   };

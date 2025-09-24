@@ -40,9 +40,9 @@ npx polkadot-ui@latest add address-input
 | `placeholder` | `string` | - | Placeholder text |
 | `disabled` | `boolean` | `false` | Disable the input |
 | `format` | `"ss58" \| "eth" \| "both"` | `"ss58"` | Address format(s) to accept |
-| `withIdentityLookup` | `boolean` | `true` | Enable Polkadot identity lookup |
-| `withIdentitySearch` | `boolean` | `true` | Enable display-name search; results only include validated identities |
-| `identityChain` | `ChainIdWithIdentity` | `"paseo_people"` | Chain to use for identity lookups |
+| `withIdentityLookup` | `boolean` | `true` | Lookup identity for valid SS58 addresses (independent of search) |
+| `withIdentitySearch` | `boolean` | `true` | Enable display-name search (independent of identity lookup); results only include validated identities |
+| `identityChain` | `ChainIdWithIdentity` | `"paseoPeople"` | Chain to use for identity lookups/search |
 | `onIdentitySelected` | `(identity: IdentityResult) => void` | - | Called when identity is found |
 | `truncate` | `boolean \| number` | `false` | Truncate display (true=8 chars) |
 | `showIdenticon` | `boolean` | `true` | Show address identicon |
@@ -70,6 +70,7 @@ When `withIdentityLookup` is enabled:
 ### Identity Search
 
 - When `withIdentitySearch` is enabled (default), typing at least 3 characters shows a dropdown of identities matching the display name on the selected `identityChain`.
+- `withIdentitySearch` controls the display-name search independently of `withIdentityLookup` (you can enable one without the other).
 - The search results only include identities that are validated/verified.
 - Selecting a result fills the address field with the corresponding account and triggers `onIdentitySelected`.
 - Keyboard navigation is supported (Arrow keys, Enter, Escape; Tab cycles results).
@@ -78,9 +79,9 @@ When `withIdentityLookup` is enabled:
 
 The `identityChain` prop allows you to specify which chain to use for identity lookups. This is particularly useful in multi-chain environments where different chains may have different identity registries:
 
-- **`paseo_people`** (default): Paseo People chain for testnet identities
+- **`paseoPeople`** (default in adapters): Paseo People chain for testnet identities
 - **`kusamaPeople`**: Kusama People chain for Kusama identities  
-- **`polkadot_people`**: Polkadot People chain for mainnet identities
+- **`polkadotPeople`**: Polkadot People chain for mainnet identities
 
 The type `ChainIdWithIdentity` ensures only chains with Identity pallet support can be used.
 

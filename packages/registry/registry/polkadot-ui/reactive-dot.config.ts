@@ -5,7 +5,23 @@ import {
 } from "@polkadot-api/descriptors";
 import { defineConfig } from "@reactive-dot/core";
 import { InjectedWalletProvider } from "@reactive-dot/core/wallets.js";
-import { getWsProvider } from "polkadot-api/ws-provider/web";
+import { getWsProvider, WsJsonRpcProvider } from "polkadot-api/ws-provider/web";
+
+let paseoPeopleProvider: WsJsonRpcProvider | null = getWsProvider(
+  "wss://sys.ibp.network/people-paseo"
+);
+let polkadotPeopleProvider: WsJsonRpcProvider | null = getWsProvider(
+  "wss://sys.ibp.network/people-polkadot"
+);
+let paseoProvider: WsJsonRpcProvider | null = getWsProvider(
+  "wss://sys.ibp.network/paseo"
+);
+
+export const destroyProviders = () => {
+  paseoPeopleProvider = null;
+  polkadotPeopleProvider = null;
+  paseoProvider = null;
+};
 
 export const config = defineConfig({
   ssr: true,
@@ -13,7 +29,7 @@ export const config = defineConfig({
     paseo: {
       name: "Paseo",
       descriptor: paseo,
-      provider: getWsProvider("wss://sys.ibp.network/paseo"),
+      provider: paseoProvider,
       explorerUrl: "https://paseo.subscan.io",
       symbol: "PAS",
       decimals: 10,
@@ -22,7 +38,7 @@ export const config = defineConfig({
     paseoPeople: {
       name: "Paseo People",
       descriptor: paseo_people,
-      provider: getWsProvider("wss://sys.ibp.network/people-paseo"),
+      provider: paseoPeopleProvider,
       explorerUrl: "https://people-paseo.subscan.io",
       symbol: "PAS",
       decimals: 10,
@@ -31,7 +47,7 @@ export const config = defineConfig({
     polkadotPeople: {
       name: "Polkadot People",
       descriptor: polkadot_people,
-      provider: getWsProvider("wss://sys.ibp.network/people-polkadot"),
+      provider: polkadotPeopleProvider,
       explorerUrl: "https://people-polkadot.subscan.io",
       symbol: "DOT",
       decimals: 10,

@@ -114,7 +114,7 @@ export function TxButtonInner(props: TxButtonProps) {
       });
   }, [transaction, selectedAccount]);
 
-  if (!signer) return "no signer";
+  if (!signer) return "Please select an account";
 
   const handleClick = () => {
     setSubmitError(null);
@@ -134,6 +134,7 @@ export function TxButtonInner(props: TxButtonProps) {
         notifications.descriptions?.signing ??
         "Please sign the transaction in your wallet",
     });
+
     transaction.signSubmitAndWatch(signer).subscribe({
       next: (ev) => {
         setTxStatus({ type: ev.type });
@@ -269,6 +270,7 @@ export function TxButtonInner(props: TxButtonProps) {
 }
 
 export function TxButtonWithProvider(props: TxButtonProps) {
+  // Keep for standalone usage outside the gallery. Avoid using inside ComponentsSection.
   return (
     <PolkadotProvider>
       <TxButton {...props} />

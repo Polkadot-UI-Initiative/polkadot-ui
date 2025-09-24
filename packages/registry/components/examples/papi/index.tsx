@@ -6,11 +6,13 @@ import { requireAccountExample } from "./example-require-account";
 import { connectWalletExample } from "./example-connect-wallet";
 import { amountInputExample } from "./example-amount-input";
 import { selectTokenExample } from "./example-select-token";
+// import { selectTokenDialogExample } from "./example-select-token-dialog";
 import { transactionDetailsExample } from "./example-transaction-details";
 import { networkIndicatorExample } from "./example-network-indicator";
 import { balanceDisplayExample } from "./example-balance-display";
-import { nftCardExample } from "./example-nft-card";
+// import { nftCardExample } from "./example-nft-card";
 import DedotDemo from "@/registry/polkadot-ui/blocks/dedot-demo/dedot-demo";
+import { accountInfoExample } from "./example-account-info";
 
 export const demoExample: ComponentExample = {
   name: "Dedot Demo",
@@ -21,16 +23,18 @@ export const demoExample: ComponentExample = {
 };
 
 export const examples: ComponentExample[] = [
-  // demoExample,
+  // Order mirrors dedot examples
+  connectWalletExample,
   txButtonExample,
   addressInputExample,
-  connectWalletExample,
-  requireConnectionExample,
-  requireAccountExample,
+  accountInfoExample,
+  networkIndicatorExample,
   amountInputExample,
   selectTokenExample,
+  // selectTokenDialogExample,
+  requireConnectionExample,
+  requireAccountExample,
   transactionDetailsExample,
-  networkIndicatorExample,
   balanceDisplayExample,
-  nftCardExample,
+  // nftCardExample,
 ];

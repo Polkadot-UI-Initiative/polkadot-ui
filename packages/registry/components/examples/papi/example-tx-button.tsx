@@ -1,12 +1,13 @@
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 
 import type { ComponentExample } from "@/components/examples/types.examples";
-import { useChainIds, useClient } from "@reactive-dot/react";
+import { useChainIds } from "@reactive-dot/react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { TxButton } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.papi";
 import { Binary } from "polkadot-api";
 import { config } from "@/registry/polkadot-ui/reactive-dot.config";
 import { ChainId } from "@reactive-dot/core";
+import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { Suspense } from "react";
 
 export const txButtonExample: ComponentExample = {
@@ -75,10 +76,18 @@ export function DemoTxButton() {
 }
 
 export function RemarkButton({ networkId }: { networkId: ChainId }) {
-  const client = useClient({ chainId: networkId });
+  const { client } = usePapi(networkId);
   const network = config.chains[networkId];
   const typedApi = client?.getTypedApi(config.chains[networkId].descriptor);
-  const transaction = typedApi?.tx.System.remark({
+
+  if (!typedApi) {
+    return (
+      <div className="flex w-full items-center justify-center p-8 text-muted-foreground">
+        No typed API available
+      </div>
+    );
+  }
+  const transaction = typedApi.tx.System.remark({
     remark: Binary.fromText("Hello World from polkadot-ui"),
   });
 
