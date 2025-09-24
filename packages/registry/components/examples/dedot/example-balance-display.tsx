@@ -72,7 +72,7 @@ export function BalanceDisplayComponent() {
           compareTokenId={"native"}
           networkId={polkadotAssetHub.id}
           precision={4}
-          tokenConversionRate={1 / (price ?? 1)}
+          tokenConversionRate={price ? 1 / price : 1}
           accountAddress={accountAddress}
         />
       </div>

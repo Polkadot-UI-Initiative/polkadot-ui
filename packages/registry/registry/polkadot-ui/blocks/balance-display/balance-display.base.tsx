@@ -5,7 +5,6 @@ import { TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import {
   formatTokenBalance,
   getTokenDecimals,
-  FIAT_CENTS_PER_UNIT,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { cn } from "@/lib/utils";
 
@@ -41,13 +40,20 @@ export function BalanceDisplayBase(props: BalanceDisplayBaseProps) {
     )
       return undefined;
 
+    // Convert base token amount to compare token amount using integer math
+    // scaledRate ≈ tokenConversionRate * scaleFactor, where rate is (compare per base)
     const scaleFactor = 1_000_000;
     const scaledRate = BigInt(Math.round(tokenConversionRate * scaleFactor));
-    const base = 10n ** BigInt(getTokenDecimals(token));
-    const cents =
-      (balance * scaledRate * BigInt(FIAT_CENTS_PER_UNIT)) /
-      (base * BigInt(scaleFactor));
-    return cents;
+
+    const baseDecimals = getTokenDecimals(token);
+    const compareDecimals = getTokenDecimals(compareToken);
+
+    const base = 10n ** BigInt(baseDecimals);
+    const compareBase = 10n ** BigInt(compareDecimals);
+
+    const amountInCompareUnits =
+      (balance * scaledRate * compareBase) / (base * BigInt(scaleFactor));
+    return amountInCompareUnits;
   })();
 
   return (

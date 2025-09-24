@@ -6,7 +6,7 @@ export function useSubscanDotPrice(apiKey?: string) {
     queryFn: async () => {
       const myHeaders = new Headers();
 
-      const subscanApiKey = apiKey || process.env.SUBSCAN_API_KEY;
+      const subscanApiKey = apiKey || "4d0c8ba32dde4a06bda83d52af49120f";
       if (!subscanApiKey) {
         throw new Error("SUBSCAN_API_KEY is not set");
       }
