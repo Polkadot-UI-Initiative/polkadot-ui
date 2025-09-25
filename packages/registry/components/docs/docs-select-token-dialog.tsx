@@ -1,6 +1,6 @@
 "use client";
 
-import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/components/select-token-dialog.dedot";
+import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/select-token-dialog.dedot";
 import { selectTokenDialogExample } from "@/components/examples/dedot/example-select-token-dialog";
 import { ComponentExample } from "@/components/examples/types.examples";
 import { ComponentPreview } from "@/components/layout/component-preview";

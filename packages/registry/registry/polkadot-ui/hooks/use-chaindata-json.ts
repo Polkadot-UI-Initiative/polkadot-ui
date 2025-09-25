@@ -114,7 +114,7 @@ export function useChaindata(): UseChaindataResult {
 /**
  * Get specific tokens by assetIds for a chain
  * Filters tokens using the pattern: chainId:substrate-assets:assetId
- * This won't grab the native token for the chain
+ * This will include the native token for the chain if includeNative is true
  */
 export function useTokensByAssetIds(
   chainId: string,

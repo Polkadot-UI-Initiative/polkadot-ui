@@ -1,5 +1,5 @@
 import type { ComponentExample } from "../types.examples";
-import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/components/select-token-dialog.dedot";
+import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/select-token-dialog.dedot";
 import { paseoAssetHub } from "typink";
 
 export const selectTokenDialogExample: ComponentExample = {

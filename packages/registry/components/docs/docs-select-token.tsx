@@ -1,6 +1,6 @@
 "use client";
 
-import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/components/select-token.dedot";
+import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/select-token.dedot";
 import { selectTokenExample } from "@/components/examples/dedot/example-select-token";
 import { ComponentExample } from "@/components/examples/types.examples";
 import { ComponentPreview } from "@/components/layout/component-preview";

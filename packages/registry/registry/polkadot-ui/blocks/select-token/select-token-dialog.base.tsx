@@ -11,7 +11,7 @@ import {
 import {
   TokenLogoWithNetwork,
   tokenSelectionStyles,
-} from "./shared-token-components";
+} from "@/registry/polkadot-ui/blocks/select-token/shared-token-components";
 import {
   TokenInfo,
   NetworkInfoLike,

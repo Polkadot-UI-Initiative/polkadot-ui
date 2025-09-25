@@ -8,29 +8,29 @@ import {
   usePolkadotClient,
   useTypink,
 } from "typink";
-import { useAssetMetadata } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-metadata.dedot";
+import { useAssetMetadata } from "@/registry/polkadot-ui/hooks/use-asset-metadata.dedot";
 import {
   useAssetBalances,
   useNativeBalance,
-} from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-balance.dedot";
+} from "@/registry/polkadot-ui/hooks/use-asset-balance.dedot";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   type SelectTokenDialogBaseProps,
   SelectTokenDialogBase,
-} from "./select-token-dialog.base";
+} from "@/registry/polkadot-ui/blocks/select-token/select-token-dialog.base";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import {
   createDefaultChainTokens,
   mergeWithChaindataTokens,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { Button } from "@/components/ui/button";
-import { useTokensByAssetIds } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-chaindata-json.dedot";
+import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   NATIVE_TOKEN_KEY,
   NATIVE_TOKEN_ID,
-} from "@/registry/polkadot-ui/blocks/select-token/components/shared-token-components";
+} from "@/registry/polkadot-ui/blocks/select-token/shared-token-components";
 
 export type SelectTokenDialogProps = Omit<
   SelectTokenDialogBaseProps,
