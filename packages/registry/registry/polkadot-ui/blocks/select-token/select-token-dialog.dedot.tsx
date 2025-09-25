@@ -40,7 +40,13 @@ export type SelectTokenDialogProps = Omit<
 
 export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
   // by default, add native token to the list of tokens with includeNative
-  const { chainId, assetIds, includeNative = true, ...otherProps } = props;
+  const {
+    chainId,
+    assetIds,
+    includeNative = true,
+    showAll = true,
+    ...otherProps
+  } = props;
   const { connectedAccount, supportedNetworks } = useTypink();
   const { client, status } = usePolkadotClient(chainId ?? paseoAssetHub.id);
 
@@ -66,8 +72,11 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
     assetIds,
     {
       includeNative,
+      showAll,
     }
   );
+
+  console.log({ chainTokens });
 
   const network = supportedNetworks.find(
     (n) => n.id === (chainId ?? paseoAssetHub.id)

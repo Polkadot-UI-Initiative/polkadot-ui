@@ -42,6 +42,7 @@ export interface SelectTokenDialogProps {
   withBalance?: boolean;
   withSearch?: boolean;
   includeNative?: boolean;
+  showAll?: boolean;
   chainId?: string;
   fallback?: React.ReactNode;
   balancePrecision?: number;
