@@ -1,5 +1,6 @@
 import {
   paseo,
+  paseo_asset_hub,
   paseo_people,
   polkadot_people,
 } from "@polkadot-api/descriptors";
@@ -16,11 +17,15 @@ let polkadotPeopleProvider: WsJsonRpcProvider | null = getWsProvider(
 let paseoProvider: WsJsonRpcProvider | null = getWsProvider(
   "wss://sys.ibp.network/paseo"
 );
+let paseoAssetHubProvider: WsJsonRpcProvider | null = getWsProvider(
+  "wss://sys.ibp.network/asset-hub-paseo"
+);
 
 export const destroyProviders = () => {
   paseoPeopleProvider = null;
   polkadotPeopleProvider = null;
   paseoProvider = null;
+  paseoAssetHubProvider = null;
 };
 
 export const config = defineConfig({
@@ -52,6 +57,15 @@ export const config = defineConfig({
       symbol: "DOT",
       decimals: 10,
       logo: "https://polkadot.network/logo.png",
+    },
+    paseoAssetHub: {
+      name: "Paseo Asset Hub",
+      descriptor: paseo_asset_hub,
+      provider: paseoAssetHubProvider,
+      explorerUrl: "https://assethub-paseo.subscan.io",
+      symbol: "PAS",
+      decimals: 10,
+      logo: "https://paseo.network/logo.png",
     },
   },
   wallets: [new InjectedWalletProvider()],
