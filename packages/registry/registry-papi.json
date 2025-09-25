@@ -177,6 +177,14 @@
         {
           "path": "registry/polkadot-ui/lib/polkadot-provider.papi.tsx",
           "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
         }
       ]
     },

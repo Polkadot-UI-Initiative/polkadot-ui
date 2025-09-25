@@ -44,6 +44,10 @@
           "type": "registry:component"
         },
         {
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
           "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
           "type": "registry:lib"
         },

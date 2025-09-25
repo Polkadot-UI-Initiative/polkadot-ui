@@ -1,0 +1,39 @@
+name: Tests
+
+on:
+  pull_request:
+    branches: ["**"]
+  workflow_dispatch: {}
+
+jobs:
+  test:
+    name: CI Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build (monorepo)
+        run: pnpm -r build
+
+      - name: Run CLI tests
+        run: pnpm --filter polkadot-ui test
+
+      - name: Run Registry tests
+        run: pnpm --filter @polkadot-ui/registry test

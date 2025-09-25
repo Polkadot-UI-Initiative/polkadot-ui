@@ -101,7 +101,9 @@ export function RemarkButton({ networkId }: { networkId: ChainId }) {
         title: "Remark Welcome Message",
       }}
     >
-      Remark a message on {network.name}
+      Remark message on
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={network?.logo} alt={network?.name} className="w-4 h-4" />
     </TxButton>
   );
 }
