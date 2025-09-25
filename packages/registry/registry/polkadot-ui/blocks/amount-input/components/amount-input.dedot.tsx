@@ -11,9 +11,9 @@ import {
   useTypink,
   ClientConnectionStatus,
 } from "typink";
-import { useAssetMetadata } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-metadata.dedot";
-import { useTokensByAssetIds } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-chaindata-json.dedot";
-import { useAssetBalances } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-balance.dedot";
+import { useAssetMetadata } from "@/registry/polkadot-ui/hooks/use-asset-metadata.dedot";
+import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
+import { useAssetBalances } from "@/registry/polkadot-ui/hooks/use-asset-balance.dedot";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 
 export type AmountInputProps = Omit<AmountInputBaseProps, "services">;

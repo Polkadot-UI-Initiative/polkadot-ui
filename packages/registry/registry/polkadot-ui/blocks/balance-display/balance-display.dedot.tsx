@@ -5,8 +5,8 @@ import {
   type BalanceDisplayBaseProps,
 } from "./balance-display.base";
 import { useTypink, useBalance, NetworkId } from "typink";
-import { useTokensByAssetIds } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-chaindata-json.dedot";
-import { useAssetBalance } from "../select-token/hooks/use-asset-balance.dedot";
+import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
+import { useAssetBalance } from "../../hooks/use-asset-balance.dedot";
 
 export type BalanceDisplayProps = Omit<
   BalanceDisplayBaseProps,

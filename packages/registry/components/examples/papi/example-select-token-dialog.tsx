@@ -1,6 +1,5 @@
 import type { ComponentExample } from "@/components/examples/types.examples";
-import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/select-token-dialog.dedot";
-import { paseoAssetHub } from "typink";
+import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/select-token-dialog.papi";
 
 export const selectTokenDialogExample: ComponentExample = {
   name: "Select Token Dialog",
@@ -10,7 +9,7 @@ export const selectTokenDialogExample: ComponentExample = {
   component: (
     <div className="w-[260px]">
       <SelectTokenDialog
-        chainId={paseoAssetHub.id}
+        chainId="paseoAssetHub"
         assetIds={[1984, 8, 27]}
         className="w-full"
         withBalance
@@ -19,12 +18,11 @@ export const selectTokenDialogExample: ComponentExample = {
       />
     </div>
   ),
-  tsx: `import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/select-token-dialog.dedot";
-import { paseoAssetHub } from "typink";
+  tsx: `import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/select-token-dialog.papi";
 
 <div className="w-[260px]">
   <SelectTokenDialog
-    chainId={paseoAssetHub.id}
+    chainId="paseoAssetHub"
     assetIds={[1984, 8, 27]}
     className="w-full"
     withBalance

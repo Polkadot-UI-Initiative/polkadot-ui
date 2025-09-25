@@ -1,12 +1,137 @@
 ---
 title: Select Token
-description: Token selection UI with search and balances. Coming soon.
+description:
+  A comprehensive token selection component with balance display, asset
+  filtering, and network integration.
 ---
 
-import { ExamplePlaceholder } from "@/components/examples/placeholder";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SelectTokenDocs } from "@/components/docs/docs-select-token";
 
-## Coming soon
+## Introduction
 
-<ExamplePlaceholder title="Select Token" />
+SelectToken is a comprehensive dropdown component for selecting tokens from
+supported chains with real-time balance display and asset metadata integration.
 
+## Features
 
+- **Asset IDs Definition**: Define which tokens to include by specific asset IDs
+- **Token Selection**: Dropdown interface for selecting from available tokens
+- **Balance Display**: Real-time balance information for connected accounts
+- **Network Integration**: Automatic network detection and logo display
+- **Native Token Support**: Optional inclusion of native chain tokens
+- **Loading States**: Visual feedback during data fetching
+- **TypeScript**: Full type safety with comprehensive interfaces
+- **Customizable**: Flexible styling and configuration options
+
+## Installation
+
+```bash
+npx polkadot-ui@latest add select-token
+```
+
+## Usage
+
+<SelectTokenDocs />
+
+## Props
+
+| Prop            | Type                        | Default          | Description                           |
+| --------------- | --------------------------- | ---------------- | ------------------------------------- |
+| `chainId`       | `string`                    | -                | Chain identifier for token selection  |
+| `assetIds`      | `number[]`                  | -                | Array of asset IDs to filter tokens   |
+| `withBalance`   | `boolean`                   | `false`          | Show balance information for tokens   |
+| `value`         | `number`                    | -                | Currently selected asset ID           |
+| `onChange`      | `(assetId: number) => void` | -                | Called when token selection changes   |
+| `placeholder`   | `string`                    | `"Select token"` | Placeholder text for the dropdown     |
+| `includeNative` | `boolean`                   | `true`           | Include native chain token in options |
+| `disabled`      | `boolean`                   | `false`          | Disable the component                 |
+| `className`     | `string`                    | -                | Additional CSS classes                |
+
+## Component States
+
+The component shows different visual states:
+
+- **Loading**: Spinner while fetching token data
+- **Connected**: Full functionality with balance display
+- **Disconnected**: Limited functionality without wallet connection
+- **Empty**: No tokens available message
+
+## Token Display
+
+When tokens are loaded, each option shows:
+
+1. **Token Logo**: Asset logo with network overlay
+2. **Token Symbol**: Primary token identifier
+3. **Balance**: User's balance (when `withBalance` is enabled and wallet
+   connected)
+4. **Token Name**: Full token name for additional context
+
+## Asset Filtering
+
+The `assetIds` prop allows you to restrict which tokens appear:
+
+```tsx
+// Show only specific tokens
+<SelectToken
+  chainId="paseoAssetHub"
+  assetIds={[1984, 1337, 7777]}
+  withBalance
+/>
+```
+
+## Native Token Handling
+
+By default, native chain tokens are included in the selection. Control this with
+`includeNative`:
+
+```tsx
+// Include native token (default)
+<SelectToken
+  chainId="paseoAssetHub"
+  assetIds={[1, 2, 3]}
+  includeNative={true}
+  withBalance
+/>
+
+// Exclude native token
+<SelectToken
+  chainId="paseoAssetHub"
+  assetIds={[1, 2, 3]}
+  includeNative={false}
+  withBalance
+/>
+```
+
+## Balance Integration
+
+When `withBalance` is enabled and a wallet is connected:
+
+- Displays formatted token balances
+- Updates in real-time as balances change
+- Shows loading states during balance fetching
+- Handles both native and asset token balances
+
+## Network Support
+
+The component automatically detects and displays:
+
+- **Network Logos**: Chain-specific branding
+- **Token Metadata**: Names, symbols, and decimals from chain data
+- **Asset Information**: Integration with Talisman's chaindata
+
+## Error Handling
+
+The component gracefully handles:
+
+- **Connection Issues**: Shows appropriate loading/disconnected states
+- **Missing Data**: Fallback displays when token data unavailable
+- **Invalid Assets**: Filters out non-existent or invalid asset IDs
+- **Network Errors**: Retry mechanisms for failed requests
+
+## Accessibility
+
+- **Keyboard Navigation**: Full keyboard support for dropdown interaction
+- **Screen Readers**: Proper ARIA labels and descriptions
+- **Focus Management**: Clear focus indicators and logical tab order
+- **Loading Indicators**: Accessible loading states with appropriate labels

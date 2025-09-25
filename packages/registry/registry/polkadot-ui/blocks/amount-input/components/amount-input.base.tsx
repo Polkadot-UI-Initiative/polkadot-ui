@@ -4,7 +4,7 @@ import { forwardRef, useEffect, useRef, useState } from "react";
 import type { TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { Label } from "@/registry/polkadot-ui/ui/label";
 import { Input } from "@/registry/polkadot-ui/ui/input";
-import { SelectTokenDialogBase } from "@/registry/polkadot-ui/blocks/select-token/components/select-token-dialog.base";
+import { SelectTokenDialogBase } from "@/registry/polkadot-ui/blocks/select-token/select-token-dialog.base";
 import { cn } from "@/registry/polkadot-ui/lib/utils";
 
 export interface AmountInputServices<TNetworkId extends string = string> {

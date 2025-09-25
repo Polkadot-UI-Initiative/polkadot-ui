@@ -12,10 +12,10 @@ import {
   formatTokenBalance,
   getTokenBalance,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { TokenMetadata } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-metadata.dedot";
+import { TokenMetadata } from "@/registry/polkadot-ui/hooks/use-asset-metadata.dedot";
 import { TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { NetworkInfoLike } from "@/registry/polkadot-ui/lib/types.dot-ui";
-import { TokenLogoWithNetwork } from "./shared-token-components";
+import { TokenLogoWithNetwork } from "@/registry/polkadot-ui/blocks/select-token/shared-token-components";
 
 export interface SelectTokenServices {
   isConnected: boolean;
@@ -28,17 +28,15 @@ export interface SelectTokenServices {
   network?: NetworkInfoLike;
 }
 
-export interface SelectTokenProps<TChainId extends string = string> {
+export interface SelectTokenBaseProps<TChainId extends string = string> {
   chainId: TChainId;
   assetIds: number[];
   withBalance: boolean;
   services: SelectTokenServices;
   includeNative?: boolean;
+  showAll?: boolean;
   fallback?: React.ReactNode;
-}
-
-export interface SelectTokenBaseProps<TChainId extends string = string>
-  extends SelectTokenProps<TChainId> {
+  balancePrecision?: number;
   value?: number;
   onChange?: (assetId: number) => void;
   placeholder?: string;
@@ -52,6 +50,7 @@ export function SelectTokenBase<TChainId extends string = string>({
   className,
   withBalance,
   services,
+  balancePrecision = 2,
   ...props
 }: SelectTokenBaseProps<TChainId> & React.ComponentProps<typeof Select>) {
   const {
@@ -114,6 +113,7 @@ export function SelectTokenBase<TChainId extends string = string>({
             tokenLogo={token.logo}
             withBalance={withBalance}
             connectedAccount={connectedAccount}
+            balancePrecision={balancePrecision}
           />
         ))}
       </SelectContent>
@@ -130,6 +130,7 @@ function TokenSelectItem({
   network,
   tokenLogo,
   connectedAccount,
+  balancePrecision = 2,
 }: {
   token: TokenInfo;
   withBalance: boolean;
@@ -137,6 +138,7 @@ function TokenSelectItem({
   network?: NetworkInfoLike;
   tokenLogo?: string;
   connectedAccount?: { address?: string } | null;
+  balancePrecision?: number;
 }) {
   return (
     <SelectItem
@@ -153,7 +155,7 @@ function TokenSelectItem({
         <span className="font-medium">
           {connectedAccount?.address &&
             withBalance &&
-            formatTokenBalance(balance, token.decimals)}{" "}
+            formatTokenBalance(balance, token.decimals, balancePrecision)}{" "}
           {token.symbol}
         </span>
       </div>
