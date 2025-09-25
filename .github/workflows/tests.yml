@@ -10,21 +10,24 @@ jobs:
     name: CI Tests
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    strategy:
+      matrix:
+        node-version: [20]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.3
+
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: ${{ matrix.node-version }}
           cache: "pnpm"
-
-      - name: Enable Corepack and prepare pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.15.3 --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
