@@ -36,7 +36,7 @@ export interface SelectTokenDialogServices {
   balances?: Record<number, bigint | null>;
 }
 
-export interface SelectTokenDialogProps {
+export interface SelectTokenDialogBaseProps {
   assetIds: number[];
   services: SelectTokenDialogServices;
   withBalance?: boolean;
@@ -46,9 +46,6 @@ export interface SelectTokenDialogProps {
   chainId?: string;
   fallback?: React.ReactNode;
   balancePrecision?: number;
-}
-
-export interface SelectTokenDialogBaseProps extends SelectTokenDialogProps {
   value?: number;
   onChange?: (assetId: number) => void;
   className?: string;

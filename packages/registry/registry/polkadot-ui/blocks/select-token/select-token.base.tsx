@@ -28,7 +28,7 @@ export interface SelectTokenServices {
   network?: NetworkInfoLike;
 }
 
-export interface SelectTokenProps<TChainId extends string = string> {
+export interface SelectTokenBaseProps<TChainId extends string = string> {
   chainId: TChainId;
   assetIds: number[];
   withBalance: boolean;
@@ -37,10 +37,6 @@ export interface SelectTokenProps<TChainId extends string = string> {
   showAll?: boolean;
   fallback?: React.ReactNode;
   balancePrecision?: number;
-}
-
-export interface SelectTokenBaseProps<TChainId extends string = string>
-  extends SelectTokenProps<TChainId> {
   value?: number;
   onChange?: (assetId: number) => void;
   placeholder?: string;
