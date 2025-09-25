@@ -90,9 +90,12 @@ export function SelectTokenInner(props: SelectTokenProps) {
       chainIdForTokens,
       includeNative
     );
+    const sanitizedChainTokens = (chainTokens ?? []).filter(
+      (token): token is NonNullable<typeof token> => token != null
+    );
     const finalTokens = mergeWithChaindataTokens(
       defaultTokens,
-      chainTokens ?? []
+      sanitizedChainTokens
     );
 
     const hasNativeToken =

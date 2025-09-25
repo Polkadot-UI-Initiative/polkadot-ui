@@ -86,7 +86,7 @@ import { paseoAssetHub } from "typink";
   {
     name: "Select Token - Custom Balance Precision",
     code: "select-token",
-    description: "Dialog with custom balance precision formatting",
+    description: "Token selection with custom balance precision formatting",
     component: (
       <SelectToken
         className="w-[260px]"

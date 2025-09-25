@@ -76,8 +76,6 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
     }
   );
 
-  console.log({ chainTokens });
-
   const network = supportedNetworks.find(
     (n) => n.id === (chainId ?? paseoAssetHub.id)
   );

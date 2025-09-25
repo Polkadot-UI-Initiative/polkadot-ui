@@ -180,15 +180,16 @@ export function useTokensByAssetIds(
       };
     }
 
-    if (matched.length >= 1 && options?.showAll) {
-      return { resultTokens: [nativeToken, ...matched], logicError: null };
-    } else {
-      // none is native → ensure native first, then first matched if exists
-      return { resultTokens: [nativeToken, matched[0]], logicError: null };
+    // fallback to just native
+    if (matched.length === 0) {
+      return { resultTokens: [nativeToken], logicError: null };
     }
 
-    // fallback to just native
-    return { resultTokens: [nativeToken], logicError: null };
+    if (options?.showAll) {
+      return { resultTokens: [nativeToken, ...matched], logicError: null };
+    }
+
+    return { resultTokens: [nativeToken, matched[0]], logicError: null };
   }, [
     chainId,
     tokens,
