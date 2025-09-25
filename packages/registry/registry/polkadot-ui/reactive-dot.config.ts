@@ -65,6 +65,7 @@ export const config = defineConfig({
       explorerUrl: "https://assethub-paseo.subscan.io",
       symbol: "PAS",
       decimals: 10,
+      // TODO: find the correct logo
       logo: "https://raw.githubusercontent.com/Koniverse/SubWallet-ChainList/refs/heads/master/packages/chain-list-assets/public/assets/chains/paseo_assethub.png",
     },
   },
