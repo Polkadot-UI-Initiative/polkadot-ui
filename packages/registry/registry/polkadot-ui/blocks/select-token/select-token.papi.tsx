@@ -35,7 +35,7 @@ export type SelectTokenProps = Omit<SelectTokenBaseProps, "services"> &
 
 export function SelectTokenInner(props: SelectTokenProps) {
   // by default, add native token to the list of tokens with includeNative
-  const { includeNative = true, ...restProps } = props;
+  const { includeNative = true, showAll = true, ...restProps } = props;
   const chainId = (restProps.chainId ?? "paseoAssetHub") as ChainId;
 
   const { client, status, selectedAccount } = usePapi(chainId);
@@ -62,6 +62,7 @@ export function SelectTokenInner(props: SelectTokenProps) {
     restProps.assetIds,
     {
       includeNative,
+      showAll,
     }
   );
 

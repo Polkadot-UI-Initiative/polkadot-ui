@@ -106,7 +106,7 @@ export function useAssetBalance({
           await assetApi.query.Assets.Account.getValue(assetId, address);
         if (!raw) return null;
 
-        return parseBalanceLike(raw.balance);
+        return parseBalanceLike((raw as { balance?: unknown }).balance);
       } catch (error) {
         console.error("Asset balance lookup failed:", error);
         return null;
@@ -189,8 +189,8 @@ export function useAssetBalances(
 
     sortedIds.forEach((assetId, index) => {
       const row = batched.data?.[index];
-      const account = row as { balance?: unknown };
-      balances[assetId] = parseBalanceLike(account.balance);
+      const account = row as { balance?: unknown } | null | undefined;
+      balances[assetId] = account ? parseBalanceLike(account.balance) : null;
       errors[assetId] = (batched.error as Error | null) ?? null;
     });
 
@@ -274,7 +274,7 @@ export function useNativeBalance({
         type SystemAccountValue = ExtractSystemAccountValue<typeof systemApi>;
         const account: SystemAccountValue =
           await systemApi.query.System.Account.getValue(address);
-        const raw = account.data?.free;
+        const raw = (account as { data?: { free?: unknown } })?.data?.free;
 
         return parseBalanceLike(raw);
       } catch (error) {

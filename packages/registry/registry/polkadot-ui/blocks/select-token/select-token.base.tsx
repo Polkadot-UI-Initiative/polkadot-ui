@@ -34,6 +34,7 @@ export interface SelectTokenProps<TChainId extends string = string> {
   withBalance: boolean;
   services: SelectTokenServices;
   includeNative?: boolean;
+  showAll?: boolean;
   fallback?: React.ReactNode;
   balancePrecision?: number;
 }

@@ -119,7 +119,7 @@ export function useChaindata(): UseChaindataResult {
 export function useTokensByAssetIds(
   chainId: string,
   assetIds: number[],
-  options?: { includeNative?: boolean }
+  options?: { includeNative?: boolean; showAll?: boolean }
 ) {
   const {
     tokens,
@@ -180,13 +180,23 @@ export function useTokensByAssetIds(
       };
     }
 
-    // none is native → ensure native first, then first matched if exists
-    if (matched.length >= 1)
+    if (matched.length >= 1 && options?.showAll) {
+      return { resultTokens: [nativeToken, ...matched], logicError: null };
+    } else {
+      // none is native → ensure native first, then first matched if exists
       return { resultTokens: [nativeToken, matched[0]], logicError: null };
+    }
 
     // fallback to just native
     return { resultTokens: [nativeToken], logicError: null };
-  }, [chainId, tokens, chains, assetIds, options?.includeNative]);
+  }, [
+    chainId,
+    tokens,
+    chains,
+    assetIds,
+    options?.includeNative,
+    options?.showAll,
+  ]);
 
   return {
     tokens: resultTokens,

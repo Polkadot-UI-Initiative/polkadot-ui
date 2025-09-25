@@ -89,8 +89,11 @@ export function useAssetMetadata({
             const meta: AssetMetadataValue =
               await assetApi.query.Assets.Metadata.getValue(assetId);
 
-            const name = decodeText((meta as { name?: unknown }).name);
-            const symbol = decodeText((meta as { symbol?: unknown }).symbol);
+            const nameField = (meta as { name?: unknown }).name;
+            const symbolField = (meta as { symbol?: unknown }).symbol;
+
+            const name = decodeBinaryField(nameField);
+            const symbol = decodeBinaryField(symbolField);
             const decimals = (meta as { decimals?: number }).decimals ?? 0;
             const deposit = (meta as { deposit?: bigint }).deposit ?? 0n;
             const isFrozen = (meta as { isFrozen?: boolean }).isFrozen ?? false;
@@ -131,50 +134,58 @@ export function useAssetMetadata({
   } as const;
 }
 
-function decodeText(data: unknown): string | undefined {
-  if (!data) return undefined;
+function decodeBinaryField(binaryField: unknown): string | undefined {
+  if (!binaryField) return undefined;
 
-  // Handle Binary type (Uint8Array)
-  if (data instanceof Uint8Array) {
-    try {
-      return new TextDecoder().decode(data);
-    } catch {
-      return undefined;
+  try {
+    const field = binaryField as {
+      asText?: () => string;
+      asBytes?: () => Uint8Array;
+      asHex?: () => string;
+      asOpaqueBytes?: () => Uint8Array;
+      asOpaqueHex?: () => string;
+    };
+
+    // Try asText() method first (most common for readable metadata)
+    if (typeof field?.asText === "function") {
+      const text = field.asText();
+      return text && text.length > 0 ? text : undefined;
     }
-  }
 
-  // Handle string
-  if (typeof data === "string") {
-    return data;
-  }
-
-  // Handle object with Binary data
-  if (data && typeof data === "object") {
-    const obj = data as Record<string, unknown>;
-
-    // Check for Raw property (common in Substrate)
-    if (obj.Raw && obj.Raw instanceof Uint8Array) {
-      try {
-        return new TextDecoder().decode(obj.Raw);
-      } catch {
-        return undefined;
+    // Try asBytes() method and decode as UTF-8
+    if (typeof field?.asBytes === "function") {
+      const bytes = field.asBytes();
+      if (bytes && bytes.length > 0) {
+        return new TextDecoder("utf-8", { ignoreBOM: true }).decode(bytes);
       }
     }
 
-    // Check for value property
-    if (typeof obj.value === "string") {
-      return obj.value;
-    }
-
-    // If the object itself looks like a Uint8Array
-    if (typeof obj.length === "number" && obj[0] !== undefined) {
-      try {
-        const uint8Array = new Uint8Array(Object.values(obj) as number[]);
-        return new TextDecoder().decode(uint8Array);
-      } catch {
-        return undefined;
+    // Try asHex() method and convert hex to string
+    if (typeof field?.asHex === "function") {
+      const hex = field.asHex();
+      if (hex && hex.length > 2) {
+        // Skip '0x' prefix
+        const hexString = hex.startsWith("0x") ? hex.slice(2) : hex;
+        const bytes = new Uint8Array(
+          hexString
+            .match(/.{1,2}/g)
+            ?.map((byte: string) => parseInt(byte, 16)) || []
+        );
+        return new TextDecoder("utf-8", { ignoreBOM: true }).decode(bytes);
       }
     }
+
+    // Fallback: check if it's already a string
+    if (typeof binaryField === "string") {
+      return binaryField;
+    }
+
+    // Fallback: check if it's a Uint8Array
+    if (binaryField instanceof Uint8Array) {
+      return new TextDecoder("utf-8", { ignoreBOM: true }).decode(binaryField);
+    }
+  } catch (error) {
+    console.warn("Failed to decode binary field:", error);
   }
 
   return undefined;
