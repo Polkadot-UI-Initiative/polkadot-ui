@@ -31,7 +31,7 @@ export const selectTokenDialogExamples: ComponentExample[] = [
         />
       </div>
     ),
-    tsx: `import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/components/select-token-dialog.dedot";
+    tsx: `import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/select-token-dialog.dedot";
 import { paseoAssetHub } from "typink";
 
 <div className="flex gap-4">
@@ -64,7 +64,7 @@ import { paseoAssetHub } from "typink";
         includeNative={false}
       />
     ),
-    tsx: `import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/components/select-token-dialog.dedot";
+    tsx: `import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/select-token-dialog.dedot";
 import { paseoAssetHub } from "typink";
 
 <SelectTokenDialog
@@ -88,7 +88,7 @@ import { paseoAssetHub } from "typink";
         balancePrecision={4}
       />
     ),
-    tsx: `import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/components/select-token-dialog.dedot";
+    tsx: `import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/select-token-dialog.dedot";
 import { paseoAssetHub } from "typink";
 
 <SelectTokenDialog
@@ -114,7 +114,7 @@ import { paseoAssetHub } from "typink";
         />
       </div>
     ),
-    tsx: `import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/components/select-token-dialog.dedot";
+    tsx: `import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/select-token-dialog.dedot";
 import { paseoAssetHub } from "typink";
 
 <SelectTokenDialog

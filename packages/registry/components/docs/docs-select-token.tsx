@@ -25,7 +25,7 @@ export const selectTokenExamples: ComponentExample[] = [
         withBalance={false}
       />
     ),
-    tsx: `import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/components/select-token.dedot";
+    tsx: `import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/select-token.dedot";
 import { paseoAssetHub } from "typink";
 
 <SelectToken
@@ -48,7 +48,7 @@ import { paseoAssetHub } from "typink";
         includeNative={false}
       />
     ),
-    tsx: `import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/components/select-token.dedot";
+    tsx: `import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/select-token.dedot";
 import { paseoAssetHub } from "typink";
 
 <SelectToken
@@ -72,7 +72,7 @@ import { paseoAssetHub } from "typink";
         onChange={handleTokenChange}
       />
     ),
-    tsx: `import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/components/select-token.dedot";
+    tsx: `import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/select-token.dedot";
 import { paseoAssetHub } from "typink";
 
 <SelectToken
@@ -96,10 +96,10 @@ import { paseoAssetHub } from "typink";
         balancePrecision={4}
       />
     ),
-    tsx: `import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/components/select-token-dialog.dedot";
+    tsx: `import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/select-token.dedot";
 import { paseoAssetHub } from "typink";
 
-<SelectTokenDialog
+<SelectToken
   className="w-[260px]"
   chainId={paseoAssetHub.id}
   assetIds={[1984, 1337, 7777]}
