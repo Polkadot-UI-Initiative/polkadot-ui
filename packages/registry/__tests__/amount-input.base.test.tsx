@@ -14,5 +14,7 @@ describe("AmountInputBase", () => {
       />
     );
     expect(screen.getByText("Amount")).toBeInTheDocument();
+    const input = screen.getByRole("spinbutton");
+    expect(input).toBeDisabled();
   });
 });

@@ -7,7 +7,10 @@ export async function getSubscanDotPrice(apiKey?: string) {
     myHeaders.append("x-api-key", apiKey);
   }
 
-  const response = await fetch("/api/price/dot", { method: "GET" });
+  const response = await fetch("/api/price/dot", {
+    method: "GET",
+    headers: myHeaders,
+  });
   const data = await response.json();
   const dotPrice = data?.price;
   const priceNumber = typeof dotPrice === "number" ? dotPrice : null;
