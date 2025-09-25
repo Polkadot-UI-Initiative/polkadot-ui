@@ -1,5 +1,6 @@
 import {
   paseo,
+  paseo_asset_hub,
   paseo_people,
   polkadot_people,
 } from "@polkadot-api/descriptors";
@@ -16,11 +17,15 @@ let polkadotPeopleProvider: WsJsonRpcProvider | null = getWsProvider(
 let paseoProvider: WsJsonRpcProvider | null = getWsProvider(
   "wss://sys.ibp.network/paseo"
 );
+let paseoAssetHubProvider: WsJsonRpcProvider | null = getWsProvider(
+  "wss://sys.ibp.network/asset-hub-paseo"
+);
 
 export const destroyProviders = () => {
   paseoPeopleProvider = null;
   polkadotPeopleProvider = null;
   paseoProvider = null;
+  paseoAssetHubProvider = null;
 };
 
 export const config = defineConfig({
@@ -33,7 +38,7 @@ export const config = defineConfig({
       explorerUrl: "https://paseo.subscan.io",
       symbol: "PAS",
       decimals: 10,
-      logo: "https://raw.githubusercontent.com/Koniverse/SubWallet-ChainList/refs/heads/master/packages/chain-list-assets/public/",
+      logo: "https://raw.githubusercontent.com/Koniverse/SubWallet-ChainList/refs/heads/master/packages/chain-list-assets/public/assets/chain-assets/paseotest-native-pas.png",
     },
     paseoPeople: {
       name: "Paseo People",
@@ -51,7 +56,17 @@ export const config = defineConfig({
       explorerUrl: "https://people-polkadot.subscan.io",
       symbol: "DOT",
       decimals: 10,
-      logo: "https://polkadot.network/logo.png",
+      logo: "https://raw.githubusercontent.com/Koniverse/SubWallet-ChainList/refs/heads/master/packages/chain-list-assets/public/assets/chains/polkadot_people.png",
+    },
+    paseoAssetHub: {
+      name: "Paseo Asset Hub",
+      descriptor: paseo_asset_hub,
+      provider: paseoAssetHubProvider,
+      explorerUrl: "https://assethub-paseo.subscan.io",
+      symbol: "PAS",
+      decimals: 10,
+      // TODO: find the correct logo
+      logo: "https://raw.githubusercontent.com/Koniverse/SubWallet-ChainList/refs/heads/master/packages/chain-list-assets/public/assets/chains/paseo_assethub.png",
     },
   },
   wallets: [new InjectedWalletProvider()],

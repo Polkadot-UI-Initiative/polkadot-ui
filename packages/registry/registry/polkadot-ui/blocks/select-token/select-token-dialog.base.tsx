@@ -11,7 +11,7 @@ import {
 import {
   TokenLogoWithNetwork,
   tokenSelectionStyles,
-} from "./shared-token-components";
+} from "@/registry/polkadot-ui/blocks/select-token/shared-token-components";
 import {
   TokenInfo,
   NetworkInfoLike,
@@ -36,18 +36,16 @@ export interface SelectTokenDialogServices {
   balances?: Record<number, bigint | null>;
 }
 
-export interface SelectTokenDialogProps {
+export interface SelectTokenDialogBaseProps {
   assetIds: number[];
   services: SelectTokenDialogServices;
   withBalance?: boolean;
   withSearch?: boolean;
   includeNative?: boolean;
+  showAll?: boolean;
   chainId?: string;
   fallback?: React.ReactNode;
   balancePrecision?: number;
-}
-
-export interface SelectTokenDialogBaseProps extends SelectTokenDialogProps {
   value?: number;
   onChange?: (assetId: number) => void;
   className?: string;

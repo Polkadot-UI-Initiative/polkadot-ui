@@ -5,78 +5,97 @@ import type React from "react";
 import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ClientConnectionStatus, usePolkadotClient, useTypink } from "typink";
-import { useAssetMetadata } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-metadata.dedot";
+import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
+import { useAssetMetadata } from "@/registry/polkadot-ui/hooks/use-asset-metadata.papi";
 import {
   useAssetBalances,
   useNativeBalance,
-} from "@/registry/polkadot-ui/blocks/select-token/hooks/use-asset-balance.dedot";
+} from "@/registry/polkadot-ui/hooks/use-asset-balance.papi";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   type SelectTokenBaseProps,
   SelectTokenBase,
-} from "./select-token.base";
-import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
-import { paseoAssetHub } from "typink";
+} from "@/registry/polkadot-ui/blocks/select-token/select-token.base";
+import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
+import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import {
   createDefaultChainTokens,
   mergeWithChaindataTokens,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { useTokensByAssetIds } from "@/registry/polkadot-ui/blocks/select-token/hooks/use-chaindata-json.dedot";
+import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
 import {
   NATIVE_TOKEN_KEY,
   NATIVE_TOKEN_ID,
-} from "@/registry/polkadot-ui/blocks/select-token/components/shared-token-components";
+} from "@/registry/polkadot-ui/blocks/select-token/shared-token-components";
+import { config } from "@/registry/polkadot-ui/reactive-dot.config";
+import type { ChainId } from "@reactive-dot/core";
 
 export type SelectTokenProps = Omit<SelectTokenBaseProps, "services"> &
   React.ComponentProps<typeof Select>;
 
 export function SelectTokenInner(props: SelectTokenProps) {
   // by default, add native token to the list of tokens with includeNative
-  const { includeNative = true, ...restProps } = props;
-  const { client, status } = usePolkadotClient(
-    restProps.chainId ?? paseoAssetHub.id
-  );
-  const { connectedAccount, supportedNetworks } = useTypink();
+  const { includeNative = true, showAll = true, ...restProps } = props;
+  const chainId = (restProps.chainId ?? "paseoAssetHub") as ChainId;
+
+  const { client, status, selectedAccount } = usePapi(chainId);
 
   const { assets, isLoading } = useAssetMetadata({
-    chainId: restProps.chainId,
+    chainId,
     assetIds: restProps.assetIds,
   });
 
   const { isLoading: tokenBalancesLoading, balances } = useAssetBalances({
-    chainId: restProps.chainId ?? paseoAssetHub.id,
+    chainId,
     assetIds: restProps.assetIds,
-    address: connectedAccount?.address ?? "",
+    address: selectedAccount?.address ?? "",
   });
 
   const { free: nativeBalance, isLoading: nativeBalanceLoading } =
     useNativeBalance({
-      chainId: restProps.chainId ?? paseoAssetHub.id,
-      address: connectedAccount?.address ?? "",
+      chainId,
+      address: selectedAccount?.address ?? "",
     });
 
   const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
-    restProps.chainId ?? paseoAssetHub.id,
+    chainId,
     restProps.assetIds,
     {
       includeNative,
+      showAll,
     }
   );
 
-  const network = supportedNetworks.find(
-    (n) => n.id === (restProps.chainId ?? paseoAssetHub.id)
-  );
+  // Create supported networks from config
+  const supportedNetworks = useMemo(() => {
+    return Object.keys(config.chains).map((chainId) => {
+      const chain = config.chains[chainId as keyof typeof config.chains];
+      return {
+        id: chainId,
+        name: chain.name,
+        symbol: chain.symbol,
+        decimals: chain.decimals,
+        logo: chain.logo,
+        explorerUrl: chain.explorerUrl,
+      };
+    });
+  }, []);
+
+  const network = supportedNetworks.find((n) => n.id === chainId);
 
   const services = useMemo(() => {
-    const chainIdForTokens = restProps.chainId ?? paseoAssetHub.id;
+    const chainIdForTokens = chainId;
     const defaultTokens = createDefaultChainTokens(
       assets ?? [],
-      chainIdForTokens
+      chainIdForTokens,
+      includeNative
+    );
+    const sanitizedChainTokens = (chainTokens ?? []).filter(
+      (token): token is NonNullable<typeof token> => token != null
     );
     const finalTokens = mergeWithChaindataTokens(
       defaultTokens,
-      chainTokens ?? []
+      sanitizedChainTokens
     );
 
     const hasNativeToken =
@@ -101,7 +120,7 @@ export function SelectTokenInner(props: SelectTokenProps) {
         tokenBalancesLoading ||
         nativeBalanceLoading,
       items: assets ?? [],
-      connectedAccount,
+      connectedAccount: selectedAccount,
       isDisabled:
         (restProps.disabled ?? false) ||
         status !== ClientConnectionStatus.Connected ||
@@ -118,9 +137,9 @@ export function SelectTokenInner(props: SelectTokenProps) {
     tokenBalancesLoading,
     nativeBalanceLoading,
     assets,
-    connectedAccount,
+    selectedAccount,
     restProps.disabled,
-    restProps.chainId,
+    chainId,
     client,
     restProps.assetIds,
     chainTokens,

@@ -4,7 +4,7 @@ import { TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import {
   NATIVE_TOKEN_ID,
   NATIVE_TOKEN_KEY,
-} from "@/registry/polkadot-ui/blocks/select-token/components/shared-token-components";
+} from "@/registry/polkadot-ui/blocks/select-token/shared-token-components";
 
 export interface TokenMetadata {
   assetId: number;

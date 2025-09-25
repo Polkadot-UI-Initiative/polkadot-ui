@@ -114,12 +114,12 @@ export function useChaindata(): UseChaindataResult {
 /**
  * Get specific tokens by assetIds for a chain
  * Filters tokens using the pattern: chainId:substrate-assets:assetId
- * This won't grab the native token for the chain
+ * This will include the native token for the chain if includeNative is true
  */
 export function useTokensByAssetIds(
   chainId: string,
   assetIds: number[],
-  options?: { includeNative?: boolean }
+  options?: { includeNative?: boolean; showAll?: boolean }
 ) {
   const {
     tokens,
@@ -180,13 +180,24 @@ export function useTokensByAssetIds(
       };
     }
 
-    // none is native → ensure native first, then first matched if exists
-    if (matched.length >= 1)
-      return { resultTokens: [nativeToken, matched[0]], logicError: null };
-
     // fallback to just native
-    return { resultTokens: [nativeToken], logicError: null };
-  }, [chainId, tokens, chains, assetIds, options?.includeNative]);
+    if (matched.length === 0) {
+      return { resultTokens: [nativeToken], logicError: null };
+    }
+
+    if (options?.showAll) {
+      return { resultTokens: [nativeToken, ...matched], logicError: null };
+    }
+
+    return { resultTokens: [nativeToken, matched[0]], logicError: null };
+  }, [
+    chainId,
+    tokens,
+    chains,
+    assetIds,
+    options?.includeNative,
+    options?.showAll,
+  ]);
 
   return {
     tokens: resultTokens,
