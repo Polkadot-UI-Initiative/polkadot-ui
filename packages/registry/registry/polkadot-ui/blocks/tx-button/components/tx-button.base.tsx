@@ -22,6 +22,7 @@ import type {
   TxAdapter,
   TxResultLike,
 } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import { formatBalance } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { type VariantProps } from "class-variance-authority";
 import { Ban, CheckCheck, CheckCircle, Coins, Loader2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -51,30 +52,6 @@ export interface TxButtonServices<TNetworkId = unknown> {
   feeError?: string | null;
   balanceFree?: bigint | null;
 }
-
-// original source: https://github.com/polkadot-api/react-teleport-example/blob/main/src/lib/utils.ts
-export const formatBalance = ({
-  value,
-  decimals = 0,
-  unit,
-  nDecimals,
-}: {
-  value: bigint | null | undefined;
-  decimals?: number;
-  unit?: string;
-  nDecimals?: number;
-  padToDecimals?: boolean;
-  decimalSeparator?: string;
-}): string => {
-  if (value === null || value === undefined) return "";
-  const precisionMultiplier = 10n ** BigInt(decimals);
-  const isNegative = value < 0n;
-  const absValue = isNegative ? value * -1n : value;
-  const fullNumber = Number(absValue) / Number(precisionMultiplier);
-  const formattedNumber = fullNumber.toFixed(nDecimals);
-  const finalNumber = isNegative ? `-${formattedNumber}` : formattedNumber;
-  return unit ? `${finalNumber} ${unit}` : finalNumber;
-};
 
 type ArgsProp = { args?: unknown[] };
 

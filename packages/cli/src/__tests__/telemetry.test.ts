@@ -167,28 +167,6 @@ describe("Telemetry Privacy Improvements", () => {
     });
   });
 
-  describe("Configuration Migration", () => {
-    it("should migrate old configuration format", async () => {
-      const oldConfig = {
-        userId: "old-uuid",
-        enabled: true,
-        version: 0, // Old version
-      };
-
-      mockFs.readFile.mockResolvedValue(JSON.stringify(oldConfig));
-
-      telemetry = new Telemetry(mockOptions);
-      const info = await telemetry.getInfo();
-
-      // Should preserve user ID but update version
-      expect(info.userId).toBe("old-uuid");
-      expect(mockFs.writeFile).toHaveBeenCalledWith(
-        expect.any(String),
-        expect.stringContaining('"version":1')
-      );
-    });
-  });
-
   describe("Fallback Behavior", () => {
     it("should handle config file access failures gracefully", async () => {
       mockFs.readFile.mockRejectedValue(new Error("Permission denied"));

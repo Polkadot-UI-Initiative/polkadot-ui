@@ -1,3 +1,5 @@
+"use client";
+
 import { RequireAccount } from "@/registry/polkadot-ui/blocks/require-account/require-account.dedot";
 import type { ComponentExample } from "../types.examples";
 import { paseo, useTypink } from "typink";

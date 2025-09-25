@@ -45,6 +45,7 @@ export function PolkadotProvider({
         defaultCaller={defaultCaller}
         supportedNetworks={supportedNetworks}
         defaultNetworkIds={supportedNetworks.map((network) => network.id)}
+        cacheMetadata={true}
       >
         {children}
       </TypinkProvider>
