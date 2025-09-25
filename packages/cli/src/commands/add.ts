@@ -859,6 +859,12 @@ export class AddCommand {
     // Provide recovery suggestions
     this.showInstallationRecovery(error, componentName);
 
+    // In test environments, avoid terminating the process so tests can assert failures
+    const isTestEnv =
+      process.env.NODE_ENV === "test" || process.env.POLKADOT_UI_TEST === "1";
+    if (isTestEnv) {
+      throw error instanceof Error ? error : new Error(String(error));
+    }
     process.exit(1);
   }
 

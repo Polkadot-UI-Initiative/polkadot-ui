@@ -88,6 +88,7 @@ class TelemetryConfigManager {
   private static readonly CONFIG_VERSION = 1;
 
   private configPath: string | null = null;
+  private inMemoryConfig: TelemetryConfig | null = null;
 
   constructor() {
     this.initializeConfigPath();
@@ -146,12 +147,14 @@ class TelemetryConfigManager {
 
     if (!this.configPath) {
       // Fallback config if path initialization failed
-      return {
+      const fallback = {
         userId: this.generateUUID(),
         enabled: false, // Default to disabled if we can't persist
         version: TelemetryConfigManager.CONFIG_VERSION,
         createdAt: new Date().toISOString(),
       };
+      this.inMemoryConfig = fallback;
+      return fallback;
     }
 
     try {
@@ -166,7 +169,9 @@ class TelemetryConfigManager {
 
       return config;
     } catch (error) {
-      // Config doesn't exist or is invalid, create new one
+      // If we have an in-memory config (from previous save), use it
+      if (this.inMemoryConfig) return this.inMemoryConfig;
+      // Otherwise create a new one
       return await this.createNewConfig();
     }
   }
@@ -183,6 +188,7 @@ class TelemetryConfigManager {
     };
 
     await this.saveConfig(config);
+    this.inMemoryConfig = config;
     return config;
   }
 
@@ -239,6 +245,8 @@ class TelemetryConfigManager {
     } catch (error) {
       console.debug("Failed to save telemetry config:", error);
     }
+    // Always update in-memory copy so tests or restricted environments reflect changes
+    this.inMemoryConfig = config;
   }
 
   /**
@@ -317,14 +325,22 @@ export class Telemetry {
 
       let packageJsonPath: string;
 
-      // Handle different execution contexts (tests vs runtime)
-      if (typeof import.meta !== "undefined" && import.meta.url) {
-        const { fileURLToPath } = await import("url");
-        const __filename = fileURLToPath(import.meta.url);
-        const __dirname = path.dirname(__filename);
-        packageJsonPath = path.join(__dirname, "../../package.json");
-      } else {
-        // Fallback for test environment
+      // Handle different execution contexts (tests vs runtime) without statically referencing import.meta
+      try {
+        // eslint-disable-next-line no-new-func
+        const getImportMetaUrl = new Function(
+          "try { return import.meta.url } catch { return undefined }"
+        ) as () => string | undefined;
+        const metaUrl = getImportMetaUrl();
+        if (typeof metaUrl === "string") {
+          const { fileURLToPath } = await import("url");
+          const __filename = fileURLToPath(metaUrl);
+          const __dirname = path.dirname(__filename);
+          packageJsonPath = path.join(__dirname, "../../package.json");
+        } else {
+          packageJsonPath = path.join(process.cwd(), "package.json");
+        }
+      } catch {
         packageJsonPath = path.join(process.cwd(), "package.json");
       }
 

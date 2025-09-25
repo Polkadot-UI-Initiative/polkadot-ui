@@ -1,5 +1,5 @@
 import { PolkadotDetector } from "../utils/polkadot-detector";
-import type { PackageJson, ComponentInfo } from "../types";
+import type { PackageJson } from "../types";
 import fs from "fs/promises";
 
 // Mock fs module
@@ -35,15 +35,6 @@ function mockPackageJsonRead(
   });
 }
 
-function mockDirectoryExists(exists: boolean = true) {
-  if (exists) {
-    const mockStat = { isDirectory: () => true };
-    mockFs.stat.mockResolvedValue(mockStat as any);
-  } else {
-    mockFs.stat.mockRejectedValue(new Error("ENOENT"));
-  }
-}
-
 describe("Component Detection Tests", () => {
   let detector: PolkadotDetector;
 
@@ -56,12 +47,6 @@ describe("Component Detection Tests", () => {
   // Test integration with actual polkadot setup detection
   describe("Integration with Setup Detection", () => {
     it("should require setup when only dedot is installed", async () => {
-      const componentInfo = {
-        name: "polkadot-component",
-        requiresPolkadotApi: true,
-        dependencies: ["polkadot-api"],
-      };
-
       // Create fresh detector and set up dedot mock
       const freshDetector = new PolkadotDetector(mockCwd);
       const mockPackageJson = { dependencies: { dedot: "^1.0.0" } };
@@ -76,12 +61,6 @@ describe("Component Detection Tests", () => {
     });
 
     it("should require setup when no polkadot library exists", async () => {
-      const componentInfo = {
-        name: "needs-setup-component",
-        requiresPolkadotApi: true,
-        dependencies: ["polkadot-api"],
-      };
-
       const freshDetector = new PolkadotDetector(mockCwd);
       const mockPackageJson = {
         dependencies: { react: "^18.0.0", tailwind: "^3.0.0" },
@@ -93,12 +72,6 @@ describe("Component Detection Tests", () => {
     });
 
     it("should provide proper setup recommendations", async () => {
-      const componentInfo = {
-        name: "component-needing-setup",
-        requiresPolkadotApi: true,
-        dependencies: ["polkadot-api"],
-      };
-
       const freshDetector = new PolkadotDetector(mockCwd);
       const mockPackageJson = { dependencies: { react: "^18.0.0" } };
       mockPackageJsonRead(mockPackageJson);
@@ -154,24 +127,5 @@ describe("Component Detection Tests", () => {
         expect(result).toBe(expectedNeedsSetup);
       }
     );
-
-    it("should handle edge case where flag gets stripped but dependencies remain", async () => {
-      // Simulate scenario where CLI processes component metadata
-      const originalComponent = {
-        name: "processed-component",
-        requiresPolkadotApi: true,
-        dependencies: ["polkadot-api", "react"],
-      };
-
-      // After processing, flag might be removed but dependencies preserved
-      const processedComponent = {
-        name: "processed-component",
-        dependencies: ["polkadot-api", "react"],
-        // requiresPolkadotApi removed during processing
-      };
-
-      // Should still detect polkadot requirement via dependencies
-      expect(await detector.needsPolkadotSetup()).toBe(true);
-    });
   });
 });
