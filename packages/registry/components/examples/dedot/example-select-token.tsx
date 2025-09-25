@@ -1,4 +1,4 @@
-import type { ComponentExample } from "../types.examples";
+import type { ComponentExample } from "@/components/examples/types.examples";
 import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/select-token.dedot";
 import { paseoAssetHub } from "typink";
 
