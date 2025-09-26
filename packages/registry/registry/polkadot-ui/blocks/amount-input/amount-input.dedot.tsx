@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import {
   AmountInputBase,
   type AmountInputBaseProps,
-} from "@/registry/polkadot-ui/blocks/amount-input/components/amount-input.base";
+} from "@/registry/polkadot-ui/blocks/amount-input/amount-input.base";
 import {
   paseoAssetHub,
   usePolkadotClient,
