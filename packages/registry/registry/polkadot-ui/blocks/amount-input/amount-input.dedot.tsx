@@ -18,22 +18,27 @@ import {
   useNativeBalance,
 } from "@/registry/polkadot-ui/hooks/use-asset-balance.dedot";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
-import { NATIVE_TOKEN_KEY } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import {
+  NATIVE_TOKEN_ID,
+  NATIVE_TOKEN_KEY,
+} from "@/registry/polkadot-ui/lib/types.dot-ui";
+import {
+  createDefaultChainTokens,
+  mergeWithChaindataTokens,
+} from "../../lib/utils.dot-ui";
 
 export type AmountInputProps = Omit<AmountInputBaseProps, "services">;
 
 function AmountInputInner(props: AmountInputProps) {
-  const chainId = props.chainId ?? paseoAssetHub.id;
+  const { chainId = paseoAssetHub.id, includeNative = true } = props;
   const assetIds = useMemo(() => props.assetIds ?? [], [props.assetIds]);
 
-  const { client, status } = usePolkadotClient(
-    props.chainId ?? paseoAssetHub.id
-  );
-  const { isLoading } = useAssetMetadata({
+  const { client, status } = usePolkadotClient(chainId);
+  const { connectedAccount, supportedNetworks } = useTypink();
+  const { assets, isLoading } = useAssetMetadata({
     chainId: chainId,
     assetIds: assetIds,
   });
-  const { connectedAccount, supportedNetworks } = useTypink();
   const { isLoading: tokenBalancesLoading, balances } = useAssetBalances({
     chainId: chainId,
     assetIds: assetIds,
@@ -47,22 +52,43 @@ function AmountInputInner(props: AmountInputProps) {
       enabled: !!connectedAccount?.address,
     });
 
-  // Get chainTokens from chaindata for token logos
   const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
-    props.chainId ?? paseoAssetHub.id,
-    assetIds
+    chainId,
+    assetIds,
+    {
+      includeNative,
+      showAll: true,
+    }
   );
 
   // Get network info for network logo
-  const network = supportedNetworks.find(
-    (n) => n.id === (props.chainId ?? paseoAssetHub.id)
-  );
+  const network = supportedNetworks.find((n) => n.id === chainId);
 
   const services = useMemo(() => {
-    const combinedBalances = { ...balances };
-    if (nativeBalance !== null) {
+    const defaultTokens = createDefaultChainTokens(
+      assets,
+      chainId ?? paseoAssetHub.id
+    );
+
+    const finalTokens = mergeWithChaindataTokens(
+      defaultTokens,
+      chainTokens ?? []
+    );
+
+    const hasNativeToken =
+      includeNative &&
+      finalTokens.some(
+        (token) =>
+          token.id === NATIVE_TOKEN_ID || token.assetId === NATIVE_TOKEN_ID
+      );
+
+    const combinedBalances: Record<number, bigint | null> = { ...balances };
+
+    if (hasNativeToken) {
       combinedBalances[NATIVE_TOKEN_KEY] = nativeBalance;
     }
+
+    console.log({ finalTokens });
 
     return {
       isConnected: status === ClientConnectionStatus.Connected,
@@ -76,10 +102,11 @@ function AmountInputInner(props: AmountInputProps) {
         (props.disabled ?? false) ||
         status !== ClientConnectionStatus.Connected ||
         !client ||
+        finalTokens.length === 0 ||
         (props.withTokenSelector && assetIds.length === 0),
-      chainTokens: chainTokens ?? [],
-      balances: combinedBalances,
+      chainTokens: finalTokens,
       network,
+      balances: combinedBalances,
     };
   }, [
     status,
@@ -96,6 +123,9 @@ function AmountInputInner(props: AmountInputProps) {
     balances,
     nativeBalance,
     network,
+    assets,
+    chainId,
+    includeNative,
   ]);
 
   return <AmountInputBase {...props} services={services} />;

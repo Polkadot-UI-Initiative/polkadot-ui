@@ -57,6 +57,7 @@ export interface AmountInputBaseProps<TNetworkId extends string = string> {
   onTokenChange?: (assetId: number) => void;
   chainId?: string;
   assetIds?: number[];
+  includeNative?: boolean;
   disabled?: boolean;
   className?: string;
   services: AmountInputServices<TNetworkId>;

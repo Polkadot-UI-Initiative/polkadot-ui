@@ -61,6 +61,7 @@ export const amountInputExample: ComponentExample = {
               className="w-full"
               showMaxButton
               showAvailableBalance
+              includeNative={false}
               placeholder="Enter DOT amount"
             />
           </div>

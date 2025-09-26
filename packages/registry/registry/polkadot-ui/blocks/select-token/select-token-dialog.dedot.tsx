@@ -41,34 +41,34 @@ export type SelectTokenDialogProps = Omit<
 export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
   // by default, add native token to the list of tokens with includeNative
   const {
-    chainId,
+    chainId = paseoAssetHub.id,
     assetIds,
     includeNative = true,
     showAll = true,
     ...otherProps
   } = props;
   const { connectedAccount, supportedNetworks } = useTypink();
-  const { client, status } = usePolkadotClient(chainId ?? paseoAssetHub.id);
+  const { client, status } = usePolkadotClient(chainId);
 
   const { assets, isLoading } = useAssetMetadata({
-    chainId: chainId ?? paseoAssetHub.id,
+    chainId: chainId,
     assetIds: assetIds,
   });
 
   const { isLoading: tokenBalancesLoading, balances } = useAssetBalances({
-    chainId: chainId ?? paseoAssetHub.id,
+    chainId: chainId,
     assetIds: assetIds,
     address: connectedAccount?.address ?? "",
   });
 
   const { free: nativeBalance, isLoading: nativeBalanceLoading } =
     useNativeBalance({
-      chainId: chainId ?? paseoAssetHub.id,
+      chainId: chainId,
       address: connectedAccount?.address ?? "",
     });
 
   const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
-    chainId ?? paseoAssetHub.id,
+    chainId,
     assetIds,
     {
       includeNative,
@@ -76,15 +76,10 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
     }
   );
 
-  const network = supportedNetworks.find(
-    (n) => n.id === (chainId ?? paseoAssetHub.id)
-  );
+  const network = supportedNetworks.find((n) => n.id === chainId);
 
   const services = useMemo(() => {
-    const defaultTokens = createDefaultChainTokens(
-      assets,
-      chainId ?? paseoAssetHub.id
-    );
+    const defaultTokens = createDefaultChainTokens(assets, chainId);
     const finalTokens = mergeWithChaindataTokens(
       defaultTokens,
       chainTokens ?? []
