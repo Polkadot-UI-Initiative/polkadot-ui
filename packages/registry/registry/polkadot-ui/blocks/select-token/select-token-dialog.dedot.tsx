@@ -79,7 +79,11 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
   const network = supportedNetworks.find((n) => n.id === chainId);
 
   const services = useMemo(() => {
-    const defaultTokens = createDefaultChainTokens(assets, chainId);
+    const defaultTokens = createDefaultChainTokens(
+      assets,
+      chainId,
+      includeNative
+    );
     const finalTokens = mergeWithChaindataTokens(
       defaultTokens,
       chainTokens ?? []

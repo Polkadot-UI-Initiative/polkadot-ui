@@ -73,7 +73,8 @@ export function SelectTokenInner(props: SelectTokenProps) {
     const chainIdForTokens = restProps.chainId ?? paseoAssetHub.id;
     const defaultTokens = createDefaultChainTokens(
       assets ?? [],
-      chainIdForTokens
+      chainIdForTokens,
+      includeNative
     );
     const finalTokens = mergeWithChaindataTokens(
       defaultTokens,

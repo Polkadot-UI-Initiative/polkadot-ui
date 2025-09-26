@@ -67,7 +67,8 @@ function AmountInputInner(props: AmountInputProps) {
   const services = useMemo(() => {
     const defaultTokens = createDefaultChainTokens(
       assets,
-      chainId ?? paseoAssetHub.id
+      chainId,
+      includeNative
     );
 
     const finalTokens = mergeWithChaindataTokens(
@@ -87,8 +88,6 @@ function AmountInputInner(props: AmountInputProps) {
     if (hasNativeToken) {
       combinedBalances[NATIVE_TOKEN_KEY] = nativeBalance;
     }
-
-    console.log({ finalTokens });
 
     return {
       isConnected: status === ClientConnectionStatus.Connected,

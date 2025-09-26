@@ -9,6 +9,7 @@ import {
   useCallback,
 } from "react";
 import type { TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import { NATIVE_TOKEN_KEY } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { Label } from "@/registry/polkadot-ui/ui/label";
 import { Input } from "@/registry/polkadot-ui/ui/input";
 import { Button } from "@/registry/polkadot-ui/ui/button";
@@ -129,7 +130,11 @@ const AmountInputWithTokenSelectorBase = forwardRef(
         services.chainTokens &&
         services.chainTokens.length === 1
       ) {
-        const singleTokenId = Number(services.chainTokens[0].assetId);
+        const token = services.chainTokens[0];
+        const singleTokenId =
+          token.assetId === "substrate-native"
+            ? NATIVE_TOKEN_KEY
+            : Number(token.assetId);
         setSelectedTokenId(singleTokenId);
       }
     }, [selectedTokenId, services.chainTokens]);
@@ -148,7 +153,10 @@ const AmountInputWithTokenSelectorBase = forwardRef(
     const currentToken =
       selectedTokenId && services.chainTokens
         ? services.chainTokens.find(
-            (t) => Number(t.assetId) === selectedTokenId
+            (t) =>
+              (t.assetId === "substrate-native"
+                ? NATIVE_TOKEN_KEY
+                : Number(t.assetId)) === selectedTokenId
           )
         : singleToken;
 
