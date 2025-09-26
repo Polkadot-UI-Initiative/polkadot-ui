@@ -34,9 +34,8 @@ export type SelectTokenProps = Omit<SelectTokenBaseProps, "services"> &
 export function SelectTokenInner(props: SelectTokenProps) {
   // by default, add native token to the list of tokens with includeNative
   const { includeNative = true, showAll = true, ...restProps } = props;
-  const { client, status } = usePolkadotClient(
-    restProps.chainId ?? paseoAssetHub.id
-  );
+  const chainId = restProps.chainId ?? paseoAssetHub.id;
+  const { client, status } = usePolkadotClient(chainId);
   const { connectedAccount, supportedNetworks } = useTypink();
 
   const { assets, isLoading } = useAssetMetadata({
@@ -45,19 +44,19 @@ export function SelectTokenInner(props: SelectTokenProps) {
   });
 
   const { isLoading: tokenBalancesLoading, balances } = useAssetBalances({
-    chainId: restProps.chainId ?? paseoAssetHub.id,
+    chainId: chainId,
     assetIds: restProps.assetIds,
     address: connectedAccount?.address ?? "",
   });
 
   const { free: nativeBalance, isLoading: nativeBalanceLoading } =
     useNativeBalance({
-      chainId: restProps.chainId ?? paseoAssetHub.id,
+      chainId: chainId,
       address: connectedAccount?.address ?? "",
     });
 
   const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
-    restProps.chainId ?? paseoAssetHub.id,
+    chainId,
     restProps.assetIds,
     {
       includeNative,
@@ -65,12 +64,10 @@ export function SelectTokenInner(props: SelectTokenProps) {
     }
   );
 
-  const network = supportedNetworks.find(
-    (n) => n.id === (restProps.chainId ?? paseoAssetHub.id)
-  );
+  const network = supportedNetworks.find((n) => n.id === chainId);
 
   const services = useMemo(() => {
-    const chainIdForTokens = restProps.chainId ?? paseoAssetHub.id;
+    const chainIdForTokens = chainId;
     const defaultTokens = createDefaultChainTokens(
       assets ?? [],
       chainIdForTokens,
@@ -122,7 +119,7 @@ export function SelectTokenInner(props: SelectTokenProps) {
     assets,
     connectedAccount,
     restProps.disabled,
-    restProps.chainId,
+    chainId,
     client,
     restProps.assetIds,
     chainTokens,

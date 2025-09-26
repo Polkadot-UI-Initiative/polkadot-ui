@@ -1,0 +1,475 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "polkadot-ui-dedot",
+  "homepage": "https://polkadot-ui.com",
+  "items": [
+    {
+      "name": "tx-notification",
+      "type": "registry:component",
+      "title": "Tx Notification (dedot)",
+      "description": "A component that shows status updates in a notification.",
+      "dependencies": ["dedot", "typink", "lucide-react", "sonner"],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/tx-notification/components/tx-notification.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "tx-button",
+      "type": "registry:component",
+      "title": "Tx Button (dedot)",
+      "description": "A button that triggers a transaction and shows status updates in a notification.",
+      "dependencies": [
+        "dedot",
+        "typink",
+        "lucide-react",
+        "@tanstack/react-query",
+        "class-variance-authority",
+        "sonner"
+      ],
+      "registryDependencies": ["button", "skeleton"],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/tx-button/components/tx-button.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/tx-button/components/tx-button.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dedot.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/tx-notification/components/tx-notification.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "account-info",
+      "type": "registry:component",
+      "title": "Address Info (dedot)",
+      "description": "Display identity information for an address using identity.identityOf.",
+      "dependencies": [
+        "dedot",
+        "typink",
+        "lucide-react",
+        "@tanstack/react-query",
+        "@polkadot/react-identicon"
+      ],
+      "registryDependencies": ["popover", "skeleton"],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/account-info/account-info.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/account-info/account-info.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-identity-of.dedot.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "require-account",
+      "type": "registry:component",
+      "title": "Require Account (dedot)",
+      "description": "Render children only when an account is selected; otherwise show a prompt.",
+      "dependencies": [
+        "dedot",
+        "typink",
+        "lucide-react",
+        "@polkadot/react-identicon",
+        "@tanstack/react-query"
+      ],
+      "registryDependencies": ["button", "dialog"],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/require-account/require-account.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/require-account/require-account.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "address-input",
+      "type": "registry:component",
+      "title": "Address Input (dedot)",
+      "description": "A comprehensive address input component with SS58/Ethereum validation, identity lookup using dedot, and customizable identicon themes (polkadot, substrate, beachball, jdenticon).",
+      "dependencies": [
+        "@polkadot/keyring",
+        "@polkadot/util",
+        "ethers",
+        "@tanstack/react-query",
+        "@polkadot/react-identicon",
+        "dedot",
+        "typink"
+      ],
+      "registryDependencies": ["input", "label", "badge", "button"],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/address-input/address-input.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/address-input/address-input.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-identity-of.dedot.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-search-identity.dedot.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dedot.ts",
+          "type": "registry:lib"
+        },
+
+        {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "require-connection",
+      "type": "registry:component",
+      "title": "Require Connection (dedot)",
+      "description": "A smart wrapper component that conditionally renders content based on chain connection status, with loading states and fallback UI support using dedot.",
+      "dependencies": [
+        "dedot",
+        "typink",
+        "lucide-react",
+        "@polkadot/react-identicon",
+        "@tanstack/react-query"
+      ],
+      "registryDependencies": ["button", "dialog"],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/require-connection/require-connection.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/require-connection/require-connection.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "connect-wallet",
+      "type": "registry:component",
+      "title": "Wallet Select (dedot)",
+      "description": "A wallet connection component provided by Typink.",
+      "dependencies": [
+        "typink",
+        "lucide-react",
+        "dedot",
+        "@polkadot/react-identicon",
+        "@tanstack/react-query"
+      ],
+      "registryDependencies": ["button", "dialog"],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/connect-wallet/connect-wallet.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/connect-wallet/connect-wallet.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/connect-wallet/view-select-wallet.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/connect-wallet/view-select-account.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
+          "type": "registry:lib"
+        },
+
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "select-token",
+      "type": "registry:component",
+      "title": "Select Token (dedot)",
+      "description": "A dropdown component for selecting tokens with balance display, logo support, and asset metadata integration using Talisman's chaindata and dedot.",
+      "dependencies": [
+        "dedot",
+        "typink",
+        "@tanstack/react-query",
+        "lucide-react"
+      ],
+      "registryDependencies": ["select"],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/select-token.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/select-token.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/shared-token-components.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-asset-metadata.dedot.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-asset-balance.dedot.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-chaindata-json.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
+      "name": "select-token-dialog",
+      "type": "registry:component",
+      "title": "Select Token Dialog (dedot)",
+      "description": "A dialog component for selecting tokens with balance display, logo support, and asset metadata integration using Talisman's chaindata and dedot.",
+      "dependencies": [
+        "dedot",
+        "typink",
+        "@tanstack/react-query",
+        "lucide-react"
+      ],
+      "registryDependencies": ["button", "dialog"],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/select-token-dialog.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/select-token-dialog.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/shared-token-components.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-asset-metadata.dedot.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-asset-balance.dedot.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-chaindata-json.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
+      "name": "network-indicator",
+      "type": "registry:component",
+      "title": "Network Indicator (dedot)",
+      "description": "A component that displays the network indicator.",
+      "dependencies": ["dedot", "typink", "@tanstack/react-query"],
+      "registryDependencies": ["tooltip"],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/network-indicator/network-indicator.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/network-indicator/network-indicator.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "balance-display",
+      "type": "registry:component",
+      "title": "Balance Display (dedot)",
+      "description": "Formatted on-chain balance with optional comparison currency.",
+      "dependencies": ["dedot", "typink", "@tanstack/react-query"],
+      "registryDependencies": ["skeleton"],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/balance-display/balance-display.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/balance-display/balance-display.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-asset-balance.dedot.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-subscan-dot-price.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-chaindata-json.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        }
+      ]
+    }
+  ]
+}
