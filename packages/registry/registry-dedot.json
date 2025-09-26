@@ -426,6 +426,65 @@
       ]
     },
     {
+      "name": "amount-input",
+      "type": "registry:component",
+      "title": "Amount Input (dedot)",
+      "description": "A comprehensive amount input component with token selection, balance validation, and max button functionality for seamless token amount entry.",
+      "dependencies": [
+        "dedot",
+        "typink",
+        "@tanstack/react-query",
+        "lucide-react"
+      ],
+      "registryDependencies": ["input", "label", "button", "dialog"],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/amount-input/amount-input.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/amount-input/amount-input.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/select-token-dialog.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/select-token/shared-token-components.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-asset-metadata.dedot.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-asset-balance.dedot.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-chaindata-json.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
       "name": "balance-display",
       "type": "registry:component",
       "title": "Balance Display (dedot)",

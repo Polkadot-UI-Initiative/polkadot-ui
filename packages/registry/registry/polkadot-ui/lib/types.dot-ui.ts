@@ -173,3 +173,6 @@ export interface ChainInfo {
   isTestnet?: boolean;
   isDefault?: boolean;
 }
+
+export const NATIVE_TOKEN_KEY = -1;
+export const NATIVE_TOKEN_ID = "substrate-native";

@@ -4,7 +4,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { AmountInput } from "@/registry/polkadot-ui/blocks/amount-input/components/amount-input.dedot";
+import { AmountInput } from "@/registry/polkadot-ui/blocks/amount-input/amount-input.dedot";
 import { RequireAccount } from "@/registry/polkadot-ui/blocks/require-account/require-account.dedot";
 import type { ComponentExample } from "../types.examples";
 import { Label } from "@/registry/polkadot-ui/ui/label";
@@ -14,9 +14,9 @@ export const amountInputExample: ComponentExample = {
   name: "Amount Input",
   href: "/docs/components/amount-input",
   code: "amount-input",
-  description: "Input component for entering amounts",
+  description: "Input component for entering amounts with token selector",
   component: (
-    <div className="w-full space-y-3">
+    <div className="w-full">
       <RequireAccount
         chainId={paseoAssetHub.id}
         fallback={
@@ -31,14 +31,15 @@ export const amountInputExample: ComponentExample = {
         }
       >
         <div className="flex flex-col gap-2 w-full">
-          <Label htmlFor="amount">Amount</Label>
+          <Label htmlFor="amount-multi">Multiple Tokens (with selector)</Label>
           <AmountInput
-            id="amount"
+            id="amount-multi"
             withTokenSelector
             chainId={paseoAssetHub.id}
             assetIds={[1984, 1337, 7777]}
             className="w-full"
-            required={false}
+            showMaxButton
+            showAvailableBalance
             placeholder="Enter an amount"
           />
         </div>

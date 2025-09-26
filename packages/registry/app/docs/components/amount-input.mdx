@@ -1,12 +1,210 @@
 ---
 title: Amount Input
-description: Input component for entering amounts. Coming soon.
+description:
+  A comprehensive amount input component with token selection, balance
+  validation, and max button functionality for seamless token amount entry.
 ---
 
-import { ExamplePlaceholder } from "@/components/examples/placeholder";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AmountInputDocs } from "@/components/docs/docs-amount-input";
 
-## Coming soon
+## Introduction
 
-<ExamplePlaceholder title="Amount Input" />
+AmountInput is a comprehensive input component for entering token amounts with
+built-in token selection, balance validation, and maximum amount functionality.
+It supports both simple native token inputs and complex multi-token scenarios.
 
+## Features
 
+- **Token Selection**: Built-in dropdown selector for choosing between multiple
+  assets
+- **Balance Display**: Real-time balance information for connected accounts
+- **Max Button**: Quick fill with maximum available balance
+- **Input Validation**: Real-time validation with error messages and balance
+  checks
+- **Native Token Support**: Seamless handling of both native and asset tokens
+- **Loading States**: Visual feedback during data fetching and validation
+- **TypeScript**: Full type safety with comprehensive interfaces
+- **Customizable**: Flexible styling and configuration options
+
+## Installation
+
+```bash
+npx polkadot-ui@latest add amount-input
+```
+
+## Usage
+
+<AmountInputDocs />
+
+## Props
+
+| Prop                   | Type                        | Default          | Description                            |
+| ---------------------- | --------------------------- | ---------------- | -------------------------------------- |
+| `chainId`              | `string`                    | -                | Chain identifier for token selection   |
+| `assetIds`             | `number[]`                  | -                | Array of asset IDs to filter tokens    |
+| `withTokenSelector`    | `boolean`                   | `false`          | Enable token selector dropdown         |
+| `value`                | `string`                    | -                | Current input value                    |
+| `onChange`             | `(value: string) => void`   | -                | Called when input value changes        |
+| `onTokenChange`        | `(assetId: number) => void` | -                | Called when token selection changes    |
+| `selectedTokenId`      | `number`                    | -                | Currently selected token ID            |
+| `placeholder`          | `string`                    | `"Enter amount"` | Placeholder text for the input         |
+| `includeNative`        | `boolean`                   | `true`           | Include native chain token in options  |
+| `showMaxButton`        | `boolean`                   | `false`          | Show MAX button for quick balance fill |
+| `showAvailableBalance` | `boolean`                   | `false`          | Display available balance below input  |
+| `precision`            | `number`                    | -                | Decimal precision for validation       |
+| `disabled`             | `boolean`                   | `false`          | Disable the component                  |
+| `className`            | `string`                    | -                | Additional CSS classes                 |
+| `label`                | `string`                    | -                | Label text for the input               |
+| `required`             | `boolean`                   | `false`          | Mark input as required                 |
+
+## Component States
+
+The component shows different visual states:
+
+- **Loading**: Spinner while fetching token data and balances
+- **Connected**: Full functionality with balance display and validation
+- **Disconnected**: Limited functionality without wallet connection
+- **Error**: Validation errors with helpful messages
+- **Success**: Valid input with balance confirmation
+
+## Token Selection Modes
+
+### Simple Input (Native Token)
+
+For basic native token input without token selection:
+
+```tsx
+<AmountInput
+  chainId="paseoAssetHub"
+  showMaxButton
+  showAvailableBalance
+  placeholder="Enter native token amount"
+/>
+```
+
+### Multi-Token Selector
+
+For selecting between multiple tokens:
+
+```tsx
+<AmountInput
+  withTokenSelector
+  chainId="paseoAssetHub"
+  assetIds={[1984, 1337, 7777]}
+  showMaxButton
+  showAvailableBalance
+  placeholder="Enter an amount"
+/>
+```
+
+### Single Token Fixed Display
+
+For single token with fixed symbol display:
+
+```tsx
+<AmountInput
+  withTokenSelector
+  chainId="paseoAssetHub"
+  assetIds={[1984]} // Single token
+  includeNative={false}
+  showMaxButton
+  showAvailableBalance
+/>
+```
+
+## Balance Integration
+
+When `showAvailableBalance` is enabled and a wallet is connected:
+
+- Displays formatted available balance below the input
+- Updates in real-time as balances change
+- Shows loading states during balance fetching
+- Handles both native and asset token balances
+- Provides balance-aware validation
+
+## MAX Button Functionality
+
+The MAX button provides quick balance filling:
+
+- **Auto-fill**: Fills input with maximum available balance
+- **Balance Aware**: Only enabled when balance is available
+- **Token Specific**: Respects the currently selected token
+- **Validation**: Ensures the max amount passes validation rules
+
+## Input Validation
+
+The component provides comprehensive validation:
+
+- **Balance Checks**: Ensures entered amount doesn't exceed available balance
+- **Format Validation**: Validates decimal precision and numeric format
+- **Real-time Feedback**: Shows validation errors as you type
+- **Custom Precision**: Respects token-specific decimal places
+- **Error Messages**: Clear, actionable error descriptions
+
+## Asset Filtering
+
+The `assetIds` prop allows you to restrict which tokens appear:
+
+```tsx
+// Show only specific tokens
+<AmountInput
+  withTokenSelector
+  chainId="paseoAssetHub"
+  assetIds={[1984, 1337, 7777]}
+  showMaxButton
+  showAvailableBalance
+/>
+```
+
+## Native Token Handling
+
+By default, native chain tokens are included in the selection. Control this with
+`includeNative`:
+
+```tsx
+// Include native token (default)
+<AmountInput
+  withTokenSelector
+  chainId="paseoAssetHub"
+  assetIds={[1, 2, 3]}
+  includeNative={true}
+  showAvailableBalance
+/>
+
+// Exclude native token
+<AmountInput
+  withTokenSelector
+  chainId="paseoAssetHub"
+  assetIds={[1, 2, 3]}
+  includeNative={false}
+  showAvailableBalance
+/>
+```
+
+## Network Support
+
+The component automatically detects and displays:
+
+- **Network Logos**: Chain-specific branding in token selector
+- **Token Metadata**: Names, symbols, and decimals from chain data
+- **Asset Information**: Integration with Talisman's chaindata
+- **Balance Precision**: Respects token-specific decimal configurations
+
+## Error Handling
+
+The component gracefully handles:
+
+- **Connection Issues**: Shows appropriate loading/disconnected states
+- **Missing Data**: Fallback displays when token data unavailable
+- **Invalid Amounts**: Clear validation messages for invalid inputs
+- **Balance Errors**: Handles cases where balance data is unavailable
+- **Network Errors**: Retry mechanisms for failed requests
+
+## Accessibility
+
+- **Keyboard Navigation**: Full keyboard support for input and token selection
+- **Screen Readers**: Proper ARIA labels and descriptions
+- **Focus Management**: Clear focus indicators and logical tab order
+- **Loading Indicators**: Accessible loading states with appropriate labels
+- **Error Announcements**: Screen reader announcements for validation errors

@@ -15,6 +15,7 @@ import {
 import {
   TokenInfo,
   NetworkInfoLike,
+  NATIVE_TOKEN_KEY,
 } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import {
   Dialog,
@@ -194,7 +195,10 @@ export function SelectTokenDialogBase({
     // If value is provided, prefer it
     if (value != null) {
       const next = chainTokens.find(
-        (token) => Number(token.assetId) === (value as number)
+        (token) =>
+          (token.assetId === "substrate-native"
+            ? NATIVE_TOKEN_KEY
+            : Number(token.assetId)) === (value as number)
       );
       setSelectedToken(next ?? null);
       return;
@@ -209,7 +213,10 @@ export function SelectTokenDialogBase({
     if (!chainTokens || chainTokens.length === 0) return null;
     if (value != null) {
       const found = chainTokens.find(
-        (token) => Number(token.assetId) === (value as number)
+        (token) =>
+          (token.assetId === "substrate-native"
+            ? NATIVE_TOKEN_KEY
+            : Number(token.assetId)) === (value as number)
       );
       if (found) return found;
     }
@@ -221,7 +228,11 @@ export function SelectTokenDialogBase({
 
   const handleTokenSelect = (token: TokenInfo) => {
     setSelectedToken(token);
-    onChange?.(Number(token.assetId));
+    const tokenId =
+      token.assetId === "substrate-native"
+        ? NATIVE_TOKEN_KEY
+        : Number(token.assetId);
+    onChange?.(tokenId);
     setIsOpen(false);
   };
 
