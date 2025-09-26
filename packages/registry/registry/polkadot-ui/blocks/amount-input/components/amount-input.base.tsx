@@ -4,7 +4,13 @@ import { forwardRef, useEffect, useRef, useState } from "react";
 import type { TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { Label } from "@/registry/polkadot-ui/ui/label";
 import { Input } from "@/registry/polkadot-ui/ui/input";
+import { Button } from "@/registry/polkadot-ui/ui/button";
 import { SelectTokenDialogBase } from "@/registry/polkadot-ui/blocks/select-token/select-token-dialog.base";
+import { TokenLogoWithNetwork } from "@/registry/polkadot-ui/blocks/select-token/shared-token-components";
+import {
+  formatTokenBalance,
+  getTokenBalance,
+} from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { cn } from "@/registry/polkadot-ui/lib/utils";
 
 export interface AmountInputServices<TNetworkId extends string = string> {
@@ -47,6 +53,9 @@ export interface AmountInputBaseProps<TNetworkId extends string = string> {
   className?: string;
   services: AmountInputServices<TNetworkId>;
   step?: number | string;
+  showMaxButton?: boolean;
+  showAvailableBalance?: boolean;
+  onMaxClick?: () => void;
 }
 
 const AmountInputWithTokenSelectorBase = forwardRef(
@@ -106,6 +115,41 @@ const AmountInputWithTokenSelectorBase = forwardRef(
       onTokenChange?.(assetId);
     };
 
+    // Check if we should show fixed token display (single token)
+    const shouldShowFixedToken =
+      services.chainTokens && services.chainTokens.length === 1;
+    const singleToken = shouldShowFixedToken ? services.chainTokens![0] : null;
+
+    // Get current token for display
+    const currentToken =
+      selectedTokenId && services.chainTokens
+        ? services.chainTokens.find(
+            (t) => Number(t.assetId) === selectedTokenId
+          )
+        : singleToken;
+
+    // Get balance for current token
+    const currentBalance = currentToken
+      ? getTokenBalance(
+          services.balances,
+          services.connectedAccount,
+          Number(currentToken.assetId)
+        )
+      : null;
+
+    const handleMaxClick = () => {
+      if (currentBalance && currentToken) {
+        const maxAmount = formatTokenBalance(
+          currentBalance,
+          currentToken.decimals,
+          currentToken.decimals
+        );
+        setInputAmount(maxAmount);
+        onChange?.(maxAmount);
+      }
+      props.onMaxClick?.();
+    };
+
     return (
       <div className="space-y-1 w-full">
         {props.label && <Label htmlFor={props.id}>{props.label}</Label>}
@@ -123,29 +167,74 @@ const AmountInputWithTokenSelectorBase = forwardRef(
             min="0"
             step={props.step}
             inputMode="decimal"
-            className={cn("pl-24", props.className)}
+            className={cn(
+              shouldShowFixedToken ? "pl-20" : "pl-24",
+              props.showMaxButton ? "pr-16" : "",
+              props.className
+            )}
           />
+
+          {/* Token selector or fixed token display */}
           <div className="absolute left-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
-            <SelectTokenDialogBase
-              withBalance
-              withSearch
-              compact={true}
-              value={selectedTokenId}
-              onChange={handleTokenChange}
-              placeholder="Token"
-              className="w-fit flex-shrink-0 h-6 px-1 py-0 text-xs border-0 bg-transparent hover:bg-accent/50"
-              services={{
-                isConnected,
-                isLoading: services.isLoading ?? false,
-                isDisabled,
-                chainTokens: services.chainTokens || [],
-                connectedAccount,
-                network: services.network,
-                balances: services.balances,
-              }}
-            />
+            {shouldShowFixedToken && singleToken ? (
+              <div className="flex items-center gap-1.5">
+                <TokenLogoWithNetwork
+                  tokenLogo={singleToken.logo}
+                  networkLogo={services.network?.logo}
+                  tokenSymbol={singleToken.symbol}
+                  size="sm"
+                />
+                <span className="text-xs font-medium text-foreground">
+                  {singleToken.symbol}
+                </span>
+              </div>
+            ) : (
+              <SelectTokenDialogBase
+                withBalance
+                withSearch
+                compact={true}
+                value={selectedTokenId}
+                onChange={handleTokenChange}
+                placeholder="Token"
+                className="w-fit flex-shrink-0 h-6 px-1 py-0 text-xs border-0 bg-transparent hover:bg-accent/50"
+                services={{
+                  isConnected,
+                  isLoading: services.isLoading ?? false,
+                  isDisabled,
+                  chainTokens: services.chainTokens || [],
+                  connectedAccount,
+                  network: services.network,
+                  balances: services.balances,
+                }}
+              />
+            )}
           </div>
+
+          {/* Max button */}
+          {props.showMaxButton && currentToken && currentBalance && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="absolute right-2 top-1/2 -translate-y-1/2 h-6 px-2 text-xs"
+              onClick={handleMaxClick}
+              disabled={isDisabled || !isConnected || !connectedAccount}
+            >
+              MAX
+            </Button>
+          )}
         </div>
+
+        {/* Available balance display */}
+        {props.showAvailableBalance &&
+          currentToken &&
+          connectedAccount?.address && (
+            <div className="text-xs text-muted-foreground mt-1">
+              Available:{" "}
+              {formatTokenBalance(currentBalance, currentToken.decimals, 4)}{" "}
+              {currentToken.symbol}
+            </div>
+          )}
       </div>
     );
   }
@@ -209,6 +298,39 @@ export const AmountInputSimpleBase = forwardRef(function AmountInputSimpleBase<
     onChange?.(newValue);
   };
 
+  // For simple input, we might still want to show max button if there's a network token
+  const networkToken = services.network
+    ? {
+        symbol: services.network.symbol,
+        decimals: services.network.decimals,
+        assetId: "substrate-native",
+        name: services.network.name,
+        logo: services.network.logo,
+      }
+    : null;
+
+  const nativeBalance =
+    services.balances && networkToken
+      ? getTokenBalance(
+          services.balances,
+          services.connectedAccount,
+          "substrate-native"
+        )
+      : null;
+
+  const handleMaxClick = () => {
+    if (nativeBalance && networkToken) {
+      const maxAmount = formatTokenBalance(
+        nativeBalance,
+        networkToken.decimals,
+        networkToken.decimals
+      );
+      setInputAmount(maxAmount);
+      onChange?.(maxAmount);
+    }
+    props.onMaxClick?.();
+  };
+
   return (
     <div className="space-y-1 w-full">
       {props.label && <Label htmlFor={props.id}>{props.label}</Label>}
@@ -227,9 +349,34 @@ export const AmountInputSimpleBase = forwardRef(function AmountInputSimpleBase<
           required={props.required}
           min="0"
           inputMode="decimal"
-          className={cn(props.className)}
+          className={cn(props.showMaxButton ? "pr-16" : "", props.className)}
         />
+
+        {/* Max button for simple input */}
+        {props.showMaxButton && networkToken && nativeBalance && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="absolute right-2 top-1/2 -translate-y-1/2 h-6 px-2 text-xs"
+            onClick={handleMaxClick}
+            disabled={isDisabled || !isConnected || !connectedAccount}
+          >
+            MAX
+          </Button>
+        )}
       </div>
+
+      {/* Available balance display for simple input */}
+      {props.showAvailableBalance &&
+        networkToken &&
+        connectedAccount?.address && (
+          <div className="text-xs text-muted-foreground mt-1">
+            Available:{" "}
+            {formatTokenBalance(nativeBalance, networkToken.decimals, 4)}{" "}
+            {networkToken.symbol}
+          </div>
+        )}
     </div>
   );
 });
