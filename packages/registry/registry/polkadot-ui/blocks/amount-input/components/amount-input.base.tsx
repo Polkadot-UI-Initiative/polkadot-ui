@@ -211,14 +211,20 @@ const AmountInputWithTokenSelectorBase = forwardRef(
           </div>
 
           {/* Max button */}
-          {props.showMaxButton && currentToken && currentBalance && (
+          {props.showMaxButton && currentToken && (
             <Button
               type="button"
               variant="ghost"
               size="sm"
               className="absolute right-2 top-1/2 -translate-y-1/2 h-6 px-2 text-xs"
               onClick={handleMaxClick}
-              disabled={isDisabled || !isConnected || !connectedAccount}
+              disabled={
+                isDisabled ||
+                !isConnected ||
+                !connectedAccount ||
+                currentBalance === null ||
+                currentBalance === 0n
+              }
             >
               MAX
             </Button>
@@ -353,14 +359,20 @@ export const AmountInputSimpleBase = forwardRef(function AmountInputSimpleBase<
         />
 
         {/* Max button for simple input */}
-        {props.showMaxButton && networkToken && nativeBalance && (
+        {props.showMaxButton && networkToken && (
           <Button
             type="button"
             variant="ghost"
             size="sm"
             className="absolute right-2 top-1/2 -translate-y-1/2 h-6 px-2 text-xs"
             onClick={handleMaxClick}
-            disabled={isDisabled || !isConnected || !connectedAccount}
+            disabled={
+              isDisabled ||
+              !isConnected ||
+              !connectedAccount ||
+              nativeBalance === null ||
+              nativeBalance === 0n
+            }
           >
             MAX
           </Button>

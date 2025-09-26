@@ -13,8 +13,12 @@ import {
 } from "typink";
 import { useAssetMetadata } from "@/registry/polkadot-ui/hooks/use-asset-metadata.dedot";
 import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
-import { useAssetBalances } from "@/registry/polkadot-ui/hooks/use-asset-balance.dedot";
+import {
+  useAssetBalances,
+  useNativeBalance,
+} from "@/registry/polkadot-ui/hooks/use-asset-balance.dedot";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
+import { NATIVE_TOKEN_KEY } from "@/registry/polkadot-ui/lib/types.dot-ui";
 
 export type AmountInputProps = Omit<AmountInputBaseProps, "services">;
 
@@ -36,6 +40,13 @@ function AmountInputInner(props: AmountInputProps) {
     address: connectedAccount?.address ?? "",
   });
 
+  const { isLoading: nativeBalanceLoading, free: nativeBalance } =
+    useNativeBalance({
+      chainId: chainId,
+      address: connectedAccount?.address ?? "",
+      enabled: !!connectedAccount?.address,
+    });
+
   // Get chainTokens from chaindata for token logos
   const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
     props.chainId ?? paseoAssetHub.id,
@@ -48,17 +59,26 @@ function AmountInputInner(props: AmountInputProps) {
   );
 
   const services = useMemo(() => {
+    const combinedBalances = { ...balances };
+    if (nativeBalance !== null) {
+      combinedBalances[NATIVE_TOKEN_KEY] = nativeBalance;
+    }
+
     return {
       isConnected: status === ClientConnectionStatus.Connected,
-      isLoading: isLoading || tokensLoading || tokenBalancesLoading,
+      isLoading:
+        isLoading ||
+        tokensLoading ||
+        tokenBalancesLoading ||
+        nativeBalanceLoading,
       connectedAccount,
       isDisabled:
         (props.disabled ?? false) ||
         status !== ClientConnectionStatus.Connected ||
         !client ||
-        assetIds.length === 0,
+        (props.withTokenSelector && assetIds.length === 0),
       chainTokens: chainTokens ?? [],
-      balances,
+      balances: combinedBalances,
       network,
     };
   }, [
@@ -66,12 +86,15 @@ function AmountInputInner(props: AmountInputProps) {
     isLoading,
     tokensLoading,
     tokenBalancesLoading,
+    nativeBalanceLoading,
     connectedAccount,
     props.disabled,
     client,
     assetIds,
+    props.withTokenSelector,
     chainTokens,
     balances,
+    nativeBalance,
     network,
   ]);
 
