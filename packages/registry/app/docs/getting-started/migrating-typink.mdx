@@ -1,0 +1,64 @@
+---
+title: Migrating from existing Typink Apps
+description: Move an existing Typink/Dedot app to Polkadot UI components
+---
+
+## Overview
+
+This guide helps you adopt Polkadot UI in an existing Typink/Dedot project incrementally.
+
+### Prerequisites
+
+- Existing Typink app using Dedot
+- React 18+ and TypeScript
+- Tailwind v4 (recommended)
+
+## Steps
+
+### 1) Install a component
+
+```bash
+npx polkadot-ui@latest add address-input
+```
+
+The CLI detects Dedot and installs Dedot variants when available.
+
+### 2) Ensure providers are wired
+
+Your app likely already has a Dedot provider. If not, add it at the root:
+
+```tsx
+import { PolkadotProvider } from "@/lib/providers/polkadot-provider.dedot"
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return <PolkadotProvider defaultChain="paseo">{children}</PolkadotProvider>
+}
+```
+
+### 3) Replace custom UI with components
+
+Swap existing inputs/displays with Polkadot UI counterparts gradually:
+
+```tsx
+import { AddressInput } from "@/components/ui/address-input"
+
+export function AccountAddressField() {
+  // Preserves your state management
+}
+```
+
+### 4) Data hooks
+
+Use provided hooks or keep your existing ones. Components accept data via props and are library-agnostic.
+
+### 5) Styling
+
+Components are tailwind-based and customizable. Adjust tokens in your CSS variables or override classNames.
+
+## Tips
+
+- Migrate one component at a time
+- Keep your existing fetching/queries; components focus on UI and validation
+- Use the `WithProvider` demo variant only for isolated testing
+
+

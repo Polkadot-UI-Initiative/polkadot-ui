@@ -1,51 +1,9 @@
 import { PolkadotLogo } from "@/components/polkadot-logo";
 import Link from "next/link";
+import { Mail } from "lucide-react";
 import { Logo } from "../logo";
 
-const sitemap = [
-  {
-    title: "Company",
-    links: [
-      {
-        title: "About Us",
-        href: "#",
-      },
-      {
-        title: "Careers",
-        href: "#",
-      },
-      {
-        title: "Contact",
-        href: "#",
-      },
-      {
-        title: "Press",
-        href: "#",
-      },
-    ],
-  },
-  {
-    title: "Support",
-    links: [
-      {
-        title: "Help Center",
-        href: "#",
-      },
-      {
-        title: "Community",
-        href: "#",
-      },
-      {
-        title: "Status",
-        href: "#",
-      },
-      {
-        title: "API Docs",
-        href: "#",
-      },
-    ],
-  },
-];
+// Removed sitemap links in favor of social icons
 
 export function Footer() {
   return (
@@ -59,36 +17,43 @@ export function Footer() {
                 <h3 className="text-xl font-bold">Polkadot UI</h3>
               </div>
               <p className="text-muted-foreground text-base font-medium">
-                Copy the code and make it yours.
+                Customizable and open source Polkadot react components built on
+                top of Papi/Reactive-Dot + Dedot/Typink.
               </p>
             </div>
-            <div className="flex flex-col items-start gap-x-20 gap-y-14 xl:flex-row">
-              <div className="inline-grid w-fit grid-cols-1 gap-x-20 gap-y-14 sm:grid-cols-2">
-                {sitemap.map((section) => (
-                  <div key={section.title} className="h-fit w-min">
-                    <h4 className="mb-6 whitespace-nowrap text-base font-semibold">
-                      {section.title}
-                    </h4>
-                    <ul className="text-muted-foreground space-y-3 text-base font-medium">
-                      {section.links.map((link) => (
-                        <li key={link.title}>
-                          <a
-                            href={link.href}
-                            className="hover:text-accent-foreground whitespace-nowrap text-base"
-                          >
-                            {link.title}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
+            <div className="flex items-center gap-6">
+              <a
+                href={SOCIAL_LINKS.x}
+                aria-label="X (Twitter)"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <XIcon className="size-5" />
+              </a>
+              <a
+                href={SOCIAL_LINKS.telegram}
+                aria-label="Telegram"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <TelegramIcon className="size-5" />
+              </a>
+              <a
+                href={`mailto:${SOCIAL_LINKS.email}`}
+                aria-label="Email"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <Mail className="size-5" />
+              </a>
             </div>
           </div>
           <div className="border-border flex flex-col items-baseline justify-between gap-8 border-t pt-8 md:flex-row md:gap-16">
             <div className="text-muted-foreground text-xs sm:text-sm">
-              Open Source, MIT License
+              <Link href="https://github.com/Polkadot-UI-Initiative/polkadot-ui/blob/main/LICENSE">
+                MIT License
+              </Link>
             </div>
             <div>
               <span className="mr-1 text-sm font-light">Supported by</span>
@@ -103,6 +68,40 @@ export function Footer() {
         </footer>
       </div>
     </section>
+  );
+}
+
+const SOCIAL_LINKS = {
+  x: "https://x.com/PolkadotUI",
+  telegram: "https://t.me/polkadotui",
+  email: "contact@polkadot-ui.com",
+};
+
+function XIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden
+    >
+      <path d="M18.244 2H21l-6.53 7.46L22 22h-6.933l-4.53-5.993L4.3 22H2l7.06-8.06L2 2h6.933l4.2 5.56L18.244 2zm-1.21 18h2.009L7.03 4H5.02l12.014 16z" />
+    </svg>
+  );
+}
+
+function TelegramIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden
+    >
+      <path d="M21.944 3.2a1.5 1.5 0 0 0-1.6-.2L2.7 10.3c-.9.4-.86 1.7.06 2l4.23 1.38 1.67 5.37c.27.87 1.38 1.08 1.94.36l2.49-3.12 4.32 3.3c.78.6 1.93.15 2.13-.84l3.3-15.6c.13-.62-.17-1.25-.79-1.35zM8.6 13.2l9.9-6.1-7.78 7.3c-.1.1-.17.23-.2.37l-.4 2.4-1.52-4.07z" />
+    </svg>
   );
 }
 

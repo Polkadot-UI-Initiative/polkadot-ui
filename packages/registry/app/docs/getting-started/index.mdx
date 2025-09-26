@@ -1,0 +1,71 @@
+---
+title: Getting Started
+description: Create a new application with Polkadot UI components
+---
+
+## New Applications
+
+Polkadot UI ships a CLI that bootstraps new apps and wires providers automatically. This page focuses on green‑field setups.
+
+### 1) Initialize a project
+
+```bash
+npx polkadot-ui@latest init
+```
+
+What you get:
+
+- Next.js or Vite scaffolding with TypeScript
+- Preconfigured providers for PAPI and/or Dedot
+- Tailwind + shadcn/ui set up
+
+### 2) Add your first component
+
+```bash
+npx polkadot-ui@latest add address-input
+```
+
+This installs the component, sets up types, and updates providers if needed.
+
+### 3) Wrap your app with a provider (production setup)
+
+```tsx
+import { PolkadotProvider } from "@/lib/providers/polkadot-provider.papi"
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return <PolkadotProvider defaultChain="paseo">{children}</PolkadotProvider>
+}
+```
+
+For Dedot/Typink based apps, use the Dedot provider:
+
+```tsx
+import { PolkadotProvider } from "@/lib/providers/polkadot-provider.dedot"
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return <PolkadotProvider defaultChain="paseo">{children}</PolkadotProvider>
+}
+```
+
+### 4) Use the component
+
+```tsx
+import { AddressInput } from "@/components/ui/address-input"
+import { useState } from "react"
+
+export default function Page() {
+  const [value, setValue] = useState("")
+  return (
+    <div className="p-6">
+      <AddressInput value={value} onChange={setValue} format="both" withIdentityLookup />
+    </div>
+  )
+}
+```
+
+### Notes
+
+- For demos only, each component also includes a `WithProvider` variant. Prefer a single, shared provider at the app root in production.
+- Both PAPI and Dedot variants are available where applicable; choose the one that matches your stack.
+
+

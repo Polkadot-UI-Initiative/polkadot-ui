@@ -1,0 +1,56 @@
+---
+title: Migrating from existing reactive-dot apps
+description: Adopt Polkadot UI in a reactive-dot (PAPI) application
+---
+
+## Overview
+
+This guide walks through integrating Polkadot UI with an existing reactive-dot (PAPI) codebase.
+
+### Prerequisites
+
+- reactive-dot and polkadot-api installed
+- React 18+ and TypeScript
+- Tailwind v4 (recommended)
+
+## Steps
+
+### 1) Install a component
+
+```bash
+npx polkadot-ui@latest add address-input
+```
+
+The CLI detects PAPI and installs PAPI variants when available.
+
+### 2) Ensure providers are wired
+
+Your app likely has a PAPI provider; otherwise add it at the root:
+
+```tsx
+import { PolkadotProvider } from "@/lib/providers/polkadot-provider.papi"
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return <PolkadotProvider defaultChain="paseo">{children}</PolkadotProvider>
+}
+```
+
+### 3) Replace UI progressively
+
+Swap bespoke widgets (address fields, balance views, tx buttons) with Polkadot UI components.
+
+### 4) Keep your data layer
+
+Components accept plain props. Keep your existing reactive-dot subscriptions and pass values into the components.
+
+### 5) Styling
+
+All components are tailwind classes; tune tokens or override classes to match your DS.
+
+## Tips
+
+- Replace leaf components first to avoid large diffs
+- Use our examples for PAPI to mirror patterns
+- Prefer a single provider instance to share connections across pages
+
+

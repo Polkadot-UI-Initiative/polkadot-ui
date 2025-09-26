@@ -50,14 +50,14 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section className="relative pt-12">
+    <section className="relative pt-12 mx-8">
       <div className="relative z-10 flex flex-col space-y-14">
         <h2 className="w-full text-center px-6 text-3xl font-semibold md:mb-4 md:text-5xl lg:mb-6 lg:px-10">
           Polkadot UI Features
         </h2>
         <div className="relative mt-6 md:mt-10">
           <div className="bg-border absolute left-0 right-0 top-0 h-px" />
-          <div className="divide-border grid md:grid-cols-4 md:divide-x">
+          <div className="divide-border grid md:grid-cols-2 lg:grid-cols-4 md:divide-x">
             {features.map((feature) => (
               <div
                 key={feature.id}
