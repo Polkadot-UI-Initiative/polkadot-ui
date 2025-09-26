@@ -14,13 +14,21 @@ export type BalanceDisplayProps = Omit<
 > & {
   networkId: NetworkId;
   tokenId: number | "native";
-  compareTokenId: number | "native";
+  compareTokenId?: number | "native";
   accountAddress: string;
+  thousandsSeparator?: string;
+  decimalSeparator?: string;
 };
 
 export function BalanceDisplay(props: BalanceDisplayProps) {
   return (
-    <ClientOnly fallback={<BalanceDisplaySkeletonBase />}>
+    <ClientOnly
+      fallback={
+        <BalanceDisplaySkeletonBase
+          showCompare={props.compareTokenId !== undefined}
+        />
+      }
+    >
       <BalanceDisplayInner {...props} />
     </ClientOnly>
   );
@@ -64,11 +72,13 @@ export function BalanceDisplayInner(props: BalanceDisplayProps) {
 
   const compareToken = isCompareNative
     ? nativeToken
-    : typeof props.compareTokenId === "number"
-      ? (findByAssetId(props.compareTokenId) ??
-        tokens.tokens[1] ??
-        tokens.tokens[0])
-      : (tokens.tokens[1] ?? tokens.tokens[0]);
+    : props.compareTokenId === undefined
+      ? null
+      : typeof props.compareTokenId === "number"
+        ? (findByAssetId(props.compareTokenId) ??
+          tokens.tokens[1] ??
+          tokens.tokens[0])
+        : null;
 
   return (
     <BalanceDisplayBase
@@ -77,6 +87,9 @@ export function BalanceDisplayInner(props: BalanceDisplayProps) {
       balance={isTokenNative ? nativeBalance?.free : assetBalance?.free}
       precision={props.precision}
       tokenConversionRate={props.tokenConversionRate}
+      showCompare={props.compareTokenId !== undefined}
+      thousandsSeparator={props.thousandsSeparator}
+      decimalSeparator={props.decimalSeparator}
     />
   );
 }

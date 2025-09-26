@@ -23,7 +23,7 @@ export function NetworkIndicator<T extends ChainId>(
       name: config.chains[chainId as keyof typeof config.chains].name,
       symbol: config.chains[chainId as keyof typeof config.chains].symbol,
       decimals: config.chains[chainId as keyof typeof config.chains].decimals,
-      //TODO add logo
+      logo: config.chains[chainId as keyof typeof config.chains].logo,
     };
   });
 

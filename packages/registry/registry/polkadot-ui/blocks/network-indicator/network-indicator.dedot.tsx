@@ -3,6 +3,7 @@
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   NetworkIndicatorBase,
+  NetworkIndicatorSkeleton,
   NetworkIndicatorBaseProps,
 } from "@/registry/polkadot-ui/blocks/network-indicator/network-indicator.base";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
@@ -18,7 +19,7 @@ export function NetworkIndicator<TNetworkId extends string>(
   props: NetworkIndicatorProps<TNetworkId>
 ) {
   return (
-    <ClientOnly>
+    <ClientOnly fallback={<NetworkIndicatorSkeleton />}>
       <NetworkIndicatorInner {...props} />
     </ClientOnly>
   );

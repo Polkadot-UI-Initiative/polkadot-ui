@@ -47,7 +47,7 @@ export const config = defineConfig({
       explorerUrl: "https://people-paseo.subscan.io",
       symbol: "PAS",
       decimals: 10,
-      logo: "https://paseo.network/logo.png",
+      logo: "https://people-paseo.subscan.io/_next/image?url=%2Fchains%2Fpeople-paseo%2Flogo-mini.png&w=256&q=75",
     },
     polkadotPeople: {
       name: "Polkadot People",
@@ -65,7 +65,6 @@ export const config = defineConfig({
       explorerUrl: "https://assethub-paseo.subscan.io",
       symbol: "PAS",
       decimals: 10,
-      // TODO: find the correct logo
       logo: "https://raw.githubusercontent.com/Koniverse/SubWallet-ChainList/refs/heads/master/packages/chain-list-assets/public/assets/chains/paseo_assethub.png",
     },
   },

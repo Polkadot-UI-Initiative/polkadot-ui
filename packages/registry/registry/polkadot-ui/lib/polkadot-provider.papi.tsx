@@ -83,6 +83,18 @@ function PapiProvider({ children }: { children: ReactNode }) {
   const [, disconnectWallet] = useWalletDisconnector();
   const { selectedAccount, setSelectedAccount } = useSelectedAccount();
 
+  useEffect(() => {
+    return () => {
+      const c = client;
+
+      setTimeout(() => {
+        try {
+          c.destroy();
+        } catch {}
+      }, 0);
+    };
+  }, [client]);
+
   const value = useMemo<PapiContextValue>(
     () => ({
       accounts,

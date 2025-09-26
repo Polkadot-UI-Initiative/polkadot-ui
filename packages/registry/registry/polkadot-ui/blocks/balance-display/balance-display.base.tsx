@@ -17,6 +17,9 @@ export interface BalanceDisplayBaseProps {
   compareToken?: TokenInfo | null | undefined;
   tokenConversionRate?: number | null | undefined;
   comparePrecision?: number | null | undefined;
+  showCompare?: boolean | undefined;
+  thousandsSeparator?: string;
+  decimalSeparator?: string;
 }
 
 export function BalanceDisplayBase(props: BalanceDisplayBaseProps) {
@@ -27,12 +30,16 @@ export function BalanceDisplayBase(props: BalanceDisplayBaseProps) {
     compareToken,
     tokenConversionRate,
     comparePrecision = null,
+    showCompare,
+    thousandsSeparator,
+    decimalSeparator,
   } = props;
 
-  // If caller provided either compare prop, render the compare row and let it skeletonize until ready
-  const showCompare =
-    Object.prototype.hasOwnProperty.call(props, "compareToken") ||
-    Object.prototype.hasOwnProperty.call(props, "tokenConversionRate");
+  // If caller provided showCompare explicitly, use it; otherwise infer
+  const shouldShowCompare =
+    showCompare ??
+    (Object.prototype.hasOwnProperty.call(props, "compareToken") ||
+      Object.prototype.hasOwnProperty.call(props, "tokenConversionRate"));
 
   const compareAmount = (() => {
     if (
@@ -61,15 +68,23 @@ export function BalanceDisplayBase(props: BalanceDisplayBaseProps) {
   return (
     <div className="inline-flex flex-col items-end">
       <div className="text-base font-medium min-h-6 flex flex-row items-center gap-1">
-        <TokenDisplay balance={balance} token={token} precision={precision} />
+        <TokenDisplay
+          balance={balance}
+          token={token}
+          precision={precision}
+          thousandsSeparator={thousandsSeparator}
+          decimalSeparator={decimalSeparator}
+        />
       </div>
-      {showCompare && (
+      {shouldShowCompare && (
         <div className="text-xs flex flex-row items-center gap-1 text-muted-foreground h-3">
           <TokenDisplay
             balance={compareAmount}
             token={compareToken}
             precision={comparePrecision ?? precision}
             small
+            thousandsSeparator={thousandsSeparator}
+            decimalSeparator={decimalSeparator}
           />
         </div>
       )}
@@ -81,16 +96,26 @@ export function TokenDisplay({
   balance,
   token,
   precision,
+  thousandsSeparator,
+  decimalSeparator,
   small,
 }: Pick<BalanceDisplayBaseProps, "balance" | "token" | "precision"> & {
   small?: boolean;
+  thousandsSeparator?: string;
+  decimalSeparator?: string;
 }) {
   const isBalanceLoading = balance === undefined;
   const isTokenLoading = token === undefined;
 
   const formatted =
     typeof balance === "bigint"
-      ? formatTokenBalance(balance, getTokenDecimals(token), precision)
+      ? formatTokenBalance(
+          balance,
+          getTokenDecimals(token),
+          precision,
+          thousandsSeparator,
+          decimalSeparator
+        )
       : undefined;
 
   return (
@@ -171,7 +196,11 @@ export function BalanceSkeleton({
   );
 }
 
-export function BalanceDisplaySkeletonBase() {
+export function BalanceDisplaySkeletonBase({
+  showCompare = true,
+}: {
+  showCompare?: boolean;
+}) {
   return (
     <div className="inline-flex flex-col items-end">
       <div className="text-base font-medium min-h-6 flex flex-row items-center gap-1">
@@ -181,7 +210,7 @@ export function BalanceDisplaySkeletonBase() {
           precision={undefined}
         />
       </div>
-      {true && (
+      {showCompare && (
         <div className="text-xs flex flex-row items-center gap-1 text-muted-foreground h-3">
           <TokenDisplay
             balance={undefined}

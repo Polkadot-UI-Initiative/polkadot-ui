@@ -5,6 +5,6 @@ export const balanceDisplayExample: ComponentExample = {
   name: "Balance Display",
   href: "/docs/components/balance-display",
   code: "balance-display",
-  description: "Formatted on-chain balance with fiat value",
+  description: "Formatted on-chain balance with optional comparison currency",
   component: <ExamplePlaceholder title="Balance Display" />,
 };

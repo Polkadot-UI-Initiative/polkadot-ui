@@ -11,7 +11,7 @@ export const balanceDisplayExample: ComponentExample = {
   name: "Balance Display",
   href: "/docs/components/balance-display",
   code: "balance-display",
-  description: "Formatted on-chain balance with fiat value",
+  description: "Formatted on-chain balance with optional comparison currency",
   component: <BalanceDisplayComponent />,
 };
 
@@ -55,12 +55,17 @@ export function BalanceDisplayComponent() {
             Connected Account
           </Button>
         </div>
-        {/* DOT price: {price} */}
+        <BalanceDisplay
+          tokenId={1337}
+          networkId={polkadotAssetHub.id}
+          precision={4}
+          accountAddress={accountAddress}
+        />
         <BalanceDisplay
           tokenId={"native"}
           compareTokenId={1337} //USDC
           networkId={polkadotAssetHub.id}
-          precision={2}
+          precision={4}
           tokenConversionRate={price}
           accountAddress={accountAddress}
         />
@@ -68,7 +73,7 @@ export function BalanceDisplayComponent() {
           tokenId={1337}
           compareTokenId={"native"}
           networkId={polkadotAssetHub.id}
-          precision={4}
+          precision={2}
           tokenConversionRate={price ? 1 / price : 1}
           accountAddress={accountAddress}
         />

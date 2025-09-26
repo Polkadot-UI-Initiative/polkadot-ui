@@ -205,20 +205,121 @@ export const formatBalance = ({
 
 export function formatPlanck(
   value: bigint | null | undefined,
-  decimals = 0
+  decimals = 0,
+  options?: {
+    fractionDigits?: number; // how many digits after the decimal to display
+    thousandsSeparator?: string; // separator between thousands in integer part
+    decimalSeparator?: string; // separator between integer and fraction parts
+    trimTrailingZeros?: boolean; // trim trailing zeros in fraction
+    round?: boolean; // round instead of truncate when cutting fraction
+  }
 ): string {
   if (value == null) return "—";
+
+  const {
+    fractionDigits = 4,
+    thousandsSeparator = ",",
+    decimalSeparator = ".",
+    trimTrailingZeros = true,
+    round = true,
+  } = options ?? {};
+
   const isNegative = value < 0n;
   const abs = isNegative ? -value : value;
-  if (decimals <= 0) return `${isNegative ? "-" : ""}${abs.toString()}`;
+
+  // No fractional decimals on-chain
+  if (decimals <= 0) {
+    const intStr = addThousandsGrouping(abs.toString(), thousandsSeparator);
+    return isNegative ? `-${intStr}` : intStr;
+  }
+
+  // Ensure there is at least one integer digit
   const s = abs.toString().padStart(decimals + 1, "0");
-  const i = s.length - decimals;
-  const integerPart = s.slice(0, i);
-  const fractionPart = s.slice(i).replace(/0+$/, "");
-  const result = fractionPart
-    ? `${integerPart}.${fractionPart.slice(0, 4)}`
-    : integerPart;
+  const cut = s.length - decimals;
+  let integerPart = s.slice(0, cut);
+  let fractionPart = s.slice(cut);
+
+  // Normalize integer part (keep at least one digit)
+  integerPart = integerPart.replace(/^0+(?=\d)/, "");
+  if (integerPart.length === 0) integerPart = "0";
+
+  // Apply fraction precision
+  const digits = Math.max(
+    0,
+    Number.isFinite(fractionDigits) ? fractionDigits : 0
+  );
+  if (digits === 0) {
+    if (round && /[5-9]/.test(fractionPart[0] ?? "0")) {
+      integerPart = incrementDecimalString(integerPart);
+    }
+    fractionPart = "";
+  } else if (fractionPart.length > digits) {
+    if (round) {
+      const head = fractionPart.slice(0, digits);
+      const nextDigit = fractionPart.charCodeAt(digits) - 48; // '0' -> 48
+      if (nextDigit >= 5) {
+        const inc = incrementDecimalString(head);
+        if (inc.length > head.length) {
+          // carry to integer part
+          integerPart = incrementDecimalString(integerPart);
+          fractionPart = "0".repeat(digits);
+        } else {
+          fractionPart = inc.padStart(digits, "0");
+        }
+      } else {
+        fractionPart = head;
+      }
+    } else {
+      fractionPart = fractionPart.slice(0, digits);
+    }
+  } else if (fractionPart.length < digits) {
+    // Not enough digits after decimal
+    if (!trimTrailingZeros) fractionPart = fractionPart.padEnd(digits, "0");
+  }
+
+  // Optionally trim trailing zeros
+  if (trimTrailingZeros) fractionPart = fractionPart.replace(/0+$/, "");
+
+  const formattedInt = addThousandsGrouping(integerPart, thousandsSeparator);
+  if (!fractionPart) {
+    const result = formattedInt;
+    return isNegative ? `-${result}` : result;
+  }
+
+  const result = `${formattedInt}${decimalSeparator}${fractionPart}`;
   return isNegative ? `-${result}` : result;
+}
+
+function addThousandsGrouping(value: string, separator: string): string {
+  if (!separator) return value;
+  let out = "";
+  let count = 0;
+  for (let i = value.length - 1; i >= 0; i--) {
+    out = value[i] + out;
+    count++;
+    if (count === 3 && i > 0) {
+      out = separator + out;
+      count = 0;
+    }
+  }
+  return out;
+}
+
+function incrementDecimalString(num: string): string {
+  if (num.length === 0) return "1";
+  const arr = num.split("");
+  let carry = 1;
+  for (let i = arr.length - 1; i >= 0 && carry; i--) {
+    const n = arr[i].charCodeAt(0) - 48 + carry;
+    if (n >= 10) {
+      arr[i] = "0";
+      carry = 1;
+    } else {
+      arr[i] = String.fromCharCode(48 + n);
+      carry = 0;
+    }
+  }
+  return carry ? "1" + arr.join("") : arr.join("");
 }
 
 export function camelToKebabCase(str: string): string {
@@ -278,14 +379,16 @@ export function parseTokenId(
 export function formatTokenBalance(
   balance: bigint | null,
   decimals: number = 12,
-  precision: number = 2
+  precision: number = 2,
+  thousandsSeparator: string = ",",
+  decimalSeparator: string = "."
 ): string {
   if (balance === null) return "0";
 
-  return formatBalance({
-    value: balance,
-    decimals,
-    nDecimals: precision,
+  return formatPlanck(balance, decimals, {
+    fractionDigits: precision,
+    thousandsSeparator,
+    decimalSeparator,
   });
 }
 

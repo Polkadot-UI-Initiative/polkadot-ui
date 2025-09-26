@@ -406,7 +406,7 @@ export function AccountInfoSkeleton({ address }: { address?: string }) {
       <div className="flex-col leading-tight items-start text-left flex gap-1">
         <span className="text-sm inline-flex items-center gap-1">
           <Skeleton className="h-3 w-3 rounded-full" />
-          <Skeleton className="h-3 w-28" />
+          <Skeleton className="h-3 w-20" />
         </span>
         <span className="text-xs text-muted-foreground font-mono">
           {address ? truncateAddress(address, 6) : "5xxx…xxxx"}
