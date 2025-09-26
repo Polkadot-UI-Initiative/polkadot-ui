@@ -1,6 +1,13 @@
 "use client";
 
-import { forwardRef, useEffect, useRef, useState } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+  useCallback,
+} from "react";
 import type { TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { Label } from "@/registry/polkadot-ui/ui/label";
 import { Input } from "@/registry/polkadot-ui/ui/input";
@@ -10,6 +17,7 @@ import { TokenLogoWithNetwork } from "@/registry/polkadot-ui/blocks/select-token
 import {
   formatTokenBalance,
   getTokenBalance,
+  validateAmount,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { cn } from "@/registry/polkadot-ui/lib/utils";
 
@@ -40,7 +48,7 @@ export interface AmountInputBaseProps<TNetworkId extends string = string> {
   onChange?: (value: string) => void;
   label?: string;
   placeholder?: string;
-  decimals?: number;
+  precision?: number;
   maxValue?: bigint;
   displayValue?: bigint;
   required?: boolean;
@@ -56,6 +64,7 @@ export interface AmountInputBaseProps<TNetworkId extends string = string> {
   showMaxButton?: boolean;
   showAvailableBalance?: boolean;
   onMaxClick?: () => void;
+  onValidationError?: (error: string | null) => void;
 }
 
 const AmountInputWithTokenSelectorBase = forwardRef(
@@ -66,6 +75,8 @@ const AmountInputWithTokenSelectorBase = forwardRef(
       placeholder = "Enter amount",
       onTokenChange,
       services,
+      onValidationError,
+      precision,
       ...props
     }: AmountInputBaseProps<TNetworkId>,
     _ref: React.ForwardedRef<HTMLInputElement>
@@ -75,6 +86,7 @@ const AmountInputWithTokenSelectorBase = forwardRef(
     const connectedAccount = services.connectedAccount ?? null;
 
     const [inputAmount, setInputAmount] = useState(value);
+    const [validationError, setValidationError] = useState<string | null>(null);
 
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -108,6 +120,18 @@ const AmountInputWithTokenSelectorBase = forwardRef(
     useEffect(() => {
       setSelectedTokenId(props.selectedTokenId);
     }, [props.selectedTokenId]);
+
+    // Auto-select single token if no token is selected
+    useEffect(() => {
+      if (
+        !selectedTokenId &&
+        services.chainTokens &&
+        services.chainTokens.length === 1
+      ) {
+        const singleTokenId = Number(services.chainTokens[0].assetId);
+        setSelectedTokenId(singleTokenId);
+      }
+    }, [selectedTokenId, services.chainTokens]);
 
     const handleTokenChange = (assetId: number) => {
       setSelectedTokenId(assetId);
@@ -149,6 +173,45 @@ const AmountInputWithTokenSelectorBase = forwardRef(
       props.onMaxClick?.();
     };
 
+    // Validate input and update error state
+    const validateInput = useCallback(
+      (value: string) => {
+        // Skip validation only if balance is undefined (not loaded yet)
+        // null balance represents 0 balance and should be validated
+
+        if (currentBalance === undefined) {
+          setValidationError(null);
+          onValidationError?.(null);
+          return true;
+        }
+
+        const result = validateAmount(
+          value,
+          currentBalance,
+          currentToken?.decimals ?? 12,
+          precision
+        );
+
+        if (result.isValid) {
+          setValidationError(null);
+          onValidationError?.(null);
+          return true;
+        } else {
+          const errorMessage = currentToken?.symbol
+            ? result.error?.replace(/\)$/, ` ${currentToken.symbol})`)
+            : result.error;
+          setValidationError(errorMessage || "Invalid input");
+          onValidationError?.(errorMessage || "Invalid input");
+          return false;
+        }
+      },
+      [currentBalance, currentToken, onValidationError, precision]
+    );
+
+    useEffect(() => {
+      validateInput(inputAmount);
+    }, [inputAmount, validateInput]);
+
     return (
       <div className="space-y-1 w-full">
         {props.label && <Label htmlFor={props.id}>{props.label}</Label>}
@@ -160,6 +223,9 @@ const AmountInputWithTokenSelectorBase = forwardRef(
             ref={inputRef}
             value={inputAmount}
             onChange={handleInputChange}
+            onKeyDown={(evt) =>
+              ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()
+            }
             placeholder={placeholder}
             autoComplete="off"
             required={props.required}
@@ -171,6 +237,9 @@ const AmountInputWithTokenSelectorBase = forwardRef(
               props.showMaxButton ? "pr-16" : "",
               // Hide number input step controls
               "[&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]",
+              // Error state styling
+              validationError &&
+                "border-destructive focus-visible:ring-destructive/20",
               props.className
             )}
           />
@@ -242,6 +311,11 @@ const AmountInputWithTokenSelectorBase = forwardRef(
               {currentToken.symbol}
             </div>
           )}
+
+        {/* Validation error display */}
+        {validationError && (
+          <div className="text-xs text-destructive mt-1">{validationError}</div>
+        )}
       </div>
     );
   }
@@ -271,6 +345,7 @@ export const AmountInputSimpleBase = forwardRef(function AmountInputSimpleBase<
     onChange,
     placeholder = "Enter amount",
     services,
+    precision,
     ...props
   }: AmountInputBaseProps<TNetworkId>,
   _ref: React.ForwardedRef<HTMLInputElement>
@@ -281,6 +356,7 @@ export const AmountInputSimpleBase = forwardRef(function AmountInputSimpleBase<
   const connectedAccount = services.connectedAccount ?? null;
 
   const [inputAmount, setInputAmount] = useState(value);
+  const [validationError, setValidationError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Merge forwarded ref with internal ref
@@ -306,15 +382,19 @@ export const AmountInputSimpleBase = forwardRef(function AmountInputSimpleBase<
   };
 
   // For simple input, we might still want to show max button if there's a network token
-  const networkToken = services.network
-    ? {
-        symbol: services.network.symbol,
-        decimals: services.network.decimals,
-        assetId: "substrate-native",
-        name: services.network.name,
-        logo: services.network.logo,
-      }
-    : null;
+  const networkToken = useMemo(
+    () =>
+      services.network
+        ? {
+            symbol: services.network.symbol,
+            decimals: services.network.decimals,
+            assetId: "substrate-native",
+            name: services.network.name,
+            logo: services.network.logo,
+          }
+        : null,
+    [services.network]
+  );
 
   const nativeBalance =
     services.balances && networkToken
@@ -338,6 +418,44 @@ export const AmountInputSimpleBase = forwardRef(function AmountInputSimpleBase<
     props.onMaxClick?.();
   };
 
+  // Validate input and update error state
+  const { onValidationError } = props;
+  const validateInput = useCallback(
+    (value: string) => {
+      if (nativeBalance === undefined) {
+        setValidationError(null);
+        onValidationError?.(null);
+        return true;
+      }
+
+      const result = validateAmount(
+        value,
+        nativeBalance,
+        networkToken?.decimals,
+        precision
+      );
+
+      if (result.isValid) {
+        setValidationError(null);
+        onValidationError?.(null);
+        return true;
+      } else {
+        const errorMessage = networkToken?.symbol
+          ? result.error?.replace(/\)$/, ` ${networkToken.symbol})`)
+          : result.error;
+        setValidationError(errorMessage || "Invalid input");
+        onValidationError?.(errorMessage || "Invalid input");
+        return false;
+      }
+    },
+    [nativeBalance, networkToken, onValidationError, precision]
+  );
+
+  // Validate on input change
+  useEffect(() => {
+    validateInput(inputAmount);
+  }, [inputAmount, validateInput]);
+
   return (
     <div className="space-y-1 w-full">
       {props.label && <Label htmlFor={props.id}>{props.label}</Label>}
@@ -351,6 +469,9 @@ export const AmountInputSimpleBase = forwardRef(function AmountInputSimpleBase<
           ref={inputRef}
           value={inputAmount}
           onChange={handleInputChange}
+          onKeyDown={(evt) =>
+            ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()
+          }
           placeholder={placeholder}
           autoComplete="off"
           required={props.required}
@@ -360,6 +481,9 @@ export const AmountInputSimpleBase = forwardRef(function AmountInputSimpleBase<
             props.showMaxButton ? "pr-16" : "",
             // Hide number input step controls
             "[&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]",
+            // Error state styling
+            validationError &&
+              "border-destructive focus-visible:ring-destructive/20",
             props.className
           )}
         />
@@ -391,10 +515,15 @@ export const AmountInputSimpleBase = forwardRef(function AmountInputSimpleBase<
         connectedAccount?.address && (
           <div className="text-xs text-muted-foreground mt-1">
             Available:{" "}
-            {formatTokenBalance(nativeBalance, networkToken.decimals, 4)}{" "}
+            {formatTokenBalance(nativeBalance, networkToken.decimals, 2)}{" "}
             {networkToken.symbol}
           </div>
         )}
+
+      {/* Validation error display */}
+      {validationError && (
+        <div className="text-xs text-destructive mt-1">{validationError}</div>
+      )}
     </div>
   );
 });

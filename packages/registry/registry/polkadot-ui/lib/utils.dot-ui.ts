@@ -127,6 +127,62 @@ export function validateAddress(
   };
 }
 
+export interface AmountValidationResult {
+  isValid: boolean;
+  error?: string;
+  normalizedAmount?: string;
+}
+
+export function validateAmount(
+  amount: string,
+  maxBalance?: bigint | null,
+  decimals: number = 12,
+  precision: number = 4
+): AmountValidationResult {
+  if (!amount.trim()) {
+    return { isValid: true, normalizedAmount: "" };
+  }
+
+  const numericValue = Number(amount);
+  if (isNaN(numericValue)) {
+    return {
+      isValid: false,
+      error: "Must be a valid number",
+    };
+  }
+
+  if (numericValue < 0) {
+    return {
+      isValid: false,
+      error: "Amount cannot be negative",
+    };
+  }
+
+  if (maxBalance !== undefined) {
+    const balanceToCheck = maxBalance ?? 0n;
+    const maxBalanceNumber = Number(
+      formatTokenBalance(balanceToCheck, decimals, precision)
+    );
+
+    if (numericValue > maxBalanceNumber) {
+      const formattedMax = formatTokenBalance(
+        balanceToCheck,
+        decimals,
+        precision
+      );
+      return {
+        isValid: false,
+        error: `Amount cannot exceed available balance (${formattedMax})`,
+      };
+    }
+  }
+
+  return {
+    isValid: true,
+    normalizedAmount: amount.trim(),
+  };
+}
+
 export function truncateAddress(
   address: string,
   length: number | boolean = 8
