@@ -70,7 +70,6 @@ const AmountInputWithTokenSelectorBase = forwardRef(
     }: AmountInputBaseProps<TNetworkId>,
     _ref: React.ForwardedRef<HTMLInputElement>
   ) {
-    // Support both new and legacy service properties
     const isConnected = services.isConnected ?? false;
     const isDisabled = Boolean(services.isDisabled) || Boolean(props.disabled);
     const connectedAccount = services.connectedAccount ?? null;
@@ -170,6 +169,8 @@ const AmountInputWithTokenSelectorBase = forwardRef(
             className={cn(
               shouldShowFixedToken ? "pl-20" : "pl-24",
               props.showMaxButton ? "pr-16" : "",
+              // Hide number input step controls
+              "[&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]",
               props.className
             )}
           />
@@ -355,7 +356,12 @@ export const AmountInputSimpleBase = forwardRef(function AmountInputSimpleBase<
           required={props.required}
           min="0"
           inputMode="decimal"
-          className={cn(props.showMaxButton ? "pr-16" : "", props.className)}
+          className={cn(
+            props.showMaxButton ? "pr-16" : "",
+            // Hide number input step controls
+            "[&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]",
+            props.className
+          )}
         />
 
         {/* Max button for simple input */}
