@@ -26,7 +26,7 @@ import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-
 import {
   NATIVE_TOKEN_KEY,
   NATIVE_TOKEN_ID,
-} from "@/registry/polkadot-ui/blocks/select-token/shared-token-components";
+} from "@/registry/polkadot-ui/lib/types.dot-ui";
 
 export type SelectTokenProps = Omit<SelectTokenBaseProps, "services"> &
   React.ComponentProps<typeof Select>;

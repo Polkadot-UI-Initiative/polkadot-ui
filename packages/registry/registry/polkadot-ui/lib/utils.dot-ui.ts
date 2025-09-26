@@ -1,10 +1,10 @@
 import { decodeAddress, encodeAddress } from "@polkadot/keyring";
 import { ethers } from "ethers";
-import { TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import {
+  TokenInfo,
   NATIVE_TOKEN_ID,
   NATIVE_TOKEN_KEY,
-} from "@/registry/polkadot-ui/blocks/select-token/shared-token-components";
+} from "@/registry/polkadot-ui/lib/types.dot-ui";
 
 export interface TokenMetadata {
   assetId: number;

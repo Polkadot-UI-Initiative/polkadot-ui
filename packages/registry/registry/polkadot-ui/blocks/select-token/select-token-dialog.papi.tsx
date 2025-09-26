@@ -23,10 +23,10 @@ import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
+  ClientConnectionStatus,
   NATIVE_TOKEN_KEY,
   NATIVE_TOKEN_ID,
-} from "@/registry/polkadot-ui/blocks/select-token/shared-token-components";
-import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
+} from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { config } from "@/registry/polkadot-ui/reactive-dot.config";
 import type { ChainId } from "@reactive-dot/core";
 

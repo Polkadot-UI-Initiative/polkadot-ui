@@ -30,7 +30,7 @@ import { cn } from "@/lib/utils";
 import {
   NATIVE_TOKEN_KEY,
   NATIVE_TOKEN_ID,
-} from "@/registry/polkadot-ui/blocks/select-token/shared-token-components";
+} from "@/registry/polkadot-ui/lib/types.dot-ui";
 
 export type SelectTokenDialogProps = Omit<
   SelectTokenDialogBaseProps,
