@@ -8,6 +8,11 @@ import {
   usePolkadotClient,
 } from "typink";
 import { isHex, hexToU8a, u8aToString } from "@polkadot/util";
+import { useChaindata } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
+import {
+  NATIVE_TOKEN_KEY,
+  chainIdToKebabCase,
+} from "@/registry/polkadot-ui/lib/utils.dot-ui";
 
 export interface TokenMetadata {
   assetId: number;
@@ -32,19 +37,44 @@ export function useAssetMetadata({
       .map((id) =>
         typeof id === "number" && Number.isFinite(id) ? Math.floor(id) : NaN
       )
-      .filter((id) => Number.isInteger(id) && id >= 0) as number[];
+      .filter((id) => Number.isInteger(id) && id >= -1) as number[];
     return [...new Set(sanitized)].sort((a, b) => a - b);
   }, [assetIds]);
 
+  const includesNative = sortedIds.includes(NATIVE_TOKEN_KEY);
+  console.log("includesNative", includesNative);
+  const palletAssetIds = useMemo(
+    () => sortedIds.filter((id) => id >= 0),
+    [sortedIds]
+  );
+
+  // Fetch chaindata once to derive native metadata when requested
+  const { chains } = useChaindata();
+  const nativeMeta: TokenMetadata | null = useMemo(() => {
+    if (!includesNative) return null;
+    const network = chains.find((c) => c.id === chainIdToKebabCase(chainId));
+    const native = network?.nativeCurrency;
+    if (!native) return null;
+    return {
+      assetId: NATIVE_TOKEN_KEY,
+      name: native.name || "Native",
+      symbol: native.symbol || "UNIT",
+      decimals:
+        typeof native.decimals === "number"
+          ? native.decimals
+          : Number(native.decimals ?? 12),
+    } as TokenMetadata;
+  }, [includesNative, chains, chainId]);
+
   const queryResult = useQuery({
-    queryKey: ["dedot-assets-metadata", String(chainId), sortedIds],
+    queryKey: ["dedot-assets-metadata", String(chainId), palletAssetIds],
     queryFn: async (): Promise<TokenMetadata[]> => {
       if (!client) return [];
 
       const query = client.query.assets.metadata;
 
       const results = await Promise.all(
-        sortedIds.map(async (assetId) => {
+        palletAssetIds.map(async (assetId) => {
           try {
             const meta = await query(assetId);
             const name = decodeText(meta?.name);
@@ -72,11 +102,15 @@ export function useAssetMetadata({
 
       return results;
     },
-    enabled: isConnected && !!client && sortedIds.length > 0,
+    enabled: isConnected && !!client && palletAssetIds.length > 0,
     staleTime: 5 * 60 * 1000,
   });
 
-  const assets = useMemo(() => queryResult.data ?? [], [queryResult.data]);
+  const assets = useMemo(() => {
+    const list = queryResult.data ?? [];
+    if (nativeMeta) return [nativeMeta, ...list];
+    return list;
+  }, [queryResult.data, nativeMeta]);
 
   return {
     assets,

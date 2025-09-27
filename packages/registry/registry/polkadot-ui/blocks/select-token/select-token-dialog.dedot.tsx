@@ -22,15 +22,13 @@ import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.d
 import {
   createDefaultChainTokens,
   mergeWithChaindataTokens,
+  NATIVE_TOKEN_ID,
+  NATIVE_TOKEN_KEY,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { Button } from "@/components/ui/button";
 import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  NATIVE_TOKEN_KEY,
-  NATIVE_TOKEN_ID,
-} from "@/registry/polkadot-ui/blocks/select-token/shared-token-components";
 
 export type SelectTokenDialogProps = Omit<
   SelectTokenDialogBaseProps,
@@ -39,14 +37,7 @@ export type SelectTokenDialogProps = Omit<
   React.ComponentProps<typeof Button>;
 
 export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
-  // by default, add native token to the list of tokens with includeNative
-  const {
-    chainId,
-    assetIds,
-    includeNative = true,
-    showAll = true,
-    ...otherProps
-  } = props;
+  const { chainId, assetIds, showAll = true, ...otherProps } = props;
   const { connectedAccount, supportedNetworks } = useTypink();
   const { client, status } = usePolkadotClient(chainId ?? paseoAssetHub.id);
 
@@ -71,7 +62,6 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
     chainId ?? paseoAssetHub.id,
     assetIds,
     {
-      includeNative,
       showAll,
     }
   );
@@ -90,12 +80,10 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
       chainTokens ?? []
     );
 
-    const hasNativeToken =
-      includeNative &&
-      finalTokens.some(
-        (token) =>
-          token.id === NATIVE_TOKEN_ID || token.assetId === NATIVE_TOKEN_ID
-      );
+    const hasNativeToken = finalTokens.some(
+      (token) =>
+        token.id === NATIVE_TOKEN_ID || token.assetId === NATIVE_TOKEN_ID
+    );
     const combinedBalances: Record<number, bigint | null> = {
       ...balances,
     };
@@ -134,7 +122,6 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
     network,
     balances,
     nativeBalance,
-    includeNative,
   ]);
 
   return <SelectTokenDialogBase {...otherProps} services={services} />;

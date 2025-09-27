@@ -5,7 +5,7 @@ import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   AddressInputBase,
   type AddressInputBaseProps,
-} from "@/registry/polkadot-ui/blocks/address-input/address-input.base";
+} from "./address-input.base";
 // Import Dedot-specific hooks
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { useIdentityOf } from "@/registry/polkadot-ui/hooks/use-identity-of.dedot";

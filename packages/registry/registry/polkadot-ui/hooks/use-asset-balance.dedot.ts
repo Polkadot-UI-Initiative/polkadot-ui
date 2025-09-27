@@ -8,7 +8,10 @@ import {
   usePolkadotClient,
   NetworkId,
 } from "typink";
-import { parseBalanceLike } from "@/registry/polkadot-ui/lib/utils.dot-ui";
+import {
+  NATIVE_TOKEN_KEY,
+  parseBalanceLike,
+} from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { AccountId32Like } from "dedot/codecs";
 
 export interface UseAssetBalanceArgs {
@@ -36,6 +39,13 @@ export function useAssetBalance({
   const isEnabled =
     enabled && isConnected && !!client && !!address && assetId != null;
 
+  // Always call native hook; gate by enabled flag to keep hooks order stable
+  const native = useNativeBalance({
+    chainId,
+    address,
+    enabled: isEnabled && assetId === NATIVE_TOKEN_KEY,
+  });
+
   const queryResult = useQuery({
     queryKey: [
       "dedot-asset-balance",
@@ -43,7 +53,7 @@ export function useAssetBalance({
       Number(assetId),
       address,
     ],
-    enabled: isEnabled,
+    enabled: isEnabled && assetId !== NATIVE_TOKEN_KEY,
     queryFn: async (): Promise<bigint | null> => {
       if (!client) return null;
       try {
@@ -61,11 +71,26 @@ export function useAssetBalance({
 
   return useMemo(
     () => ({
-      free: (queryResult.data as bigint | null) ?? null,
-      isLoading: queryResult.isLoading,
-      error: (queryResult.error as Error | null) ?? null,
+      free:
+        assetId === NATIVE_TOKEN_KEY
+          ? (native.free as bigint | null)
+          : ((queryResult.data as bigint | null) ?? null),
+      isLoading:
+        assetId === NATIVE_TOKEN_KEY ? native.isLoading : queryResult.isLoading,
+      error:
+        assetId === NATIVE_TOKEN_KEY
+          ? ((native.error as Error | null) ?? null)
+          : ((queryResult.error as Error | null) ?? null),
     }),
-    [queryResult.data, queryResult.isLoading, queryResult.error]
+    [
+      assetId,
+      native.free,
+      native.isLoading,
+      native.error,
+      queryResult.data,
+      queryResult.isLoading,
+      queryResult.error,
+    ]
   );
 }
 
@@ -92,25 +117,44 @@ export function useAssetBalances(
   const isEnabled =
     enabled && isConnected && !!client && !!address && assetIds.length > 0;
 
-  // Sanitize assetIds: integers >= 0 and unique, to prevent injection or malformed queries
+  // Sanitize assetIds: integers >= -1 (allow native sentinel) and unique
   const sortedIds = useMemo(() => {
     const sanitized = assetIds
       .map((id) =>
         typeof id === "number" && Number.isFinite(id) ? Math.floor(id) : NaN
       )
-      .filter((id) => Number.isInteger(id) && id >= 0) as number[];
+      .filter((id) => Number.isInteger(id) && id >= -1) as number[];
     return [...new Set(sanitized)].sort((a, b) => a - b);
   }, [assetIds]);
 
+  const includesNative = sortedIds.includes(NATIVE_TOKEN_KEY);
+  const palletAssetIds = useMemo(
+    () => sortedIds.filter((id) => id >= 0),
+    [sortedIds]
+  );
+
+  const native = useNativeBalance({
+    chainId,
+    address,
+    enabled: isEnabled && includesNative,
+  });
+
   const batched = useQuery({
-    queryKey: ["dedot-asset-balances", String(chainId), address, sortedIds],
-    enabled: isEnabled,
+    queryKey: [
+      "dedot-asset-balances",
+      String(chainId),
+      address,
+      palletAssetIds,
+    ],
+    enabled: isEnabled && palletAssetIds.length > 0,
     queryFn: async (): Promise<unknown[]> => {
       if (!client) return [];
       const keys = sortedIds.map(
         (assetId) => [assetId, address] as [number, AccountId32Like]
       );
-      const rows = await client.query.assets.account.multi(keys);
+      const rows = await client.query.assets.account.multi(
+        keys.filter(([id]) => id >= 0)
+      );
       return rows;
     },
     staleTime: 30_000,
@@ -120,7 +164,8 @@ export function useAssetBalances(
     const balances: Record<number, bigint | null> = {};
     const errors: Record<number, Error | null> = {};
 
-    sortedIds.forEach((assetId, index) => {
+    // Map pallet assets from batched query
+    palletAssetIds.forEach((assetId, index) => {
       const row = batched.data?.[index];
       balances[assetId] = parseBalanceLike(
         (row as unknown as { balance?: unknown })?.balance
@@ -128,12 +173,28 @@ export function useAssetBalances(
       errors[assetId] = (batched.error as Error | null) ?? null;
     });
 
+    // Add native balance if requested
+    if (includesNative) {
+      balances[NATIVE_TOKEN_KEY] = native.free ?? null;
+      errors[NATIVE_TOKEN_KEY] = (native.error as Error | null) ?? null;
+    }
+
     return {
       balances,
-      isLoading: batched.isLoading,
+      isLoading:
+        batched.isLoading || (includesNative ? native.isLoading : false),
       errors,
     };
-  }, [batched.data, batched.error, batched.isLoading, sortedIds]);
+  }, [
+    batched.data,
+    batched.error,
+    batched.isLoading,
+    palletAssetIds,
+    includesNative,
+    native.free,
+    native.isLoading,
+    native.error,
+  ]);
 }
 
 export interface UseNativeBalanceArgs {

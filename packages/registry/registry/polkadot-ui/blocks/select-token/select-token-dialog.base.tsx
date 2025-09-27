@@ -41,7 +41,6 @@ export interface SelectTokenDialogBaseProps {
   services: SelectTokenDialogServices;
   withBalance?: boolean;
   withSearch?: boolean;
-  includeNative?: boolean;
   showAll?: boolean;
   chainId?: string;
   fallback?: React.ReactNode;

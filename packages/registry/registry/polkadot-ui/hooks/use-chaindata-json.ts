@@ -8,6 +8,8 @@ import { useMemo } from "react";
 import {
   chainIdToKebabCase,
   generateTokenId,
+  NATIVE_TOKEN_ID,
+  NATIVE_TOKEN_KEY,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { ChainInfo, TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
 
@@ -119,7 +121,7 @@ export function useChaindata(): UseChaindataResult {
 export function useTokensByAssetIds(
   chainId: string,
   assetIds: number[],
-  options?: { includeNative?: boolean; showAll?: boolean }
+  options?: { showAll?: boolean }
 ) {
   const {
     tokens,
@@ -139,16 +141,19 @@ export function useTokensByAssetIds(
         logicError: null as string | null,
       };
 
+    const includesNative = (assetIds || []).some(
+      (id) => Number(id) === NATIVE_TOKEN_KEY
+    );
+
     const expectedTokenIds = new Set(
-      (assetIds || []).map((assetId) =>
-        generateTokenId(chainId, String(assetId))
-      )
+      (assetIds || [])
+        .filter((assetId) => Number(assetId) >= 0)
+        .map((assetId) => generateTokenId(chainId, String(assetId)))
     );
 
     const matched = tokens.filter((token) => expectedTokenIds.has(token.id));
 
-    if (!options?.includeNative)
-      return { resultTokens: matched, logicError: null };
+    if (!includesNative) return { resultTokens: matched, logicError: null };
 
     const network = chains.find((c) => c.id === chainIdToKebabCase(chainId));
     const native = network?.nativeCurrency;
@@ -165,20 +170,10 @@ export function useTokensByAssetIds(
       symbol: native.symbol,
       decimals: native.decimals,
       name: native.name,
-      assetId: assetIdFromTokenId,
+      assetId: String(NATIVE_TOKEN_KEY),
       coingeckoId: native.coingeckoId,
       logo: native.logo,
     };
-
-    const isNativeInMatched = matched.some((t) => t.id === nativeToken.id);
-
-    if (isNativeInMatched) {
-      // both are native (requested native and includeNative) → surface logic error, keep native only
-      return {
-        resultTokens: [nativeToken],
-        logicError: "Both tokens are native",
-      };
-    }
 
     // fallback to just native
     if (matched.length === 0) {
@@ -190,14 +185,7 @@ export function useTokensByAssetIds(
     }
 
     return { resultTokens: [nativeToken, matched[0]], logicError: null };
-  }, [
-    chainId,
-    tokens,
-    chains,
-    assetIds,
-    options?.includeNative,
-    options?.showAll,
-  ]);
+  }, [chainId, tokens, chains, assetIds, options?.showAll]);
 
   return {
     tokens: resultTokens,

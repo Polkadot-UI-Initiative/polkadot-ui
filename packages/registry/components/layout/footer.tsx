@@ -7,7 +7,7 @@ import { Logo } from "../logo";
 
 export function Footer() {
   return (
-    <section className="py-16 bg-gradient-to-b from-background via-polkadot-violet/10 to-polkadot-violet/50">
+    <section className="py-16 bg-gradient-to-b from-transparent via-polkadot-violet/10 to-polkadot-violet/50">
       <div className="px-8">
         <footer>
           <div className="relative mb-8 flex w-full flex-col gap-x-28 gap-y-8 md:flex-row md:justify-between md:gap-y-0">

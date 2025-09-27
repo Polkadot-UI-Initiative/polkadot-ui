@@ -1,10 +1,10 @@
 import { decodeAddress, encodeAddress } from "@polkadot/keyring";
 import { ethers } from "ethers";
 import { TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
-import {
-  NATIVE_TOKEN_ID,
-  NATIVE_TOKEN_KEY,
-} from "@/registry/polkadot-ui/blocks/select-token/shared-token-components";
+
+// the key for the native token in the balances object, if -1 is used somewhere as assetId, the
+export const NATIVE_TOKEN_KEY = -1;
+export const NATIVE_TOKEN_ID = "substrate-native";
 
 export interface TokenMetadata {
   assetId: number;
@@ -545,7 +545,11 @@ export function getTokenBalance(
 }
 
 export function safeStringify(value: unknown): string {
-  return JSON.stringify(value, (_, v) =>
-    typeof v === "bigint" ? v.toString() : v
+  return JSON.stringify(
+    value,
+    (_, v) => {
+      return typeof v === "bigint" ? v.toString() : v;
+    },
+    2
   );
 }

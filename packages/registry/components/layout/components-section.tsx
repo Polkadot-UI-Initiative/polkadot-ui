@@ -6,6 +6,7 @@ import { PolkadotProvider as PolkadotProviderPapi } from "@/registry/polkadot-ui
 import { PolkadotProvider as PolkadotProviderDedot } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { ComponentPreview } from "./component-preview";
 import { LibrarySwitcher } from "./library-switcher";
+import { HooksTest } from "../hooks-test";
 
 export function ComponentsSection({
   usedLibrary = "dedot",
@@ -30,7 +31,10 @@ export function ComponentsSection({
           <PolkadotProviderPapi>{ComponentExamples}</PolkadotProviderPapi>
         )}
         {usedLibrary === "dedot" && (
-          <PolkadotProviderDedot>{ComponentExamples}</PolkadotProviderDedot>
+          <PolkadotProviderDedot>
+            <HooksTest />
+            {ComponentExamples}
+          </PolkadotProviderDedot>
         )}
       </div>
       <div className="flex flex-col items-center justify-center col-span-full h-48">

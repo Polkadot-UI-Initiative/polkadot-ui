@@ -3,6 +3,9 @@ title: Migrating from existing Typink Apps
 description: Move an existing Typink/Dedot app to Polkadot UI components
 ---
 
+import { InfoBox } from "@/components/docs/info-box";
+import Link from "next/link";
+
 ## Overview
 
 This guide helps you adopt Polkadot UI in an existing Typink/Dedot project incrementally.
@@ -11,21 +14,41 @@ This guide helps you adopt Polkadot UI in an existing Typink/Dedot project incre
 
 - Existing Typink app using Dedot
 - React 18+ and TypeScript
-- Tailwind v4 (recommended)
+- Tailwind v4 enabled (recommended)
+
+In our example, we'll use the demo Typink app from github. You can use your existing typink app in a similar way. To follow along, clone the repo and install the dependencies.
+
+```bash
+git clone https://github.com/dedotdev/typink.git # clone the repo
+cd typink/examples/demo-general # go to the demo app
+yarn # install the dependencies, this uses yarn but polkadot-ui supports other package managers too
+```
+
+<InfoBox>
+At the moment, you will need tailwind for polkadot-ui components to work. You can find more info at <Link href="https://tailwindcss.com/docs/installation/using-vite">Vite + Tailwind CSS</Link> or <Link href="https://tailwindcss.com/docs/installation/framework-guides/nextjs">Next.js + Tailwind CSS</Link>.
+</InfoBox>
 
 ## Steps
 
-### 1) Install a component
+### 1) Add a component
+
+In this example, we'll add the address-input component.
 
 ```bash
-npx polkadot-ui@latest add address-input
+yarn dlx polkadot-ui@latest add address-input
 ```
 
-The CLI detects Dedot and installs Dedot variants when available.
+The CLI detects Dedot and installs the Dedot component, hooks and utilities that are specific to Dedot and required for the component to work.
 
 ### 2) Ensure providers are wired
 
-Your app likely already has a Dedot provider. If not, add it at the root:
+If you are migrating from an existing app, your app is likely already wrapped in a Typink provider. 
+
+<InfoBox>Your component might require different network connections than your existing ones. 
+Make sure to add the networks you want to connect to in the `defaultNetworkIds` prop of the `TypinkProvider` like e.g.
+`defaultNetworkIds: [polkadot.id, polkadotPeople.id]` if you want to connect to the Polkadot and Polkadot People networks.</InfoBox>
+
+If not, add it at the of your:
 
 ```tsx
 import { PolkadotProvider } from "@/lib/providers/polkadot-provider.dedot"
@@ -35,23 +58,48 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 ```
 
-### 3) Replace custom UI with components
-
-Swap existing inputs/displays with Polkadot UI counterparts gradually:
+PolkadotUI components also use react-query to fetch data. So you will need to wrap your app in a QueryClientProvider.
 
 ```tsx
-import { AddressInput } from "@/components/ui/address-input"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
-export function AccountAddressField() {
-  // Preserves your state management
+const queryClient = new QueryClient()
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 }
 ```
 
-### 4) Data hooks
+Instead of doing this manually, you can use the PolkadotProvider component that is specific to Dedot. It combines the QueryClientProvider and TypinkProvider.
 
-Use provided hooks or keep your existing ones. Components accept data via props and are library-agnostic.
+```tsx
+import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot"
 
-### 5) Styling
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return <PolkadotProvider>{children}</PolkadotProvider>
+}
+```
+
+### 3) Replace custom UI with components
+
+You can now replace your custom UI with the Polkadot UI components. In the typink demo you can replace the `<Input />` in `RecipientSelector.tsx`
+with the `<AddressInput />` component.
+
+```tsx
+import { AddressInput } from "@/components/address-input.dedot"
+
+// ...
+  <AddressInput
+    value={value}
+    onChange={handleCustomInput}
+    disabled={isDisabled}
+    identityChain={polkadotPeople.id}
+  />
+// ...
+
+```
+
+### 4) Styling
 
 Components are tailwind-based and customizable. Adjust tokens in your CSS variables or override classNames.
 
@@ -59,6 +107,5 @@ Components are tailwind-based and customizable. Adjust tokens in your CSS variab
 
 - Migrate one component at a time
 - Keep your existing fetching/queries; components focus on UI and validation
-- Use the `WithProvider` demo variant only for isolated testing
 
 

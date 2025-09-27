@@ -287,7 +287,11 @@ export function TxButtonBase<
         variant={variant}
         size={size}
         disabled={isButtonDisabled}
-        className={cn(isLoading && "cursor-not-allowed", className)}
+        className={cn(
+          "transition-transform duration-150 ease-out active:scale-[0.98] active:translate-y-[0.5px]",
+          isLoading && "cursor-not-allowed",
+          className
+        )}
         {...props}
       >
         {isLoading ? (
