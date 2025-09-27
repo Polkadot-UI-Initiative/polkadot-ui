@@ -2,22 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { Input } from "@/registry/polkadot-ui/ui/input";
+import type { InputProps } from "@/registry/polkadot-ui/ui/input";
 import { cn } from "@/registry/polkadot-ui/lib/utils";
 import { formatPlanck } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 
-export interface AmountInputBaseProps {
-  id?: string;
+export interface AmountInputBaseProps extends Omit<InputProps, "onChange"> {
   value?: string;
   onChange?: (value: string) => void;
-  placeholder?: string;
   decimals?: number;
   maxValue?: bigint | null;
   withMaxButton?: boolean;
   leftIconUrl?: string;
   leftIconAlt?: string;
-  disabled?: boolean;
-  className?: string;
-  step?: number | string;
+  requiredBalance?: boolean;
 }
 
 export function AmountInputBase(props: AmountInputBaseProps) {
@@ -31,9 +28,9 @@ export function AmountInputBase(props: AmountInputBaseProps) {
     withMaxButton = true,
     leftIconUrl,
     leftIconAlt,
-    disabled,
     className,
-    step,
+    requiredBalance = true,
+    ...inputProps
   } = props;
 
   const [inputAmount, setInputAmount] = useState<string>(value);
@@ -41,9 +38,17 @@ export function AmountInputBase(props: AmountInputBaseProps) {
   useEffect(() => setInputAmount(value), [value]);
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const newValue = e.target.value;
-    setInputAmount(newValue);
-    onChange?.(newValue);
+    const raw = e.target.value;
+    // Allow only digits and a single dot
+    let sanitized = raw.replace(/[^0-9.]/g, "");
+    const firstDot = sanitized.indexOf(".");
+    if (firstDot !== -1)
+      sanitized =
+        sanitized.slice(0, firstDot + 1) +
+        sanitized.slice(firstDot + 1).replace(/\./g, "");
+
+    setInputAmount(sanitized);
+    onChange?.(sanitized);
   }
 
   function handleMaxClick() {
@@ -57,23 +62,65 @@ export function AmountInputBase(props: AmountInputBaseProps) {
     onChange?.(maxStr);
   }
 
-  const showMax = withMaxButton && maxValue != null && maxValue > 0n;
+  const showMax = Boolean(withMaxButton);
   const showLeftIcon = Boolean(leftIconUrl);
+
+  const formattedMax =
+    maxValue != null
+      ? formatPlanck(maxValue, decimals, {
+          thousandsSeparator: "",
+          decimalSeparator: ".",
+          trimTrailingZeros: true,
+        })
+      : undefined;
+
+  const finalDisabled =
+    (inputProps.disabled ?? false) ||
+    (requiredBalance === true && maxValue === 0n);
 
   return (
     <div className="relative w-full">
       <Input
         id={id}
-        step={step}
         type="number"
-        disabled={disabled}
+        disabled={finalDisabled}
         value={inputAmount}
         onChange={handleInputChange}
+        onKeyDown={(e) => {
+          if (["e", "E", "+", "-", " "].includes(e.key)) e.preventDefault();
+        }}
+        onBeforeInput={(e) => {
+          const ev = e as unknown as InputEvent;
+          const data =
+            (ev && "data" in ev ? (ev as InputEvent).data : "") || "";
+          if (!data) return;
+          if (!/^[0-9.]$/.test(data)) {
+            e.preventDefault();
+            return;
+          }
+          if (data === "." && inputAmount.includes(".")) e.preventDefault();
+        }}
+        onPaste={(e) => {
+          const text = e.clipboardData.getData("text");
+          let sanitized = text.replace(/[^0-9.]/g, "");
+          const firstDot = sanitized.indexOf(".");
+          if (firstDot !== -1)
+            sanitized =
+              sanitized.slice(0, firstDot + 1) +
+              sanitized.slice(firstDot + 1).replace(/\./g, "");
+          e.preventDefault();
+          setInputAmount(sanitized);
+          onChange?.(sanitized);
+        }}
+        onDrop={(e) => e.preventDefault()}
         placeholder={placeholder}
         autoComplete="off"
         min="0"
+        max={inputProps.max ?? formattedMax}
         inputMode="decimal"
+        pattern={inputProps.pattern ?? "[0-9]*\\.?[0-9]*"}
         className={cn(showMax && "pr-14", showLeftIcon && "pl-10", className)}
+        {...inputProps}
       />
       {showLeftIcon && (
         // eslint-disable-next-line @next/next/no-img-element
@@ -88,8 +135,9 @@ export function AmountInputBase(props: AmountInputBaseProps) {
         <button
           type="button"
           onClick={handleMaxClick}
-          className="absolute right-2 top-1/2 -translate-y-1/2 h-6 px-2 text-xs rounded border bg-background hover:bg-accent/50"
+          className="absolute right-2 top-1/2 -translate-y-1/2 h-6 px-2 text-xs rounded border bg-background hover:bg-accent/50 disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label="Set max amount"
+          disabled={maxValue == null || maxValue === 0n}
         >
           Max
         </button>

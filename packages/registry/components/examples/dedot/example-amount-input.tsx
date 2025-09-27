@@ -17,7 +17,13 @@ export const amountInputExample: ComponentExample = {
         chainId={polkadotAssetHub.id}
         assetId={NATIVE_TOKEN_KEY}
         className="w-full"
-        required={false}
+        placeholder="Enter an amount"
+      />
+      <AmountInput
+        id="amount"
+        chainId={polkadotAssetHub.id}
+        assetId={1337}
+        className="w-full"
         placeholder="Enter an amount"
       />
     </div>

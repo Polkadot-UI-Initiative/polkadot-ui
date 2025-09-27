@@ -21,6 +21,7 @@ export interface AmountInputProps {
   assetIds?: number[];
   withMaxButton?: boolean;
   disabled?: boolean;
+  requiredAccount?: boolean;
   className?: string;
   step?: number | string;
 }
@@ -46,29 +47,35 @@ export function AmountInput(props: AmountInputProps) {
   const { tokens: metas } = useTokensByAssetIds(chainId, ids);
 
   // prefer explicit assetId, otherwise if multiple provided, pick first for max context
-  const keyForMax = props.assetId ?? ids[0];
-  console.log("keyForMax", keyForMax);
-  console.log("metas", metas);
-  const maxValue = keyForMax != null ? (balances[keyForMax] ?? null) : null;
+  const assetIdForMax = props.assetId ?? ids[0];
+  const hasAccount = Boolean(connectedAccount?.address);
+  const rawBalance =
+    assetIdForMax != null ? (balances[assetIdForMax] ?? null) : null;
+  // Do not coerce to 0n when no account; base handles disabled via requiredBalance/disabled
+  const maxValue = hasAccount ? rawBalance : null;
   const decimals =
-    keyForMax != null
-      ? (metas.find((m) => m.assetId === String(keyForMax))?.decimals ?? 12)
+    assetIdForMax != null
+      ? (metas.find((m) => m.assetId === String(assetIdForMax))?.decimals ?? 12)
       : 12;
+  const displayPrecision = Math.min(2, Math.max(0, decimals));
+  const derivedStep =
+    props.step ??
+    (displayPrecision > 0 ? `0.${"0".repeat(displayPrecision - 1)}1` : "1");
 
   const isConnected = status === ClientConnectionStatus.Connected;
+  const requiresAccount = props.requiredAccount ?? false;
   const disabled =
     props.disabled ||
-    !isConnected ||
-    !connectedAccount?.address ||
+    (requiresAccount && (!isConnected || !hasAccount)) ||
     ids.length === 0;
 
   const leftIconUrl =
-    keyForMax != null
-      ? metas.find((m) => m.assetId === String(keyForMax))?.logo
+    assetIdForMax != null
+      ? metas.find((m) => m.assetId === String(assetIdForMax))?.logo
       : undefined;
   const leftIconAlt =
-    keyForMax != null
-      ? metas.find((m) => m.assetId === String(keyForMax))?.symbol
+    assetIdForMax != null
+      ? metas.find((m) => m.assetId === String(assetIdForMax))?.symbol
       : undefined;
 
   return (
@@ -81,8 +88,9 @@ export function AmountInput(props: AmountInputProps) {
       maxValue={maxValue ?? null}
       withMaxButton={props.withMaxButton}
       disabled={disabled}
+      requiredBalance={hasAccount}
       className={props.className}
-      step={props.step}
+      step={derivedStep}
       leftIconUrl={leftIconUrl}
       leftIconAlt={leftIconAlt}
     />
