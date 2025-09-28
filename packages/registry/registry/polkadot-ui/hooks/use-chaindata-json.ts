@@ -140,7 +140,7 @@ export function useTokensByAssetIds(
         logicError: null as string | null,
       };
 
-    const includesNative = (assetIds || []).some(
+    const includesNativeSentinel = (assetIds || []).some(
       (id) => Number(id) === NATIVE_TOKEN_KEY
     );
 
@@ -152,7 +152,8 @@ export function useTokensByAssetIds(
 
     const matched = tokens.filter((token) => expectedTokenIds.has(token.id));
 
-    if (!includesNative) return { resultTokens: matched, logicError: null };
+    const includeNative = includesNativeSentinel || Boolean(options?.showAll);
+    if (!includeNative) return { resultTokens: matched, logicError: null };
 
     const network = chains.find((c) => c.id === chainIdToKebabCase(chainId));
     const native = network?.nativeCurrency;

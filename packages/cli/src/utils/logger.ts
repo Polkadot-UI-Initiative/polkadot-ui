@@ -184,32 +184,30 @@ export class Logger {
     );
 
     this.subsection("Next steps:");
-    this.detail("1. Use the component in your project:", true);
+    this.detail("1. Wrap (parts of)your app in a PolkadotProvider:", true);
     this.code(
-      `import { ${formattedName}WithProvider } from '@/components/${componentName}.${hasDedot ? "dedot" : "papi"}'`
+      `import { PolkadotProvider } from '@/lib/providers/polkadot-provider.${hasDedot ? "dedot" : "papi"}'`
     );
+    this.code(`<PolkadotProvider defaultChain="paseo">`);
     this.code("// ...");
-    this.code(`<${formattedName}WithProvider />`);
+    this.code(`</PolkadotProvider>`);
     this.newline();
 
-    this.detail("2. Read the component documentation:", true);
-    this.code(`https://polkadot-ui.com/docs/components/${componentName}`);
+    this.detail("2. Add the component to your app:", true);
+    this.code(
+      `import { ${formattedName} } from '@/components/${componentName}.${hasDedot ? "dedot" : "papi"}'`
+    );
+    this.code(`<${formattedName} />`);
     this.newline();
 
     this.detail(
-      "3. Make sure you understand how to write scalable code.",
+      "3. Read the component documentation and see examples at:",
       true
     );
-    this.code(
-      `Use <${formattedName} /> instead of <${formattedName}WithProvider /> and wrap your app in <PolkadotProvider>`
-    );
-    this.newline();
-    this.code(
-      "Read more at https://polkadot-ui.com/docs#add-your-first-component"
-    );
+    this.code(`https://polkadot-ui.com/docs/components/${componentName}`);
     this.newline();
 
-    this.detail("Happy coding with Polkadot! 🚀");
+    this.detail("Happy coding with Polkadot! 👾");
   }
 
   /**
