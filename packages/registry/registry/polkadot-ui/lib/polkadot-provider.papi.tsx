@@ -1,34 +1,26 @@
 "use client";
 
-import {
-  ReactiveDotProvider,
-  ChainProvider,
-  useAccounts,
-  useLazyLoadQuery,
-  useConfig,
-  useWallets,
-  useClient,
-  useConnectedWallets,
-  useWalletDisconnector,
-  useWalletConnector,
-} from "@reactive-dot/react";
-import { config } from "../reactive-dot.config";
-import type { ReactNode } from "react";
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import type { PolkadotClient } from "polkadot-api";
-import { WalletAccount } from "@reactive-dot/core/wallets.js";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { config } from "@/registry/polkadot-ui/reactive-dot.config";
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { ChainId } from "@reactive-dot/core";
+import { WalletAccount } from "@reactive-dot/core/wallets.js";
+import {
+  ChainProvider,
+  ReactiveDotProvider,
+  useAccounts,
+  useClient,
+  useConfig,
+  useConnectedWallets,
+  useLazyLoadQuery,
+  useWalletConnector,
+  useWalletDisconnector,
+  useWallets,
+} from "@reactive-dot/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import type { PolkadotClient } from "polkadot-api";
 import { BlockInfo } from "polkadot-api";
-
-// export const SUPPORTED_NETWORKS = [
-//   paseo,
-//   paseoAssetHub,
-//   paseoPeople,
-//   polkadot,
-//   polkadotPeople,
-// ];
+import type { ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 export type SupportedChainId = keyof typeof config.chains;
 

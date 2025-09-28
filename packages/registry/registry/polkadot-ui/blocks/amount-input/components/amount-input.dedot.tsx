@@ -14,6 +14,7 @@ import {
 import { useAssetBalance } from "@/registry/polkadot-ui/hooks/use-asset-balance.dedot";
 import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
 import { NATIVE_TOKEN_KEY } from "@/registry/polkadot-ui/lib/utils.dot-ui";
+import { ClientOnly } from "../../client-only";
 
 export interface AmountInputProps extends AmountInputBaseProps {
   chainId: NetworkId;
@@ -23,6 +24,14 @@ export interface AmountInputProps extends AmountInputBaseProps {
 }
 
 export function AmountInput(props: AmountInputProps) {
+  return (
+    <ClientOnly fallback={<AmountInputBase />}>
+      <AmountInputInner {...props} />
+    </ClientOnly>
+  );
+}
+
+export function AmountInputInner(props: AmountInputProps) {
   const chainId = props.chainId ?? paseoAssetHub.id;
   const { connectedAccount } = useTypink();
   const { status } = usePolkadotClient(chainId);

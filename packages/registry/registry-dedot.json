@@ -150,6 +150,36 @@
       ]
     },
     {
+      "name": "amount-input",
+      "type": "registry:block",
+      "title": "Amount Input (dedot)",
+      "description": "A component that allows the user to input an amount.",
+      "dependencies": ["dedot", "typink", "lucide-react"],
+      "registryDependencies": ["input"],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/amount-input/components/amount-input.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/amount-input/components/amount-input.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-asset-balance.dedot.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
       "name": "address-input",
       "type": "registry:block",
       "title": "Address Input (dedot)",

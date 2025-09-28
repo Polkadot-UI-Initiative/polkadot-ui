@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  AmountInputBase,
-  AmountInputBaseProps,
-} from "@/registry/polkadot-ui/blocks/amount-input/components/amount-input.base";
+import { AmountInputBase, AmountInputBaseProps } from "./amount-input.base";
 import { useAssetBalance } from "@/registry/polkadot-ui/hooks/use-asset-balance.papi";
 
 import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
@@ -14,6 +11,7 @@ import {
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { NATIVE_TOKEN_KEY } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { config } from "@/registry/polkadot-ui/reactive-dot.config";
+import { ClientOnly } from "../../client-only";
 
 export interface AmountInputProps extends AmountInputBaseProps {
   chainId: keyof typeof config.chains;
@@ -23,7 +21,15 @@ export interface AmountInputProps extends AmountInputBaseProps {
 }
 
 export function AmountInput(props: AmountInputProps) {
-  const chainId = props.chainId ?? "paseo"; // use the first chain in config
+  return (
+    <ClientOnly fallback={<AmountInputBase />}>
+      <AmountInputInner {...props} />
+    </ClientOnly>
+  );
+}
+
+export function AmountInputInner(props: AmountInputProps) {
+  const chainId = props.chainId ?? "paseoAssetHub";
   const { selectedAccount } = useSelectedAccount();
   const { status } = usePapi(chainId);
 
@@ -31,8 +37,8 @@ export function AmountInput(props: AmountInputProps) {
 
   const accountBalance = useAssetBalance({
     assetId: tokenId,
-    chainId,
-    address: selectedAccount?.address ?? "",
+    chainId: chainId,
+    address: selectedAccount?.address,
   });
 
   const { tokens: metas } = useTokensByAssetIds(chainId, [tokenId]);

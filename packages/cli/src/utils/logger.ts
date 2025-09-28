@@ -184,7 +184,7 @@ export class Logger {
     );
 
     this.subsection("Next steps:");
-    this.detail("1. Wrap (parts of)your app in a PolkadotProvider:", true);
+    this.detail("1. Wrap (parts of) your app in a PolkadotProvider:", true);
     this.code(
       `import { PolkadotProvider } from '@/lib/providers/polkadot-provider.${hasDedot ? "dedot" : "papi"}'`
     );

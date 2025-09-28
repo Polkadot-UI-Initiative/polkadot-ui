@@ -10,11 +10,10 @@ import {
 import { ChainId } from "@reactive-dot/core";
 import { usePapi } from "../lib/polkadot-provider.papi";
 import { ClientConnectionStatus } from "../lib/types.dot-ui";
-import { ChainIdsWithPalletAssets, config } from "../reactive-dot.config";
-import { polkadot_asset_hub } from "@polkadot-api/descriptors";
+import { config, isChainWithPalletAssets } from "../reactive-dot.config";
 
 export interface UseAssetBalanceArgs {
-  chainId: ChainIdsWithPalletAssets;
+  chainId: ChainId;
   assetId: number;
   address?: string;
   enabled?: boolean;
@@ -51,10 +50,16 @@ export function useAssetBalance({
       Number(assetId),
       address,
     ],
-    enabled: isEnabled && assetId !== NATIVE_TOKEN_KEY && !!address,
+    enabled:
+      isEnabled &&
+      assetId !== NATIVE_TOKEN_KEY &&
+      !!address &&
+      isChainWithPalletAssets(chainId),
     queryFn: async (): Promise<bigint | null> => {
       if (!client) return null;
       try {
+        if (!isChainWithPalletAssets(chainId)) return null;
+
         const query = client
           .getTypedApi(config.chains[chainId].descriptor)
           .query.Assets.Account.getValue(assetId, address!);
@@ -146,15 +151,19 @@ export function useAssetBalances(
       address,
       palletAssetIds,
     ],
-    enabled: isEnabled && palletAssetIds.length > 0,
+    enabled:
+      isEnabled &&
+      palletAssetIds.length > 0 &&
+      isChainWithPalletAssets(chainId),
     queryFn: async (): Promise<unknown[]> => {
       if (!client) return [];
+      if (!isChainWithPalletAssets(chainId)) return [];
       const keys = palletAssetIds.map(
         (assetId) => [assetId, address] as [number, string]
       );
-      const rows = await client
-        .getTypedApi(polkadot_asset_hub)
-        .query.Assets.Account.getValues(keys);
+
+      const typedApi = client.getTypedApi(config.chains[chainId].descriptor);
+      const rows = await typedApi.query.Assets.Account.getValues(keys);
 
       return rows;
     },
@@ -235,7 +244,7 @@ export function useNativeBalance({
         return null;
       }
     },
-    staleTime: 10_000,
+    staleTime: 30_000,
   });
 
   return useMemo(

@@ -10,10 +10,7 @@ import {
   useNativeBalance,
 } from "@/registry/polkadot-ui/hooks/use-asset-balance.papi";
 import { NATIVE_TOKEN_KEY } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import {
-  ChainIdsWithPalletAssets,
-  config,
-} from "@/registry/polkadot-ui/reactive-dot.config";
+import { ChainIdsWithPalletAssets } from "@/registry/polkadot-ui/reactive-dot.config";
 
 export type BalanceDisplayProps = Omit<
   BalanceDisplayBaseProps,

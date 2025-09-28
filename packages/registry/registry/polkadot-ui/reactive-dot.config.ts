@@ -7,6 +7,7 @@ import {
   polkadot,
 } from "@polkadot-api/descriptors";
 import { defineConfig } from "@reactive-dot/core";
+import type { ChainId } from "@reactive-dot/core";
 import { InjectedWalletProvider } from "@reactive-dot/core/wallets.js";
 import { getWsProvider, WsJsonRpcProvider } from "polkadot-api/ws-provider/web";
 
@@ -104,3 +105,9 @@ export type ChainIdsWithPalletAssets = Extract<
   keyof typeof config.chains,
   "polkadotAssetHub" | "paseoAssetHub"
 >;
+
+export function isChainWithPalletAssets(
+  chainId: ChainId
+): chainId is ChainIdsWithPalletAssets {
+  return chainId === "polkadotAssetHub" || chainId === "paseoAssetHub";
+}

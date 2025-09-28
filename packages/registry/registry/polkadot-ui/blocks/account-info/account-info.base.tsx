@@ -58,7 +58,7 @@ export function AccountInfoBase<TNetworkId extends string = string>({
   iconTheme = "polkadot",
   fields = "all",
   truncate = 6,
-  componentType = "popover",
+  componentType = "hover",
   className,
   services,
 }: AccountInfoBaseProps<TNetworkId>) {

@@ -6,10 +6,7 @@ import { useSubscanDotPrice } from "@/registry/polkadot-ui/hooks/use-subscan-dot
 import { NATIVE_TOKEN_KEY } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { useState } from "react";
 import type { ComponentExample } from "../types.examples";
-import {
-  usePapi,
-  useSelectedAccount,
-} from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
+import { useSelectedAccount } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 
 export const balanceDisplayExample: ComponentExample = {
   name: "Balance Display",
