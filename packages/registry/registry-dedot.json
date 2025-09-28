@@ -154,7 +154,12 @@
       "type": "registry:block",
       "title": "Amount Input (dedot)",
       "description": "A component that allows the user to input an amount.",
-      "dependencies": ["dedot", "typink", "lucide-react"],
+      "dependencies": [
+        "dedot",
+        "typink",
+        "lucide-react",
+        "@tanstack/react-query"
+      ],
       "registryDependencies": ["input"],
       "files": [
         {
@@ -176,6 +181,14 @@
         {
           "path": "registry/polkadot-ui/hooks/use-asset-balance.dedot.ts",
           "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-chaindata-json.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
         }
       ]
     },

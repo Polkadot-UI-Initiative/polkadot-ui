@@ -1,9 +1,9 @@
 "use client";
 
-import { config } from "@/registry/polkadot-ui/reactive-dot.config";
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
-import { ChainId } from "@reactive-dot/core";
-import { WalletAccount } from "@reactive-dot/core/wallets.js";
+import { config } from "@/registry/polkadot-ui/reactive-dot.config";
+import type { ChainId } from "@reactive-dot/core";
+import type { WalletAccount } from "@reactive-dot/core/wallets.js";
 import {
   ChainProvider,
   ReactiveDotProvider,
@@ -17,8 +17,7 @@ import {
   useWallets,
 } from "@reactive-dot/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import type { PolkadotClient } from "polkadot-api";
-import { BlockInfo } from "polkadot-api";
+import type { BlockInfo, PolkadotClient } from "polkadot-api";
 import type { ReactNode } from "react";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 

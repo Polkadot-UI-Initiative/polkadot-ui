@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { Input } from "@/registry/polkadot-ui/ui/input";
-import type { InputProps } from "@/registry/polkadot-ui/ui/input";
 import { cn } from "@/registry/polkadot-ui/lib/utils";
 import { formatPlanck } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 
-export interface AmountInputBaseProps extends Omit<InputProps, "onChange"> {
+export interface AmountInputBaseProps
+  extends Omit<React.ComponentProps<"input">, "onChange"> {
   value?: string;
   onChange?: (value: string) => void;
   decimals?: number;

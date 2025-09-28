@@ -35,6 +35,22 @@
         {
           "path": "registry/polkadot-ui/hooks/use-asset-balance.papi.ts",
           "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/reactive-dot.config.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/polkadot-provider.papi.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-chaindata-json.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
         }
       ]
     },

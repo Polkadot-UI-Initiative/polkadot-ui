@@ -1,6 +1,9 @@
 "use client";
 
-import { AmountInputBase, AmountInputBaseProps } from "./amount-input.base";
+import {
+  AmountInputBase,
+  type AmountInputBaseProps,
+} from "./amount-input.base";
 import { useAssetBalance } from "@/registry/polkadot-ui/hooks/use-asset-balance.papi";
 
 import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
@@ -11,7 +14,7 @@ import {
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { NATIVE_TOKEN_KEY } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { config } from "@/registry/polkadot-ui/reactive-dot.config";
-import { ClientOnly } from "../../client-only";
+import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 
 export interface AmountInputProps extends AmountInputBaseProps {
   chainId: keyof typeof config.chains;

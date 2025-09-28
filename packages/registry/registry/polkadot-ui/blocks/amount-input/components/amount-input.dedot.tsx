@@ -14,7 +14,7 @@ import {
 import { useAssetBalance } from "@/registry/polkadot-ui/hooks/use-asset-balance.dedot";
 import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
 import { NATIVE_TOKEN_KEY } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { ClientOnly } from "../../client-only";
+import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 
 export interface AmountInputProps extends AmountInputBaseProps {
   chainId: NetworkId;

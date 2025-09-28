@@ -31,6 +31,23 @@ At the moment, you will need tailwind for polkadot-ui components to work. You ca
 
 ## Steps
 
+### 0) Update vite project
+
+vite-tsconfig-paths is required for compiler aliases to work.
+```bash
+pnpm add -D vite-tsconfig-paths
+```
+
+Then add the following to your vite.config.ts:
+
+```tsx
+import tsconfigPaths from 'vite-tsconfig-paths'
+
+export default defineConfig({
+  plugins: [tsconfigPaths()],
+})
+```
+
 ### 1) Add a component
 
 In this example, we'll add the address-input component.

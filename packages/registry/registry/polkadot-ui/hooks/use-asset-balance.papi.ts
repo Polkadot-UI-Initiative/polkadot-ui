@@ -1,16 +1,18 @@
 "use client";
 
-import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-
+import { useMemo } from "react";
+import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
+import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import {
   NATIVE_TOKEN_KEY,
   parseBalanceLike,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { ChainId } from "@reactive-dot/core";
-import { usePapi } from "../lib/polkadot-provider.papi";
-import { ClientConnectionStatus } from "../lib/types.dot-ui";
-import { config, isChainWithPalletAssets } from "../reactive-dot.config";
+import {
+  config,
+  isChainWithPalletAssets,
+} from "@/registry/polkadot-ui/reactive-dot.config";
+import type { ChainId } from "@reactive-dot/core";
 
 export interface UseAssetBalanceArgs {
   chainId: ChainId;

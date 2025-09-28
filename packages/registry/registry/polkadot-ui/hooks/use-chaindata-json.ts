@@ -10,7 +10,10 @@ import {
   generateTokenId,
   NATIVE_TOKEN_KEY,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { ChainInfo, TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import type {
+  ChainInfo,
+  TokenInfo,
+} from "@/registry/polkadot-ui/lib/types.dot-ui";
 
 export interface ChaindataResponse {
   networks?: ChainInfo[];
