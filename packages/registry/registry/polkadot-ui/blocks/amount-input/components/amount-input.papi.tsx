@@ -4,41 +4,41 @@ import {
   AmountInputBase,
   AmountInputBaseProps,
 } from "@/registry/polkadot-ui/blocks/amount-input/components/amount-input.base";
-import {
-  paseoAssetHub,
-  usePolkadotClient,
-  useTypink,
-  ClientConnectionStatus,
-  NetworkId,
-} from "typink";
-import { useAssetBalance } from "@/registry/polkadot-ui/hooks/use-asset-balance.dedot";
+import { useAssetBalance } from "@/registry/polkadot-ui/hooks/use-asset-balance.papi";
+
 import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
+import {
+  usePapi,
+  useSelectedAccount,
+} from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
+import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { NATIVE_TOKEN_KEY } from "@/registry/polkadot-ui/lib/utils.dot-ui";
+import { config } from "@/registry/polkadot-ui/reactive-dot.config";
 
 export interface AmountInputProps extends AmountInputBaseProps {
-  chainId: NetworkId;
+  chainId: keyof typeof config.chains;
   assetId?: number;
   withMaxButton?: boolean;
   requiredAccount?: boolean;
 }
 
 export function AmountInput(props: AmountInputProps) {
-  const chainId = props.chainId ?? paseoAssetHub.id;
-  const { connectedAccount } = useTypink();
-  const { status } = usePolkadotClient(chainId);
+  const chainId = props.chainId ?? "paseo"; // use the first chain in config
+  const { selectedAccount } = useSelectedAccount();
+  const { status } = usePapi(chainId);
 
   const tokenId = props.assetId ?? NATIVE_TOKEN_KEY;
 
   const accountBalance = useAssetBalance({
     assetId: tokenId,
     chainId,
-    address: connectedAccount?.address ?? "",
+    address: selectedAccount?.address ?? "",
   });
 
   const { tokens: metas } = useTokensByAssetIds(chainId, [tokenId]);
 
   // prefer explicit assetId, otherwise if multiple provided, pick first for max context
-  const hasAccount = Boolean(connectedAccount?.address);
+  const hasAccount = Boolean(selectedAccount?.address);
   const rawBalance = tokenId != null ? (accountBalance.free ?? null) : null;
   // Do not coerce to 0n when no account; base handles disabled via requiredBalance/disabled
   const maxValue = hasAccount ? rawBalance : null;
@@ -64,20 +64,31 @@ export function AmountInput(props: AmountInputProps) {
     metas.find((m) => m.assetId === String(tokenId))?.symbol;
 
   return (
-    <AmountInputBase
-      id={props.id}
-      value={props.value}
-      onChange={props.onChange}
-      placeholder={props.placeholder}
-      decimals={decimals}
-      maxValue={maxValue ?? null}
-      withMaxButton={props.withMaxButton}
-      disabled={disabled}
-      requiredBalance={hasAccount}
-      className={props.className}
-      step={derivedStep}
-      leftIconUrl={leftIconUrl}
-      leftIconAlt={leftIconAlt}
-    />
+    <>
+      <div className="flex flex-col gap-2">
+        <p>Chain ID: {chainId}</p>
+        {/* <p>Account: {selectedAccount?.address}</p> */}
+        <p>Status: {status}</p>
+        <p>Has Account: {hasAccount}</p>
+        <p>Raw Balance: {rawBalance}</p>
+        <p>Max Value: {maxValue}</p>
+        <p>Decimals: {decimals}</p>
+      </div>
+      <AmountInputBase
+        id={props.id}
+        value={props.value}
+        onChange={props.onChange}
+        placeholder={props.placeholder}
+        decimals={decimals}
+        maxValue={maxValue ?? null}
+        withMaxButton={props.withMaxButton}
+        disabled={disabled}
+        requiredBalance={hasAccount}
+        className={props.className}
+        step={derivedStep}
+        leftIconUrl={leftIconUrl}
+        leftIconAlt={leftIconAlt}
+      />
+    </>
   );
 }

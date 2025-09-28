@@ -19,7 +19,8 @@ export type AccountInfoProps = Omit<
 function AccountInfoInner(props: AccountInfoProps) {
   const {
     data: identity,
-    isLoading,
+
+    isPending,
     error,
   } = useIdentityOf({
     address: props.address,
@@ -29,10 +30,10 @@ function AccountInfoInner(props: AccountInfoProps) {
   const services = useMemo(
     () => ({
       identity: identity ?? null,
-      isLoading,
+      isLoading: isPending,
       error,
     }),
-    [identity, isLoading, error]
+    [identity, isPending, error]
   );
 
   const resolvedChain =

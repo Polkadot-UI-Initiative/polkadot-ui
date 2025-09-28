@@ -77,7 +77,7 @@
         "@tanstack/react-query",
         "@polkadot/react-identicon"
       ],
-      "registryDependencies": ["popover", "skeleton"],
+      "registryDependencies": ["popover", "skeleton", "hover-card"],
       "files": [
         {
           "path": "registry/polkadot-ui/blocks/account-info/account-info.base.tsx",

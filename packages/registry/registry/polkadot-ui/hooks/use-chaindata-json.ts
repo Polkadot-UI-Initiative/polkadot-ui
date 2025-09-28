@@ -8,7 +8,6 @@ import { useMemo } from "react";
 import {
   chainIdToKebabCase,
   generateTokenId,
-  NATIVE_TOKEN_ID,
   NATIVE_TOKEN_KEY,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { ChainInfo, TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";

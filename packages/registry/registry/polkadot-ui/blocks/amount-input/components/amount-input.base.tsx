@@ -127,7 +127,7 @@ export function AmountInputBase(props: AmountInputBaseProps) {
         <img
           src={leftIconUrl}
           alt={leftIconAlt ?? "token"}
-          className="absolute left-3 top-1/2 -translate-y-1/2 size-5 rounded"
+          className="absolute left-3 top-1/2 -translate-y-1/2 size-5 rounded mt-0 mb-0"
           aria-hidden={!leftIconAlt}
         />
       )}

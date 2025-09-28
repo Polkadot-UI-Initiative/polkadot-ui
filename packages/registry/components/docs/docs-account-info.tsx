@@ -5,7 +5,6 @@ import { ComponentPreview } from "../layout/component-preview";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { accountInfoExample } from "../examples/dedot/example-account-info";
 import { AccountInfo } from "@/registry/polkadot-ui/blocks/account-info/account-info.dedot";
-import { DEFAULT_CALLER } from "@/registry/polkadot-ui/lib/utils";
 
 export const accountInfoExamples: ComponentExample[] = [
   accountInfoExample,
@@ -15,27 +14,50 @@ export const accountInfoExamples: ComponentExample[] = [
     code: "account-info",
     component: (
       <AccountInfo
-        address={"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"}
+        address={"1hFmn2CuqXqxHgKDqqs2xRBpsPkiRXzJfcLbfDgsW7qgmpA"}
         fields={["github", "twitter"]}
       />
     ),
     tsx: `import { AccountInfo } from "@/components/account-info.dedot"
 
 <AccountInfo
-    address={"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"}
+    address={"1hFmn2CuqXqxHgKDqqs2xRBpsPkiRXzJfcLbfDgsW7qgmpA"}
     fields={["github","twitter"]}
 />`,
   },
+  {
+    name: "Account Info - Hover Card",
+    description: "Display the account info in a hover card",
+    code: "account-info",
+    component: (
+      <AccountInfo
+        address={"1hFmn2CuqXqxHgKDqqs2xRBpsPkiRXzJfcLbfDgsW7qgmpA"}
+        componentType="hover"
+      />
+    ),
+    tsx: `import { AccountInfo } from "@/components/account-info.dedot"
+
+<AccountInfo
+    address={"1hFmn2CuqXqxHgKDqqs2xRBpsPkiRXzJfcLbfDgsW7qgmpA"}
+    componentType="hover"
+/>`,
+  },
+
   {
     name: "Account Info - Identicon Theme",
     code: "address-info",
     description:
       "This Address input accepts ss58 as well as eth address format",
-    component: <AccountInfo address={DEFAULT_CALLER} iconTheme="jdenticon" />,
+    component: (
+      <AccountInfo
+        address={"1hFmn2CuqXqxHgKDqqs2xRBpsPkiRXzJfcLbfDgsW7qgmpA"}
+        iconTheme="jdenticon"
+      />
+    ),
     tsx: `import { AccountIno } from "@/components/address-input.dedot";
 
 <AccountInfo
-    address={"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"}
+    address={"1hFmn2CuqXqxHgKDqqs2xRBpsPkiRXzJfcLbfDgsW7qgmpA"}
     theme="jdenticon"
 />`,
   },
@@ -47,7 +69,6 @@ export function AccountInfoDocs() {
       <div className="flex flex-col gap-4">
         {accountInfoExamples.map((example) => (
           <ComponentPreview
-            ComponentWrapper={<div className="md:w-[400px]"></div>}
             key={example.name}
             componentInfo={example}
             withDocs={false}

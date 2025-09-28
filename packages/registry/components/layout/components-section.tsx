@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 import { examples as papiExamples } from "../examples/papi";
@@ -6,7 +8,8 @@ import { PolkadotProvider as PolkadotProviderPapi } from "@/registry/polkadot-ui
 import { PolkadotProvider as PolkadotProviderDedot } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { ComponentPreview } from "./component-preview";
 import { LibrarySwitcher } from "./library-switcher";
-import { HooksTest } from "../hooks-test";
+import { HooksTest as HooksTestPapi } from "../examples/papi/hooks-test";
+import { HooksTest as HooksTestDedot } from "../examples/dedot/hooks-test";
 
 export function ComponentsSection({
   usedLibrary = "dedot",
@@ -28,11 +31,14 @@ export function ComponentsSection({
       {/* Examples grid */}
       <div className="w-full grid justify-center gap-4 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 auto-rows-fr">
         {usedLibrary === "papi" && (
-          <PolkadotProviderPapi>{ComponentExamples}</PolkadotProviderPapi>
+          <PolkadotProviderPapi key={usedLibrary}>
+            <HooksTestPapi />
+            {ComponentExamples}
+          </PolkadotProviderPapi>
         )}
         {usedLibrary === "dedot" && (
-          <PolkadotProviderDedot>
-            <HooksTest />
+          <PolkadotProviderDedot key={usedLibrary}>
+            <HooksTestDedot />
             {ComponentExamples}
           </PolkadotProviderDedot>
         )}
