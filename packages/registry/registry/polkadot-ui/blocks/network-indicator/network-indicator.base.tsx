@@ -60,6 +60,9 @@ export function NetworkIndicatorBase<TNetworkId extends string>({
   }, [blockNumber, showBlockNumber]);
 
   const Trigger = useMemo(() => {
+    const blockText = blockNumber != null ? String(blockNumber) : "";
+    const measureText =
+      blockText.length > 0 ? "0".repeat(blockText.length) : "";
     return (
       <div className="tabular-nums font-light min-h-7 h-auto py-1 border-foreground/20 border rounded-md px-2 text-[12px] cursor-default flex items-center gap-1.5">
         {showLogo && network?.logo && (
@@ -68,12 +71,13 @@ export function NetworkIndicatorBase<TNetworkId extends string>({
             <img src={network?.logo} alt={network?.name} className="size-3.5" />
           </>
         )}
-        {/* hidden measurer for width animation */}
+        {/* hidden measurer for width animation (use zero digits for tabular width) */}
         <span
           ref={measureRef}
           className="absolute opacity-0 pointer-events-none -z-10 font-mono"
+          aria-hidden
         >
-          {blockNumber}
+          {measureText}
         </span>
         {/* animated width container for number */}
         <span
@@ -84,15 +88,17 @@ export function NetworkIndicatorBase<TNetworkId extends string>({
           }}
           className="overflow-hidden flex"
         >
-          <span
-            className="tabular-nums font-mono"
-            style={{
-              opacity: showNumber ? 1 : 0,
-              transition: "opacity 200ms ease",
-            }}
-          >
-            {blockNumber}
-          </span>
+          {showNumber && (
+            <span
+              className="tabular-nums font-mono"
+              style={{
+                opacity: showNumber ? 1 : 0,
+                transition: "opacity 200ms ease",
+              }}
+            >
+              {blockNumber}
+            </span>
+          )}
         </span>
         {connectionStatus === ClientConnectionStatus.Connected ? (
           <>

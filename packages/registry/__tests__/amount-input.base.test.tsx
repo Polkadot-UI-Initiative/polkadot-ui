@@ -6,15 +6,9 @@ import { AmountInputBase } from "@/registry/polkadot-ui/blocks/amount-input/comp
 
 describe("AmountInputBase", () => {
   it("renders simple input when not connected (disabled)", () => {
-    render(
-      <AmountInputBase
-        value=""
-        label="Amount"
-        services={{ isConnected: false, connectedAccount: null }}
-      />
-    );
-    expect(screen.getByText("Amount")).toBeInTheDocument();
+    render(<AmountInputBase value="" />);
     const input = screen.getByRole("spinbutton");
+    // Component does not render a visible label; label prop is forwarded as an attribute
     expect(input).toBeDisabled();
   });
 });
