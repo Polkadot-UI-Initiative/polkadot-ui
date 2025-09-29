@@ -1,10 +1,8 @@
 import { Button } from "@/components/ui/button";
-
 import { DialogFooter } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { type ViewSelectWalletProps } from "@/registry/polkadot-ui/blocks/connect-wallet/connect-wallet.base";
+import { type ViewSelectWalletProps } from "./connect-wallet.base";
 import { ArrowRight, Plus, Zap, ZapOff } from "lucide-react";
-import Image from "next/image";
 
 export const ViewSelectWallet = ({
   next,
@@ -91,8 +89,9 @@ export const ViewSelectWallet = ({
               />
               <div className="flex flex-row items-center justify-start gap-2">
                 {wallet.logo && (
-                  <Image
-                    src={wallet.logo ?? ""}
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={wallet.logo}
                     alt={wallet.name}
                     className="w-[32px] h-[32px]"
                     width={32}

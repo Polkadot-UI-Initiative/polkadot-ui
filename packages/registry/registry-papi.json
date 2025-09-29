@@ -227,7 +227,7 @@
         "@reactive-dot/react",
         "@tanstack/react-query"
       ],
-      "registryDependencies": [],
+      "registryDependencies": ["tooltip", "skeleton"],
       "files": [
         {
           "path": "registry/polkadot-ui/blocks/network-indicator/network-indicator.papi.tsx",
@@ -235,6 +235,10 @@
         },
         {
           "path": "registry/polkadot-ui/lib/polkadot-provider.papi.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
           "type": "registry:lib"
         }
       ]

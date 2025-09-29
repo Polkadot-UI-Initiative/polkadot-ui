@@ -1,14 +1,16 @@
 "use client";
 
+import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   RequireAccountBase,
   type RequireAccountBaseProps,
-} from "@/registry/polkadot-ui/blocks/require-account/require-account.base";
-import { useMemo } from "react";
-import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
-import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
-import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
+} from "./require-account.base";
+import {
+  PolkadotProvider,
+  usePapi,
+} from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import { useMemo } from "react";
 
 export type RequireAccountProps = Omit<RequireAccountBaseProps, "services">;
 

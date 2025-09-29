@@ -6,7 +6,7 @@ import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.d
 import {
   RequireAccountBase,
   type RequireAccountBaseProps,
-} from "@/registry/polkadot-ui/blocks/require-account/require-account.base";
+} from "./require-account.base";
 import { ClientConnectionStatus, useTypink } from "typink";
 
 export type RequireAccountProps = Omit<RequireAccountBaseProps, "services">;

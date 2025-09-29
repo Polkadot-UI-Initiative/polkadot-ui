@@ -1,12 +1,6 @@
 "use client";
 
-import * as React from "react";
-import { Button, type ButtonProps } from "@/components/ui/button";
-import { Identicon } from "@polkadot/react-identicon";
-import { ViewSelectWallet } from "@/registry/polkadot-ui/blocks/connect-wallet/view-select-wallet";
-import { ViewSelectAccount } from "@/registry/polkadot-ui/blocks/connect-wallet/view-select-account";
-import { Wallet as WalletIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -15,7 +9,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
+import { ViewSelectAccount } from "@/registry/polkadot-ui/blocks/connect-wallet/view-select-account";
+import { ViewSelectWallet } from "@/registry/polkadot-ui/blocks/connect-wallet/view-select-wallet";
+import { Identicon } from "@polkadot/react-identicon";
+import type { VariantProps } from "class-variance-authority";
+import { Wallet as WalletIcon } from "lucide-react";
+import * as React from "react";
 
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean;
+}
 export interface WalletInfo {
   id: string;
   name: string;

@@ -1,12 +1,11 @@
 "use client";
 
-import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import { DialogClose, DialogFooter } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
+import { type ViewSelectAccountProps } from "./connect-wallet.base";
 import Identicon from "@polkadot/react-identicon";
 import { ArrowLeft } from "lucide-react";
-import { type ViewSelectAccountProps } from "@/registry/polkadot-ui/blocks/connect-wallet/connect-wallet.base";
-import { cn } from "@/lib/utils";
 
 function truncateAddress(
   address: string,
@@ -55,7 +54,8 @@ export function ViewSelectAccount({
                   <div className="relative inline-block">
                     {wallet?.logo && (
                       <div className="rounded-full overflow-hidden border-2 border-background h-6 w-6 absolute bottom-0 right-0 shadow-md z-10 bg-background">
-                        <Image
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
                           src={wallet.logo}
                           alt={wallet.id}
                           width={32}

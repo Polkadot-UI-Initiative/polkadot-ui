@@ -5,7 +5,7 @@ import {
   NetworkIndicatorBase,
   NetworkIndicatorSkeleton,
   type NetworkIndicatorBaseProps,
-} from "@/registry/polkadot-ui/blocks/network-indicator/network-indicator.base";
+} from "./network-indicator.base";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { useMemo } from "react";
 import { ClientConnectionStatus, useBlockInfo, useTypink } from "typink";

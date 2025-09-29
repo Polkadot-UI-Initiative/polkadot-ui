@@ -1,10 +1,10 @@
 "use client";
 
-import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import {
   ConnectWalletBase,
   type ConnectWalletBaseProps,
-} from "@/registry/polkadot-ui/blocks/connect-wallet/connect-wallet.base";
+} from "./connect-wallet.base";
+import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { useTypink } from "typink";
 
 export type ConnectWalletProps = Omit<ConnectWalletBaseProps, "services">;
