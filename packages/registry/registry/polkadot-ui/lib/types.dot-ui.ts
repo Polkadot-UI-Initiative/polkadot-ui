@@ -118,3 +118,11 @@ export interface ChainInfo {
   isTestnet?: boolean;
   isDefault?: boolean;
 }
+export interface TokenMetadata {
+  assetId: number;
+  name: string;
+  symbol: string;
+  decimals: number;
+  deposit?: bigint;
+  isFrozen?: boolean;
+}

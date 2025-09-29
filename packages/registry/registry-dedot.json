@@ -340,7 +340,8 @@
         "dedot",
         "typink",
         "@tanstack/react-query",
-        "lucide-react"
+        "lucide-react",
+        "@polkadot/util"
       ],
       "registryDependencies": ["select"],
       "files": [
@@ -395,9 +396,10 @@
         "dedot",
         "typink",
         "@tanstack/react-query",
-        "lucide-react"
+        "lucide-react",
+        "@polkadot/util"
       ],
-      "registryDependencies": ["button", "dialog"],
+      "registryDependencies": ["button", "dialog", "input"],
       "files": [
         {
           "path": "registry/polkadot-ui/blocks/select-token/select-token-dialog.base.tsx",

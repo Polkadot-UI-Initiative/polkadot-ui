@@ -7,14 +7,7 @@ import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui"
 import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import type { ChainId } from "@reactive-dot/core";
 
-export interface TokenMetadata {
-  assetId: number;
-  deposit: bigint;
-  name: string;
-  symbol: string;
-  decimals: number;
-  isFrozen: boolean;
-}
+import { type TokenMetadata } from "@/registry/polkadot-ui/lib/types.dot-ui";
 
 type ExtractAssetMetadataValue<A> = A extends {
   query: {

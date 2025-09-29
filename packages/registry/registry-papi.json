@@ -355,7 +355,8 @@
         "@tanstack/react-query",
         "@reactive-dot/core",
         "@reactive-dot/react",
-        "lucide-react"
+        "lucide-react",
+        "@polkadot/util"
       ],
       "registryDependencies": ["select", "button"],
       "files": [
@@ -411,7 +412,8 @@
         "@tanstack/react-query",
         "@reactive-dot/core",
         "@reactive-dot/react",
-        "lucide-react"
+        "lucide-react",
+        "@polkadot/util"
       ],
       "registryDependencies": ["button", "dialog", "input"],
       "files": [
