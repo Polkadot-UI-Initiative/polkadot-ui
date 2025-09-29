@@ -52,7 +52,7 @@ export class PolkadotDetector {
       ...packageJson.devDependencies,
     };
 
-    return Boolean(deps["polkadot-api"]);
+    return Boolean(deps["polkadot-api"]) || Boolean(deps["@reactive-dot/core"]);
   }
 
   /**
@@ -67,7 +67,7 @@ export class PolkadotDetector {
       ...packageJson.devDependencies,
     };
 
-    return Boolean(deps["dedot"]);
+    return Boolean(deps["dedot"]) || Boolean(deps["typink"]);
   }
 
   /**

@@ -14,7 +14,7 @@ import {
   defaultDescriptions,
   defaultTitles,
   txStatusNotification,
-  TxStatusNotificationTexts,
+  type TxStatusNotificationTexts,
 } from "@/registry/polkadot-ui/blocks/tx-notification/components/tx-notification";
 import type {
   AnyFn,

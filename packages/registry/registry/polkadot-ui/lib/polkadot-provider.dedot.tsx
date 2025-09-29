@@ -2,7 +2,7 @@
 
 import {
   type ContractDeployment,
-  NetworkId,
+  type NetworkId,
   type NetworkInfo,
   paseo,
   paseoAssetHub,

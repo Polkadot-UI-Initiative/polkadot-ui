@@ -10,8 +10,8 @@ import {
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ClientConnectionStatus,
-  NetworkInfoLike,
-  UseBlockInfoLike,
+  type NetworkInfoLike,
+  type UseBlockInfoLike,
 } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { Skeleton } from "@/components/ui/skeleton";
 

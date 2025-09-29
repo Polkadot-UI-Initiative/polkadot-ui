@@ -1,11 +1,9 @@
 "use client";
 
-import { decodeAddress, encodeAddress } from "@polkadot/keyring";
-import { ethers } from "ethers";
 import {
   ClientConnectionStatus,
-  PolkadotIdentity,
   type IdentitySearchResult,
+  type PolkadotIdentity,
 } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { cn } from "@/registry/polkadot-ui/lib/utils";
 import {
@@ -15,12 +13,14 @@ import {
 import { Button } from "@/registry/polkadot-ui/ui/button";
 import { Input } from "@/registry/polkadot-ui/ui/input";
 import { Label } from "@/registry/polkadot-ui/ui/label";
+import { decodeAddress, encodeAddress } from "@polkadot/keyring";
 import { Identicon } from "@polkadot/react-identicon";
 import { type IconTheme } from "@polkadot/react-identicon/types";
 import type { UseQueryResult } from "@tanstack/react-query";
+import { ethers } from "ethers";
 
 import { Check, CircleCheck, Copy, Loader2 } from "lucide-react";
-import { forwardRef, ReactNode, useEffect, useRef, useState } from "react";
+import { forwardRef, type ReactNode, useEffect, useRef, useState } from "react";
 
 // Services interface for dependency injection
 
