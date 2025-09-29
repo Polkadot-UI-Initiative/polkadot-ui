@@ -10,7 +10,7 @@ import {
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { useIdentityOf } from "@/registry/polkadot-ui/hooks/use-identity-of.dedot";
 import { useIdentitySearch } from "@/registry/polkadot-ui/hooks/use-search-identity.dedot";
-import { NetworkId, paseoPeople, usePolkadotClient } from "typink";
+import { type NetworkId, paseoPeople, usePolkadotClient } from "typink";
 import { Input } from "@/registry/polkadot-ui/ui/input";
 
 export type AddressInputProps = Omit<

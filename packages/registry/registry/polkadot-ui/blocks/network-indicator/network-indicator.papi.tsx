@@ -2,11 +2,11 @@
 
 import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
-import { ChainId } from "@reactive-dot/core";
+import { type ChainId } from "@reactive-dot/core";
 import { useMemo } from "react";
 import {
   NetworkIndicatorBase,
-  NetworkIndicatorBaseProps,
+  type NetworkIndicatorBaseProps,
 } from "./network-indicator.base";
 
 export type NetworkIndicatorProps<TNetworkId extends string> = Omit<

@@ -1,17 +1,17 @@
 "use client";
 
-import {
-  useCallback,
-  useEffect,
-  useState,
-  createContext,
-  useContext,
-} from "react";
+import { generateTweakCnCss } from "@/components/theme/tweakcn-generator";
 import {
   ThemeProvider as NextThemesProvider,
-  ThemeProviderProps,
+  type ThemeProviderProps,
 } from "next-themes";
-import { generateTweakCnCss } from "@/components/theme/tweakcn-generator";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 interface TweakItem {
   name: string;

@@ -10,7 +10,7 @@ import {
   PolkadotProvider,
   usePapi,
 } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
-import { ChainId } from "@reactive-dot/core";
+import { type ChainId } from "@reactive-dot/core";
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 
 // Props type - removes services prop since we inject it

@@ -6,13 +6,13 @@ import {
   ClientConnectionStatus,
   paseoAssetHub,
   usePolkadotClient,
-  NetworkId,
+  type NetworkId,
 } from "typink";
 import {
   NATIVE_TOKEN_KEY,
   parseBalanceLike,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { AccountId32Like } from "dedot/codecs";
+import { type AccountId32Like } from "dedot/codecs";
 
 export interface UseAssetBalanceArgs {
   chainId: NetworkId;

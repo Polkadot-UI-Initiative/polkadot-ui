@@ -1,6 +1,6 @@
 "use client";
 
-import { ComponentExample } from "../examples/types.examples";
+import type { ComponentExample } from "../examples/types.examples";
 import { ComponentPreview } from "../layout/component-preview";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import {

@@ -1,11 +1,11 @@
 "use client";
 
-import { ComponentPreview } from "@/components/layout/component-preview";
-import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { balanceDisplayExample } from "@/components/examples/dedot/example-balance-display";
-import { ComponentExample } from "../examples/types.examples";
+import { ComponentPreview } from "@/components/layout/component-preview";
 import { BalanceDisplay } from "@/registry/polkadot-ui/blocks/balance-display/balance-display.dedot";
+import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { polkadotAssetHub } from "typink";
+import type { ComponentExample } from "../examples/types.examples";
 
 export const balanceDisplayExamples: ComponentExample[] = [
   balanceDisplayExample,

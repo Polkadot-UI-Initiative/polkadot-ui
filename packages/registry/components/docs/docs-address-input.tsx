@@ -1,11 +1,11 @@
 "use client";
 
-import { AddressInput } from "@/registry/polkadot-ui/blocks/address-input/address-input.dedot";
 import { addressInputExample } from "@/components/examples/dedot/example-address-input";
-import { ComponentExample } from "@/components/examples/types.examples";
+import type { ComponentExample } from "@/components/examples/types.examples";
 import { ComponentPreview } from "@/components/layout/component-preview";
+import type { IdentityResult } from "@/registry/polkadot-ui/blocks/address-input/address-input.base";
+import { AddressInput } from "@/registry/polkadot-ui/blocks/address-input/address-input.dedot";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
-import { IdentityResult } from "@/registry/polkadot-ui/blocks/address-input/address-input.base";
 
 const handleIdentitySelected = (identity: IdentityResult) => {
   alert(identity.data.display);

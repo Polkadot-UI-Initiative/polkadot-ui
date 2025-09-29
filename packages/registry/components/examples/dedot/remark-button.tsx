@@ -1,7 +1,7 @@
 "use client";
 
 import { TxButton } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.dedot";
-import { NetworkId, useTx, useTypink } from "typink";
+import { type NetworkId, useTx, useTypink } from "typink";
 
 export function RemarkButton({ networkId }: { networkId: NetworkId }) {
   const { supportedNetworks } = useTypink();

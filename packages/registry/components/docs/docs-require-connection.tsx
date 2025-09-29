@@ -1,11 +1,11 @@
 "use client";
 
-import { ComponentExample } from "../examples/types.examples";
-import { ComponentPreview } from "../layout/component-preview";
-import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { RequireConnectionWithProvider } from "@/registry/polkadot-ui/blocks/require-connection/require-connection.dedot";
+import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
+import { Loader2, Wifi, WifiOff } from "lucide-react";
 import { requireConnectionExample as dedotRequireConnectionExample } from "../examples/dedot/example-require-connection";
-import { Wifi, WifiOff, Loader2 } from "lucide-react";
+import type { ComponentExample } from "../examples/types.examples";
+import { ComponentPreview } from "../layout/component-preview";
 
 export const requireConnectionExamples: ComponentExample[] = [
   dedotRequireConnectionExample,

@@ -2,14 +2,14 @@
 
 import {
   AmountInputBase,
-  AmountInputBaseProps,
+  type AmountInputBaseProps,
 } from "@/registry/polkadot-ui/blocks/amount-input/components/amount-input.base";
 import {
   paseoAssetHub,
   usePolkadotClient,
   useTypink,
   ClientConnectionStatus,
-  NetworkId,
+  type NetworkId,
 } from "typink";
 import { useAssetBalance } from "@/registry/polkadot-ui/hooks/use-asset-balance.dedot";
 import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";

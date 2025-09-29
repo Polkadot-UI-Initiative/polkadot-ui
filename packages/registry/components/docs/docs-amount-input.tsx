@@ -1,14 +1,14 @@
 "use client";
 
 import { amountInputExample } from "@/components/examples/dedot/example-amount-input";
-import { ComponentExample } from "@/components/examples/types.examples";
-import { AmountInput } from "@/registry/polkadot-ui/blocks/amount-input/components/amount-input.dedot";
-import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
+import type { ComponentExample } from "@/components/examples/types.examples";
 import { ComponentPreview } from "@/components/layout/component-preview";
+import { AmountInput } from "@/registry/polkadot-ui/blocks/amount-input/components/amount-input.dedot";
 import { ConnectWallet } from "@/registry/polkadot-ui/blocks/connect-wallet/connect-wallet.dedot";
-import { paseoAssetHub } from "typink";
+import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { NATIVE_TOKEN_KEY } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { useState } from "react";
+import { paseoAssetHub } from "typink";
 
 export const amountInputExamples: ComponentExample[] = [
   amountInputExample,

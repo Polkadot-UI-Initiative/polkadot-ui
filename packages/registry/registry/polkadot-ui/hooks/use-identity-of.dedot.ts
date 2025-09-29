@@ -1,10 +1,10 @@
 "use client";
 
+import { type PolkadotIdentity } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import { hasPositiveIdentityJudgement } from "@/registry/polkadot-ui/lib/utils.dot-ui";
+import { hexToU8a, isHex, u8aToString } from "@polkadot/util";
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 import { ClientConnectionStatus, usePolkadotClient } from "typink";
-import { PolkadotIdentity } from "@/registry/polkadot-ui/lib/types.dot-ui";
-import { isHex, hexToU8a, u8aToString } from "@polkadot/util";
-import { hasPositiveIdentityJudgement } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 
 export function useIdentityOf({
   address,

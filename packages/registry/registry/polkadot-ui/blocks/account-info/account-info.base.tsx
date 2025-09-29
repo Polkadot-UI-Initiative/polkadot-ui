@@ -11,7 +11,7 @@ import { truncateAddress } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { Identicon } from "@polkadot/react-identicon";
 import { Check, CircleCheck, Copy } from "lucide-react";
 import React, { Fragment, useState } from "react";
-import { PolkadotIdentity } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import type { PolkadotIdentity } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import {
   Tooltip,
   TooltipContent,

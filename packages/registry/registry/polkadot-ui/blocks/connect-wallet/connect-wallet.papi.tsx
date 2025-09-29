@@ -4,9 +4,11 @@ import {
   ConnectWalletBase,
   type ConnectWalletBaseProps,
 } from "@/registry/polkadot-ui/blocks/connect-wallet/connect-wallet.base";
-import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
-import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
-import { useMemo, useCallback } from "react";
+import {
+  PolkadotProvider,
+  usePapi,
+} from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
+import { useCallback, useMemo } from "react";
 
 export type ConnectWalletProps = Omit<ConnectWalletBaseProps, "services">;
 

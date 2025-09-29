@@ -13,8 +13,8 @@ import {
   tokenSelectionStyles,
 } from "@/registry/polkadot-ui/blocks/select-token/shared-token-components";
 import {
-  TokenInfo,
-  NetworkInfoLike,
+  type TokenInfo,
+  type NetworkInfoLike,
 } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import {
   Dialog,

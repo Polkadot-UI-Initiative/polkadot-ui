@@ -3,17 +3,17 @@
  * This fetches from https://raw.githubusercontent.com/TalismanSociety/chaindata/main/pub/v4/chaindata.json
  */
 
-import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
+import type {
+  ChainInfo,
+  TokenInfo,
+} from "@/registry/polkadot-ui/lib/types.dot-ui";
 import {
   chainIdToKebabCase,
   generateTokenId,
   NATIVE_TOKEN_KEY,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import type {
-  ChainInfo,
-  TokenInfo,
-} from "@/registry/polkadot-ui/lib/types.dot-ui";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 export interface ChaindataResponse {
   networks?: ChainInfo[];

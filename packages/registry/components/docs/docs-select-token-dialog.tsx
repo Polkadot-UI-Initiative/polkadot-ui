@@ -1,9 +1,9 @@
 "use client";
 
-import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/select-token-dialog.dedot";
 import { selectTokenDialogExample } from "@/components/examples/dedot/example-select-token-dialog";
-import { ComponentExample } from "@/components/examples/types.examples";
+import type { ComponentExample } from "@/components/examples/types.examples";
 import { ComponentPreview } from "@/components/layout/component-preview";
+import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/select-token-dialog.dedot";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { paseoAssetHub } from "typink";
 
