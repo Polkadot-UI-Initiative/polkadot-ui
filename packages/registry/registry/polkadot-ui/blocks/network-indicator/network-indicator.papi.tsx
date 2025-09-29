@@ -1,7 +1,7 @@
 "use client";
 
 import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
-import { config } from "@/registry/polkadot-ui/reactive-dot.config";
+import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import { ChainId } from "@reactive-dot/core";
 import { useMemo } from "react";
 import {

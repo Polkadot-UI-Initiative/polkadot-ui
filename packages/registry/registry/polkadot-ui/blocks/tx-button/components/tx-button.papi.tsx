@@ -10,7 +10,10 @@ import {
   txStatusNotification,
 } from "@/registry/polkadot-ui/blocks/tx-notification/components/tx-notification";
 import { formatBalance } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { config as reactiveDotConfig } from "@/registry/polkadot-ui/reactive-dot.config";
+import {
+  config,
+  config as reactiveDotConfig,
+} from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import { useSpendableBalance } from "@reactive-dot/react";
 import { Ban, CheckCheck, CheckCircle, Coins, Loader2 } from "lucide-react";
 import type { Transaction as PapiTransaction } from "polkadot-api";
@@ -121,10 +124,7 @@ export function TxButtonInner(props: TxButtonProps) {
     setTxStatus({ type: "Loading" });
 
     const toastId = beginTxStatusNotification({
-      network: {
-        id: networkId,
-        name: networkId,
-      },
+      network: { ...config.chains[networkId], id: networkId },
       title:
         notifications.title ??
         notifications.titles?.signing ??

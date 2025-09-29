@@ -13,7 +13,7 @@ import {
 } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { NATIVE_TOKEN_KEY } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { config } from "@/registry/polkadot-ui/reactive-dot.config";
+import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 
 export interface AmountInputProps extends AmountInputBaseProps {
@@ -73,31 +73,20 @@ export function AmountInputInner(props: AmountInputProps) {
     metas.find((m) => m.assetId === String(tokenId))?.symbol;
 
   return (
-    <>
-      <div className="flex flex-col gap-2">
-        <p>Chain ID: {chainId}</p>
-        {/* <p>Account: {selectedAccount?.address}</p> */}
-        <p>Status: {status}</p>
-        <p>Has Account: {hasAccount}</p>
-        <p>Raw Balance: {rawBalance}</p>
-        <p>Max Value: {maxValue}</p>
-        <p>Decimals: {decimals}</p>
-      </div>
-      <AmountInputBase
-        id={props.id}
-        value={props.value}
-        onChange={props.onChange}
-        placeholder={props.placeholder}
-        decimals={decimals}
-        maxValue={maxValue ?? null}
-        withMaxButton={props.withMaxButton}
-        disabled={disabled}
-        requiredBalance={hasAccount}
-        className={props.className}
-        step={derivedStep}
-        leftIconUrl={leftIconUrl}
-        leftIconAlt={leftIconAlt}
-      />
-    </>
+    <AmountInputBase
+      id={props.id}
+      value={props.value}
+      onChange={props.onChange}
+      placeholder={props.placeholder}
+      decimals={decimals}
+      maxValue={maxValue ?? null}
+      withMaxButton={props.withMaxButton}
+      disabled={disabled}
+      requiredBalance={hasAccount}
+      className={props.className}
+      step={derivedStep}
+      leftIconUrl={leftIconUrl}
+      leftIconAlt={leftIconAlt}
+    />
   );
 }

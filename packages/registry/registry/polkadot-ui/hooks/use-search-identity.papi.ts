@@ -11,7 +11,7 @@ import {
   ClientConnectionStatus,
   type IdentitySearchResult,
 } from "@/registry/polkadot-ui/lib/types.dot-ui";
-import { config } from "@/registry/polkadot-ui/reactive-dot.config";
+import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 
 export function useIdentitySearch(
   displayName: string | null | undefined,

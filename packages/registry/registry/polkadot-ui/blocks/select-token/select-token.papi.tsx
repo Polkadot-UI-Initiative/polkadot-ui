@@ -27,7 +27,7 @@ import {
   NATIVE_TOKEN_KEY,
   NATIVE_TOKEN_ID,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { config } from "@/registry/polkadot-ui/reactive-dot.config";
+import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import type { ChainId } from "@reactive-dot/core";
 
 export type SelectTokenProps = Omit<SelectTokenBaseProps, "services"> &

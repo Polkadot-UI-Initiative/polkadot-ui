@@ -9,7 +9,10 @@ import {
 import { defineConfig } from "@reactive-dot/core";
 import type { ChainId } from "@reactive-dot/core";
 import { InjectedWalletProvider } from "@reactive-dot/core/wallets.js";
-import { getWsProvider, WsJsonRpcProvider } from "polkadot-api/ws-provider/web";
+import {
+  getWsProvider,
+  type WsJsonRpcProvider,
+} from "polkadot-api/ws-provider";
 
 let paseoPeopleProvider: WsJsonRpcProvider | null = getWsProvider(
   "wss://sys.ibp.network/people-paseo"

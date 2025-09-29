@@ -11,7 +11,7 @@ import {
 import {
   config,
   isChainWithPalletAssets,
-} from "@/registry/polkadot-ui/reactive-dot.config";
+} from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import type { ChainId } from "@reactive-dot/core";
 
 export interface UseAssetBalanceArgs {

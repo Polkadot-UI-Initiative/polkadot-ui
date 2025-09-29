@@ -37,7 +37,7 @@
           "type": "registry:hook"
         },
         {
-          "path": "registry/polkadot-ui/reactive-dot.config.ts",
+          "path": "registry/polkadot-ui/lib/reactive-dot.config.ts",
           "type": "registry:lib"
         },
         {
@@ -390,7 +390,7 @@
           "type": "registry:lib"
         },
         {
-          "path": "registry/polkadot-ui/reactive-dot.config.ts",
+          "path": "registry/polkadot-ui/lib/reactive-dot.config.ts",
           "type": "registry:lib"
         }
       ]
@@ -446,7 +446,7 @@
           "type": "registry:lib"
         },
         {
-          "path": "registry/polkadot-ui/reactive-dot.config.ts",
+          "path": "registry/polkadot-ui/lib/reactive-dot.config.ts",
           "type": "registry:lib"
         }
       ]

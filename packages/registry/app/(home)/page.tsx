@@ -17,7 +17,7 @@ export default async function Home({
   const libRaw = (await searchParams).lib;
   const lib = ["papi", "dedot"].includes(libRaw as string)
     ? (libRaw as "papi" | "dedot")
-    : "dedot";
+    : "papi";
 
   return (
     <div className="flex flex-col">

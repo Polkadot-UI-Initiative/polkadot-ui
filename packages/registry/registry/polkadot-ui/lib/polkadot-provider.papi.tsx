@@ -1,7 +1,7 @@
 "use client";
 
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
-import { config } from "@/registry/polkadot-ui/reactive-dot.config";
+import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import type { ChainId } from "@reactive-dot/core";
 import type { WalletAccount } from "@reactive-dot/core/wallets.js";
 import {
@@ -73,18 +73,6 @@ function PapiProvider({ children }: { children: ReactNode }) {
   const [, connectWallet] = useWalletConnector();
   const [, disconnectWallet] = useWalletDisconnector();
   const { selectedAccount, setSelectedAccount } = useSelectedAccount();
-
-  useEffect(() => {
-    return () => {
-      const c = client;
-
-      setTimeout(() => {
-        try {
-          c.destroy();
-        } catch {}
-      }, 0);
-    };
-  }, [client]);
 
   const value = useMemo<PapiContextValue>(
     () => ({

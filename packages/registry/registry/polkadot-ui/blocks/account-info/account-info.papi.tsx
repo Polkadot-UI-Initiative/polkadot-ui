@@ -9,7 +9,7 @@ import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import { useIdentityOf } from "@/registry/polkadot-ui/hooks/use-identity-of.papi";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { useMemo } from "react";
-import { config } from "@/registry/polkadot-ui/reactive-dot.config";
+import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 
 export type AccountInfoProps = Omit<
   AccountInfoBaseProps<keyof typeof config.chains>,

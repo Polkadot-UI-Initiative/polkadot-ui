@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
-import { config } from "@/registry/polkadot-ui/reactive-dot.config";
+import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import type { ChainId } from "@reactive-dot/core";
 
 export interface TokenMetadata {
