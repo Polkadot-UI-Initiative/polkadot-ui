@@ -1,12 +1,68 @@
 ---
 title: Amount Input
-description: Input component for entering amounts. Coming soon.
+description: Numeric amount input with token-aware max button and wallet integration.
 ---
 
-import { ExamplePlaceholder } from "@/components/examples/placeholder";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AmountInputDocs } from "@/components/docs/docs-amount-input";
 
-## Coming soon
+## Introduction
 
-<ExamplePlaceholder title="Amount Input" />
+`AmountInput` is a numeric-only input tailored for token amounts. It supports a Max button that fills in the user's available balance, token icon display, and smart defaults for input step based on token decimals.
+
+## Features
+
+- **Numeric-only input**: Blocks non-numeric characters, exponent notation, and multiple dots
+- **Max button**: One-click set to available balance (when an account is connected and balance loaded)
+- **Token-aware UX**: Derives step and icon from token metadata via chaindata
+- **Wallet-aware states**: Enable/disable behavior based on connection and balance
+- **Shadcn Input compatible**: Accepts and forwards all shadcn `Input` props
+
+## Installation
+
+```bash
+npx polkadot-ui@latest add amount-input
+```
+
+## Usage
+
+Some usages of the AmountInput component depend on having a wallet connected and balance loaded. You can select the account here to illustrate this:
+
+<AmountInputDocs />
+
+## Props
+
+| Prop              | Type                      | Required | Default             | Description |
+| ----------------- | ------------------------- | -------- | ------------------- | ----------- |
+| `chainId`         | `string`                  | yes      | -                   | Chain identifier for balances/metadata |
+| `assetId`         | `number`                  | yes      | -                   | Asset ID to bind the input to |
+| `value`           | `string`                  | no       | `""`               | Controlled value |
+| `onChange`        | `(value: string) => void` | no       | -                   | Controlled change handler (string) |
+| `placeholder`     | `string`                  | no       | `"Enter amount"`   | Input placeholder |
+| `withMaxButton`   | `boolean`                 | no       | `true`              | Show the Max button |
+| `requiredAccount` | `boolean`                 | no       | `false`             | If true, disables input when no account/connection |
+| `disabled`        | `boolean`                 | no       | `false`             | Force disable the input |
+| `className`       | `string`                  | no       | -                   | Extra classes for the input |
+| `step`            | `number or string`        | no       | derived (see below) | Numeric step; defaults to `10^-p` where `p = min(2, tokenDecimals)` |
+
+Notes:
+
+
+
+
+## Behavior
+
+- When `requiredAccount` is true and there is no connected account, the input is disabled. Otherwise it stays enabled but the Max button remains disabled.
+- Max button is visible when `withMaxButton` is true, and becomes enabled when an account is connected and balance is loaded (> 0).
+- Numeric guard: prevents letters, exponent notation, and extraneous characters via keydown/beforeinput/paste sanitization.
+- `max` attribute mirrors the available balance (formatted) when known.
+- When balance is 0 and an account is connected, the input disables if the base's `requiredBalance` is active via the dedot wrapper logic.
+
+## Accessibility
+
+- Uses standard input semantics and focus rings from shadcn.
+- Max button is keyboard and screen-reader accessible.
+
+
 
 

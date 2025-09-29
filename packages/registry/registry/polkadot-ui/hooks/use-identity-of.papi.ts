@@ -3,7 +3,7 @@
 // no-op
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
-import { config } from "@/registry/polkadot-ui/reactive-dot.config";
+import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import {
   ClientConnectionStatus,
   PolkadotIdentity,

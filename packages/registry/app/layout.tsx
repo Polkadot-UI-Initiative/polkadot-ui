@@ -1,5 +1,4 @@
 import { FeedbackToast } from "@/components/feedback-toast";
-import { Footer } from "@/components/layout/footer";
 import { Navigation } from "@/components/layout/navigation";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -65,7 +64,6 @@ export default async function RootLayout({
                 buttonUrl="https://github.com/Polkadot-UI-Initiative/polkadot-ui/issues"
               />
               <main className="flex-1">{children}</main>
-              <Footer />
               {/* <MouseFollower /> */}
             </div>
             <Toaster

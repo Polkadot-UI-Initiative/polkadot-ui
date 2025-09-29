@@ -7,10 +7,7 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ClientConnectionStatus, usePolkadotClient, useTypink } from "typink";
 import { useAssetMetadata } from "@/registry/polkadot-ui/hooks/use-asset-metadata.dedot";
-import {
-  useAssetBalances,
-  useNativeBalance,
-} from "@/registry/polkadot-ui/hooks/use-asset-balance.dedot";
+import { useAssetBalances } from "@/registry/polkadot-ui/hooks/use-asset-balance.dedot";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   type SelectTokenBaseProps,
@@ -21,12 +18,9 @@ import { paseoAssetHub } from "typink";
 import {
   createDefaultChainTokens,
   mergeWithChaindataTokens,
+  NATIVE_TOKEN_KEY,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
-import {
-  NATIVE_TOKEN_KEY,
-  NATIVE_TOKEN_ID,
-} from "@/registry/polkadot-ui/blocks/select-token/shared-token-components";
 
 export type SelectTokenProps = Omit<SelectTokenBaseProps, "services"> &
   React.ComponentProps<typeof Select>;
@@ -46,21 +40,18 @@ export function SelectTokenInner(props: SelectTokenProps) {
 
   const { isLoading: tokenBalancesLoading, balances } = useAssetBalances({
     chainId: restProps.chainId ?? paseoAssetHub.id,
-    assetIds: restProps.assetIds,
+    assetIds: includeNative
+      ? [...restProps.assetIds, NATIVE_TOKEN_KEY]
+      : restProps.assetIds,
     address: connectedAccount?.address ?? "",
   });
 
-  const { free: nativeBalance, isLoading: nativeBalanceLoading } =
-    useNativeBalance({
-      chainId: restProps.chainId ?? paseoAssetHub.id,
-      address: connectedAccount?.address ?? "",
-    });
-
   const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
     restProps.chainId ?? paseoAssetHub.id,
-    restProps.assetIds,
+    includeNative
+      ? [...restProps.assetIds, NATIVE_TOKEN_KEY]
+      : restProps.assetIds,
     {
-      includeNative,
       showAll,
     }
   );
@@ -80,27 +71,11 @@ export function SelectTokenInner(props: SelectTokenProps) {
       chainTokens ?? []
     );
 
-    const hasNativeToken =
-      includeNative &&
-      finalTokens.some(
-        (token) =>
-          token.id === NATIVE_TOKEN_ID || token.assetId === NATIVE_TOKEN_ID
-      );
-    const combinedBalances: Record<number, bigint | null> = {
-      ...balances,
-    };
-
-    if (hasNativeToken) {
-      combinedBalances[NATIVE_TOKEN_KEY] = nativeBalance;
-    }
+    const combinedBalances: Record<number, bigint | null> = { ...balances };
 
     return {
       isConnected: status === ClientConnectionStatus.Connected,
-      isLoading:
-        isLoading ||
-        tokensLoading ||
-        tokenBalancesLoading ||
-        nativeBalanceLoading,
+      isLoading: isLoading || tokensLoading || tokenBalancesLoading,
       items: assets ?? [],
       connectedAccount,
       isDisabled:
@@ -117,7 +92,6 @@ export function SelectTokenInner(props: SelectTokenProps) {
     isLoading,
     tokensLoading,
     tokenBalancesLoading,
-    nativeBalanceLoading,
     assets,
     connectedAccount,
     restProps.disabled,
@@ -126,9 +100,8 @@ export function SelectTokenInner(props: SelectTokenProps) {
     restProps.assetIds,
     chainTokens,
     balances,
-    nativeBalance,
     network,
-    includeNative,
+    // includeNative is handled before calling hooks and not needed here
   ]);
 
   return <SelectTokenBase {...restProps} services={services} />;

@@ -5,7 +5,7 @@
   "items": [
     {
       "name": "tx-notification",
-      "type": "registry:component",
+      "type": "registry:block",
       "title": "Tx Notification (dedot)",
       "description": "A component that shows status updates in a notification.",
       "dependencies": ["dedot", "typink", "lucide-react", "sonner"],
@@ -22,7 +22,7 @@
     },
     {
       "name": "tx-button",
-      "type": "registry:component",
+      "type": "registry:block",
       "title": "Tx Button (dedot)",
       "description": "A button that triggers a transaction and shows status updates in a notification.",
       "dependencies": [
@@ -67,8 +67,8 @@
     },
     {
       "name": "account-info",
-      "type": "registry:component",
-      "title": "Address Info (dedot)",
+      "type": "registry:block",
+      "title": "Account Info (dedot)",
       "description": "Display identity information for an address using identity.identityOf.",
       "dependencies": [
         "dedot",
@@ -77,7 +77,7 @@
         "@tanstack/react-query",
         "@polkadot/react-identicon"
       ],
-      "registryDependencies": ["popover", "skeleton"],
+      "registryDependencies": ["popover", "skeleton", "hover-card"],
       "files": [
         {
           "path": "registry/polkadot-ui/blocks/account-info/account-info.base.tsx",
@@ -111,7 +111,7 @@
     },
     {
       "name": "require-account",
-      "type": "registry:component",
+      "type": "registry:block",
       "title": "Require Account (dedot)",
       "description": "Render children only when an account is selected; otherwise show a prompt.",
       "dependencies": [
@@ -150,8 +150,51 @@
       ]
     },
     {
+      "name": "amount-input",
+      "type": "registry:block",
+      "title": "Amount Input (dedot)",
+      "description": "A component that allows the user to input an amount.",
+      "dependencies": [
+        "dedot",
+        "typink",
+        "lucide-react",
+        "@tanstack/react-query"
+      ],
+      "registryDependencies": ["input"],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/amount-input/components/amount-input.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/amount-input/components/amount-input.dedot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-asset-balance.dedot.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-chaindata-json.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "address-input",
-      "type": "registry:component",
+      "type": "registry:block",
       "title": "Address Input (dedot)",
       "description": "A comprehensive address input component with SS58/Ethereum validation, identity lookup using dedot, and customizable identicon themes (polkadot, substrate, beachball, jdenticon).",
       "dependencies": [
@@ -197,7 +240,6 @@
           "path": "registry/polkadot-ui/lib/types.dedot.ts",
           "type": "registry:lib"
         },
-
         {
           "path": "registry/polkadot-ui/blocks/client-only.tsx",
           "type": "registry:component"
@@ -206,7 +248,7 @@
     },
     {
       "name": "require-connection",
-      "type": "registry:component",
+      "type": "registry:block",
       "title": "Require Connection (dedot)",
       "description": "A smart wrapper component that conditionally renders content based on chain connection status, with loading states and fallback UI support using dedot.",
       "dependencies": [
@@ -246,7 +288,7 @@
     },
     {
       "name": "connect-wallet",
-      "type": "registry:component",
+      "type": "registry:block",
       "title": "Wallet Select (dedot)",
       "description": "A wallet connection component provided by Typink.",
       "dependencies": [
@@ -291,7 +333,7 @@
     },
     {
       "name": "select-token",
-      "type": "registry:component",
+      "type": "registry:block",
       "title": "Select Token (dedot)",
       "description": "A dropdown component for selecting tokens with balance display, logo support, and asset metadata integration using Talisman's chaindata and dedot.",
       "dependencies": [
@@ -346,7 +388,7 @@
     },
     {
       "name": "select-token-dialog",
-      "type": "registry:component",
+      "type": "registry:block",
       "title": "Select Token Dialog (dedot)",
       "description": "A dialog component for selecting tokens with balance display, logo support, and asset metadata integration using Talisman's chaindata and dedot.",
       "dependencies": [
@@ -401,7 +443,7 @@
     },
     {
       "name": "network-indicator",
-      "type": "registry:component",
+      "type": "registry:block",
       "title": "Network Indicator (dedot)",
       "description": "A component that displays the network indicator.",
       "dependencies": ["dedot", "typink", "@tanstack/react-query"],
@@ -427,7 +469,7 @@
     },
     {
       "name": "balance-display",
-      "type": "registry:component",
+      "type": "registry:block",
       "title": "Balance Display (dedot)",
       "description": "Formatted on-chain balance with optional comparison currency.",
       "dependencies": ["dedot", "typink", "@tanstack/react-query"],

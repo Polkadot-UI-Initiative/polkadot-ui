@@ -40,9 +40,9 @@ export function Navigation({ registryItems, githubStars }: NavigationProps) {
           <Link className="mr-6 flex items-center space-x-2" href="/">
             <Logo props={{ className: "h-4 w-4" }} />
             <span className="hidden font-bold sm:inline-block">
-              polkadot-ui
+              Polkadot UI
             </span>
-            <span className="text-pink-500 font-bold text-[10px] -translate-y-1">
+            <span className="text-polkadot-pink font-bold text-[11px] -translate-y-2">
               alpha
             </span>
           </Link>
@@ -103,7 +103,7 @@ export function Navigation({ registryItems, githubStars }: NavigationProps) {
             <Link className="mr-6 flex items-center space-x-2" href="/">
               <Logo props={{ className: "h-4 w-4" }} />
               <span className="hidden font-bold sm:inline-block">
-                polkadot-ui
+                Polkadot UI
               </span>
             </Link>
           </div>

@@ -4,8 +4,59 @@
   "homepage": "https://polkadot-ui.com",
   "items": [
     {
+      "name": "amount-input",
+      "type": "registry:block",
+      "title": "Amount Input (dedot)",
+      "description": "A component that allows the user to input an amount.",
+      "dependencies": [
+        "polkadot-api",
+        "@reactive-dot/core",
+        "@reactive-dot/react",
+        "@tanstack/react-query"
+      ],
+      "registryDependencies": ["input"],
+      "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/amount-input/components/amount-input.base.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/amount-input/components/amount-input.papi.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-asset-balance.papi.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/reactive-dot.config.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/polkadot-provider.papi.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-chaindata-json.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "address-input",
-      "type": "registry:component",
+      "type": "registry:block",
       "title": "Address Input (papi)",
       "description": "A comprehensive address input component with SS58/Ethereum validation, identity lookup using polkadot-api, and customizable identicon themes (polkadot, substrate, beachball, jdenticon).",
       "dependencies": [
@@ -50,10 +101,16 @@
     },
     {
       "name": "tx-notification",
-      "type": "registry:component",
+      "type": "registry:block",
       "title": "Tx Notification (papi)",
       "description": "A component that shows status updates in a notification.",
-      "dependencies": ["lucide-react", "sonner"],
+      "dependencies": [
+        "polkadot-api",
+        "@reactive-dot/core",
+        "@reactive-dot/react",
+        "@tanstack/react-query",
+        "sonner"
+      ],
       "registryDependencies": [],
       "files": [
         {
@@ -64,10 +121,15 @@
     },
     {
       "name": "require-connection",
-      "type": "registry:component",
+      "type": "registry:block",
       "title": "Require Connection (papi)",
       "description": "A smart wrapper component that conditionally renders content based on chain connection status, with loading states and fallback UI support using polkadot-api.",
-      "dependencies": ["polkadot-api"],
+      "dependencies": [
+        "polkadot-api",
+        "@reactive-dot/core",
+        "@reactive-dot/react",
+        "@tanstack/react-query"
+      ],
       "registryDependencies": [],
       "files": [
         {
@@ -94,10 +156,15 @@
     },
     {
       "name": "require-account",
-      "type": "registry:component",
+      "type": "registry:block",
       "title": "Require Account (papi)",
       "description": "Render children only when an account is selected; shows inline hint and disabled actions otherwise.",
-      "dependencies": ["polkadot-api", "@tanstack/react-query"],
+      "dependencies": [
+        "polkadot-api",
+        "@reactive-dot/core",
+        "@reactive-dot/react",
+        "@tanstack/react-query"
+      ],
       "registryDependencies": [],
       "files": [
         {
@@ -120,10 +187,15 @@
     },
     {
       "name": "account-info",
-      "type": "registry:component",
+      "type": "registry:block",
       "title": "Account Info (papi)",
       "description": "Display identity, balances and network details for an address using polkadot-api.",
-      "dependencies": ["polkadot-api", "@tanstack/react-query"],
+      "dependencies": [
+        "polkadot-api",
+        "@reactive-dot/core",
+        "@reactive-dot/react",
+        "@tanstack/react-query"
+      ],
       "registryDependencies": [],
       "files": [
         {
@@ -146,10 +218,15 @@
     },
     {
       "name": "network-indicator",
-      "type": "registry:component",
+      "type": "registry:block",
       "title": "Network Indicator (papi)",
       "description": "Small status pill showing chain connection and best block info.",
-      "dependencies": ["polkadot-api"],
+      "dependencies": [
+        "polkadot-api",
+        "@reactive-dot/core",
+        "@reactive-dot/react",
+        "@tanstack/react-query"
+      ],
       "registryDependencies": [],
       "files": [
         {
@@ -164,10 +241,15 @@
     },
     {
       "name": "tx-button",
-      "type": "registry:component",
+      "type": "registry:block",
       "title": "Tx Button (papi)",
       "description": "Submit a transaction and show progress updates using polkadot-api.",
-      "dependencies": ["polkadot-api"],
+      "dependencies": [
+        "polkadot-api",
+        "@reactive-dot/core",
+        "@reactive-dot/react",
+        "@tanstack/react-query"
+      ],
       "registryDependencies": ["button"],
       "files": [
         {
@@ -190,10 +272,14 @@
     },
     {
       "name": "connect-wallet",
-      "type": "registry:component",
+      "type": "registry:block",
       "title": "Connect Wallet (papi)",
       "description": "Connect to wallets and select accounts.",
-      "dependencies": ["polkadot-api"],
+      "dependencies": [
+        "polkadot-api",
+        "@reactive-dot/core",
+        "@reactive-dot/react"
+      ],
       "registryDependencies": ["button"],
       "files": [
         {
@@ -204,11 +290,16 @@
     },
     {
       "name": "balance-display",
-      "type": "registry:component",
+      "type": "registry:block",
       "title": "Balance Display (papi)",
       "description": "Formatted on-chain balance with optional comparison currency.",
-      "dependencies": [],
-      "registryDependencies": [],
+      "dependencies": [
+        "polkadot-api",
+        "reactive-dot",
+        "@reactive-dot/react",
+        "@tanstack/react-query"
+      ],
+      "registryDependencies": ["skeleton"],
       "files": [
         {
           "path": "registry/polkadot-ui/blocks/balance-display/balance-display.papi.tsx",
@@ -217,12 +308,40 @@
         {
           "path": "registry/polkadot-ui/blocks/balance-display/balance-display.base.tsx",
           "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-asset-balance.papi.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-subscan-dot-price.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-chaindata-json.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/polkadot-provider.papi.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
         }
       ]
     },
     {
       "name": "select-token",
-      "type": "registry:component",
+      "type": "registry:block",
       "title": "Select Token (papi)",
       "description": "Token selection dropdown with balance display and chaindata integration using polkadot-api.",
       "dependencies": [
@@ -271,14 +390,14 @@
           "type": "registry:lib"
         },
         {
-          "path": "registry/polkadot-ui/reactive-dot.config.ts",
+          "path": "registry/polkadot-ui/lib/reactive-dot.config.ts",
           "type": "registry:lib"
         }
       ]
     },
     {
       "name": "select-token-dialog",
-      "type": "registry:component",
+      "type": "registry:block",
       "title": "Select Token Dialog (papi)",
       "description": "Token selection dialog with search, balance display and chaindata integration using polkadot-api.",
       "dependencies": [
@@ -327,7 +446,7 @@
           "type": "registry:lib"
         },
         {
-          "path": "registry/polkadot-ui/reactive-dot.config.ts",
+          "path": "registry/polkadot-ui/lib/reactive-dot.config.ts",
           "type": "registry:lib"
         }
       ]

@@ -17,12 +17,12 @@ export function LibrarySwitcher({ value }: { value: Lib }) {
     router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
   };
 
-  const active = "border border-primary w-24 backdrop-blur-md rounded-xl";
+  const active = "border border-primary w-24 backdrop-blur-md";
   const inactive =
-    "bg-background/20 text-foreground border-muted-foreground/20 hover:bg-muted w-24 backdrop-blur-md rounded-xl";
+    "bg-background/20 text-foreground border-muted-foreground/20 hover:bg-muted w-24 backdrop-blur-md";
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center justify-center gap-4">
       <Button
         size="sm"
         className={`${value === "dedot" ? active : inactive}`}

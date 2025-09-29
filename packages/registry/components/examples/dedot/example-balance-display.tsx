@@ -6,12 +6,13 @@ import { polkadotAssetHub, useTypink } from "typink";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useSubscanDotPrice } from "@/registry/polkadot-ui/hooks/use-subscan-dot-price";
+import { NATIVE_TOKEN_KEY } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 
 export const balanceDisplayExample: ComponentExample = {
   name: "Balance Display",
   href: "/docs/components/balance-display",
   code: "balance-display",
-  description: "Formatted on-chain balance with fiat value",
+  description: "Formatted on-chain balance with optional comparison currency",
   component: <BalanceDisplayComponent />,
 };
 
@@ -55,20 +56,25 @@ export function BalanceDisplayComponent() {
             Connected Account
           </Button>
         </div>
-        {/* DOT price: {price} */}
         <BalanceDisplay
-          tokenId={"native"}
+          tokenId={1337}
+          networkId={polkadotAssetHub.id}
+          precision={4}
+          accountAddress={accountAddress}
+        />
+        <BalanceDisplay
+          tokenId={NATIVE_TOKEN_KEY}
           compareTokenId={1337} //USDC
           networkId={polkadotAssetHub.id}
-          precision={2}
+          precision={4}
           tokenConversionRate={price}
           accountAddress={accountAddress}
         />
         <BalanceDisplay
           tokenId={1337}
-          compareTokenId={"native"}
+          compareTokenId={NATIVE_TOKEN_KEY}
           networkId={polkadotAssetHub.id}
-          precision={4}
+          precision={2}
           tokenConversionRate={price ? 1 / price : 1}
           accountAddress={accountAddress}
         />

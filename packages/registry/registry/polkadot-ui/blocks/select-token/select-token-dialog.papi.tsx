@@ -25,9 +25,9 @@ import { cn } from "@/lib/utils";
 import {
   NATIVE_TOKEN_KEY,
   NATIVE_TOKEN_ID,
-} from "@/registry/polkadot-ui/blocks/select-token/shared-token-components";
+} from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
-import { config } from "@/registry/polkadot-ui/reactive-dot.config";
+import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import type { ChainId } from "@reactive-dot/core";
 
 export type SelectTokenDialogProps = Omit<
@@ -37,11 +37,9 @@ export type SelectTokenDialogProps = Omit<
   React.ComponentProps<typeof Button>;
 
 export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
-  // by default, add native token to the list of tokens with includeNative
   const {
     chainId: propChainId,
     assetIds,
-    includeNative = true,
     showAll = true,
     ...otherProps
   } = props;
@@ -70,7 +68,6 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
     chainId,
     assetIds,
     {
-      includeNative,
       showAll,
     }
   );
@@ -99,12 +96,10 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
       chainTokens ?? []
     );
 
-    const hasNativeToken =
-      includeNative &&
-      finalTokens.some(
-        (token) =>
-          token.id === NATIVE_TOKEN_ID || token.assetId === NATIVE_TOKEN_ID
-      );
+    const hasNativeToken = finalTokens.some(
+      (token) =>
+        token.id === NATIVE_TOKEN_ID || token.assetId === NATIVE_TOKEN_ID
+    );
     const combinedBalances: Record<number, bigint | null> = {
       ...balances,
     };
@@ -143,7 +138,6 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
     network,
     balances,
     nativeBalance,
-    includeNative,
   ]);
 
   return <SelectTokenDialogBase {...otherProps} services={services} />;

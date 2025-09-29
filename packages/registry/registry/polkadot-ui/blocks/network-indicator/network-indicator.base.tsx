@@ -7,12 +7,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/registry/polkadot-ui/ui/tooltip";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ClientConnectionStatus,
   NetworkInfoLike,
   UseBlockInfoLike,
 } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export interface NetworkIndicatorBaseProps<TNetworkId extends string> {
   chainId: TNetworkId;
@@ -44,20 +45,55 @@ export function NetworkIndicatorBase<TNetworkId extends string>({
   const blockNumber = at === "best" ? best?.number : finalized?.number;
   const network = supportedNetworks.find((n) => n.id === chainId);
 
+  // Animate width of the block number area and fade-in the number when available
+  const showNumber =
+    connectionStatus === ClientConnectionStatus.Connected &&
+    showBlockNumber &&
+    Boolean(blockNumber);
+  const measureRef = useRef<HTMLSpanElement | null>(null);
+  const [numWidth, setNumWidth] = useState(0);
+  useEffect(() => {
+    const el = measureRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    setNumWidth(rect.width);
+  }, [blockNumber, showBlockNumber]);
+
   const Trigger = useMemo(() => {
     return (
-      <div className="tabular-nums font-light h-6 border-foreground/20 border rounded-md px-2 text-[12px] cursor-default flex items-center gap-1">
+      <div className="tabular-nums font-light min-h-7 h-auto py-1 border-foreground/20 border rounded-md px-2 text-[12px] cursor-default flex items-center gap-1.5">
         {showLogo && network?.logo && (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={network?.logo} alt={network?.name} className="w-3 h-3" />
+            <img src={network?.logo} alt={network?.name} className="size-3.5" />
           </>
         )}
-        {connectionStatus === ClientConnectionStatus.Connected &&
-          showBlockNumber &&
-          blockNumber && (
-            <span className="text-[10px]">{`${blockNumber}`}</span>
-          )}
+        {/* hidden measurer for width animation */}
+        <span
+          ref={measureRef}
+          className="absolute opacity-0 pointer-events-none -z-10 font-mono"
+        >
+          {blockNumber}
+        </span>
+        {/* animated width container for number */}
+        <span
+          aria-hidden={!showNumber}
+          style={{
+            width: showNumber ? numWidth : 0,
+            transition: "width 200ms ease",
+          }}
+          className="overflow-hidden flex"
+        >
+          <span
+            className="tabular-nums font-mono"
+            style={{
+              opacity: showNumber ? 1 : 0,
+              transition: "opacity 200ms ease",
+            }}
+          >
+            {blockNumber}
+          </span>
+        </span>
         {connectionStatus === ClientConnectionStatus.Connected ? (
           <>
             <span className="block rounded-full w-2 h-2 bg-green-400 animate-pulse" />
@@ -73,7 +109,7 @@ export function NetworkIndicatorBase<TNetworkId extends string>({
         )}
       </div>
     );
-  }, [blockNumber, connectionStatus, showBlockNumber, network, showLogo]);
+  }, [blockNumber, connectionStatus, network, showLogo, numWidth, showNumber]);
 
   const Content = useMemo(() => {
     return (
@@ -104,5 +140,15 @@ export function NetworkIndicatorBase<TNetworkId extends string>({
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
+  );
+}
+
+export function NetworkIndicatorSkeleton() {
+  return (
+    <div className="tabular-nums font-light min-h-7 h-auto py-1 border-foreground/20 border rounded-md px-2 text-[18px] cursor-default flex items-center gap-1.5">
+      <Skeleton className="w-3.5 h-3.5 rounded-full" />
+      <div />
+      <span className="block rounded-full w-2 h-2 bg-yellow-400 animate-pulse" />
+    </div>
   );
 }

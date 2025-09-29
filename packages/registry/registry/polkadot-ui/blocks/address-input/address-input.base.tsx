@@ -1,5 +1,7 @@
 "use client";
 
+import { decodeAddress, encodeAddress } from "@polkadot/keyring";
+import { ethers } from "ethers";
 import {
   ClientConnectionStatus,
   PolkadotIdentity,
@@ -8,7 +10,6 @@ import {
 import { cn } from "@/registry/polkadot-ui/lib/utils";
 import {
   truncateAddress,
-  validateAddress,
   type ValidationResult,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { Button } from "@/registry/polkadot-ui/ui/button";
@@ -603,3 +604,66 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
 });
 
 AddressInputBase.displayName = "AddressInputBase";
+
+export function validateAddress(
+  address: string,
+  format: "eth" | "ss58" | "both",
+  ss58Prefix: number = 42
+): ValidationResult {
+  if (!address.trim()) {
+    return { isValid: false, type: "unknown", error: "Address is required" };
+  }
+
+  // SS58 validation
+  if (format === "ss58" || format === "both") {
+    try {
+      const decoded = decodeAddress(address);
+
+      // Check if the decoded address has the proper length (32 bytes for a public key)
+      if (decoded.length !== 32) {
+        throw new Error("Invalid address length");
+      }
+
+      const encoded = encodeAddress(decoded, ss58Prefix);
+      return {
+        isValid: true,
+        type: "ss58",
+        normalizedAddress: encoded,
+      };
+    } catch {
+      if (format === "ss58") {
+        return {
+          isValid: false,
+          type: "unknown",
+          error: "Invalid Polkadot address format",
+        };
+      }
+    }
+  }
+
+  // Ethereum validation
+  if (format === "eth" || format === "both") {
+    try {
+      const normalized = ethers.getAddress(address);
+      return {
+        isValid: true,
+        type: "eth",
+        normalizedAddress: normalized,
+      };
+    } catch {
+      if (format === "eth") {
+        return {
+          isValid: false,
+          type: "unknown",
+          error: "Invalid Ethereum address format",
+        };
+      }
+    }
+  }
+
+  return {
+    isValid: false,
+    type: "unknown",
+    error: "Invalid address format",
+  };
+}

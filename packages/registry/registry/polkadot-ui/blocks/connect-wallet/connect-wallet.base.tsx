@@ -93,7 +93,8 @@ export function ConnectWalletBase({
       <DialogTrigger asChild>
         <Button
           className={cn(
-            "inline-flex items-center gap-2 transition-[min-width] duration-300",
+            "inline-flex items-center gap-2 transition-[min-width]",
+            "transition-transform duration-150 ease-out active:scale-[0.98] active:translate-y-[0.5px]",
             className
           )}
           {...buttonProps}

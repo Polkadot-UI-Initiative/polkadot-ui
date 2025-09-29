@@ -26,8 +26,8 @@ import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-
 import {
   NATIVE_TOKEN_KEY,
   NATIVE_TOKEN_ID,
-} from "@/registry/polkadot-ui/blocks/select-token/shared-token-components";
-import { config } from "@/registry/polkadot-ui/reactive-dot.config";
+} from "@/registry/polkadot-ui/lib/utils.dot-ui";
+import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import type { ChainId } from "@reactive-dot/core";
 
 export type SelectTokenProps = Omit<SelectTokenBaseProps, "services"> &
@@ -61,7 +61,6 @@ export function SelectTokenInner(props: SelectTokenProps) {
     chainId,
     restProps.assetIds,
     {
-      includeNative,
       showAll,
     }
   );

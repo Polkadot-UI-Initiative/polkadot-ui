@@ -17,6 +17,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 export interface AccountInfoServices {
   identity: PolkadotIdentity | null;
@@ -31,7 +36,7 @@ export interface AccountInfoBaseProps<TNetworkId = string> {
   iconTheme?: "polkadot" | "substrate" | "beachball" | "jdenticon";
   fields?: AccountInfoField[] | "all"; // fields shown in popover details
   truncate?: number | boolean;
-  withPopover?: boolean;
+  componentType?: "popover" | "hover";
   className?: string;
   services: AccountInfoServices;
 }
@@ -53,7 +58,7 @@ export function AccountInfoBase<TNetworkId extends string = string>({
   iconTheme = "polkadot",
   fields = "all",
   truncate = 6,
-  withPopover = true,
+  componentType = "hover",
   className,
   services,
 }: AccountInfoBaseProps<TNetworkId>) {
@@ -113,7 +118,7 @@ export function AccountInfoBase<TNetworkId extends string = string>({
     </div>
   );
 
-  if (!withPopover) {
+  if (componentType === undefined) {
     const links = buildLinks({ identity, fields: fieldsToShow });
     return (
       <div className="inline-flex items-center gap-2">
@@ -137,14 +142,55 @@ export function AccountInfoBase<TNetworkId extends string = string>({
     );
   }
 
+  if (componentType === "popover") {
+    return (
+      <Popover>
+        <PopoverTrigger asChild>
+          <button type="button" className="cursor-pointer">
+            {trigger}
+          </button>
+        </PopoverTrigger>
+        <PopoverContent align="center">
+          <div className="flex items-center gap-2 mb-2">
+            {showIcon && !identity?.image && (
+              <Identicon value={address} size={28} theme={iconTheme} />
+            )}
+            {showIcon && identity?.image && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={identity.image.toString()}
+                alt={name}
+                className="w-7 h-7 rounded-full"
+              />
+            )}
+            <HeaderWithCopy
+              name={name}
+              address={address}
+              truncated={truncateAddress(address, truncate)}
+              isVerified={!!identity?.verified}
+            />
+          </div>
+          {!isLoading && (
+            <div className="text-xs space-y-1">
+              {renderDetails({ fields: fieldsToShow, identity })}
+            </div>
+          )}
+          {error && (
+            <div className="text-xs text-red-600 mt-2">{error.message}</div>
+          )}
+        </PopoverContent>
+      </Popover>
+    );
+  }
+
   return (
-    <Popover>
-      <PopoverTrigger asChild>
+    <HoverCard>
+      <HoverCardTrigger asChild>
         <button type="button" className="cursor-pointer">
           {trigger}
         </button>
-      </PopoverTrigger>
-      <PopoverContent align="center">
+      </HoverCardTrigger>
+      <HoverCardContent align="center">
         <div className="flex items-center gap-2 mb-2">
           {showIcon && !identity?.image && (
             <Identicon value={address} size={28} theme={iconTheme} />
@@ -172,8 +218,8 @@ export function AccountInfoBase<TNetworkId extends string = string>({
         {error && (
           <div className="text-xs text-red-600 mt-2">{error.message}</div>
         )}
-      </PopoverContent>
-    </Popover>
+      </HoverCardContent>
+    </HoverCard>
   );
 }
 
@@ -406,7 +452,7 @@ export function AccountInfoSkeleton({ address }: { address?: string }) {
       <div className="flex-col leading-tight items-start text-left flex gap-1">
         <span className="text-sm inline-flex items-center gap-1">
           <Skeleton className="h-3 w-3 rounded-full" />
-          <Skeleton className="h-3 w-28" />
+          <Skeleton className="h-3 w-20" />
         </span>
         <span className="text-xs text-muted-foreground font-mono">
           {address ? truncateAddress(address, 6) : "5xxx…xxxx"}

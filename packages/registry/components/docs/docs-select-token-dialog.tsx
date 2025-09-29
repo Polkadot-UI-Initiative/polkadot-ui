@@ -61,7 +61,6 @@ import { paseoAssetHub } from "typink";
         chainId={paseoAssetHub.id}
         assetIds={[1984, 8, 27]}
         withBalance
-        includeNative={false}
       />
     ),
     tsx: `import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/select-token-dialog.dedot";

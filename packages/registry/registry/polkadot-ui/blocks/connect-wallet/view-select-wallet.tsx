@@ -66,6 +66,7 @@ export const ViewSelectWallet = ({
             variant="outline"
             className={cn(
               "relative w-full flex flex-row items-center justify-between gap-2 h-14",
+              "transition-transform duration-150 ease-out active:scale-[0.98] active:translate-y-[0.5px]",
               isConnected &&
                 "border-green-500/50 bg-green-500/10 hover:bg-green-500/20"
             )}

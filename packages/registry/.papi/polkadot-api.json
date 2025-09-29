@@ -25,6 +25,18 @@
       "metadata": ".papi/metadata/polkadot_people.scale",
       "genesis": "0x67fa177a097bfa18f77ea95ab56e9bcdfeb0e5b8a40e46298bb93e16b6fc5008",
       "codeHash": "0xd05d6b6d1a9bb0cdd0f472a6fab2685aa84fc5203911b7fab132fd10b1867562"
+    },
+    "polkadot": {
+      "chain": "polkadot",
+      "metadata": ".papi/metadata/polkadot.scale",
+      "genesis": "0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3",
+      "codeHash": "0x716bb701ec19452fa522cdaa83ef101d368ba2bcfd89fde9acb6f793a420a616"
+    },
+    "polkadot_asset_hub": {
+      "chain": "polkadot_asset_hub",
+      "metadata": ".papi/metadata/polkadot_asset_hub.scale",
+      "genesis": "0x68d56f15f85d3136970ec16946040bc1752654e906147f7e43e9d539d7c3de2f",
+      "codeHash": "0x8cada8f706ffc7c9bd0c31985ec4f34520914778edefaa94b624bc6adea48a1c"
     }
   }
 }

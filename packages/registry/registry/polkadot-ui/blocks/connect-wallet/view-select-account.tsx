@@ -6,6 +6,7 @@ import Image from "next/image";
 import Identicon from "@polkadot/react-identicon";
 import { ArrowLeft } from "lucide-react";
 import { type ViewSelectAccountProps } from "@/registry/polkadot-ui/blocks/connect-wallet/connect-wallet.base";
+import { cn } from "@/lib/utils";
 
 function truncateAddress(
   address: string,
@@ -43,7 +44,10 @@ export function ViewSelectAccount({
                       ? "default"
                       : "ghost"
                   }
-                  className="w-full flex flex-row h-auto justify-start items-center gap-2 px-2 hover:bg-muted hover:text-foreground"
+                  className={cn(
+                    "w-full flex flex-row h-auto justify-start items-center gap-2 px-2 hover:bg-muted hover:text-foreground",
+                    "transition-transform duration-150 ease-out active:scale-[0.98] active:translate-y-[0.5px]"
+                  )}
                   onClick={() => {
                     setConnectedAccount(account);
                   }}

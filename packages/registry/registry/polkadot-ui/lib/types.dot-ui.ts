@@ -1,11 +1,3 @@
-import {
-  InjectedSigner,
-  NetworkId,
-  NetworkInfo,
-  TypinkAccount,
-  Wallet,
-} from "typink";
-
 // interfaces related to polkadot-ui will be used by papi + dedot
 export interface ChainConfig {
   readonly endpoints: string[];
@@ -24,60 +16,11 @@ export const SubstrateExplorer = {
   PapiExplorer: "PapiExplorer",
 } as const;
 
-export enum JsonRpcApi {
-  LEGACY = "legacy",
-  NEW = "new",
-}
-
-// Base interface that both providers share
-// TODO: uses the types from typink for now but should be replaced with our own generic types
-export interface BasePolkadotContextValue<
-  TApi,
-  TApis = Partial<Record<NetworkId, TApi>>,
-  TNetwork = NetworkInfo,
-  TChainId = NetworkId,
-  TWallet = Wallet,
-  TAccount = TypinkAccount,
-  TSigner = InjectedSigner,
-> {
-  // Current active chain and its API
-  currentChain: TNetwork;
-  currentChainId: TChainId;
-  api: TApi | null;
-  isLoading: (chainId: TChainId) => boolean;
-  error: string | null;
-
-  // All APIs for all registered chains (type varies by provider)
-  apis: TApis;
-
-  // Function to switch active chain (implementation varies by provider)
-  setApi: (chainId: TChainId) => void;
-
-  // Connection management (same for both)
-  disconnect: () => void;
-  isConnected: (chainId: TChainId) => boolean;
-  initializeChain: (chainId: TChainId) => Promise<void>;
-
-  // Chain information (same for both)
-  chainName: string | null;
-  availableChainIds: TChainId[];
-  // TODO: remove this once we have a generic type for the chains
-  availableChains: TNetwork[];
-  // TODO: remove this once we have a generic type for the chains
-
-  /*
-   Wallet Connection Values + types
-   */
-  wallets: TWallet[];
-  connectWallet: (walletId: string) => void;
-  connectedWalletIds?: string[];
-  activeSigner?: TSigner;
-
-  accounts: TAccount[];
-  setActiveAccount: (account: TAccount) => void;
-  activeAccount?: TAccount;
-  defaultCaller: string;
-}
+export const JsonRpcApi = {
+  LEGACY: "legacy",
+  NEW: "new",
+} as const;
+export type JsonRpcApi = (typeof JsonRpcApi)[keyof typeof JsonRpcApi];
 
 export interface PolkadotIdentity {
   display?: string | number;
@@ -98,12 +41,14 @@ export interface IdentitySearchResult {
   identity: PolkadotIdentity;
 }
 
-export enum ClientConnectionStatus {
-  NotConnected = "NotConnected", // not yet connected or disconnected
-  Connecting = "Connecting", // initial connecting or reconnecting
-  Connected = "Connected",
-  Error = "Error",
-}
+export const ClientConnectionStatus = {
+  NotConnected: "NotConnected", // not yet connected or disconnected
+  Connecting: "Connecting", // initial connecting or reconnecting
+  Connected: "Connected",
+  Error: "Error",
+} as const;
+export type ClientConnectionStatus =
+  (typeof ClientConnectionStatus)[keyof typeof ClientConnectionStatus];
 
 // SDK-agnostic structural types used by base components
 

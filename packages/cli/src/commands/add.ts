@@ -645,7 +645,7 @@ export class AddCommand {
 
     // If no chains are configured, install defaults
     logger.info("No chains configured, installing defaults");
-    const defaultChains = ["paseo", "paseoPeople"];
+    const defaultChains = ["paseo", "paseo_people", "paseo_asset_hub"];
 
     logger.detail(`Installing default chains: ${defaultChains.join(", ")}`);
     await this.installMissingChains(defaultChains);

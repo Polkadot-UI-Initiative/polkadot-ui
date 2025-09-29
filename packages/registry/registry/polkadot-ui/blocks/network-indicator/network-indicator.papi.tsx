@@ -1,7 +1,7 @@
 "use client";
 
 import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
-import { config } from "@/registry/polkadot-ui/reactive-dot.config";
+import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import { ChainId } from "@reactive-dot/core";
 import { useMemo } from "react";
 import {
@@ -23,7 +23,7 @@ export function NetworkIndicator<T extends ChainId>(
       name: config.chains[chainId as keyof typeof config.chains].name,
       symbol: config.chains[chainId as keyof typeof config.chains].symbol,
       decimals: config.chains[chainId as keyof typeof config.chains].decimals,
-      //TODO add logo
+      logo: config.chains[chainId as keyof typeof config.chains].logo,
     };
   });
 

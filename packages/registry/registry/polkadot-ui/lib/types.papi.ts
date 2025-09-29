@@ -1,6 +1,6 @@
 import { type TypedApi } from "polkadot-api";
 import { type ChainId } from "@reactive-dot/core";
-import { config } from "../reactive-dot.config";
+import { config } from "./reactive-dot.config";
 
 export type ChainDescriptor<T extends ChainId> =
   (typeof config.chains)[T]["descriptor"];

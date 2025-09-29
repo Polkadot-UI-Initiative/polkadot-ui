@@ -1,93 +1,92 @@
 "use client";
 
-import { useMemo } from "react";
 import {
   AmountInputBase,
-  type AmountInputBaseProps,
+  AmountInputBaseProps,
 } from "@/registry/polkadot-ui/blocks/amount-input/components/amount-input.base";
 import {
   paseoAssetHub,
   usePolkadotClient,
   useTypink,
   ClientConnectionStatus,
+  NetworkId,
 } from "typink";
-import { useAssetMetadata } from "@/registry/polkadot-ui/hooks/use-asset-metadata.dedot";
+import { useAssetBalance } from "@/registry/polkadot-ui/hooks/use-asset-balance.dedot";
 import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
-import { useAssetBalances } from "@/registry/polkadot-ui/hooks/use-asset-balance.dedot";
-import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
+import { NATIVE_TOKEN_KEY } from "@/registry/polkadot-ui/lib/utils.dot-ui";
+import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 
-export type AmountInputProps = Omit<AmountInputBaseProps, "services">;
-
-function AmountInputInner(props: AmountInputProps) {
-  const chainId = props.chainId ?? paseoAssetHub.id;
-  const assetIds = useMemo(() => props.assetIds ?? [], [props.assetIds]);
-
-  const { client, status } = usePolkadotClient(
-    props.chainId ?? paseoAssetHub.id
-  );
-  const { isLoading } = useAssetMetadata({
-    chainId: chainId,
-    assetIds: assetIds,
-  });
-  const { connectedAccount, supportedNetworks } = useTypink();
-  const { isLoading: tokenBalancesLoading, balances } = useAssetBalances({
-    chainId: chainId,
-    assetIds: assetIds,
-    address: connectedAccount?.address ?? "",
-  });
-
-  // Get chainTokens from chaindata for token logos
-  const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
-    props.chainId ?? paseoAssetHub.id,
-    assetIds
-  );
-
-  // Get network info for network logo
-  const network = supportedNetworks.find(
-    (n) => n.id === (props.chainId ?? paseoAssetHub.id)
-  );
-
-  const services = useMemo(() => {
-    return {
-      isConnected: status === ClientConnectionStatus.Connected,
-      isLoading: isLoading || tokensLoading || tokenBalancesLoading,
-      connectedAccount,
-      isDisabled:
-        (props.disabled ?? false) ||
-        status !== ClientConnectionStatus.Connected ||
-        !client ||
-        assetIds.length === 0,
-      chainTokens: chainTokens ?? [],
-      balances,
-      network,
-    };
-  }, [
-    status,
-    isLoading,
-    tokensLoading,
-    tokenBalancesLoading,
-    connectedAccount,
-    props.disabled,
-    client,
-    assetIds,
-    chainTokens,
-    balances,
-    network,
-  ]);
-
-  return <AmountInputBase {...props} services={services} />;
+export interface AmountInputProps extends AmountInputBaseProps {
+  chainId: NetworkId;
+  assetId?: number;
+  withMaxButton?: boolean;
+  requiredAccount?: boolean;
 }
 
 export function AmountInput(props: AmountInputProps) {
-  return <AmountInputInner {...props} />;
-}
-
-export function AmountInputWithProvider(props: AmountInputProps) {
   return (
-    <PolkadotProvider>
-      <AmountInput {...props} />
-    </PolkadotProvider>
+    <ClientOnly fallback={<AmountInputBase />}>
+      <AmountInputInner {...props} />
+    </ClientOnly>
   );
 }
 
-AmountInputWithProvider.displayName = "AmountInputWithProvider";
+export function AmountInputInner(props: AmountInputProps) {
+  const chainId = props.chainId ?? paseoAssetHub.id;
+  const { connectedAccount } = useTypink();
+  const { status } = usePolkadotClient(chainId);
+
+  const tokenId = props.assetId ?? NATIVE_TOKEN_KEY;
+
+  const accountBalance = useAssetBalance({
+    assetId: tokenId,
+    chainId,
+    address: connectedAccount?.address ?? "",
+  });
+
+  const { tokens: metas } = useTokensByAssetIds(chainId, [tokenId]);
+
+  // prefer explicit assetId, otherwise if multiple provided, pick first for max context
+  const hasAccount = Boolean(connectedAccount?.address);
+  const rawBalance = tokenId != null ? (accountBalance.free ?? null) : null;
+  // Do not coerce to 0n when no account; base handles disabled via requiredBalance/disabled
+  const maxValue = hasAccount ? rawBalance : null;
+  const decimals =
+    tokenId != null
+      ? (metas.find((m) => m.assetId === String(tokenId))?.decimals ?? 12)
+      : 12;
+  const displayPrecision = Math.min(2, Math.max(0, decimals));
+  const derivedStep =
+    props.step ??
+    (displayPrecision > 0 ? `0.${"0".repeat(displayPrecision - 1)}1` : "1");
+
+  const isConnected = status === ClientConnectionStatus.Connected;
+  const requiresAccount = props.requiredAccount ?? false;
+  const disabled =
+    props.disabled || (requiresAccount && (!isConnected || !hasAccount));
+
+  const leftIconUrl =
+    props.leftIconUrl ?? metas.find((m) => m.assetId === String(tokenId))?.logo;
+
+  const leftIconAlt =
+    props.leftIconAlt ??
+    metas.find((m) => m.assetId === String(tokenId))?.symbol;
+
+  return (
+    <AmountInputBase
+      id={props.id}
+      value={props.value}
+      onChange={props.onChange}
+      placeholder={props.placeholder}
+      decimals={decimals}
+      maxValue={maxValue ?? null}
+      withMaxButton={props.withMaxButton}
+      disabled={disabled}
+      requiredBalance={hasAccount}
+      className={props.className}
+      step={derivedStep}
+      leftIconUrl={leftIconUrl}
+      leftIconAlt={leftIconAlt}
+    />
+  );
+}
