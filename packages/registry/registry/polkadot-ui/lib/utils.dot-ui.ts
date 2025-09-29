@@ -4,13 +4,6 @@ import type { TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
 export const NATIVE_TOKEN_KEY = -1;
 export const NATIVE_TOKEN_ID = "substrate-native";
 
-export interface TokenMetadata {
-  assetId: number;
-  name: string;
-  symbol: string;
-  decimals: number;
-}
-
 // Default decimals for DOT-like tokens (Planck precision)
 export const DEFAULT_TOKEN_DECIMALS = 12;
 

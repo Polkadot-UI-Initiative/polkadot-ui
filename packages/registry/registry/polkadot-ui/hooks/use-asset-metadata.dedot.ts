@@ -13,13 +13,7 @@ import {
   NATIVE_TOKEN_KEY,
   chainIdToKebabCase,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-
-export interface TokenMetadata {
-  assetId: number;
-  name: string;
-  symbol: string;
-  decimals: number;
-}
+import { type TokenMetadata } from "@/registry/polkadot-ui/lib/types.dot-ui";
 
 export function useAssetMetadata({
   chainId,
