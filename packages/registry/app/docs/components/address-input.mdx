@@ -5,6 +5,7 @@ description: A comprehensive address input component with SS58/Ethereum validati
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AddressInputDocs } from "@/components/docs/docs-address-input";
+import Link from "next/link";
 
 ## Introduction
 
@@ -24,6 +25,20 @@ AddressInput is a comprehensive input component for Polkadot and Ethereum addres
 
 ```bash
 npx polkadot-ui@latest add address-input
+```
+
+The Address Input component additionaly depends on <Link href="https://tanstack.com/query/latest">tanstack react-query</Link> to fetch data. So you will need to wrap your app in a <code>QueryClientProvider</code>.
+
+```tsx
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+
+const queryClient = new QueryClient()
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return <QueryClientProvider client={queryClient}>
+    //... 
+  </QueryClientProvider>
+}
 ```
 
 ## Usage

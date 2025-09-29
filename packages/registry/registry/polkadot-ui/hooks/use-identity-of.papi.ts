@@ -1,14 +1,14 @@
 "use client";
 
 // no-op
-import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import {
   ClientConnectionStatus,
-  PolkadotIdentity,
+  type PolkadotIdentity,
 } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import type { IdentityData } from "@polkadot-api/descriptors";
+import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 
 // Extract the resolved return type of Identity.IdentityOf.getValue from any API-like shape
 type ExtractIdentityOfValue<A> = A extends {

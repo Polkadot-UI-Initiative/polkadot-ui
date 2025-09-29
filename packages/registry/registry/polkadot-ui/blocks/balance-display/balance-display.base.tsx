@@ -1,7 +1,7 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import type { TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import {
   formatTokenBalance,
   getTokenDecimals,

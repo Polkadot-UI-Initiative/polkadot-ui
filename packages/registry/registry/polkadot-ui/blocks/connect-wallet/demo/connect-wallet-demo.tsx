@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { type ReactNode } from "react";
 
 interface ConnectWalletDemoProps {
   Provider: React.ComponentType<{ children: ReactNode }>;

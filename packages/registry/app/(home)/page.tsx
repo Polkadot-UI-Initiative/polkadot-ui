@@ -1,6 +1,6 @@
 import { HeroSection } from "@/components/layout/hero-section";
 import { ComponentsSection } from "@/components/layout/components-section";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { FeaturesSection } from "@/components/layout/features-section";
 
 export const metadata: Metadata = {

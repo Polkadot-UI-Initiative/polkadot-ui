@@ -4,8 +4,8 @@ import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   NetworkIndicatorBase,
   NetworkIndicatorSkeleton,
-  NetworkIndicatorBaseProps,
-} from "@/registry/polkadot-ui/blocks/network-indicator/network-indicator.base";
+  type NetworkIndicatorBaseProps,
+} from "./network-indicator.base";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { useMemo } from "react";
 import { ClientConnectionStatus, useBlockInfo, useTypink } from "typink";

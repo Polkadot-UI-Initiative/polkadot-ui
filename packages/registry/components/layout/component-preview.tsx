@@ -1,6 +1,6 @@
 "use client";
 
-import { ComponentExample } from "../examples/types.examples";
+import type { ComponentExample } from "../examples/types.examples";
 import { OpenInV0Button } from "../open-in-v0-button";
 import { Button } from "../ui/button";
 import {
@@ -16,8 +16,8 @@ import { BookText, Check, Code, Copy, Eye } from "lucide-react";
 import Link from "next/link";
 import React, {
   isValidElement,
-  ReactElement,
-  ReactNode,
+  type ReactElement,
+  type ReactNode,
   useState,
 } from "react";
 

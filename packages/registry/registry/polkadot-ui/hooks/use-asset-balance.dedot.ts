@@ -1,18 +1,18 @@
 "use client";
 
-import { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
-import {
-  ClientConnectionStatus,
-  paseoAssetHub,
-  usePolkadotClient,
-  NetworkId,
-} from "typink";
 import {
   NATIVE_TOKEN_KEY,
   parseBalanceLike,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { AccountId32Like } from "dedot/codecs";
+import { useQuery } from "@tanstack/react-query";
+import { type AccountId32Like } from "dedot/codecs";
+import { useMemo } from "react";
+import {
+  ClientConnectionStatus,
+  paseoAssetHub,
+  usePolkadotClient,
+  type NetworkId,
+} from "typink";
 
 export interface UseAssetBalanceArgs {
   chainId: NetworkId;

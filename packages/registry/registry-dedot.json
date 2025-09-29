@@ -30,10 +30,9 @@
         "typink",
         "lucide-react",
         "@tanstack/react-query",
-        "class-variance-authority",
-        "sonner"
+        "class-variance-authority"
       ],
-      "registryDependencies": ["button", "skeleton"],
+      "registryDependencies": ["button", "skeleton", "sonner"],
       "files": [
         {
           "path": "registry/polkadot-ui/blocks/tx-button/components/tx-button.dedot.tsx",
@@ -75,9 +74,10 @@
         "typink",
         "lucide-react",
         "@tanstack/react-query",
-        "@polkadot/react-identicon"
+        "@polkadot/react-identicon",
+        "@polkadot/util"
       ],
-      "registryDependencies": ["popover", "skeleton", "hover-card"],
+      "registryDependencies": ["popover", "skeleton", "hover-card", "tooltip"],
       "files": [
         {
           "path": "registry/polkadot-ui/blocks/account-info/account-info.base.tsx",
@@ -447,7 +447,7 @@
       "title": "Network Indicator (dedot)",
       "description": "A component that displays the network indicator.",
       "dependencies": ["dedot", "typink", "@tanstack/react-query"],
-      "registryDependencies": ["tooltip"],
+      "registryDependencies": ["tooltip", "skeleton"],
       "files": [
         {
           "path": "registry/polkadot-ui/blocks/network-indicator/network-indicator.dedot.tsx",
@@ -463,6 +463,10 @@
         },
         {
           "path": "registry/polkadot-ui/lib/polkadot-provider.dedot.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
           "type": "registry:lib"
         }
       ]

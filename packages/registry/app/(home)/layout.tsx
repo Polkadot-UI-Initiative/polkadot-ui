@@ -1,5 +1,5 @@
 import { Footer } from "@/components/layout/footer";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "polkadot-ui - Polkadot React Components",

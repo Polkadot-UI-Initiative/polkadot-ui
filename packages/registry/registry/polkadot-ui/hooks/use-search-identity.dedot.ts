@@ -3,14 +3,14 @@
 import { useQuery } from "@tanstack/react-query";
 import {
   ClientConnectionStatus,
-  NetworkId,
+  type NetworkId,
   paseoPeople,
   usePolkadotClient,
   useTypink,
 } from "typink";
 import { hasPositiveIdentityJudgement } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { type IdentitySearchResult } from "@/registry/polkadot-ui/lib/types.dot-ui";
-import { PalletIdentityRegistration } from "@dedot/chaintypes/substrate";
+import { type PalletIdentityRegistration } from "@dedot/chaintypes/substrate";
 import { AccountId32 } from "dedot/codecs";
 
 export function useIdentitySearch(

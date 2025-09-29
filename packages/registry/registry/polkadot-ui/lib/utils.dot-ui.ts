@@ -324,6 +324,8 @@ export function formatTokenBalance(
     fractionDigits: precision,
     thousandsSeparator,
     decimalSeparator,
+    // Preserve trailing zeros to match fixed precision displays (e.g., 12.30)
+    trimTrailingZeros: false,
   });
 }
 

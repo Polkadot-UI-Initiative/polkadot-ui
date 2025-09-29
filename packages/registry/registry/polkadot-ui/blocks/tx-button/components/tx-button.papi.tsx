@@ -18,8 +18,8 @@ import { useSpendableBalance } from "@reactive-dot/react";
 import { Ban, CheckCheck, CheckCircle, Coins, Loader2 } from "lucide-react";
 import type { Transaction as PapiTransaction } from "polkadot-api";
 import { useEffect, useState } from "react";
-import { TxButtonBaseProps } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.base";
-import { ChainId } from "@reactive-dot/core";
+import type { TxButtonBaseProps } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.base";
+import type { ChainId } from "@reactive-dot/core";
 import {
   PolkadotProvider,
   usePapi,
