@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen, fireEvent, within } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
-import { SelectTokenBase } from "@/registry/polkadot-ui/blocks/select-token/select-token.base";
+import { SelectTokenBase } from "../registry/polkadot-ui/blocks/select-token/select-token.base";
 
 const mockServices = (
   overrides?: Partial<Parameters<typeof SelectTokenBase>[0]["services"]>
