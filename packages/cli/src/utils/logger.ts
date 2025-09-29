@@ -177,13 +177,14 @@ export class Logger {
 
     this.section("🎉 Component installed successfully!");
 
-    this.subsection("Check out the demo page");
-    this.detail(
-      `Run the dev server and access the demo page at http://localhost:3000/demo/polkadot-ui/${componentName}`,
-      true
-    );
+    // this.subsection("Check out the demo page");
+    // this.detail(
+    //   `Run the dev server and access the demo page at http://localhost:3000/demo/polkadot-ui/${componentName}`,
+    //   true
+    // );
 
     this.subsection("Next steps:");
+    this.newline();
     this.detail("1. Wrap (parts of) your app in a PolkadotProvider:", true);
     this.code(
       `import { PolkadotProvider } from '@/lib/providers/polkadot-provider.${hasDedot ? "dedot" : "papi"}'`
@@ -207,7 +208,14 @@ export class Logger {
     this.code(`https://polkadot-ui.com/docs/components/${componentName}`);
     this.newline();
 
+    this.detail(
+      "⚠️ polkadot-ui is still in beta. Please report any issues at https://github.com/polkadot-ui/polkadot-ui/issues",
+      true
+    );
+    this.newline();
     this.detail("Happy coding with Polkadot! 👾");
+
+    return;
   }
 
   /**

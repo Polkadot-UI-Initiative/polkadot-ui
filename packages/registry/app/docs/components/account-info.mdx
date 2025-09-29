@@ -7,12 +7,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AccountInfoDocs } from "@/components/docs/docs-account-info";
 
 ## Introduction
- 
-TODO
+
+`AccountInfo` displays identity details for a given ss58 address. It shows a concise summary (name + truncated address) with optional avatar/identicon and a verified badge. On hover or click it reveals richer details (legal name, socials, email, matrix, etc.) and includes a one-click copy action.
 
 ## Features
 
-TODO
+- **summary view**: name or truncated address with optional verified badge
+- **avatar/identicon**: shows on-chain image if present, otherwise a deterministic identicon
+- **details popover/hover**: configurable fields (display, legal, socials, email, matrix, verified)
+- **copy to clipboard**: accessible copy button for the full address
+- **configurable truncation**: control or disable address truncation
+- **themes**: identicon themes: polkadot, substrate, beachball, jdenticon
+- **skeleton state**: graceful loading placeholder
+- **adapter friendly**: base component uses injected services; `dedot` wrapper wires data for you
 
 ## Installation
 
@@ -20,10 +27,71 @@ TODO
 npx polkadot-ui@latest add account-info
 ```
 
+The Account Info component additionaly depends on <Link href="https://tanstack.com/query/latest">tanstack react-query</Link> to fetch data. So you will need to wrap your app in a <code>QueryClientProvider</code>.
+
+```tsx
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+
+const queryClient = new QueryClient()
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return <QueryClientProvider client={queryClient}>
+    //... 
+  </QueryClientProvider>
+}
+```
+
 ## Usage
 
-<AccountInfoDocs/>
+```tsx
+// import the dedot or papi version of the component
+import { AccountInfo } from "@/registry/polkadot-ui/blocks/account-info/account-info.dedot"
+
+export default function Example() {
+  return (
+    <div className="space-y-6">
+      <AccountInfo address="5F3sa2TJAWMqDhXG6jhV4N8ko9xE2Z4sQYDPoV8eP2eK7x7Y" />
+    </div>
+  )
+}
+```
+
 
 ## Props
 
-TODO
+The `AccountInfo` wrapper exposes the base props minus `services` (it injects data from `dedot`).
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `address` | `string` | — | ss58 address to display. |
+| `chainId` | `string` | provider default | Optional chain for identity lookup. |
+| `showIcon` | `boolean` | `true` | Show avatar/identicon in summary/details. |
+| `iconTheme` | `"polkadot" \| "substrate" \| "beachball" \| "jdenticon"` | `"polkadot"` | Identicon theme when no image is present. |
+| `fields` | `Array<AccountInfoField> \| "all"` | `"all"` | Which identity fields to show in details. |
+| `truncate` | `number \| boolean` | `6` | If number, truncates address to that many chars per side; `false` disables truncation. |
+| `componentType` | `"popover" \| "hover"` | `"hover"` | Details UI: click-to-open popover or hover card. |
+| `className` | `string` | — | Tailwind classes applied to the summary wrapper. |
+
+Identity fields you can include in `fields`:
+
+```ts
+type AccountInfoField =
+  | "display"
+  | "legal"
+  | "email"
+  | "twitter"
+  | "github"
+  | "discord"
+  | "matrix"
+  | "image"
+  | "verified"
+```
+
+Notes:
+
+- The `AccountInfoBase` also accepts a `services` prop (`{ identity, isLoading, error }`) used by adapters. You do not need to provide it when using the `AccountInfo`/`AccountInfoWithProvider` wrappers.
+- A loading skeleton is available as `AccountInfoSkeleton`.
+
+# Examples
+
+<AccountInfoDocs/>

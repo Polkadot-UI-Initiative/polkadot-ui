@@ -4,7 +4,7 @@ import {
   AccountInfoBase,
   AccountInfoSkeleton,
   type AccountInfoBaseProps,
-} from "@/registry/polkadot-ui/blocks/account-info/account-info.base";
+} from "./account-info.base";
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import { useIdentityOf } from "@/registry/polkadot-ui/hooks/use-identity-of.dedot";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";

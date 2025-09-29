@@ -75,9 +75,10 @@
         "typink",
         "lucide-react",
         "@tanstack/react-query",
-        "@polkadot/react-identicon"
+        "@polkadot/react-identicon",
+        "@polkadot/util"
       ],
-      "registryDependencies": ["popover", "skeleton", "hover-card"],
+      "registryDependencies": ["popover", "skeleton", "hover-card", "tooltip"],
       "files": [
         {
           "path": "registry/polkadot-ui/blocks/account-info/account-info.base.tsx",

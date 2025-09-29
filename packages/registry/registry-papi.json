@@ -194,9 +194,11 @@
         "polkadot-api",
         "@reactive-dot/core",
         "@reactive-dot/react",
-        "@tanstack/react-query"
+        "@tanstack/react-query",
+        "@polkadot/react-identicon",
+        "@polkadot/util"
       ],
-      "registryDependencies": [],
+      "registryDependencies": ["popover", "skeleton", "hover-card", "tooltip"],
       "files": [
         {
           "path": "registry/polkadot-ui/blocks/account-info/account-info.papi.tsx",
