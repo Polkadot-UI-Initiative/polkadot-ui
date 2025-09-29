@@ -9,9 +9,27 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 `TxButton` provides a simple way to submit Substrate transactions with fee estimation, disabled states, and status notifications. It works with `typink`'s `useTx` and can be adapted to other APIs via a thin wrapper.
 
-## Quick start
+## Installation
 
-### With typink `useTx`
+```bash
+npm install @polkadot-ui/tx-button
+```
+
+## Usage
+
+```tsx
+pnpm dlx polkadot-ui@latest add tx-button
+```
+
+If you want to use txNotifications too, you need to add the <Toaster /> component from sonner to your app. It is bundled with the component.
+
+```tsx
+import { Toaster } from "sonner";
+
+<Toaster />
+```
+
+### Usage With typink `useTx`
 
 <Tabs defaultValue="code" className="max-w-[720px]">
   <TabsList>
@@ -28,31 +46,6 @@ function RemarkExample() {
     <TxButtonBase tx={tx} args={["hello"]} networkId="paseo">
       Write a message on chain
     </TxButtonBase>
-  )
-}
-```
-  </TabsContent>
-</Tabs>
-
-### With provider wrapper
-
-If you prefer an all-in-one component with provider, use the registry wrapper:
-
-<Tabs defaultValue="code" className="max-w-[720px]">
-  <TabsList>
-    <TabsTrigger value="code">Code</TabsTrigger>
-  </TabsList>
-  <TabsContent value="code" className="my-0">
-```tsx
-import { useTx } from "typink"
-import { TxButtonWithProvider } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.dedot"
-
-function App() {
-  const tx = useTx((tx) => tx.system.remark)
-  return (
-    <TxButtonWithProvider tx={tx} args={["hello"]} networkId="paseo">
-      Write a message on chain
-    </TxButtonWithProvider>
   )
 }
 ```

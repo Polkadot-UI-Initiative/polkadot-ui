@@ -30,10 +30,9 @@
         "typink",
         "lucide-react",
         "@tanstack/react-query",
-        "class-variance-authority",
-        "sonner"
+        "class-variance-authority"
       ],
-      "registryDependencies": ["button", "skeleton"],
+      "registryDependencies": ["button", "skeleton", "sonner"],
       "files": [
         {
           "path": "registry/polkadot-ui/blocks/tx-button/components/tx-button.dedot.tsx",
