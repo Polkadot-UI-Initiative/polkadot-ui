@@ -17,7 +17,7 @@ import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   type SelectTokenDialogBaseProps,
   SelectTokenDialogBase,
-} from "@/registry/polkadot-ui/blocks/select-token/select-token-dialog.base";
+} from "./select-token-dialog.base";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import {
   createDefaultChainTokens,

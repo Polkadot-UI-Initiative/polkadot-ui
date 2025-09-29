@@ -340,7 +340,8 @@
         "dedot",
         "typink",
         "@tanstack/react-query",
-        "lucide-react"
+        "lucide-react",
+        "@polkadot/util"
       ],
       "registryDependencies": ["select"],
       "files": [
@@ -395,7 +396,8 @@
         "dedot",
         "typink",
         "@tanstack/react-query",
-        "lucide-react"
+        "lucide-react",
+        "@polkadot/util"
       ],
       "registryDependencies": ["button", "dialog"],
       "files": [
