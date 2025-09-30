@@ -19,7 +19,14 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { BlockInfo, PolkadotClient } from "polkadot-api";
 import type { ReactNode } from "react";
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  Suspense,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 export type SupportedChainId = keyof typeof config.chains;
 
@@ -36,9 +43,11 @@ export function PolkadotProvider({
     <QueryClientProvider client={queryClient}>
       <ReactiveDotProvider config={config}>
         <ChainProvider chainId={chainId}>
-          <SelectedAccountProvider>
-            <PapiProvider>{children}</PapiProvider>
-          </SelectedAccountProvider>
+          <Suspense>
+            <SelectedAccountProvider>
+              <PapiProvider>{children}</PapiProvider>
+            </SelectedAccountProvider>
+          </Suspense>
         </ChainProvider>
       </ReactiveDotProvider>
     </QueryClientProvider>
