@@ -2,7 +2,6 @@
 
 import { useMemo } from "react";
 import type React from "react";
-import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { useAssetMetadata } from "@/registry/polkadot-ui/hooks/use-asset-metadata.papi";
 import {
   useAssetBalances,
@@ -13,7 +12,11 @@ import {
   type SelectTokenDialogBaseProps,
   SelectTokenDialogBase,
 } from "@/registry/polkadot-ui/blocks/select-token/select-token-dialog.base";
-import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
+import {
+  PolkadotProvider,
+  useConnectionStatus,
+  useSelectedAccount,
+} from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import {
   createDefaultChainTokens,
   mergeWithChaindataTokens,
@@ -29,6 +32,7 @@ import {
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import type { ChainId } from "@reactive-dot/core";
+import { useClient } from "@reactive-dot/react";
 
 export type SelectTokenDialogProps = Omit<
   SelectTokenDialogBaseProps,
@@ -45,7 +49,9 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
   } = props;
 
   const chainId = (propChainId ?? "paseoAssetHub") as ChainId;
-  const { client, status, selectedAccount } = usePapi(chainId);
+  const { status } = useConnectionStatus({ chainId });
+  const client = useClient({ chainId });
+  const { selectedAccount } = useSelectedAccount();
 
   const { assets, isLoading } = useAssetMetadata({
     chainId,

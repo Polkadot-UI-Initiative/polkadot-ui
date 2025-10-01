@@ -17,15 +17,17 @@ import {
 import { useSpendableBalance } from "@reactive-dot/react";
 import { Ban, CheckCheck, CheckCircle, Coins, Loader2 } from "lucide-react";
 import type { Transaction as PapiTransaction } from "polkadot-api";
-import { useEffect, useState } from "react";
-import type { TxButtonBaseProps } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.base";
+import { Suspense, useEffect, useState } from "react";
+import {
+  TxButtonSkeleton,
+  type TxButtonBaseProps,
+} from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.base";
 import type { ChainId } from "@reactive-dot/core";
 import {
   PolkadotProvider,
-  usePapi,
+  useSelectedAccount,
 } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { DEFAULT_CALLER } from "@/registry/polkadot-ui/lib/utils";
-import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 
 type TxButtonProps = TxButtonBaseProps & {
   transaction: PapiTransaction<object, string, string, unknown>;
@@ -34,9 +36,9 @@ type TxButtonProps = TxButtonBaseProps & {
 
 export function TxButton(props: TxButtonProps) {
   return (
-    <ClientOnly fallback={<Button onClick={() => {}} {...props} />}>
+    <Suspense fallback={<TxButtonSkeleton {...props} />}>
       <TxButtonInner {...props} />
-    </ClientOnly>
+    </Suspense>
   );
 }
 
@@ -60,7 +62,7 @@ export function TxButtonInner(props: TxButtonProps) {
     ...rest
   } = props;
 
-  const { selectedAccount } = usePapi();
+  const { selectedAccount } = useSelectedAccount();
   const signer = selectedAccount?.polkadotSigner;
 
   const connectedAccount = selectedAccount;
@@ -74,7 +76,10 @@ export function TxButtonInner(props: TxButtonProps) {
   const [showResult, setShowResult] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const balanceFree = useSpendableBalance(
-    selectedAccount?.address ?? DEFAULT_CALLER
+    selectedAccount?.address ?? DEFAULT_CALLER,
+    {
+      chainId: networkId,
+    }
   );
 
   const isError = !!submitError || !!feeError || !isValidNetwork;
@@ -117,7 +122,7 @@ export function TxButtonInner(props: TxButtonProps) {
       });
   }, [transaction, selectedAccount]);
 
-  if (!signer) return "Please select an account";
+  if (!signer) return <TxButtonSkeleton {...props} />;
 
   const handleClick = () => {
     setSubmitError(null);

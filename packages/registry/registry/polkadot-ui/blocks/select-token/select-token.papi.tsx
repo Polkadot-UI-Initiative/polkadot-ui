@@ -1,22 +1,24 @@
 "use client";
 
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import type React from "react";
 import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { useAssetMetadata } from "@/registry/polkadot-ui/hooks/use-asset-metadata.papi";
 import {
   useAssetBalances,
   useNativeBalance,
 } from "@/registry/polkadot-ui/hooks/use-asset-balance.papi";
-import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   type SelectTokenBaseProps,
   SelectTokenBase,
 } from "@/registry/polkadot-ui/blocks/select-token/select-token.base";
-import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
+import {
+  PolkadotProvider,
+  useConnectionStatus,
+  useSelectedAccount,
+} from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import {
   createDefaultChainTokens,
@@ -29,6 +31,7 @@ import {
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import type { ChainId } from "@reactive-dot/core";
+import { useClient } from "@reactive-dot/react";
 
 export type SelectTokenProps = Omit<SelectTokenBaseProps, "services"> &
   React.ComponentProps<typeof Select>;
@@ -38,7 +41,9 @@ export function SelectTokenInner(props: SelectTokenProps) {
   const { includeNative = true, showAll = true, ...restProps } = props;
   const chainId = (restProps.chainId ?? "paseoAssetHub") as ChainId;
 
-  const { client, status, selectedAccount } = usePapi(chainId);
+  const { selectedAccount } = useSelectedAccount();
+  const client = useClient({ chainId });
+  const { status } = useConnectionStatus({ chainId });
 
   const { assets, isLoading } = useAssetMetadata({
     chainId,
@@ -170,9 +175,9 @@ function SelectTokenFallback(props: SelectTokenProps) {
 
 export function SelectToken(props: SelectTokenProps) {
   return (
-    <ClientOnly fallback={<SelectTokenFallback {...props} />}>
+    <Suspense fallback={<SelectTokenFallback {...props} />}>
       <SelectTokenInner {...props} />
-    </ClientOnly>
+    </Suspense>
   );
 }
 

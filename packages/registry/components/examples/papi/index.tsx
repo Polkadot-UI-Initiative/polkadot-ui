@@ -7,25 +7,24 @@ import { connectWalletExample } from "./example-connect-wallet";
 import { amountInputExample } from "./example-amount-input";
 import { selectTokenExample } from "./example-select-token";
 import { selectTokenDialogExample } from "./example-select-token-dialog";
-// import { transactionDetailsExample } from "./example-transaction-details";
 import { networkIndicatorExample } from "./example-network-indicator";
 import { balanceDisplayExample } from "./example-balance-display";
 import { accountInfoExample } from "./example-account-info";
+// import { transactionDetailsExample } from "./example-transaction-details";
 // import { nftCardExample } from "./example-nft-card";
 
 export const examples: ComponentExample[] = [
   connectWalletExample,
-  // txButtonExample,
+  txButtonExample,
   addressInputExample,
-  // accountInfoExample,
-  // networkIndicatorExample,
-  // balanceDisplayExample,
+  accountInfoExample,
+  networkIndicatorExample,
+  balanceDisplayExample,
   amountInputExample,
-  // selectTokenExample,
-  // selectTokenDialogExample,
+  selectTokenExample,
+  selectTokenDialogExample,
   requireConnectionExample,
   requireAccountExample,
   // transactionDetailsExample,
-
   // nftCardExample,
 ];

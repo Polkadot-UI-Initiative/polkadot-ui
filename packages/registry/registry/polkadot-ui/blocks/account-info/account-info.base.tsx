@@ -184,13 +184,13 @@ export function AccountInfoBase<TNetworkId extends string = string>({
   }
 
   return (
-    <HoverCard>
+    <HoverCard openDelay={200} closeDelay={0}>
       <HoverCardTrigger asChild>
         <button type="button" className="cursor-pointer">
           {trigger}
         </button>
       </HoverCardTrigger>
-      <HoverCardContent align="center">
+      <HoverCardContent align="center" className="bg-background">
         <div className="flex items-center gap-2 mb-2">
           {showIcon && !identity?.image && (
             <Identicon value={address} size={28} theme={iconTheme} />

@@ -6,7 +6,6 @@
 // correctly inferred.
 
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import {
   beginTxStatusNotification,
@@ -354,17 +353,17 @@ export function TxButtonSkeleton({
     icons?: TxButtonIcons;
   }) {
   return (
-    <div className="inline-flex flex-col gap-2">
-      <div className="text-xs text-muted-foreground font-medium h-2 flex items-center justify-start gap-1">
-        <Coins className="w-3 2" />
-        <Skeleton className="h-3 w-8" />
+    <div className="inline-flex flex-col gap-1">
+      <div className="text-xs text-muted-foreground font-medium h-4 flex items-center justify-start gap-1">
+        <Coins className="w-3 h-3" />
+        <Loader2 className="w-3 h-3 animate-spin" />
       </div>
       <Button disabled {...props}>
         {children}
         {icons.default}
       </Button>
-      <div className="text-xs text-muted-foreground font-medium h-4 flex items-center">
-        Establishing connection...
+      <div className="text-xs font-normal h-4 flex items-center">
+        {/* <Skeleton className="h-3 w-40" /> */}
       </div>
     </div>
   );

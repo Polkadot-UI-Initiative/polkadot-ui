@@ -1,13 +1,15 @@
 "use client";
 
-import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import { type ChainId } from "@reactive-dot/core";
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import {
   NetworkIndicatorBase,
+  NetworkIndicatorSkeleton,
   type NetworkIndicatorBaseProps,
 } from "./network-indicator.base";
+import { useConnectionStatus } from "../../lib/polkadot-provider.papi";
+import { useBlock } from "@reactive-dot/react";
 
 export type NetworkIndicatorProps<TNetworkId extends string> = Omit<
   NetworkIndicatorBaseProps<TNetworkId>,
@@ -15,6 +17,16 @@ export type NetworkIndicatorProps<TNetworkId extends string> = Omit<
 >;
 
 export function NetworkIndicator<T extends ChainId>(
+  props: NetworkIndicatorProps<T>
+) {
+  return (
+    <Suspense fallback={<NetworkIndicatorSkeleton />}>
+      <NetworkIndicatorInner {...props} />
+    </Suspense>
+  );
+}
+
+function NetworkIndicatorInner<T extends ChainId>(
   props: NetworkIndicatorProps<T>
 ) {
   const supportedNetworks = Object.keys(config.chains).map((chainId) => {
@@ -27,7 +39,8 @@ export function NetworkIndicator<T extends ChainId>(
     };
   });
 
-  const { status, blockInfo } = usePapi(props.chainId);
+  const { status } = useConnectionStatus({ chainId: props.chainId });
+  const blockInfo = useBlock(props.at, { chainId: props.chainId });
 
   const services = useMemo(
     () => ({
