@@ -12,7 +12,13 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { BlockInfo } from "polkadot-api";
 import type { ReactNode } from "react";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  Suspense,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 const queryClient = new QueryClient();
 
@@ -24,9 +30,11 @@ export function PolkadotProvider({
 }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <ReactiveDotProvider config={config}>
-        <SelectedAccountProvider>{children}</SelectedAccountProvider>
-      </ReactiveDotProvider>
+      <Suspense fallback={<div>Loading...</div>}>
+        <ReactiveDotProvider config={config}>
+          <SelectedAccountProvider>{children}</SelectedAccountProvider>
+        </ReactiveDotProvider>
+      </Suspense>
     </QueryClientProvider>
   );
 }
