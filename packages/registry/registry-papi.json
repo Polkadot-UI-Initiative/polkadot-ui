@@ -145,6 +145,10 @@
           "type": "registry:component"
         },
         {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "registry/polkadot-ui/lib/polkadot-provider.papi.tsx",
           "type": "registry:lib"
         },
@@ -193,7 +197,8 @@
         },
         {
           "path": "registry/polkadot-ui/lib/reactive-dot.config.ts",
-          "type": "registry:lib"
+          "type": "registry:lib",
+          "target": "config.ts"
         }
       ]
     },

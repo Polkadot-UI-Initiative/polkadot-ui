@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, type ReactElement } from "react";
+import { Suspense, useMemo, type ReactElement } from "react";
 import {
   AddressInputBase,
+  AddressInputSkeleton,
   type AddressInputBaseProps,
   type AddressInputServices,
 } from "@/registry/polkadot-ui/blocks/address-input/address-input.base";
@@ -14,7 +15,7 @@ import { useIdentitySearch } from "@/registry/polkadot-ui/hooks/use-search-ident
 
 import {
   PolkadotProvider,
-  usePapi,
+  useConnectionStatus,
 } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 // import { config } from "@/registry/polkadot-ui/reactive-dot.config";
 import type { ChainIdWithIdentity } from "@/registry/polkadot-ui/lib/types.papi";
@@ -26,7 +27,18 @@ export type AddressInputProps = Omit<
 >;
 
 export function AddressInput(props: AddressInputProps) {
-  const { status } = usePapi();
+  return (
+    <Suspense
+      fallback={<AddressInputSkeleton placeholder={props.placeholder} />}
+    >
+      <AddressInputInner {...props} />
+    </Suspense>
+  );
+}
+function AddressInputInner(props: AddressInputProps) {
+  const { status } = useConnectionStatus({
+    chainId: props.identityChain ?? "paseoPeople",
+  });
   const isLoading = status === ClientConnectionStatus.Connecting;
   const isConnected = status === ClientConnectionStatus.Connected;
 

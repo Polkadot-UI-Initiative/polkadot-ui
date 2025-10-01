@@ -2,26 +2,39 @@
 import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   ConnectWalletBase,
+  ConnectWalletSkeleton,
   type ConnectWalletBaseProps,
-} from "@/registry/polkadot-ui/blocks/connect-wallet/connect-wallet.base";
+} from "./connect-wallet.base";
 import {
   PolkadotProvider,
-  usePapi,
+  useSelectedAccount,
 } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
-import { useCallback, useMemo } from "react";
+import {
+  useAccounts,
+  useConnectedWallets,
+  useWalletConnector,
+  useWalletDisconnector,
+  useWallets,
+} from "@reactive-dot/react";
+import { Suspense, useCallback, useMemo } from "react";
 
 export type ConnectWalletProps = Omit<ConnectWalletBaseProps, "services">;
 
-export function ConnectWallet() {
-  const {
-    accounts,
-    wallets,
-    connectedWallets,
-    connectWallet,
-    disconnectWallet,
-    selectedAccount,
-    setSelectedAccount,
-  } = usePapi();
+export function ConnectWallet(props: ConnectWalletProps) {
+  return (
+    <Suspense fallback={<ConnectWalletSkeleton />}>
+      <ConnectWalletInner {...props} />
+    </Suspense>
+  );
+}
+
+function ConnectWalletInner() {
+  const wallets = useWallets();
+  const accounts = useAccounts();
+  const connectedWallets = useConnectedWallets();
+  const { selectedAccount, setSelectedAccount } = useSelectedAccount();
+  const [, connectWallet] = useWalletConnector();
+  const [, disconnectWallet] = useWalletDisconnector();
 
   const installedWalletIds = useMemo(
     () => new Set(wallets.map((w) => w.id)),

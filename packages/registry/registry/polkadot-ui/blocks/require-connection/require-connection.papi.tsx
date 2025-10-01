@@ -1,17 +1,17 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, Suspense } from "react";
 import {
   RequireConnectionBase,
   type RequireConnectionBaseProps,
-} from "@/registry/polkadot-ui/blocks/require-connection/require-connection.base";
-import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
+} from "./require-connection.base";
 import {
   PolkadotProvider,
-  usePapi,
+  useConnectionStatus,
 } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { type ChainId } from "@reactive-dot/core";
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 
 // Props type - removes services prop since we inject it
 export type RequireConnectionProps = Omit<
@@ -20,8 +20,18 @@ export type RequireConnectionProps = Omit<
 >;
 
 export function RequireConnection(props: RequireConnectionProps) {
-  const defaultChainId = "paseo";
-  const { status } = usePapi(props.chainId || defaultChainId);
+  return (
+    <Suspense fallback={props.loadingFallback ?? props.fallback ?? null}>
+      <RequireConnectionInner {...props} />
+    </Suspense>
+  );
+}
+
+function RequireConnectionInner(props: RequireConnectionProps) {
+  const defaultChainId = Object.keys(config.chains)[0] as ChainId;
+  const { status } = useConnectionStatus({
+    chainId: props.chainId || defaultChainId,
+  });
 
   const services = useMemo(
     () => ({
@@ -31,11 +41,7 @@ export function RequireConnection(props: RequireConnectionProps) {
     [status]
   );
 
-  return (
-    <ClientOnly fallback={props.loadingFallback ?? props.fallback ?? null}>
-      <RequireConnectionBase {...props} services={services} />
-    </ClientOnly>
-  );
+  return <RequireConnectionBase {...props} services={services} />;
 }
 
 // Wrapped version with provider for drop-in usage

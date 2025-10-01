@@ -1,7 +1,6 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { hasIdentityPallet } from "@/registry/polkadot-ui/hooks/use-identity-of.papi";
 import {
   extractText,
@@ -12,12 +11,15 @@ import {
   type IdentitySearchResult,
 } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
+import { useConnectionStatus } from "../lib/polkadot-provider.papi";
+import { useClient } from "@reactive-dot/react";
 
 export function useIdentitySearch(
   displayName: string | null | undefined,
   identityChain: keyof typeof config.chains = "paseoPeople"
 ) {
-  const { status, client } = usePapi(identityChain);
+  const { status } = useConnectionStatus({ chainId: identityChain });
+  const client = useClient({ chainId: identityChain });
   //TODO use the status directly
   const isLoading = status === ClientConnectionStatus.Connecting;
   const isConnected = status === ClientConnectionStatus.Connected;
