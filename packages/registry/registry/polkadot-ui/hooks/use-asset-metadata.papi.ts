@@ -2,10 +2,11 @@
 
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import type { ChainId } from "@reactive-dot/core";
+import { useClient } from "@reactive-dot/react";
+import { useConnectionStatus } from "../lib/polkadot-provider.papi";
 
 import { type TokenMetadata } from "@/registry/polkadot-ui/lib/types.dot-ui";
 
@@ -52,7 +53,8 @@ export function useAssetMetadata({
   chainId?: ChainId;
   assetIds: number[];
 }) {
-  const { status, client } = usePapi(chainId);
+  const { status } = useConnectionStatus({ chainId });
+  const client = useClient({ chainId });
   const isConnected = status === ClientConnectionStatus.Connected;
 
   const sortedIds = useMemo(() => {

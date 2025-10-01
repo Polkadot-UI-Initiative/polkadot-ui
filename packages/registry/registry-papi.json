@@ -96,6 +96,10 @@
         {
           "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
           "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/reactive-dot.config.ts",
+          "type": "registry:lib"
         }
       ]
     },
@@ -141,6 +145,10 @@
           "type": "registry:component"
         },
         {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "registry/polkadot-ui/lib/polkadot-provider.papi.tsx",
           "type": "registry:lib"
         },
@@ -150,6 +158,10 @@
         },
         {
           "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/reactive-dot.config.ts",
           "type": "registry:lib"
         }
       ]
@@ -182,6 +194,11 @@
         {
           "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
           "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/reactive-dot.config.ts",
+          "type": "registry:lib",
+          "target": "config.ts"
         }
       ]
     },
@@ -215,6 +232,10 @@
         {
           "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
           "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/reactive-dot.config.ts",
+          "type": "registry:lib"
         }
       ]
     },
@@ -241,6 +262,10 @@
         },
         {
           "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/reactive-dot.config.ts",
           "type": "registry:lib"
         }
       ]
@@ -273,6 +298,10 @@
         {
           "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
           "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/reactive-dot.config.ts",
+          "type": "registry:lib"
         }
       ]
     },
@@ -291,6 +320,10 @@
         {
           "path": "registry/polkadot-ui/blocks/connect-wallet/connect-wallet.papi.tsx",
           "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/reactive-dot.config.ts",
+          "type": "registry:lib"
         }
       ]
     },
@@ -341,6 +374,10 @@
         },
         {
           "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/reactive-dot.config.ts",
           "type": "registry:lib"
         }
       ]

@@ -5,16 +5,23 @@ import {
   AccountInfoSkeleton,
   type AccountInfoBaseProps,
 } from "./account-info.base";
-import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import { useIdentityOf } from "@/registry/polkadot-ui/hooks/use-identity-of.papi";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 
 export type AccountInfoProps = Omit<
   AccountInfoBaseProps<keyof typeof config.chains>,
   "services"
 >;
+
+export function AccountInfo(props: AccountInfoProps) {
+  return (
+    <Suspense fallback={<AccountInfoSkeleton address={props.address} />}>
+      <AccountInfoInner {...props} />
+    </Suspense>
+  );
+}
 
 function AccountInfoInner(props: AccountInfoProps) {
   const {
@@ -41,14 +48,6 @@ function AccountInfoInner(props: AccountInfoProps) {
 
   return (
     <AccountInfoBase services={services} chainId={resolvedChain} {...props} />
-  );
-}
-
-export function AccountInfo(props: AccountInfoProps) {
-  return (
-    <ClientOnly fallback={<AccountInfoSkeleton address={props.address} />}>
-      <AccountInfoInner {...props} />
-    </ClientOnly>
   );
 }
 

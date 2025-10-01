@@ -2,7 +2,6 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import {
   NATIVE_TOKEN_KEY,
@@ -13,6 +12,8 @@ import {
   isChainWithPalletAssets,
 } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import type { ChainId } from "@reactive-dot/core";
+import { useConnectionStatus } from "../lib/polkadot-provider.papi";
+import { useClient } from "@reactive-dot/react";
 
 export interface UseAssetBalanceArgs {
   chainId: ChainId;
@@ -33,7 +34,8 @@ export function useAssetBalance({
   address,
   enabled = true,
 }: UseAssetBalanceArgs): AssetBalanceResult {
-  const { client, status } = usePapi(chainId ?? "polkadot_asset_hub");
+  const { status } = useConnectionStatus({ chainId });
+  const client = useClient({ chainId });
 
   const isConnected = status === ClientConnectionStatus.Connected;
   const isEnabled =
@@ -118,7 +120,8 @@ export function useAssetBalances(
   args: UseAssetBalancesArgs
 ): AssetBalancesResult {
   const { chainId, assetIds, address, enabled = true } = args;
-  const { client, status } = usePapi(chainId ?? "paseoAssetHub");
+  const { status } = useConnectionStatus({ chainId });
+  const client = useClient({ chainId });
 
   const isConnected = status === ClientConnectionStatus.Connected;
   const isEnabled =
@@ -226,7 +229,8 @@ export function useNativeBalance({
   address,
   enabled = true,
 }: UseNativeBalanceArgs): NativeBalanceResult {
-  const { client, status } = usePapi(chainId ?? "paseoAssetHub");
+  const { status } = useConnectionStatus({ chainId });
+  const client = useClient({ chainId });
 
   const isConnected = status === ClientConnectionStatus.Connected;
   const isEnabled = enabled && isConnected && !!client && !!address;

@@ -8,7 +8,7 @@ import { useAssetBalance } from "@/registry/polkadot-ui/hooks/use-asset-balance.
 
 import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
 import {
-  usePapi,
+  useConnectionStatus,
   useSelectedAccount,
 } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
@@ -34,7 +34,7 @@ export function AmountInput(props: AmountInputProps) {
 export function AmountInputInner(props: AmountInputProps) {
   const chainId = props.chainId ?? "paseoAssetHub";
   const { selectedAccount } = useSelectedAccount();
-  const { status } = usePapi(chainId);
+  const { status } = useConnectionStatus({ chainId });
 
   const tokenId = props.assetId ?? NATIVE_TOKEN_KEY;
 

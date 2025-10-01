@@ -24,7 +24,7 @@ export function ComponentsSection({
 
   return (
     <section className="mx-8 space-y-6 pt-32" id="components">
-      <h2 className="w-full text-center px-6 text-3xl font-semibold md:mb-4 md:text-5xl lg:mb-6 lg:px-10">
+      <h2 className="w-full text-center px-6 text-3xl font-semibold md:text-5xl lg:px-10 mb-12">
         Components Showcase
       </h2>
       {/* <LibrarySwitcher value={usedLibrary} /> */}

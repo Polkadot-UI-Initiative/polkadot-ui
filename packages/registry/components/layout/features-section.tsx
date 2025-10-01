@@ -106,10 +106,10 @@ export function FeaturesSection() {
   return (
     <section className="relative pt-12 mx-8">
       <div className="relative z-10 flex flex-col space-y-14">
-        <h2 className="w-full text-center px-6 text-3xl font-semibold md:mb-4 md:text-5xl lg:mb-6 lg:px-10">
+        <h2 className="w-full text-center px-6 text-3xl font-semibold md:text-5xl lg:px-10 mb-2">
           Polkadot UI Features
         </h2>
-        <div className="relative mt-6 md:mt-10">
+        <div className="relative">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-2">
             {features.map((feature) => (
               <div

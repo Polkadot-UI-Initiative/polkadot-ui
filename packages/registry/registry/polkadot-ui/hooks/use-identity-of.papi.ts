@@ -1,7 +1,5 @@
 "use client";
 
-// no-op
-import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import {
   ClientConnectionStatus,
@@ -9,6 +7,8 @@ import {
 } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import type { IdentityData } from "@polkadot-api/descriptors";
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
+import { useConnectionStatus } from "../lib/polkadot-provider.papi";
+import { useClient } from "@reactive-dot/react";
 
 // Extract the resolved return type of Identity.IdentityOf.getValue from any API-like shape
 type ExtractIdentityOfValue<A> = A extends {
@@ -68,7 +68,8 @@ export function useIdentityOf({
   address: string;
   chainId?: keyof typeof config.chains;
 }): UseQueryResult<PolkadotIdentity | null, Error> {
-  const { status, client } = usePapi(chainId);
+  const { status } = useConnectionStatus({ chainId });
+  const client = useClient({ chainId });
   const isConnected = status === ClientConnectionStatus.Connected;
   const isEnabled = isConnected && !!client && !!address;
 

@@ -1,6 +1,10 @@
 "use client";
 
+import { type IdentitySearchResult } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import { hasPositiveIdentityJudgement } from "@/registry/polkadot-ui/lib/utils.dot-ui";
+import { type PalletIdentityRegistration } from "@dedot/chaintypes/substrate";
 import { useQuery } from "@tanstack/react-query";
+import { AccountId32 } from "dedot/codecs";
 import {
   ClientConnectionStatus,
   type NetworkId,
@@ -8,10 +12,6 @@ import {
   usePolkadotClient,
   useTypink,
 } from "typink";
-import { hasPositiveIdentityJudgement } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { type IdentitySearchResult } from "@/registry/polkadot-ui/lib/types.dot-ui";
-import { type PalletIdentityRegistration } from "@dedot/chaintypes/substrate";
-import { AccountId32 } from "dedot/codecs";
 
 export function useIdentitySearch(
   displayName: string | null | undefined,

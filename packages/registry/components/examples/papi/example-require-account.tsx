@@ -2,7 +2,7 @@
 
 import { RequireAccount } from "@/registry/polkadot-ui/blocks/require-account/require-account.papi";
 import type { ComponentExample } from "@/components/examples/types.examples";
-import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
+import { useSelectedAccount } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 
 export const requireAccountExample: ComponentExample = {
   name: "Require Account",
@@ -32,7 +32,7 @@ function MyComponent() {
 };
 
 function Component() {
-  const { selectedAccount } = usePapi();
+  const { selectedAccount } = useSelectedAccount();
   return (
     <div className="w-full space-y-3">
       <RequireAccount

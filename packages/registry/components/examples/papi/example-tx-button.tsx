@@ -1,15 +1,12 @@
 "use client";
 
-import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
-
 import type { ComponentExample } from "@/components/examples/types.examples";
-import { useChainIds } from "@reactive-dot/react";
+import { useChainIds, useClient } from "@reactive-dot/react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { TxButton } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.papi";
 import { Binary } from "polkadot-api";
 import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import type { ChainId } from "@reactive-dot/core";
-import { usePapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { Suspense } from "react";
 
 export const txButtonExample: ComponentExample = {
@@ -19,9 +16,9 @@ export const txButtonExample: ComponentExample = {
   description:
     "Button component for sending arbitrary transactions. Supports all chains, all signers with default notification. Fees and error states are handled by the component.",
   component: (
-    <ClientOnly>
+    <Suspense fallback={<div>Loading...</div>}>
       <DemoTxButton />
-    </ClientOnly>
+    </Suspense>
   ),
 };
 
@@ -66,9 +63,7 @@ export function DemoTxButton() {
             className="w-full items-center justify-center h-full flex my-8"
           >
             <Suspense>
-              <ClientOnly>
-                <RemarkButton networkId={network.id} />
-              </ClientOnly>
+              <RemarkButton networkId={network.id} />
             </Suspense>
           </TabsContent>
         ))}
@@ -78,7 +73,7 @@ export function DemoTxButton() {
 }
 
 export function RemarkButton({ networkId }: { networkId: ChainId }) {
-  const { client } = usePapi(networkId);
+  const client = useClient({ chainId: networkId });
   const network = config.chains[networkId];
   const typedApi = client?.getTypedApi(config.chains[networkId].descriptor);
 

@@ -667,3 +667,25 @@ export function validateAddress(
     error: "Invalid address format",
   };
 }
+
+export function AddressInputSkeleton({
+  placeholder,
+}: {
+  placeholder?: string;
+}) {
+  return (
+    <div className="space-y-1 w-full">
+      <div className="relative">
+        <Input
+          onChange={() => {}}
+          placeholder={placeholder || "Enter address"}
+          className="mb-2"
+          disabled
+        />
+      </div>
+      <div className="min-h-[60px] space-y-1">
+        <div className="flex items-center gap-1 text-sm text-muted-foreground"></div>
+      </div>
+    </div>
+  );
+}

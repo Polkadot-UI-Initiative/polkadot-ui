@@ -22,26 +22,20 @@ npm install @polkadot-ui/tx-button
 
 ## Usage
 
-```tsx
+```bash
 pnpm dlx polkadot-ui@latest add tx-button
 ```
 
-If you want to use txNotifications too, you need to add the <Toaster />
-component from sonner to your app. It is bundled with the component.
+If you want to use txNotifications too, you need to add the `<Toaster />` component from sonner to your app. It is bundled with the component.
 
 ```tsx
 import { Toaster } from "sonner";
 
-<Toaster />;
+<Toaster />
 ```
 
 ### Usage With typink `useTx`
 
-<Tabs defaultValue="code" className="max-w-[720px]">
-  <TabsList>
-    <TabsTrigger value="code">Code</TabsTrigger>
-  </TabsList>
-  <TabsContent value="code" className="my-0">
 ```tsx
 import { useTx } from "typink"
 import { TxButtonBase } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.base"
@@ -49,10 +43,6 @@ import { TxButtonBase } from "@/registry/polkadot-ui/blocks/tx-button/components
 function RemarkExample() { const tx = useTx((tx) => tx.system.remark) return (
 <TxButtonBase tx={tx} args={["hello"]} networkId="paseo"> Write a message on
 chain </TxButtonBase> ) }
-
-```
-  </TabsContent>
-</Tabs>
 
 ## Behavior
 

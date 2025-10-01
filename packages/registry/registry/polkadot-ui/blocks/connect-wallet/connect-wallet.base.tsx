@@ -157,3 +157,15 @@ export function ConnectWalletBase({
     </Dialog>
   );
 }
+
+export function ConnectWalletSkeleton({
+  placeholder,
+}: {
+  placeholder?: string;
+}) {
+  return (
+    <Button>
+      <WalletIcon className="w-4 h-4" /> {placeholder}
+    </Button>
+  );
+}
