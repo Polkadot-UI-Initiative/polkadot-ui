@@ -6,11 +6,11 @@ import { requireAccountExample } from "./example-require-account";
 import { requireConnectionExample } from "./example-require-connection";
 import { selectTokenExample } from "./example-select-token";
 import { selectTokenDialogExample } from "./example-select-token-dialog";
-import { transactionDetailsExample } from "./example-transaction-details";
 import { txButtonExample } from "./example-tx-button";
 import { connectWalletExample } from "./examlpe-connect-wallet";
 import { accountInfoExample } from "./example-account-info";
 import { balanceDisplayExample } from "./example-balance-display";
+// import { transactionDetailsExample } from "./example-transaction-details";
 // import { nftCardExample } from "./example-nft-card";
 
 export const examples: ComponentExample[] = [
@@ -24,7 +24,7 @@ export const examples: ComponentExample[] = [
   selectTokenDialogExample,
   requireConnectionExample,
   requireAccountExample,
-  transactionDetailsExample,
   balanceDisplayExample,
+  // transactionDetailsExample,
   // nftCardExample,
 ];
