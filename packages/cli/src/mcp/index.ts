@@ -68,11 +68,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               type: "string",
               description: "The component name to add",
             },
-            registryType: {
-              type: "string",
-              enum: ["papi", "dedot", "default"],
-              description: "Registry type to use (papi, dedot, or default)",
-            },
             dev: {
               type: "boolean",
               description: "Use development registry",
@@ -84,10 +79,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             force: {
               type: "boolean",
               description: "Force installation even if files exist",
-            },
-            interactive: {
-              type: "boolean",
-              description: "Show detailed prompts for configuration",
             },
           },
           required: ["component"],
@@ -137,10 +128,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             force: {
               type: "boolean",
               description: "Force installation even if files exist",
-            },
-            interactive: {
-              type: "boolean",
-              description: "Show detailed prompts for configuration",
             },
           },
         },
@@ -196,13 +183,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           registryType = "papi",
           dev = false,
           force = false,
-          interactive = false,
         } = args as {
           component: string;
           registryType?: "papi" | "dedot" | "default";
           dev?: boolean;
           force?: boolean;
-          interactive?: boolean;
         };
 
         const registry = await loadRegistry(registryType, dev);
@@ -245,7 +230,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           "",
           "## Installation Command",
           "```bash",
-          `npx polkadot-ui add ${component}${dev ? " --dev" : ""}${force ? " --force" : ""}${!interactive ? " --no-interactive" : ""}`,
+          `npx polkadot-ui add ${component}${dev ? " --dev" : ""}${force ? " --force" : ""}`,
           "```",
           "",
           "## Manual Installation",
@@ -321,12 +306,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           registryType = "papi",
           dev = false,
           force = false,
-          interactive = false,
         } = args as {
           registryType?: "papi" | "dedot" | "default";
           dev?: boolean;
           force?: boolean;
-          interactive?: boolean;
         };
 
         const registry = await loadRegistry(registryType, dev);
@@ -337,7 +320,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           "To initialize a new project with Polkadot UI components, run:",
           "",
           "```bash",
-          `npx polkadot-ui init${dev ? " --dev" : ""}${force ? " --force" : ""}${!interactive ? " --no-interactive" : ""}`,
+          `npx polkadot-ui init${dev ? " --dev" : ""}${force ? " --force" : ""}`,
           "```",
           "",
           "## What this does:",
@@ -479,7 +462,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           "- `--dev`: Use development registry (localhost:3000)",
           "- `--verbose`: Show detailed output",
           "- `--force`: Force installation even if files exist",
-          "- `--interactive`: Show detailed prompts for configuration",
           "",
           "## Examples:",
           "```bash",

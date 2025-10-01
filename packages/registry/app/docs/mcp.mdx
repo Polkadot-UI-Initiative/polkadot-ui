@@ -1,5 +1,249 @@
 ---
 title: MCP (Model Context Protocol)
+description:
+  Use the Polkadot-UI MCP server to browse, search, and install Polkadot
+  components from registries.
 ---
 
-TODO
+# MCP Server
+
+Use the Polkadot-UI MCP server to browse, search, and install Polkadot
+components from registries directly into your project.
+
+The Polkadot-UI MCP Server allows AI agents (such as Cursor) to interact with
+Polkadot UI components from registries. You can browse available components,
+search for specific ones, and install them directly into your project using
+natural language.
+
+For example, you can ask an AI agent to "Add a wallet connection component to my
+project" or "Show me all available Polkadot UI components for balance display".
+
+---
+
+## How It Works
+
+The MCP server acts as a bridge between your AI agent, the Polkadot-UI component
+registries, and the Polkadot-UI CLI.
+
+1. **Registry Connection** - MCP connects to Polkadot-UI registries (papi or
+   dedot)
+2. **Natural Language** - You describe what you need in plain English
+3. **AI Processing** - The agent translates your request into registry commands
+4. **Component Delivery** - Polkadot UI components are fetched and installed in
+   your project with automatic API setup
+
+The server provides access to:
+
+- **Browse Components** - List all available Polkadot UI components from any
+  configured registry
+- **Search Across Registries** - Find specific components by name or
+  functionality across papi and dedot registries
+- **Install with Natural Language** - Add components using simple conversational
+  prompts like "add an address input component"
+- **Automatic Setup** - Components are installed with all required dependencies,
+  Polkadot API configuration, and TypeScript types, ready to go
+
+---
+
+## Installation
+
+Currently, the Polkadot-UI MCP server only supports **Cursor**. Support for
+other MCP clients will be added in future releases.
+
+### Cursor
+
+To configure MCP in Cursor, add the Polkadot-UI server to your project's
+`.cursor/mcp.json` configuration file:
+
+```json title=".cursor/mcp.json"
+{
+  "mcpServers": {
+    "polkadot-ui": {
+      "command": "npx",
+      "args": ["polkadot-ui@latest", "mcp"]
+    }
+  }
+}
+```
+
+After adding the configuration, enable the Polkadot-UI MCP server in Cursor
+Settings.
+
+Or you can also click the "Add MCP to Cursor" button in the hero section of the
+[home page](https://polkadot-ui.com), then Open in Cursor, and enable the
+server.
+
+Once enabled, you should see a green dot next to the polkadot-ui server in the
+MCP server list and a list of available tools:
+
+- `add_component` - Add a Polkadot UI component to your project
+- `list_components` - List all available Polkadot UI components
+- `init_project` - Initialize a new project with Polkadot UI components
+- `manage_telemetry` - Manage telemetry settings and display privacy information
+
+---
+
+### Demo in Cursor
+
+<iframe
+  width="560"
+  height="315"
+  src="https://www.youtube.com/embed/NqzQVHk9NWU?si=bcsRvuUgNmpPBBSF"
+  title="YouTube video player"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allowfullscreen
+></iframe>
+
+---
+
+## How to Interact
+
+Once the MCP server is configured, you can use natural language to interact with
+Polkadot-UI registries. The server supports two different registry types:
+
+- **papi** - Components built with Polkadot-API
+- **dedot** - Components built with Dedot
+
+### Available Tools
+
+The MCP server provides the following tools:
+
+#### Add Component
+
+Install a Polkadot UI component to your project with automatic setup:
+
+- Installs the component and all dependencies
+- Sets up Polkadot API configuration
+- Configures providers and chain connections
+- Generates TypeScript types
+
+#### List Components
+
+Browse all available components from the registry with:
+
+- Component descriptions
+- Required dependencies
+- Registry dependencies (other components)
+- API requirements
+
+#### Initialize Project
+
+Create a new project with Polkadot UI components:
+
+- Framework selection (Next.js or Vite)
+- TypeScript and ESLint setup
+- Tailwind CSS configuration
+- shadcn/ui initialization
+- Polkadot library selection (papi or dedot)
+
+#### Manage Telemetry
+
+Control telemetry settings and view privacy information:
+
+- Check telemetry status
+- Enable or disable telemetry
+- View privacy information
+
+---
+
+## Examples
+
+Here are some example prompts you can use with the Polkadot-UI MCP server:
+
+### Browse & Search
+
+- "Show me all available Polkadot UI components"
+- "List components from the papi registry"
+- "Find me a wallet connection component"
+- "What balance display components are available?"
+
+### Install Components
+
+- "Add the address-input component to my project"
+- "Install a wallet connect component using papi"
+- "Add a transaction button component"
+- "Install the balance-display component with verbose output"
+
+### Project Setup
+
+- "Initialize a new Polkadot UI project"
+- "Create a new project with Next.js and papi"
+- "Set up a new project using the dedot registry"
+
+### Component Information
+
+- "Show me details about the tx-button component"
+- "What dependencies does the address-input component need?"
+- "List all components that work with polkadot-api"
+
+### Development & Testing
+
+- "Add components from the development registry"
+- "List components with verbose output"
+- "Force install the select-token component"
+
+---
+
+## Available Components
+
+The Polkadot-UI registry includes the following components:
+
+### Input Components
+
+- **address-input** - Address input with SS58/Ethereum validation and identity
+  lookup
+- **amount-input** - Amount input component for token values
+
+### Wallet & Account
+
+- **connect-wallet** - Connect to wallets and select accounts
+- **account-info** - Display identity, balances and network details
+- **require-account** - Conditional rendering based on account selection
+- **require-connection** - Conditional rendering based on chain connection
+
+### Balance & Token
+
+- **balance-display** - Formatted on-chain balance display
+- **select-token** - Token selection dropdown with balance display
+- **select-token-dialog** - Token selection dialog with search
+
+### Transaction
+
+- **tx-button** - Submit transactions with progress updates
+- **tx-notification** - Transaction status notifications
+
+### Network
+
+- **network-indicator** - Chain connection and block status indicator
+
+Each component comes with:
+
+- Automatic Polkadot API setup
+- Required dependency installation
+- TypeScript type generation
+- Provider configuration
+- Chain connection setup
+
+---
+
+## Registry Types
+
+The MCP server supports two registry types. It will detect if you have papi or
+dedot installed and use the appropriate registry.
+
+---
+
+## Learn More
+
+- [CLI Documentation](/docs/cli) - Complete guide to the Polkadot-UI CLI
+- [Getting Started](/docs/getting-started) - Quick start guide for Polkadot UI
+  components
+- [Components](/docs/components) - Browse all available components
+- [Polkadot-API](https://papi.how/) - Learn about Polkadot-API
+- [Dedot](https://dedot.dev/) - Learn about Dedot
+- [MCP Specification](https://modelcontextprotocol.io/) - Learn about Model
+  Context Protocol
+- [Shadcn/ui MCP Server](https://ui.shadcn.com/docs/mcp) - Our MCP Server is
+  heavily inspired by Shadcn/ui MCP Server
