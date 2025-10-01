@@ -12,7 +12,7 @@ import {
   formatTokenBalance,
   getTokenBalance,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { type TokenMetadata } from "@/registry/polkadot-ui/hooks/use-asset-metadata.dedot";
+import { type TokenMetadata } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { type TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { type NetworkInfoLike } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { TokenLogoWithNetwork } from "@/registry/polkadot-ui/blocks/select-token/shared-token-components";
