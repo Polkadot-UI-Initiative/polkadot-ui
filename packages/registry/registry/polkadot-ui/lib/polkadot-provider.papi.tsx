@@ -30,11 +30,9 @@ export function PolkadotProvider({
 }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <Suspense fallback={<div>Loading...</div>}>
-        <ReactiveDotProvider config={config}>
-          <SelectedAccountProvider>{children}</SelectedAccountProvider>
-        </ReactiveDotProvider>
-      </Suspense>
+      <ReactiveDotProvider config={config}>
+        <SelectedAccountProvider>{children}</SelectedAccountProvider>
+      </ReactiveDotProvider>
     </QueryClientProvider>
   );
 }

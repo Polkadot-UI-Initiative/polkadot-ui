@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 interface BannerProps {
-  title: string;
   buttonText: string;
   buttonUrl: string;
   defaultVisible?: boolean;

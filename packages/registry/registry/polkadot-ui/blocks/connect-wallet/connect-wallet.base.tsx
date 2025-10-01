@@ -94,6 +94,13 @@ export function ConnectWalletBase({
     if (nextOpen) setCurrentView(connectedWallets.length > 0 ? 1 : 0);
   };
 
+  // Advance immediately after a successful wallet connection from view 0
+  const handleConnectWallet = async (id: string) => {
+    const hadWallets = connectedWallets.length > 0;
+    await connectWallet(id);
+    if (!hadWallets) setCurrentView(1);
+  };
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
@@ -140,7 +147,7 @@ export function ConnectWalletBase({
             wallets={wallets}
             connectedWallets={connectedWallets}
             accounts={accounts}
-            connectWallet={connectWallet}
+            connectWallet={handleConnectWallet}
             disconnect={disconnect}
             next={() => setCurrentView(1)}
           />
