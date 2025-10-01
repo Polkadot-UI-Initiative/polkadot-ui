@@ -14,34 +14,24 @@ import {
   type WsJsonRpcProvider,
 } from "polkadot-api/ws-provider";
 
-let paseoPeopleProvider: WsJsonRpcProvider | null = getWsProvider(
+const paseoPeopleProvider: WsJsonRpcProvider | null = getWsProvider(
   "wss://sys.ibp.network/people-paseo"
 );
-let polkadotPeopleProvider: WsJsonRpcProvider | null = getWsProvider(
+const polkadotPeopleProvider: WsJsonRpcProvider | null = getWsProvider(
   "wss://sys.ibp.network/people-polkadot"
 );
-let paseoProvider: WsJsonRpcProvider | null = getWsProvider(
+const paseoProvider: WsJsonRpcProvider | null = getWsProvider(
   "wss://sys.ibp.network/paseo"
 );
-let paseoAssetHubProvider: WsJsonRpcProvider | null = getWsProvider(
+const paseoAssetHubProvider: WsJsonRpcProvider | null = getWsProvider(
   "wss://sys.ibp.network/asset-hub-paseo"
 );
-let polkadotAssetHubProvider: WsJsonRpcProvider | null = getWsProvider(
+const polkadotAssetHubProvider: WsJsonRpcProvider | null = getWsProvider(
   "wss://sys.ibp.network/asset-hub-polkadot"
 );
-let polkadotProvider: WsJsonRpcProvider | null = getWsProvider(
+const polkadotProvider: WsJsonRpcProvider | null = getWsProvider(
   "wss://rpc.polkadot.io"
 );
-
-export const destroyProviders = () => {
-  paseoPeopleProvider = null;
-  polkadotPeopleProvider = null;
-  paseoProvider = null;
-  paseoAssetHubProvider = null;
-  polkadotAssetHubProvider = null;
-  polkadotProvider = null;
-  polkadotAssetHubProvider = null;
-};
 
 export const config = defineConfig({
   ssr: true,

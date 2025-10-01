@@ -8,16 +8,15 @@ interface BannerProps {
   defaultVisible?: boolean;
 }
 
-export const Banner = ({ title, buttonText, buttonUrl }: BannerProps) => {
+export const Banner = ({ buttonText, buttonUrl }: BannerProps) => {
   return (
-    <section className="bg-orange-500 w-full p-4">
+    <section className="bg-polkadot-pink/80 w-full p-4">
       <div className="container">
         <div className="relative flex flex-col gap-4 text-center md:flex-row md:items-center md:justify-center">
           <div className="text-primary-foreground flex flex-col items-center gap-3 pt-2 md:flex-row md:items-center md:pt-0">
             <div className="flex flex-col gap-1 md:flex-row md:items-center">
-              <p className="text-sm font-medium">{title}</p>
-              <p className="text-primary-foreground/80 text-sm">
-                Polkadot UI is in pre-release version. Please{" "}
+              <p className="text-white text-sm">
+                Polkadot UI is in beta version. Please{" "}
                 <Link
                   href={buttonUrl}
                   target="_blank"

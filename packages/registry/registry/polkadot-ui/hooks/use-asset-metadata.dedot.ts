@@ -36,7 +36,6 @@ export function useAssetMetadata({
   }, [assetIds]);
 
   const includesNative = sortedIds.includes(NATIVE_TOKEN_KEY);
-  console.log("includesNative", includesNative);
   const palletAssetIds = useMemo(
     () => sortedIds.filter((id) => id >= 0),
     [sortedIds]

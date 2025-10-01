@@ -1,44 +1,38 @@
 "use client";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+// import { destroyProviders } from "@/registry/polkadot-ui/lib/reactive-dot.config";
+import Image from "next/image";
 import { Button } from "../ui/button";
 
 type Lib = "papi" | "dedot";
 
 export function LibrarySwitcher({ value }: { value: Lib }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  const setLib = (next: Lib) => {
-    const params = new URLSearchParams(searchParams?.toString());
-    params.set("lib", next);
-    const qs = params.toString();
-    router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
-  };
-
-  const active = "border border-primary w-24 backdrop-blur-md";
+  const active =
+    "cursor-pointer border border-primary backdrop-blur-md w-24 bg-gradient-to-tr from-polkadot-pink to-polkadot-violet text-white";
   const inactive =
-    "bg-background/20 text-foreground border-muted-foreground/20 hover:bg-muted w-24 backdrop-blur-md";
+    "cursor-pointer bg-background/20 text-foreground border-muted-foreground/20 hover:bg-muted backdrop-blur-md w-24 ";
 
   return (
-    <div className="flex items-center justify-center gap-4">
-      <Button
-        size="sm"
-        className={`${value === "dedot" ? active : inactive}`}
-        onClick={() => setLib("dedot")}
-        aria-pressed={value === "dedot"}
-      >
-        dedot
-      </Button>
-      <Button
-        size="sm"
-        className={`${value === "papi" ? active : inactive}`}
-        onClick={() => setLib("papi")}
-        aria-pressed={value === "papi"}
-      >
-        papi
-      </Button>
+    <div className="flex items-center justify-center gap-2">
+      <Link href="/" aria-pressed={value === "papi"} scroll={false}>
+        <Button
+          variant="ghost"
+          className={`${value === "papi" ? active : inactive} inline-flex items-center justify-center rounded-md border px-3 py-2`}
+        >
+          <Image src="/logo-papi.svg" alt="papi" width={28} height={28} />
+          papi
+        </Button>
+      </Link>
+      <Link href="/dedot" aria-pressed={value === "dedot"} scroll={false}>
+        <Button
+          variant="ghost"
+          className={`${value === "dedot" ? active : inactive} inline-flex items-center justify-center rounded-md border px-3 py-2`}
+        >
+          <Image src="/logo-dedot.jpg" alt="dedot" width={28} height={28} />
+          dedot
+        </Button>
+      </Link>
     </div>
   );
 }

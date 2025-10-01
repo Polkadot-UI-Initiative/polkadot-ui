@@ -7,9 +7,7 @@ import { examples as dedotExamples } from "../examples/dedot";
 import { PolkadotProvider as PolkadotProviderPapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { PolkadotProvider as PolkadotProviderDedot } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { ComponentPreview } from "./component-preview";
-// import { LibrarySwitcher } from "./library-switcher";
-// import { HooksTest as HooksTestPapi } from "../examples/papi/hooks-test";
-// import { HooksTest as HooksTestDedot } from "../examples/dedot/hooks-test";
+import { LibrarySwitcher } from "./library-switcher";
 
 export function ComponentsSection({
   usedLibrary = "dedot",
@@ -27,18 +25,16 @@ export function ComponentsSection({
       <h2 className="w-full text-center px-6 text-3xl font-semibold md:text-5xl lg:px-10 mb-12">
         Components Showcase
       </h2>
-      {/* <LibrarySwitcher value={usedLibrary} /> */}
+      <LibrarySwitcher value={usedLibrary} />
       {/* Examples grid */}
       <div className="w-full grid justify-center gap-4 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 auto-rows-fr">
         {usedLibrary === "papi" && (
           <PolkadotProviderPapi key={usedLibrary}>
-            {/* <HooksTestPapi /> */}
             {ComponentExamples}
           </PolkadotProviderPapi>
         )}
         {usedLibrary === "dedot" && (
           <PolkadotProviderDedot key={usedLibrary}>
-            {/* <HooksTestDedot /> */}
             {ComponentExamples}
           </PolkadotProviderDedot>
         )}

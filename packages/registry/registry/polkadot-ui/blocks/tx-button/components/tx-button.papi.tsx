@@ -36,7 +36,17 @@ type TxButtonProps = TxButtonBaseProps & {
 
 export function TxButton(props: TxButtonProps) {
   return (
-    <Suspense fallback={<TxButtonSkeleton {...props} />}>
+    <Suspense
+      fallback={
+        <TxButtonSkeleton
+          variant={props.variant}
+          size={props.size}
+          className={props.className}
+        >
+          {props.children}
+        </TxButtonSkeleton>
+      }
+    >
       <TxButtonInner {...props} />
     </Suspense>
   );
@@ -122,7 +132,16 @@ export function TxButtonInner(props: TxButtonProps) {
       });
   }, [transaction, selectedAccount]);
 
-  if (!signer) return <TxButtonSkeleton {...props} />;
+  if (!signer)
+    return (
+      <TxButtonSkeleton
+        variant={props.variant}
+        size={props.size}
+        className={props.className}
+      >
+        {props.children}
+      </TxButtonSkeleton>
+    );
 
   const handleClick = () => {
     setSubmitError(null);
