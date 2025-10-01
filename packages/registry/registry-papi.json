@@ -197,8 +197,7 @@
         },
         {
           "path": "registry/polkadot-ui/lib/reactive-dot.config.ts",
-          "type": "registry:lib",
-          "target": "config.ts"
+          "type": "registry:lib"
         }
       ]
     },
