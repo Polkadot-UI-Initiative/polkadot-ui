@@ -3,27 +3,25 @@
 import { type ReactNode } from "react";
 
 export interface RequireAccountServices {
-  isLoading: boolean;
   hasAccount: boolean;
 }
 
-export interface RequireAccountBaseProps<TChainId extends string = string> {
-  chainId: TChainId;
+export interface RequireAccountBaseProps {
   children: ReactNode;
   fallback: ReactNode;
   loadingFallback?: ReactNode;
   services: RequireAccountServices;
 }
 
-export function RequireAccountBase<TChainId extends string = string>({
+export function RequireAccountBase({
   children,
   fallback,
   loadingFallback,
   services,
-}: RequireAccountBaseProps<TChainId>) {
-  const { isLoading, hasAccount } = services;
+}: RequireAccountBaseProps) {
+  const { hasAccount } = services;
 
-  if (isLoading && loadingFallback) return <>{loadingFallback}</>;
+  if (loadingFallback) return <>{loadingFallback}</>;
 
   return <>{hasAccount ? children : fallback}</>;
 }

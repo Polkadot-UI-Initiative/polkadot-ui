@@ -8,8 +8,7 @@ describe("RequireAccountBase", () => {
   it("renders children when account exists", () => {
     render(
       <RequireAccountBase
-        chainId="paseo"
-        services={{ isLoading: false, hasAccount: true }}
+        services={{ hasAccount: true }}
         fallback={<div>no-account</div>}
       >
         <div>with-account</div>
@@ -21,8 +20,7 @@ describe("RequireAccountBase", () => {
   it("renders fallback when no account", () => {
     render(
       <RequireAccountBase
-        chainId="paseo"
-        services={{ isLoading: false, hasAccount: false }}
+        services={{ hasAccount: false }}
         fallback={<div>no-account</div>}
       >
         <div>with-account</div>
@@ -34,8 +32,7 @@ describe("RequireAccountBase", () => {
   it("renders loadingFallback when loading", () => {
     render(
       <RequireAccountBase
-        chainId="paseo"
-        services={{ isLoading: true, hasAccount: false }}
+        services={{ hasAccount: false }}
         fallback={<div>no-account</div>}
         loadingFallback={<div>loading</div>}
       >

@@ -15,7 +15,6 @@ export const requireAccountExample: ComponentExample = {
 function MyComponent() {
   return (
     <RequireAccount
-      chainId="paseo"
       fallback={
         <div className="border border-foreground/10 w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md">
           Please select an account to continue.
@@ -36,7 +35,6 @@ function Component() {
   return (
     <div className="w-full space-y-3">
       <RequireAccount
-        chainId="paseo"
         fallback={
           <div className="border border-foreground/10 w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md">
             Please select an account to continue.

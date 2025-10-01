@@ -1,5 +1,4 @@
 "use client";
-import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   ConnectWalletBase,
   ConnectWalletSkeleton,
@@ -129,11 +128,7 @@ function ConnectWalletInner() {
     ]
   );
 
-  return (
-    <ClientOnly>
-      <ConnectWalletBase services={services} />
-    </ClientOnly>
-  );
+  return <ConnectWalletBase services={services} />;
 }
 
 export function ConnectWalletWithProvider(props: ConnectWalletProps) {
