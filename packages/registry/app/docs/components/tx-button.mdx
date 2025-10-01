@@ -1,13 +1,18 @@
 ---
 title: Tx Button
-description: A configurable transaction button with fee preview, progress states, and notifications.
+description:
+  A configurable transaction button with fee preview, progress states, and
+  notifications.
 ---
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Toaster } from "@/components/ui/sonner";
 
 ## Introduction
 
-`TxButton` provides a simple way to submit Substrate transactions with fee estimation, disabled states, and status notifications. It works with `typink`'s `useTx` and can be adapted to other APIs via a thin wrapper.
+`TxButton` provides a simple way to submit Substrate transactions with fee
+estimation, disabled states, and status notifications. It works with `typink`'s
+`useTx` and can be adapted to other APIs via a thin wrapper.
 
 ## Installation
 
@@ -40,17 +45,9 @@ import { Toaster } from "sonner";
 import { useTx } from "typink"
 import { TxButtonBase } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.base"
 
-function RemarkExample() {
-  const tx = useTx((tx) => tx.system.remark)
-  return (
-    <TxButtonBase tx={tx} args={["hello"]} networkId="paseo">
-      Write a message on chain
-    </TxButtonBase>
-  )
-}
-```
-  </TabsContent>
-</Tabs>
+function RemarkExample() { const tx = useTx((tx) => tx.system.remark) return (
+<TxButtonBase tx={tx} args={["hello"]} networkId="paseo"> Write a message on
+chain </TxButtonBase> ) }
 
 ## Behavior
 
@@ -77,3 +74,4 @@ function RemarkExample() {
 - For more details on `useTx` and the underlying flow, see the reference implementation [`useTx.ts`](https://github.com/dedotdev/typink/blob/main/packages/typink/src/hooks/useTx.ts)
 
 
+```

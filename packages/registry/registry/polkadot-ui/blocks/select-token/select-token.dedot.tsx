@@ -12,7 +12,7 @@ import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   type SelectTokenBaseProps,
   SelectTokenBase,
-} from "@/registry/polkadot-ui/blocks/select-token/select-token.base";
+} from "./select-token.base";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { paseoAssetHub } from "typink";
 import {

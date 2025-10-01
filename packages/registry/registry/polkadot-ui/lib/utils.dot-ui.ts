@@ -1,15 +1,11 @@
-import type { TokenInfo } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import type {
+  TokenInfo,
+  TokenMetadata,
+} from "@/registry/polkadot-ui/lib/types.dot-ui";
 
 // the key for the native token in the balances object, if -1 is used somewhere as assetId, the
 export const NATIVE_TOKEN_KEY = -1;
 export const NATIVE_TOKEN_ID = "substrate-native";
-
-export interface TokenMetadata {
-  assetId: number;
-  name: string;
-  symbol: string;
-  decimals: number;
-}
 
 // Default decimals for DOT-like tokens (Planck precision)
 export const DEFAULT_TOKEN_DECIMALS = 12;
