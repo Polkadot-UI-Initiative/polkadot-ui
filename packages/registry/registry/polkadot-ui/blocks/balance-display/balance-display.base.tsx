@@ -35,11 +35,13 @@ export function BalanceDisplayBase(props: BalanceDisplayBaseProps) {
     decimalSeparator,
   } = props;
 
-  // If caller provided showCompare explicitly, use it; otherwise infer
+  // Only render compare once compareToken has resolved (not undefined) to avoid infinite skeleton
+  const hasCompareInputs =
+    Object.prototype.hasOwnProperty.call(props, "compareToken") ||
+    Object.prototype.hasOwnProperty.call(props, "tokenConversionRate");
+  const isCompareTokenResolved = typeof compareToken !== "undefined";
   const shouldShowCompare =
-    showCompare ??
-    (Object.prototype.hasOwnProperty.call(props, "compareToken") ||
-      Object.prototype.hasOwnProperty.call(props, "tokenConversionRate"));
+    (showCompare ?? hasCompareInputs) && isCompareTokenResolved;
 
   const compareAmount = (() => {
     if (

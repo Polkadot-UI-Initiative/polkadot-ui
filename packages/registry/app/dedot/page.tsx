@@ -1,13 +1,13 @@
 import { ComponentsSection } from "@/components/layout/components-section";
-import { Suspense } from "react";
+import { HeroSection } from "@/components/layout/hero-section";
+import { FeaturesSection } from "@/components/layout/features-section";
 
 export default async function ComponentsPage() {
   return (
-    <div className="flex flex-col mt-12">
-      <h1 className="text-2xl font-bold mb-4 text-center">Dedot Components</h1>
-      <Suspense fallback={<div>Loading...</div>}>
-        <ComponentsSection usedLibrary="dedot" />
-      </Suspense>
+    <div className="flex flex-col">
+      <HeroSection />
+      <FeaturesSection />
+      <ComponentsSection usedLibrary={"dedot"} />
     </div>
   );
 }

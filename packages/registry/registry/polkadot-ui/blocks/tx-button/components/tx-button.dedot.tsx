@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { TxButtonBase, type TxButtonBaseProps } from "./tx-button.base";
 import { useTypink, useTxFee, useBalance } from "typink";
+import { DEFAULT_CALLER } from "@/registry/polkadot-ui/lib/utils";
 // UseTxReturnType only appears in imported types; remove unused local import
 import type { NetworkId } from "typink/types";
 import {
@@ -27,7 +28,7 @@ export function TxButton<TTx extends AnyUseTx>(props: TxButtonProps<TTx>) {
     args: (args ?? []) as Parameters<ExtractUseTxFn<TTx>>,
   } as Parameters<typeof useTxFee>[0]);
 
-  const balanceState = useBalance(connectedAccount?.address, {
+  const balanceState = useBalance(connectedAccount?.address ?? DEFAULT_CALLER, {
     networkId,
   });
   // Simple services object with type-compatible wrappers

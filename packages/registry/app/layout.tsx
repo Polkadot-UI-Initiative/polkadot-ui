@@ -59,7 +59,6 @@ export default async function RootLayout({
                 githubStars={githubStars}
               />
               <Banner
-                title="Pre Release Version"
                 buttonText="Report Issue on GitHub"
                 buttonUrl="https://github.com/Polkadot-UI-Initiative/polkadot-ui/issues"
               />

@@ -346,19 +346,21 @@ export function TxButtonSkeleton({
     inBestBlock: <CheckCircle className="w-4 h-4" />,
     error: <Ban className="w-4 h-4" />,
   },
-  ...props
-}: React.ComponentProps<"button"> &
-  VariantProps<typeof buttonVariants> & {
-    children: React.ReactNode;
-    icons?: TxButtonIcons;
-  }) {
+  className,
+  variant,
+  size,
+}: {
+  children: React.ReactNode;
+  icons?: TxButtonIcons;
+  className?: string;
+} & VariantProps<typeof buttonVariants>) {
   return (
     <div className="inline-flex flex-col gap-1">
       <div className="text-xs text-muted-foreground font-medium h-4 flex items-center justify-start gap-1">
         <Coins className="w-3 h-3" />
         <Loader2 className="w-3 h-3 animate-spin" />
       </div>
-      <Button disabled {...props}>
+      <Button disabled variant={variant} size={size} className={className}>
         {children}
         {icons.default}
       </Button>

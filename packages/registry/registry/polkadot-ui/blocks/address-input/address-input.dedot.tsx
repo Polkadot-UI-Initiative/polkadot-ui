@@ -18,6 +18,14 @@ export type AddressInputProps = Omit<
   "services"
 >;
 
+export function AddressInput(props: AddressInputProps) {
+  return (
+    <ClientOnly fallback={<Input onChange={() => {}} />}>
+      <AddressInputInner {...props} />
+    </ClientOnly>
+  );
+}
+
 function AddressInputInner(props: AddressInputProps) {
   const { status } = usePolkadotClient(props.identityChain ?? paseoPeople.id);
 
@@ -41,13 +49,6 @@ function AddressInputInner(props: AddressInputProps) {
   );
 }
 
-export function AddressInput(props: AddressInputProps) {
-  return (
-    <ClientOnly fallback={<Input onChange={() => {}} />}>
-      <AddressInputInner {...props} />
-    </ClientOnly>
-  );
-}
 // Wrapped version with provider for drop-in usage
 export function AddressInputWithProvider(props: AddressInputProps) {
   return (
