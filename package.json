@@ -1,6 +1,6 @@
 {
   "name": "polkadot-ui-monorepo",
-  "version": "0.2.5",
+  "version": "1.0.0",
   "private": true,
   "description": "Polkadot UI components with CLI and registry server",
   "scripts": {
