@@ -27,7 +27,7 @@ const unbounded = Unbounded({
 });
 
 export const metadata: Metadata = {
-  title: "polkadot-ui - Polkadot React Components",
+  title: "Polkadot UI - Polkadot React Components",
   description:
     "Beautiful, accessible components for the Polkadot ecosystem. Type-safe, customizable, and built with modern React patterns.",
 };
