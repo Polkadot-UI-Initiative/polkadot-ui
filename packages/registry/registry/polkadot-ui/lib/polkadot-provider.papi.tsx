@@ -3,13 +3,12 @@
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import type { ChainId } from "@reactive-dot/core";
+import type { WalletAccount } from "@reactive-dot/core/wallets.js";
 import {
   ReactiveDotProvider,
   useAccounts,
   useBlock,
 } from "@reactive-dot/react";
-// Derive WalletAccount type from hook return to avoid package type mismatches
-type WalletAccount = NonNullable<ReturnType<typeof useAccounts>>[number];
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { BlockInfo } from "polkadot-api";
 import type { ReactNode } from "react";
