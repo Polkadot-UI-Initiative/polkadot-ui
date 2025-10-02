@@ -92,18 +92,51 @@ export function txStatusNotification({
   titles = defaultTitles,
   descriptions = defaultDescriptions,
 }: TxStatusNotificationProps) {
-  const { status, txHash } = result;
-  const explorerUrl = network?.subscanUrl ?? network?.pjsUrl;
+  const { status } = result;
+  const inferredTxHash =
+    (result as { txHash?: string }).txHash ??
+    (result as { extrinsicHash?: string }).extrinsicHash ??
+    (result as { hash?: string }).hash;
+  const includedIndex = (() => {
+    const value = (status as unknown as { value?: unknown }).value as
+      | { blockNumber?: number; txIndex?: number }
+      | undefined;
+    if (
+      value &&
+      typeof value.blockNumber === "number" &&
+      typeof value.txIndex === "number"
+    )
+      return `${value.blockNumber}-${value.txIndex}`;
+    return undefined;
+  })();
 
-  const action =
-    txHash && explorerUrl
-      ? {
-          label: "View on explorer",
-          onClick: () => {
-            window.open(`${explorerUrl}/tx/${txHash}`, "_blank");
-          },
-        }
-      : undefined;
+  const action = (() => {
+    if (network?.subscanUrl) {
+      const target = includedIndex ?? inferredTxHash;
+      if (!target) return undefined;
+      return {
+        label: "View on explorer",
+        onClick: (e: React.MouseEvent<HTMLAnchorElement>) => {
+          e.preventDefault();
+          window.open(`${network.subscanUrl}/extrinsic/${target}`, "_blank");
+        },
+      } as const;
+    }
+    if (network?.pjsUrl) {
+      if (!inferredTxHash) return undefined;
+      return {
+        label: "View on explorer",
+        onClick: (e: React.MouseEvent<HTMLAnchorElement>) => {
+          e.preventDefault();
+          window.open(
+            `${network.pjsUrl}/#/explorer/query/${inferredTxHash}`,
+            "_blank"
+          );
+        },
+      } as const;
+    }
+    return undefined;
+  })();
 
   const chainLogo = <ChainLogo network={network} />;
 
