@@ -35,10 +35,14 @@ export function BalanceDisplayBase(props: BalanceDisplayBaseProps) {
     decimalSeparator,
   } = props;
 
-  // Only render compare once compareToken has resolved (not undefined) to avoid infinite skeleton
+  // Only render compare once compareToken has resolved (not undefined) to avoid infinite skeleton.
+  // Treat tokenConversionRate as present only if it's a finite number; otherwise hide compare row.
+  const hasCompareRate =
+    typeof tokenConversionRate === "number" &&
+    Number.isFinite(tokenConversionRate);
   const hasCompareInputs =
     Object.prototype.hasOwnProperty.call(props, "compareToken") ||
-    Object.prototype.hasOwnProperty.call(props, "tokenConversionRate");
+    hasCompareRate;
   const isCompareTokenResolved = typeof compareToken !== "undefined";
   const shouldShowCompare =
     (showCompare ?? hasCompareInputs) && isCompareTokenResolved;
