@@ -127,8 +127,8 @@ importers:
         specifier: ^1.2.8
         version: 1.2.8(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@reactive-dot/core':
-        specifier: ^0.50.0
-        version: 0.50.0(polkadot-api@1.19.0(bufferutil@4.0.9)(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(zod@3.25.76)
+        specifier: ^0.51.1
+        version: 0.51.1(polkadot-api@1.19.0(bufferutil@4.0.9)(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(zod@3.25.76)
       '@reactive-dot/react':
         specifier: ^0.51.0
         version: 0.51.0(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@19.1.2)(polkadot-api@1.19.0(bufferutil@4.0.9)(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3)(utf-8-validate@5.0.10))(react@19.1.0)(typescript@5.8.3)(zod@3.25.76)
@@ -2041,6 +2041,11 @@ packages:
 
   '@reactive-dot/core@0.50.0':
     resolution: {integrity: sha512-sSky7g7DjLQRxS11DPN41k9ZYvtV7t7v+T+iole5Crh5yI1mjHG6uuJYTfb/fZ3i32J6ssUpCF2ivwsODeZDfg==}
+    peerDependencies:
+      polkadot-api: '>=1.19.x'
+
+  '@reactive-dot/core@0.51.1':
+    resolution: {integrity: sha512-KM1A3jOoN+xCCXOs934f9CGCUC3G+A0YDq8a1FZuDcIww/kw+54WMhS4g1i/du0fc/+BFeILiQSl/5Nn8mw9Cw==}
     peerDependencies:
       polkadot-api: '>=1.19.x'
 
@@ -8730,6 +8735,18 @@ snapshots:
   '@radix-ui/rect@1.1.1': {}
 
   '@reactive-dot/core@0.50.0(polkadot-api@1.19.0(bufferutil@4.0.9)(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(zod@3.25.76)':
+    dependencies:
+      '@noble/hashes': 2.0.1
+      '@reactive-dot/utils': 0.10.1
+      '@substrate/smoldot-discovery': 2.0.2
+      abitype: 1.1.1(typescript@5.8.3)(zod@3.25.76)
+      ox: 0.9.8(typescript@5.8.3)(zod@3.25.76)
+      polkadot-api: 1.19.0(bufferutil@4.0.9)(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3)(utf-8-validate@5.0.10)
+    transitivePeerDependencies:
+      - typescript
+      - zod
+
+  '@reactive-dot/core@0.51.1(polkadot-api@1.19.0(bufferutil@4.0.9)(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(zod@3.25.76)':
     dependencies:
       '@noble/hashes': 2.0.1
       '@reactive-dot/utils': 0.10.1
