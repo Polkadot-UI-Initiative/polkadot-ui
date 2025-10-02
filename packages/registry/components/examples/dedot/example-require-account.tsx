@@ -2,7 +2,7 @@
 
 import { RequireAccount } from "@/registry/polkadot-ui/blocks/require-account/require-account.dedot";
 import type { ComponentExample } from "../types.examples";
-import { paseo, useTypink } from "typink";
+import { useTypink } from "typink";
 
 export const requireAccountExample: ComponentExample = {
   name: "Require Account",
@@ -14,7 +14,6 @@ export const requireAccountExample: ComponentExample = {
 import { paseo } from "typink";
 
 <RequireAccount
-  chainId={paseo.id}
   fallback={
     <div>
       Please select an account to continue.
@@ -30,7 +29,6 @@ function Component() {
   return (
     <div className="w-full space-y-3">
       <RequireAccount
-        chainId={paseo.id}
         fallback={
           <div className="border border-foreground/10 w-full h-48 bg-background text-xs font-normal text-foreground flex items-center justify-center rounded-md">
             Please select an account to continue.

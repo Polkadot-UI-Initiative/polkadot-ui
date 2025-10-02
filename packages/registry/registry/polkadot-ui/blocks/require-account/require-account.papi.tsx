@@ -1,23 +1,16 @@
 "use client";
 
-import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
 import {
   RequireAccountBase,
   type RequireAccountBaseProps,
 } from "./require-account.base";
 import {
   PolkadotProvider,
-  useConnectionStatus,
   useSelectedAccount,
 } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
-import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { Suspense, useMemo } from "react";
-import { type ChainId } from "@reactive-dot/core";
 
-export type RequireAccountProps = Omit<
-  RequireAccountBaseProps<ChainId>,
-  "services"
->;
+export type RequireAccountProps = Omit<RequireAccountBaseProps, "services">;
 
 export function RequireAccount(props: RequireAccountProps) {
   return (
@@ -29,23 +22,15 @@ export function RequireAccount(props: RequireAccountProps) {
 
 function RequireAccountInner(props: RequireAccountProps) {
   const { selectedAccount } = useSelectedAccount();
-  const { status } = useConnectionStatus({
-    chainId: props.chainId,
-  });
 
   const services = useMemo(
     () => ({
-      isLoading: status === ClientConnectionStatus.Connecting,
       hasAccount: !!selectedAccount?.address,
     }),
-    [selectedAccount?.address, status]
+    [selectedAccount?.address]
   );
 
-  return (
-    <ClientOnly fallback={props.loadingFallback ?? props.fallback ?? null}>
-      <RequireAccountBase {...props} services={services} />
-    </ClientOnly>
-  );
+  return <RequireAccountBase {...props} services={services} />;
 }
 
 export function RequireAccountWithProvider(props: RequireAccountProps) {

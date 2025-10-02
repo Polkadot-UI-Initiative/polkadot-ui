@@ -68,7 +68,10 @@ export function BalanceDisplayBase(props: BalanceDisplayBaseProps) {
   })();
 
   return (
-    <div className="inline-flex flex-col items-end">
+    <div
+      className="inline-flex flex-col items-end"
+      aria-busy={balance === undefined || token === undefined}
+    >
       <div className="text-base font-medium min-h-6 flex flex-row items-center gap-1">
         <TokenDisplay
           balance={balance}
@@ -128,12 +131,15 @@ export function TokenDisplay({
       ) : (
         <>
           {token?.symbol}
-          <div className="size-4 flex items-center justify-center">
+          <div
+            className="size-4 flex items-center justify-center"
+            aria-hidden="true"
+          >
             {token?.logo && (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={token.logo}
-                alt={token.symbol}
+                alt={token.symbol || "Token logo"}
                 className={cn(
                   "opacity-0 transition-opacity duration-500",
                   !small && "size-4",

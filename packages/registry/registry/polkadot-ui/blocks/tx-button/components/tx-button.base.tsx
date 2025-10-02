@@ -197,7 +197,11 @@ export function TxButtonBase<
           args: (args ?? ([] as unknown[])) as any,
           callback: (result: TxResultLike) => {
             setTxStatus(result.status);
-            if (result.status.type === "InBestBlock") setLocalBestBlock(true);
+            if (
+              result.status.type === "InBestBlock" ||
+              result.status.type === "txBestBlocksState"
+            )
+              setLocalBestBlock(true);
             if (withNotification) {
               txStatusNotification({
                 title:
@@ -219,7 +223,11 @@ export function TxButtonBase<
           args: (args ?? []) as unknown[],
           onStatus: (result) => {
             setTxStatus(result.status);
-            if (result.status.type === "InBestBlock") setLocalBestBlock(true);
+            if (
+              result.status.type === "InBestBlock" ||
+              result.status.type === "txBestBlocksState"
+            )
+              setLocalBestBlock(true);
             if (withNotification) {
               txStatusNotification({
                 title:
@@ -258,7 +266,7 @@ export function TxButtonBase<
   }
 
   return (
-    <div className="inline-flex flex-col gap-2">
+    <div className="inline-flex flex-col gap-1">
       <div className="text-xs text-muted-foreground font-medium h-4 flex items-center justify-start">
         {fee !== null ? (
           <span className="flex items-center gap-1">
@@ -286,6 +294,8 @@ export function TxButtonBase<
         variant={variant}
         size={size}
         disabled={isButtonDisabled}
+        type="button"
+        aria-busy={isLoading || undefined}
         className={cn(
           "transition-transform duration-150 ease-out active:scale-[0.98] active:translate-y-[0.5px]",
           isLoading && "cursor-not-allowed",
@@ -296,30 +306,45 @@ export function TxButtonBase<
         {isLoading ? (
           <>
             {children}
-            {icons.loading}
+            <span aria-hidden="true">{icons.loading}</span>
           </>
         ) : inBestBlockProgress ? (
           <>
             {children}
-            {icons.inBestBlock}
+            <span aria-hidden="true">{icons.inBestBlock}</span>
           </>
-        ) : txStatus && showResult && txStatus.type === "Finalized" ? (
+        ) : txStatus &&
+          showResult &&
+          (txStatus.type === "Finalized" || txStatus.type === "finalized") ? (
           <>
             {children}
-            {icons.finalized}
+            <span aria-hidden="true">{icons.finalized}</span>
           </>
         ) : isError && showResult ? (
           <>
             {children}
-            {icons.error}
+            <span aria-hidden="true">{icons.error}</span>
           </>
         ) : (
           <>
             {children}
-            {icons.default}
+            <span aria-hidden="true">{icons.default}</span>
           </>
         )}
       </Button>
+      {/* SR-only live region for status updates */}
+      <span className="sr-only" aria-live="polite">
+        {isLoading
+          ? "Transaction pending"
+          : inBestBlockProgress
+            ? "Transaction in best block"
+            : txStatus &&
+                (txStatus.type === "Finalized" || txStatus.type === "finalized")
+              ? "Transaction finalized"
+              : isError && showResult
+                ? "Transaction error"
+                : ""}
+      </span>
       <div className="text-xs font-normal h-4 flex items-center">
         {!connectedAccount?.address ? (
           <span className="text-amber-500">Please select an account</span>
@@ -364,9 +389,7 @@ export function TxButtonSkeleton({
         {children}
         {icons.default}
       </Button>
-      <div className="text-xs font-normal h-4 flex items-center">
-        {/* <Skeleton className="h-3 w-40" /> */}
-      </div>
+      <div className="text-xs font-normal h-4 flex items-center" />
     </div>
   );
 }

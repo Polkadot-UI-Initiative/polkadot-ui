@@ -63,8 +63,12 @@ export function NetworkIndicatorBase<TNetworkId extends string>({
     const blockText = blockNumber != null ? String(blockNumber) : "";
     const measureText =
       blockText.length > 0 ? "0".repeat(blockText.length) : "";
+
     return (
-      <div className="tabular-nums font-light min-h-7 h-auto py-1 border-foreground/20 border rounded-md px-2 text-[12px] cursor-default flex items-center gap-1.5">
+      <div
+        className="tabular-nums font-light h-7 py-1 border-foreground/20 border rounded-md px-2 text-[12px] cursor-default flex items-center gap-1.5"
+        aria-label="Network Indicator"
+      >
         {showLogo && network?.logo && (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -151,7 +155,7 @@ export function NetworkIndicatorBase<TNetworkId extends string>({
 
 export function NetworkIndicatorSkeleton() {
   return (
-    <div className="tabular-nums font-light min-h-7 h-auto py-1 border-foreground/20 border rounded-md px-2 text-[18px] cursor-default flex items-center gap-1.5">
+    <div className="tabular-nums font-light h-7 py-1 border-foreground/20 border rounded-md px-2 text-[18px] cursor-default flex items-center gap-1.5">
       <Skeleton className="w-3.5 h-3.5 rounded-full" />
       <div />
       <span className="block rounded-full w-2 h-2 bg-yellow-400 animate-pulse" />

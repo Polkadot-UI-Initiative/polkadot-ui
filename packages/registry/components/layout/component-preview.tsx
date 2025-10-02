@@ -1,7 +1,7 @@
 "use client";
 
 import type { ComponentExample } from "../examples/types.examples";
-import { OpenInV0Button } from "../open-in-v0-button";
+// import { OpenInV0Button } from "../open-in-v0-button";
 import { Button } from "../ui/button";
 import {
   Card,
@@ -16,8 +16,8 @@ import { BookText, Check, Code, Copy, Eye } from "lucide-react";
 import Link from "next/link";
 import React, {
   isValidElement,
-  type ReactElement,
-  type ReactNode,
+  // type ReactElement,
+  // type ReactNode,
   useState,
 } from "react";
 
@@ -117,11 +117,11 @@ export function ComponentPreview({
               href={componentInfo.href}
               className="text-primary hover:underline"
             >
-              <BookText /> Docs →
+              <BookText /> Docs & Examples→
             </Link>
           </Button>
         )}
-        <OpenInV0Button
+        {/* <OpenInV0Button
           name={componentInfo.code}
           title={componentInfo.name}
           variant="outline"
@@ -131,20 +131,20 @@ export function ComponentPreview({
               : getTextFromNode(componentInfo.description)) ||
             `${componentInfo.name} - explain this code`
           }
-        />
+        /> */}
       </CardFooter>
     </Card>
   );
 }
 
-function getTextFromNode(node: ReactNode): string {
-  if (node === null || node === undefined || node === false || node === true)
-    return "";
-  if (typeof node === "string" || typeof node === "number") return String(node);
-  if (Array.isArray(node)) return node.map(getTextFromNode).join("");
-  if (isValidElement(node)) {
-    const element = node as ReactElement<{ children?: ReactNode }>;
-    return getTextFromNode(element.props.children as ReactNode);
-  }
-  return "";
-}
+// function getTextFromNode(node: ReactNode): string {
+//   if (node === null || node === undefined || node === false || node === true)
+//     return "";
+//   if (typeof node === "string" || typeof node === "number") return String(node);
+//   if (Array.isArray(node)) return node.map(getTextFromNode).join("");
+//   if (isValidElement(node)) {
+//     const element = node as ReactElement<{ children?: ReactNode }>;
+//     return getTextFromNode(element.props.children as ReactNode);
+//   }
+//   return "";
+// }

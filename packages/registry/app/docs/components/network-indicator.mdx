@@ -1,12 +1,35 @@
 ---
 title: Network Indicator
-description: Show current network and connection status. Coming soon.
+description: Compact badge that shows the selected network, connection status, and optionally the latest block number.
 ---
 
-import { ExamplePlaceholder } from "@/components/examples/placeholder";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { NetworkIndicatorDocs } from "@/components/docs/docs-network-indicator";
 
-## Coming soon
+## Introduction
 
-<ExamplePlaceholder title="Network Indicator" />
+`NetworkIndicator` displays the current network and connection status with an optional live block number. It is designed to be inline, non-stretching, and composable for toolbars, footers, and status rows.
 
+## Installation
 
+```bash
+npx polkadot-ui@latest add network-indicator
+```
+
+## Usage
+
+<NetworkIndicatorDocs/>
+
+## Props
+| Prop | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `chainId` | `string` | yes | — | Network id to display (from your provider config) |
+| `at` | `'best' \| 'finalized'` | yes | `'finalized'` | Which block stream to follow |
+| `showBlockNumber` | `boolean` | no | `true` | Show the block number next to the status dot |
+| `showLogo` | `boolean` | no | `true` | Show the network logo |
+| `className` | `string` | no | — | Extra classes for styling |
+
+## Accessibility
+
+- Uses a tooltip to announce connection state changes.
+- The block number area reserves space to prevent layout shift.

@@ -184,6 +184,10 @@
           "type": "registry:component"
         },
         {
+          "path": "registry/polkadot-ui/blocks/require-account/require-account.base.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "registry/polkadot-ui/lib/polkadot-provider.papi.tsx",
           "type": "registry:lib"
         },
@@ -221,6 +225,10 @@
           "type": "registry:component"
         },
         {
+          "path": "registry/polkadot-ui/blocks/account-info/account-info.base.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "registry/polkadot-ui/lib/polkadot-provider.papi.tsx",
           "type": "registry:lib"
         },
@@ -235,6 +243,10 @@
         {
           "path": "registry/polkadot-ui/lib/reactive-dot.config.ts",
           "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/hooks/use-identity-of.papi.ts",
+          "type": "registry:hook"
         }
       ]
     },
@@ -278,17 +290,19 @@
         "polkadot-api",
         "@reactive-dot/core",
         "@reactive-dot/react",
-        "@tanstack/react-query"
+        "@tanstack/react-query",
+        "class-variance-authority",
+        "lucide-react"
       ],
-      "registryDependencies": ["button"],
+      "registryDependencies": ["button", "skeleton", "sonner"],
       "files": [
         {
           "path": "registry/polkadot-ui/blocks/tx-button/components/tx-button.papi.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/lib/polkadot-provider.papi.tsx",
-          "type": "registry:lib"
+          "path": "registry/polkadot-ui/blocks/tx-button/components/tx-button.base.tsx",
+          "type": "registry:component"
         },
         {
           "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
@@ -299,8 +313,12 @@
           "type": "registry:lib"
         },
         {
-          "path": "registry/polkadot-ui/lib/reactive-dot.config.ts",
+          "path": "registry/polkadot-ui/lib/polkadot-provider.papi.tsx",
           "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/tx-notification/components/tx-notification.tsx",
+          "type": "registry:component"
         }
       ]
     },
@@ -312,13 +330,38 @@
       "dependencies": [
         "polkadot-api",
         "@reactive-dot/core",
-        "@reactive-dot/react"
+        "@reactive-dot/react",
+        "@polkadot/react-identicon"
       ],
-      "registryDependencies": ["button"],
+      "registryDependencies": ["button", "dialog"],
       "files": [
+        {
+          "path": "registry/polkadot-ui/blocks/connect-wallet/connect-wallet.base.tsx",
+          "type": "registry:component"
+        },
         {
           "path": "registry/polkadot-ui/blocks/connect-wallet/connect-wallet.papi.tsx",
           "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/connect-wallet/view-select-wallet.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/connect-wallet/view-select-account.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/polkadot-provider.papi.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/lib/types.dot-ui.ts",
+          "type": "registry:lib"
         },
         {
           "path": "registry/polkadot-ui/lib/reactive-dot.config.ts",

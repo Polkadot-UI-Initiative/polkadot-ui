@@ -94,8 +94,7 @@ const features = [
         <Link href="https://docs.dedot.dev/typink/" className="underline">
           Typink
         </Link>{" "}
-        Apps. Optimized for Next.js App Router and RSC. typed hooks (PAPI &
-        Dedot)
+        Apps. Optimized for Next.js App Router and RSC.
       </>
     ),
     icon: <Zap className="size-10" strokeWidth={1} />,

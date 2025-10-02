@@ -15,7 +15,6 @@ export const requireAccountExamples: ComponentExample[] = [
     code: "require-account",
     component: (
       <RequireAccountWithProvider
-        chainId="paseo"
         fallback={
           <div className="flex items-center gap-2 text-muted-foreground">
             <UserX className="w-4 h-4" />
@@ -34,7 +33,6 @@ export const requireAccountExamples: ComponentExample[] = [
 function MyComponent() {
   return (
     <RequireAccount
-      chainId="paseo"
       fallback={<div>Please select an account to continue</div>}
     >
       <div>🎉 Account selected! This content is now visible.</div>
@@ -48,7 +46,6 @@ function MyComponent() {
     code: "require-account",
     component: (
       <RequireAccountWithProvider
-        chainId="paseoPeople"
         loadingFallback={
           <div className="flex items-center gap-2 text-blue-600">
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -69,7 +66,6 @@ function MyComponent() {
       </RequireAccountWithProvider>
     ),
     tsx: `<RequireAccount
-  chainId="paseoPeople"
   loadingFallback={<div>Resolving accounts...</div>}
   fallback={<div>No account selected</div>}
 >

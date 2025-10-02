@@ -14,7 +14,8 @@ import {
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { NATIVE_TOKEN_KEY } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
-import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
+import { Suspense } from "react";
+import { Input } from "@/registry/polkadot-ui/ui/input";
 
 export interface AmountInputProps extends AmountInputBaseProps {
   chainId: keyof typeof config.chains;
@@ -25,9 +26,9 @@ export interface AmountInputProps extends AmountInputBaseProps {
 
 export function AmountInput(props: AmountInputProps) {
   return (
-    <ClientOnly fallback={<AmountInputBase />}>
+    <Suspense fallback={<Input placeholder={props.placeholder} />}>
       <AmountInputInner {...props} />
-    </ClientOnly>
+    </Suspense>
   );
 }
 

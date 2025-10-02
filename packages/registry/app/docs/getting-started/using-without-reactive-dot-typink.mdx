@@ -1,0 +1,48 @@
+---
+title: Using Polkadot UI without reactive-dot or typink
+description: Learn how you can use base components with your own hook logic.
+---
+
+import { InfoBox } from "@/components/docs/info-box";
+import Link from "next/link";
+
+## Overview
+
+We know that you might want to use Polkadot UI components without using reactive-dot or typink. This guide will show you how to do that.
+
+## Steps
+
+Every component we provide has a `.dedot`, `.papi` and `.base` variant. The papi and dedot variants are specific to reactive-dot and typink, the base variant is a standalone component that can be used without reactive-dot or typink.
+The only thing you need to do is to import the base variant instead of the papi or dedot variant and pass it the expected props. Following is an example of how to use the base variant of the require-connection component.
+
+### 1) Add the require-connection component
+
+```bash
+pnpm dlx polkadot-ui@latest add require-connection
+```
+
+### 2) Looking at the base variant
+
+```tsx
+import { RequireConnection } from "@/components/require-connection.base";
+
+<RequireConnection
+  chainId="paseo"
+  fallback={<div>Please connect to Paseo to continue</div>}
+>
+  <div>You are connected with some account</div>
+</RequireConnection>
+```
+
+### 3) Replace custom UI with components
+
+```tsx
+import { RequireConnection } from "@/components/require-connection.base";
+
+<RequireConnection
+  chainId="paseo"
+  fallback={<div>Please connect to Paseo to continue</div>}
+>
+  <div>You are connected with some account</div>
+</RequireConnection>
+```

@@ -10,8 +10,9 @@ export const NATIVE_TOKEN_ID = "substrate-native";
 // Default decimals for DOT-like tokens (Planck precision)
 export const DEFAULT_TOKEN_DECIMALS = 12;
 
-// Fiat cents per unit (e.g., 1 USD = 100 cents)
-export const FIAT_CENTS_PER_UNIT = 100;
+// Default caller address for fee calculation
+export const DEFAULT_CALLER =
+  "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"; //Alice
 
 export function getTokenDecimals(token: TokenInfo | null | undefined): number {
   return token?.decimals ?? DEFAULT_TOKEN_DECIMALS;
