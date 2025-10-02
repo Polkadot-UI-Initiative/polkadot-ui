@@ -11,7 +11,6 @@ export function HooksTest() {
     address: connectedAccount?.address ?? "",
     assetIds: [-1, 1337, 7777],
   });
-  console.log(assets);
   return (
     <div>
       <pre>{safeStringify(assets)}</pre>

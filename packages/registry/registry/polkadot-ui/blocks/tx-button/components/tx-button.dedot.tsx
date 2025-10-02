@@ -17,8 +17,6 @@ export function TxButton<TTx extends AnyUseTx>(props: TxButtonProps<TTx>) {
   const { connectedAccount, supportedNetworks } = useTypink();
   const { tx, args, networkId } = props;
 
-  console.log("aaa tx", tx);
-
   const feeState = useTxFee({
     tx: tx!,
     enabled: true,

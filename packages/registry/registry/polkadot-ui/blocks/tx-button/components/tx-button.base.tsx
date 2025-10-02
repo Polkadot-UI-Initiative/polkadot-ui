@@ -196,7 +196,6 @@ export function TxButtonBase<
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           args: (args ?? ([] as unknown[])) as any,
           callback: (result: TxResultLike) => {
-            console.log("aaa clean result", result);
             setTxStatus(result.status);
             if (
               result.status.type === "InBestBlock" ||

@@ -93,7 +93,6 @@ export function txStatusNotification({
   descriptions = defaultDescriptions,
 }: TxStatusNotificationProps) {
   const { status, txHash } = result;
-  console.log("aaa result", result);
   const explorerUrl = network?.subscanUrl ?? network?.pjsUrl;
 
   const action =
