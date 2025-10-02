@@ -61,4 +61,43 @@ Telemetry is automatically disabled when using the `--dev` flag for local develo
     </AccordionContent>
   </AccordionItem>
   
+  <AccordionItem value="why-polkadot-ui">
+    <AccordionTrigger>
+      <h2 className="text-lg font-semibold mt-0 pt-0">Why should I use Polkadot UI?</h2>
+    </AccordionTrigger>
+    <AccordionContent>
+      Polkadot UI provides production‑ready, accessible components optimized for Polkadot apps.
+
+      ### UX
+      - Opinionated defaults for spacing, typography, and state feedback
+      - Consistent micro‑interactions and loading states to reduce layout shift
+      - Patterns for wallet connection, account selection, and transactions
+
+      ### Accessibility (a11y)
+      - ARIA‑correct inputs, live regions, focus handling, and high contrast
+      - Keyboard navigable dialogs, menus, and listboxes using Radix + shadcn
+      - Reduced‑motion friendly animations; skeletons avoid content jumps
+
+      ### Save time
+      - Drop‑in blocks for common flows (Network Indicator, Tx Button, Require Account)
+      - Works with both PAPI and dedot, so you don’t have to rebuild integration layers
+      - Typed APIs, examples, and docs so you can ship faster with confidence
+    </AccordionContent>
+  </AccordionItem>
+
+  <AccordionItem value="compatibility">
+    <AccordionTrigger>
+      <h2 className="text-lg font-semibold mt-0 pt-0">Can it work with my existing app?</h2>
+    </AccordionTrigger>
+    <AccordionContent>
+      Yes. Polkadot UI is framework‑friendly and modular.
+
+      - Works with **Next.js (App Router)** and **Vite/React** out of the box
+      - Choose your runtime: **polkadot‑api (PAPI)** or **dedot/typink**, or both
+      - Components are tree‑shakable and styled with Tailwind + shadcn (no global CSS required)
+      - Start with isolated widgets (e.g., Network Indicator, Tx Button), then adopt more
+      - You can wrap your app in the provided providers or bring your own and wire the services layer
+    </AccordionContent>
+  </AccordionItem>
+  
 </Accordion>

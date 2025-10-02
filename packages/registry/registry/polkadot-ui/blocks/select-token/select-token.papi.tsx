@@ -1,37 +1,35 @@
 "use client";
 
-import { Suspense, useMemo } from "react";
-import type React from "react";
 import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useAssetMetadata } from "@/registry/polkadot-ui/hooks/use-asset-metadata.papi";
 import {
   useAssetBalances,
   useNativeBalance,
 } from "@/registry/polkadot-ui/hooks/use-asset-balance.papi";
-import {
-  type SelectTokenBaseProps,
-  SelectTokenBase,
-} from "@/registry/polkadot-ui/blocks/select-token/select-token.base";
+import { useAssetMetadata } from "@/registry/polkadot-ui/hooks/use-asset-metadata.papi";
+import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
 import {
   PolkadotProvider,
   useConnectionStatus,
   useSelectedAccount,
 } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
+import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import {
   createDefaultChainTokens,
   mergeWithChaindataTokens,
-} from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
-import {
-  NATIVE_TOKEN_KEY,
   NATIVE_TOKEN_ID,
+  NATIVE_TOKEN_KEY,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import type { ChainId } from "@reactive-dot/core";
 import { useClient } from "@reactive-dot/react";
+import { Loader2 } from "lucide-react";
+import type React from "react";
+import { Suspense, useMemo } from "react";
+import {
+  type SelectTokenBaseProps,
+  SelectTokenBase,
+} from "./select-token.base";
 
 export type SelectTokenProps = Omit<SelectTokenBaseProps, "services"> &
   React.ComponentProps<typeof Select>;

@@ -14,8 +14,13 @@ export function LibrarySwitcher({ value }: { value: Lib }) {
     "cursor-pointer bg-background/20 text-foreground border-muted-foreground/20 hover:bg-muted backdrop-blur-md w-24 ";
 
   return (
-    <div className="flex items-center justify-center gap-2">
-      <Link href="/" aria-pressed={value === "papi"} scroll={false}>
+    <div className="flex items-center justify-center gap-2 sticky top-16 z-50">
+      <Link
+        href="/"
+        aria-pressed={value === "papi"}
+        scroll={false}
+        className="inline-flex"
+      >
         <Button
           variant="ghost"
           className={`${value === "papi" ? active : inactive} inline-flex items-center justify-center rounded-md border px-3 py-2`}
@@ -24,7 +29,12 @@ export function LibrarySwitcher({ value }: { value: Lib }) {
           papi
         </Button>
       </Link>
-      <Link href="/dedot" aria-pressed={value === "dedot"} scroll={false}>
+      <Link
+        href="/dedot"
+        aria-pressed={value === "dedot"}
+        scroll={false}
+        className="inline-flex"
+      >
         <Button
           variant="ghost"
           className={`${value === "dedot" ? active : inactive} inline-flex items-center justify-center rounded-md border px-3 py-2`}

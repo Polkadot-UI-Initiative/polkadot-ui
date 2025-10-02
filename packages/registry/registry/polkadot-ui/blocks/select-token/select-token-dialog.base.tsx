@@ -314,9 +314,7 @@ export function SelectTokenDialogBase({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Select Token</DialogTitle>
-          <DialogDescription>
-            Choose a token from your available balance
-          </DialogDescription>
+          <DialogDescription>Choose a token</DialogDescription>
         </DialogHeader>
         {withSearch && (
           <Input

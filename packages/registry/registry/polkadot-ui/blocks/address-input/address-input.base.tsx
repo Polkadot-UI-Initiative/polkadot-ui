@@ -362,7 +362,10 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
           : props.placeholder || "Enter address";
 
   return (
-    <div className="space-y-1 w-full">
+    <div
+      className="space-y-1 w-full"
+      aria-busy={isIdentityLoading || isApiLoading || isIdentitySearching}
+    >
       {props.label && <Label>{props.label}</Label>}
 
       <div className="relative">
@@ -376,6 +379,8 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
           placeholder={placeholder}
           autoComplete="off"
           required={props.required} // TODO: Add required prop
+          role="combobox"
+          aria-autocomplete="list"
           aria-expanded={
             showDropdown &&
             withIdentitySearch &&
@@ -384,6 +389,21 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
           }
           aria-haspopup="listbox"
           aria-controls={showDropdown ? "address-search-listbox" : undefined}
+          aria-activedescendant={
+            showDropdown && highlightedIndex >= 0
+              ? `address-option-${highlightedIndex}`
+              : undefined
+          }
+          aria-invalid={
+            inputValue.trim() && validationResult?.isValid === false
+              ? true
+              : undefined
+          }
+          aria-describedby={
+            validationResult?.error && hasInteracted && !isEditing
+              ? "address-input-error"
+              : undefined
+          }
           className={cn(
             "mb-2",
             showIdenticon && validationResult?.isValid && "pl-10",
@@ -430,6 +450,7 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
                     type="button"
                     role="option"
                     aria-selected={index === highlightedIndex}
+                    id={`address-option-${index}`}
                     className={cn(
                       "w-full text-left px-3 py-2 focus:outline-none transition-colors duration-150 ease-in-out flex items-center gap-3",
                       index === highlightedIndex
@@ -532,7 +553,10 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
 
         {/* Validation error display (only after user interaction and when blurred) */}
         {validationResult?.error && hasInteracted && !isEditing && (
-          <div className="flex items-center gap-2 text-sm text-red-600">
+          <div
+            id="address-input-error"
+            className="flex items-center gap-2 text-sm text-red-600"
+          >
             <span>{validationResult.error}</span>
           </div>
         )}

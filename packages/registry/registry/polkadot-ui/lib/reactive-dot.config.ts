@@ -94,6 +94,17 @@ export const config = defineConfig({
   wallets: [new InjectedWalletProvider()],
 });
 
+export type ChainIdWithIdentity = Extract<
+  keyof typeof config.chains,
+  "polkadotPeople" | "paseoPeople"
+>;
+
+export function isChainWithIdentity(
+  chainId: ChainId
+): chainId is ChainIdWithIdentity {
+  return chainId === "polkadotPeople" || chainId === "paseoPeople";
+}
+
 export type ChainIdsWithPalletAssets = Extract<
   keyof typeof config.chains,
   "polkadotAssetHub" | "paseoAssetHub"

@@ -1,38 +1,35 @@
 "use client";
 
-import { useMemo } from "react";
-import type React from "react";
-import { useAssetMetadata } from "@/registry/polkadot-ui/hooks/use-asset-metadata.papi";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   useAssetBalances,
   useNativeBalance,
 } from "@/registry/polkadot-ui/hooks/use-asset-balance.papi";
-import { ClientOnly } from "@/registry/polkadot-ui/blocks/client-only";
-import {
-  type SelectTokenDialogBaseProps,
-  SelectTokenDialogBase,
-} from "@/registry/polkadot-ui/blocks/select-token/select-token-dialog.base";
+import { useAssetMetadata } from "@/registry/polkadot-ui/hooks/use-asset-metadata.papi";
+import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
 import {
   PolkadotProvider,
   useConnectionStatus,
   useSelectedAccount,
 } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
+import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
+import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import {
   createDefaultChainTokens,
   mergeWithChaindataTokens,
-} from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { Button } from "@/components/ui/button";
-import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
-import { Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import {
-  NATIVE_TOKEN_KEY,
   NATIVE_TOKEN_ID,
+  NATIVE_TOKEN_KEY,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
-import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import type { ChainId } from "@reactive-dot/core";
 import { useClient } from "@reactive-dot/react";
+import { Loader2 } from "lucide-react";
+import type React from "react";
+import { Suspense, useMemo } from "react";
+import {
+  type SelectTokenDialogBaseProps,
+  SelectTokenDialogBase,
+} from "./select-token-dialog.base";
 
 export type SelectTokenDialogProps = Omit<
   SelectTokenDialogBaseProps,
@@ -171,9 +168,9 @@ function SelectTokenDialogFallback(props: SelectTokenDialogProps) {
 
 export function SelectTokenDialog(props: SelectTokenDialogProps) {
   return (
-    <ClientOnly fallback={<SelectTokenDialogFallback {...props} />}>
+    <Suspense fallback={<SelectTokenDialogFallback {...props} />}>
       <SelectTokenDialogInner {...props} />
-    </ClientOnly>
+    </Suspense>
   );
 }
 

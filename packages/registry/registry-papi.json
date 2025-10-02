@@ -290,17 +290,19 @@
         "polkadot-api",
         "@reactive-dot/core",
         "@reactive-dot/react",
-        "@tanstack/react-query"
+        "@tanstack/react-query",
+        "class-variance-authority",
+        "lucide-react"
       ],
-      "registryDependencies": ["button"],
+      "registryDependencies": ["button", "skeleton", "sonner"],
       "files": [
         {
           "path": "registry/polkadot-ui/blocks/tx-button/components/tx-button.papi.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/lib/polkadot-provider.papi.tsx",
-          "type": "registry:lib"
+          "path": "registry/polkadot-ui/blocks/tx-button/components/tx-button.base.tsx",
+          "type": "registry:component"
         },
         {
           "path": "registry/polkadot-ui/lib/utils.dot-ui.ts",
@@ -311,8 +313,12 @@
           "type": "registry:lib"
         },
         {
-          "path": "registry/polkadot-ui/lib/reactive-dot.config.ts",
+          "path": "registry/polkadot-ui/lib/polkadot-provider.papi.tsx",
           "type": "registry:lib"
+        },
+        {
+          "path": "registry/polkadot-ui/blocks/tx-notification/components/tx-notification.tsx",
+          "type": "registry:component"
         }
       ]
     },

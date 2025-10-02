@@ -63,8 +63,12 @@ export function NetworkIndicatorBase<TNetworkId extends string>({
     const blockText = blockNumber != null ? String(blockNumber) : "";
     const measureText =
       blockText.length > 0 ? "0".repeat(blockText.length) : "";
+
     return (
-      <div className="tabular-nums font-light h-7 py-1 border-foreground/20 border rounded-md px-2 text-[12px] cursor-default flex items-center gap-1.5">
+      <div
+        className="tabular-nums font-light h-7 py-1 border-foreground/20 border rounded-md px-2 text-[12px] cursor-default flex items-center gap-1.5"
+        aria-label="Network Indicator"
+      >
         {showLogo && network?.logo && (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}

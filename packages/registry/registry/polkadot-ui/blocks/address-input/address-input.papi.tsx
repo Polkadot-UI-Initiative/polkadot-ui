@@ -6,7 +6,7 @@ import {
   AddressInputSkeleton,
   type AddressInputBaseProps,
   type AddressInputServices,
-} from "@/registry/polkadot-ui/blocks/address-input/address-input.base";
+} from "./address-input.base";
 import { ClientConnectionStatus } from "@/registry/polkadot-ui/lib/types.dot-ui";
 
 // Import PAPI-specific hooks
@@ -17,8 +17,8 @@ import {
   PolkadotProvider,
   useConnectionStatus,
 } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
+import type { ChainIdWithIdentity } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 // import { config } from "@/registry/polkadot-ui/reactive-dot.config";
-import type { ChainIdWithIdentity } from "@/registry/polkadot-ui/lib/types.papi";
 
 // Props type - removes services prop since we inject it
 export type AddressInputProps = Omit<

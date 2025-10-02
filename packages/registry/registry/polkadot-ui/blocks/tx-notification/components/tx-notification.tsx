@@ -5,18 +5,6 @@ import type {
   TxResultLike,
 } from "@/registry/polkadot-ui/lib/types.dot-ui";
 
-function ChainLogo({ network }: { network: NetworkInfoLike | undefined }) {
-  if (!network?.logo) return null;
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={network.logo}
-      alt={network.name}
-      className="absolute -right-1 -top-1 w-5 h-5"
-    />
-  );
-}
-
 export interface TxStatusNotificationTexts {
   signing?: string;
   submitting?: string;
@@ -105,6 +93,7 @@ export function txStatusNotification({
   descriptions = defaultDescriptions,
 }: TxStatusNotificationProps) {
   const { status, txHash } = result;
+  console.log("aaa result", result);
   const explorerUrl = network?.subscanUrl ?? network?.pjsUrl;
 
   const action =
@@ -177,4 +166,16 @@ export function txStatusNotification({
     default:
       break;
   }
+}
+
+function ChainLogo({ network }: { network: NetworkInfoLike | undefined }) {
+  if (!network?.logo) return null;
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={network.logo}
+      alt={network.name}
+      className="absolute -right-1 -top-1 w-5 h-5"
+    />
+  );
 }
