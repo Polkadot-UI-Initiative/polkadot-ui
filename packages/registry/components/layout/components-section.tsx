@@ -37,7 +37,7 @@ class SectionErrorBoundary extends React.Component<
           <div className="flex items-center gap-3">
             <Button
               type="button"
-              variant="primary"
+              variant="default"
               onClick={() => {
                 try {
                   localStorage.removeItem("TYPINK::NETWORK_CONNECTIONS");
