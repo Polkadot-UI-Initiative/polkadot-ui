@@ -116,7 +116,7 @@ export function txStatusNotification({
       if (!target) return undefined;
       return {
         label: "View on explorer",
-        onClick: (e: React.MouseEvent<HTMLAnchorElement>) => {
+        onClick: (e: React.MouseEvent<HTMLButtonElement>) => {
           e.preventDefault();
           window.open(`${network.subscanUrl}/extrinsic/${target}`, "_blank");
         },
@@ -126,7 +126,7 @@ export function txStatusNotification({
       if (!inferredTxHash) return undefined;
       return {
         label: "View on explorer",
-        onClick: (e: React.MouseEvent<HTMLAnchorElement>) => {
+        onClick: (e: React.MouseEvent<HTMLButtonElement>) => {
           e.preventDefault();
           window.open(
             `${network.pjsUrl}/#/explorer/query/${inferredTxHash}`,

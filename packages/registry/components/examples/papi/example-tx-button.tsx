@@ -24,13 +24,15 @@ export const txButtonExample: ComponentExample = {
 
 export function DemoTxButton() {
   const supportedChainIds = useChainIds();
-  const supportedNetworks = supportedChainIds?.map((chainId) => ({
-    id: chainId,
-    // TODO: get decimals and symbol from chain
-    decimals: config.chains[chainId].decimals ?? 0,
-    symbol: config.chains[chainId].symbol ?? "N/A",
-    name: config.chains[chainId].name,
-  }));
+  const supportedNetworks = supportedChainIds?.map((chainId) => {
+    const id = String(chainId) as ChainId;
+    return {
+      id,
+      decimals: config.chains[id].decimals ?? 0,
+      symbol: config.chains[id].symbol ?? "N/A",
+      name: config.chains[id].name,
+    };
+  });
 
   const nets = supportedNetworks?.slice() || [];
 
