@@ -95,6 +95,7 @@ export function NetworkIndicatorBase<TNetworkId extends string>({
           {showNumber && (
             <span
               className="tabular-nums font-mono"
+              suppressHydrationWarning
               style={{
                 opacity: showNumber ? 1 : 0,
                 transition: "opacity 200ms ease",
