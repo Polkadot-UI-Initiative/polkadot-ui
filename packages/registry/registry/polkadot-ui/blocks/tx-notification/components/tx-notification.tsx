@@ -118,7 +118,12 @@ export function txStatusNotification({
         label: "View on explorer",
         onClick: (e: React.MouseEvent<HTMLButtonElement>) => {
           e.preventDefault();
-          window.open(`${network.subscanUrl}/extrinsic/${target}`, "_blank");
+          const win = window.open(
+            `${network.subscanUrl}/extrinsic/${target}`,
+            "_blank",
+            "noopener,noreferrer"
+          );
+          if (win) win.opener = null;
         },
       } as const;
     }
@@ -128,10 +133,12 @@ export function txStatusNotification({
         label: "View on explorer",
         onClick: (e: React.MouseEvent<HTMLButtonElement>) => {
           e.preventDefault();
-          window.open(
+          const win = window.open(
             `${network.pjsUrl}/#/explorer/query/${inferredTxHash}`,
-            "_blank"
+            "_blank",
+            "noopener,noreferrer"
           );
+          if (win) win.opener = null;
         },
       } as const;
     }
