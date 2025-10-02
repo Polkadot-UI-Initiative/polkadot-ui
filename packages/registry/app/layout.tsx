@@ -58,10 +58,7 @@ export default async function RootLayout({
                 registryItems={registryItems}
                 githubStars={githubStars}
               />
-              <Banner
-                buttonText="Report Issue on GitHub"
-                buttonUrl="https://github.com/Polkadot-UI-Initiative/polkadot-ui/issues"
-              />
+
               <main className="flex-1">{children}</main>
               {/* <MouseFollower /> */}
             </div>
@@ -71,6 +68,10 @@ export default async function RootLayout({
               className="bg-background flex flex-row items-center gap-3"
             />
             <FeedbackToast />
+            <Banner
+              buttonText="Report Issue on GitHub"
+              buttonUrl="https://github.com/Polkadot-UI-Initiative/polkadot-ui/issues"
+            />
           </ThemeProvider>
         </FumadocsRootProvider>
         <Analytics />
