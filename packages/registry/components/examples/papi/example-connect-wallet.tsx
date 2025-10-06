@@ -4,7 +4,7 @@ import type { ComponentExample } from "@/components/examples/types.examples";
 
 export const connectWalletExample: ComponentExample = {
   name: "Wallet & Account Selection",
-  href: "/docs/components/wallet-select",
+  href: "/docs/components/connect-wallet",
   code: "wallet-select",
   description: (
     <>
