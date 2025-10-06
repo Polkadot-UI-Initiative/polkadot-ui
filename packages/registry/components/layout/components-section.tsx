@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 
 import { examples as papiExamples } from "../examples/papi";
@@ -55,31 +55,6 @@ class SectionErrorBoundary extends React.Component<
   }
 }
 
-function PreviewBoundary({ children }: { children: React.ReactNode }) {
-  const [error, setError] = useState<Error | null>(null);
-  if (error)
-    return (
-      <div className="border border-destructive/40 bg-destructive/10 text-destructive rounded-md p-3 text-sm">
-        Failed to render preview: {error.message}
-      </div>
-    );
-  return <ErrorCatcher onError={setError}>{children}</ErrorCatcher>;
-}
-
-function ErrorCatcher({
-  children,
-  onError,
-}: {
-  children: React.ReactNode;
-  onError: (e: Error) => void;
-}) {
-  try {
-    return <>{children}</>;
-  } catch (e) {
-    onError(e as Error);
-    return null;
-  }
-}
 import { LibrarySwitcher } from "./library-switcher";
 import { Button } from "../ui/button";
 
@@ -91,9 +66,7 @@ export function ComponentsSection({
   const examples = usedLibrary === "papi" ? papiExamples : dedotExamples;
 
   const ComponentExamples = examples.map((example) => (
-    <PreviewBoundary key={example.code}>
-      <ComponentPreview componentInfo={example} />
-    </PreviewBoundary>
+    <ComponentPreview componentInfo={example} key={example.code} />
   ));
 
   return (

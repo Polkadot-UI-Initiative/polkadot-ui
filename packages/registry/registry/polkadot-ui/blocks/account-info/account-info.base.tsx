@@ -417,7 +417,7 @@ function HeaderWithCopy({
         {name}
       </span>
       <span className="text-xs text-muted-foreground font-mono inline-flex items-center gap-1">
-        <Tooltip open={tooltipOpen}>
+        <Tooltip open={tooltipOpen} delayDuration={400}>
           <TooltipTrigger
             onMouseEnter={() => setTooltipOpen(true)}
             onMouseLeave={() => setTooltipOpen(false)}

@@ -2,6 +2,7 @@ import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import { baseOptions } from "@/app/docs/layout.config";
 import { source } from "@/lib/source";
 import { Footer } from "@/components/layout/footer";
+import { PreviewBoundary } from "@/components/layout/preview-boundary";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -16,7 +17,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         collapsible: false,
       }}
     >
-      {children}
+      <PreviewBoundary>{children}</PreviewBoundary>
       <Footer />
     </DocsLayout>
   );

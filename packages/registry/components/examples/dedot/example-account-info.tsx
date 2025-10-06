@@ -17,15 +17,7 @@ export const accountInfoExample: ComponentExample = {
           key={address}
           chainId={polkadotPeople.id}
           address={address}
-          fields={[
-            "display",
-            "twitter",
-            "matrix",
-            "discord",
-            "github",
-            "verified",
-            "image",
-          ]}
+          fields={["display", "legal", "email", "twitter", "verified", "image"]}
         />
       ))}
     </div>
@@ -45,8 +37,6 @@ import { polkadotPeople } from "typink";
     fields={[
       "display",
       "twitter",
-      "matrix",
-      "discord",
       "github",
       "verified",
       "image",
