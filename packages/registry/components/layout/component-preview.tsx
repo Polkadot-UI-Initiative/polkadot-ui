@@ -23,6 +23,7 @@ import React, {
 
 import { useTheme } from "next-themes";
 import ShikiHighlighter from "react-shiki";
+import { PreviewBoundary } from "./preview-boundary";
 
 export function ComponentPreview({
   componentInfo,
@@ -77,7 +78,7 @@ export function ComponentPreview({
       </CardHeader>
       <CardContent className="flex items-center justify-center flex-1 min-h-0 relative">
         {view === "preview" ? (
-          previewContent
+          <PreviewBoundary>{previewContent}</PreviewBoundary>
         ) : (
           <>
             <div

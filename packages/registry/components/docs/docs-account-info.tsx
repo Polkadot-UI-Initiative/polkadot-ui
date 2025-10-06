@@ -14,8 +14,8 @@ export const accountInfoExamples: ComponentExample[] = [
     code: "account-info",
     component: (
       <AccountInfo
-        address={"1hFmn2CuqXqxHgKDqqs2xRBpsPkiRXzJfcLbfDgsW7qgmpA"}
-        fields={["github", "twitter"]}
+        address={"5CwW67PPdZQQCcdWJVaRJCepSQSrtKUumDAGa7UZbBKwd9R2"}
+        fields={["email", "twitter"]}
       />
     ),
     tsx: `import { AccountInfo } from "@/components/account-info.dedot"
@@ -42,7 +42,24 @@ export const accountInfoExamples: ComponentExample[] = [
     componentType="hover"
 />`,
   },
+  {
+    name: "Account Info - Popover Card",
+    description:
+      "Display the account info in a popover card that opens on click",
+    code: "account-info",
+    component: (
+      <AccountInfo
+        address={"1hFmn2CuqXqxHgKDqqs2xRBpsPkiRXzJfcLbfDgsW7qgmpA"}
+        componentType="popover"
+      />
+    ),
+    tsx: `import { AccountInfo } from "@/components/account-info.dedot"
 
+<AccountInfo
+    address={"1hFmn2CuqXqxHgKDqqs2xRBpsPkiRXzJfcLbfDgsW7qgmpA"}
+    componentType="popover"
+/>`,
+  },
   {
     name: "Account Info - Identicon Theme",
     code: "address-info",

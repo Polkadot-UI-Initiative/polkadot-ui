@@ -10,7 +10,7 @@ import type { ComponentExample } from "../examples/types.examples";
 export const balanceDisplayExamples: ComponentExample[] = [
   balanceDisplayExample,
   {
-    name: "Balance Display - Custom Thousands Separator",
+    name: "Balance Display - Custom Thousands Separator and Decimal Separator ",
     code: "balance-display-custom-thousands-separator",
     description:
       "Formatted Polkadot USDT treasury balance with custom thousands and decimal separator",
@@ -35,8 +35,8 @@ import { polkadotAssetHub } from "typink";
 />`,
   },
   {
-    name: "Balance Display - Custom Thousands Separator",
-    code: "balance-display-custom-thousands-separator",
+    name: "Balance Display - Compare Token",
+    code: "balance-display-compare-token",
     description:
       "With compare token. Use any other token as compare token and pass the conversion rate.",
     component: (
