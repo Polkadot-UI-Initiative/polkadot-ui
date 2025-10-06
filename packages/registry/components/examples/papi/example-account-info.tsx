@@ -7,7 +7,7 @@ export const accountInfoExample: ComponentExample = {
   code: "account-info",
   description: "Display identity name and optional fields for an address",
   component: (
-    <div className="flex items-center justify-center h-full flex-col gap-4">
+    <div className="flex items-center justify-center">
       {[
         "1dsrQjL34njJ4Y8FXGyxeLnmunPZ6XAvid9jSQe9S4pTUh2",
         "1hFmn2CuqXqxHgKDqqs2xRBpsPkiRXzJfcLbfDgsW7qgmpA",
