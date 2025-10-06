@@ -1,29 +1,54 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
+import { Button } from "../ui/button";
 
-export function PreviewBoundary({ children }: { children: React.ReactNode }) {
-  const [error, setError] = useState<Error | null>(null);
-  if (error)
-    return (
-      <div className="border border-destructive/40 bg-destructive/10 text-destructive rounded-md p-3 text-sm">
-        Failed to render preview: {error.message}
-      </div>
-    );
-  return <ErrorCatcher onError={setError}>{children}</ErrorCatcher>;
-}
+export class PreviewBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error: Error | null }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
 
-function ErrorCatcher({
-  children,
-  onError,
-}: {
-  children: React.ReactNode;
-  onError: (e: Error) => void;
-}) {
-  try {
-    return <>{children}</>;
-  } catch (e) {
-    onError(e as Error);
-    return null;
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    if (process.env.NODE_ENV !== "production")
+      console.error("Preview error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError)
+      return (
+        <div className="w-full h-full flex flex-col items-center justify-center gap-3 text-center p-4">
+          <div className="text-sm font-medium">Preview failed to render</div>
+          {this.state.error?.message && (
+            <div
+              className="text-xs text-muted-foreground max-w-[640px] truncate"
+              title={this.state.error.message}
+            >
+              {this.state.error.message}
+            </div>
+          )}
+          <Button
+            type="button"
+            variant="default"
+            size="sm"
+            onClick={() => {
+              try {
+                localStorage.removeItem("TYPINK::NETWORK_CONNECTIONS");
+              } catch {}
+              window.location.reload();
+            }}
+          >
+            Reset connection cache & reload
+          </Button>
+        </div>
+      );
+    return this.props.children as React.ReactElement;
   }
 }

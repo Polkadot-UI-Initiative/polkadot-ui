@@ -64,7 +64,7 @@ export const accountInfoExamples: ComponentExample[] = [
     name: "Account Info - Identicon Theme",
     code: "address-info",
     description:
-      "This Address input accepts ss58 as well as eth address format",
+      "This Address input accepts SS58 as well as eth address format",
     component: (
       <AccountInfo
         address={"1hFmn2CuqXqxHgKDqqs2xRBpsPkiRXzJfcLbfDgsW7qgmpA"}

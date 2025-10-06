@@ -8,7 +8,6 @@ import { examples as dedotExamples } from "../examples/dedot";
 import { PolkadotProvider as PolkadotProviderPapi } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { PolkadotProvider as PolkadotProviderDedot } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { ComponentPreview } from "./component-preview";
-import { PreviewBoundary } from "./preview-boundary";
 // useState already imported above
 class SectionErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -67,9 +66,7 @@ export function ComponentsSection({
   const examples = usedLibrary === "papi" ? papiExamples : dedotExamples;
 
   const ComponentExamples = examples.map((example) => (
-    <PreviewBoundary key={example.code}>
-      <ComponentPreview componentInfo={example} />
-    </PreviewBoundary>
+    <ComponentPreview componentInfo={example} key={example.code} />
   ));
 
   return (

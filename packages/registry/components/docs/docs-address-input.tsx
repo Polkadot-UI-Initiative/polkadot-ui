@@ -6,6 +6,7 @@ import { ComponentPreview } from "@/components/layout/component-preview";
 import type { IdentityResult } from "@/registry/polkadot-ui/blocks/address-input/address-input.base";
 import { AddressInput } from "@/registry/polkadot-ui/blocks/address-input/address-input.dedot";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
+import { polkadotPeople } from "typink";
 
 const handleIdentitySelected = (identity: IdentityResult) => {
   alert(identity.data.display);
@@ -18,35 +19,46 @@ export const addressInputExamples: ComponentExample[] = [
     href: "/docs/components/address-input",
     code: "address-input",
     description:
-      "This Address input accepts ss58 as well as eth address format",
-    component: <AddressInput format="both" />,
+      "This Address input accepts SS58 as well as eth address format",
+    component: <AddressInput format="both" identityChain={polkadotPeople.id} />,
     tsx: `import { AddressInput } from "@/components/address-input.dedot";
 
-<AddressInput format="both" />`,
+<AddressInput format="both" identityChain={polkadotPeople.id} />`,
   },
   {
     name: "Address Input - Theming",
     code: "address-input",
     description: "This Address input uses the beachball identicon theme",
-    component: <AddressInput identiconTheme="beachball" />,
+    component: (
+      <AddressInput
+        identiconTheme="beachball"
+        identityChain={polkadotPeople.id}
+      />
+    ),
     tsx: `import { AddressInput } from "@/components/address-input.dedot";
 
-<AddressInput identiconTheme="beachball" />`,
+<AddressInput identiconTheme="beachball" identityChain={polkadotPeople.id} />`,
   },
   {
     name: "Address Input - Custom Identity Chain",
     code: "address-input",
     description: "This Address input uses the Polkadot People identity chain",
-    component: <AddressInput identityChain="polkadot_people" />,
+    component: <AddressInput identityChain={polkadotPeople.id} />,
     tsx: `import { AddressInput } from "@/components/address-input.dedot";
 
-<AddressInput identityChain="polkadot_people" />`,
+<AddressInput identityChain={polkadotPeople.id} />`,
   },
   {
     name: "Address Input - onIdentitySelected Callback",
     code: "address-input",
-    description: "Trigger a callback with the found identnty",
-    component: <AddressInput onIdentitySelected={handleIdentitySelected} />,
+    description:
+      "Trigger a callback with the found identity (open the browser console to see the identity logged).",
+    component: (
+      <AddressInput
+        onIdentitySelected={handleIdentitySelected}
+        identityChain={polkadotPeople.id}
+      />
+    ),
     tsx: `import { AddressInput } from "@/components/address-input.dedot";
 
 <AddressInput onIdentitySelected={(identity) => console.log(identity)} />`,
@@ -55,7 +67,7 @@ export const addressInputExamples: ComponentExample[] = [
     name: "Address Input - truncated display",
     code: "address-input",
     description: "Truncated display of the address",
-    component: <AddressInput truncate={3} />,
+    component: <AddressInput truncate={3} identityChain={polkadotPeople.id} />,
     tsx: `import { AddressInput } from "@/components/address-input.dedot";
 
 <AddressInput truncate={3} />`,

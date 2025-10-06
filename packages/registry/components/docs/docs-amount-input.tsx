@@ -79,16 +79,14 @@ function ControlledAmountInput() {
     description:
       "This Amount input is not bound to an asset and uses own formatting and icons",
     component: (
-      <>
-        <AmountInput
-          chainId={paseoAssetHub.id}
-          withMaxButton={false}
-          assetId={undefined}
-          decimals={8}
-          leftIconUrl={paseoAssetHub.logo}
-          leftIconAlt={paseoAssetHub.name}
-        />
-      </>
+      <AmountInput
+        chainId={paseoAssetHub.id}
+        withMaxButton={false}
+        assetId={undefined}
+        decimals={8}
+        leftIconUrl={paseoAssetHub.logo}
+        leftIconAlt={paseoAssetHub.name}
+      />
     ),
     tsx: `import { AmountInput } from "@/components/amount-input.dedot";
 
@@ -96,6 +94,9 @@ function ControlledAmountInput() {
   chainId={paseoAssetHub.id}
   assetId={undefined}
   withMaxButton
+  decimals={8}
+  leftIconUrl={paseoAssetHub.logo}
+  leftIconAlt={paseoAssetHub.name}
 />`,
   },
   {
