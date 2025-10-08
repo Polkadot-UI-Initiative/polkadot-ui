@@ -72,6 +72,7 @@ export function useIdentitySearch(
                   matrix: extractText(value.info?.matrix?.value),
                   twitter: extractText(value.info?.twitter?.value),
                   web: extractText(value.info?.web?.value),
+                  image: extractText(value.info?.image?.value),
                   verified: true,
                 },
               });
