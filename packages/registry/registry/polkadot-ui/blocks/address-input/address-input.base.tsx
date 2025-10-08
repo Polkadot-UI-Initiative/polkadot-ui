@@ -160,7 +160,6 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
       : null,
     identityChain
   );
-
   // Validation on input change
   useEffect(() => {
     const result = validateAddress(inputValue, format);
@@ -467,15 +466,29 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
                     }
                   >
                     <div className="flex items-center gap-2 flex-1 min-w-0">
-                      <Identicon
-                        value={result.address}
-                        size={24}
-                        theme={
-                          validateAddress(result.address, format).type === "eth"
-                            ? "ethereum"
-                            : identiconTheme
-                        }
-                      />
+                      {result.identity?.image ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={result.identity.image.toString()}
+                          alt={
+                            result.identity.display
+                              ? String(result.identity.display)
+                              : result.address
+                          }
+                          className="w-6 h-6 rounded-full"
+                        />
+                      ) : (
+                        <Identicon
+                          value={result.address}
+                          size={24}
+                          theme={
+                            validateAddress(result.address, format).type ===
+                            "eth"
+                              ? "ethereum"
+                              : identiconTheme
+                          }
+                        />
+                      )}
                       <span className="text-sm font-medium truncate text-foreground">
                         {result.identity.display}
                       </span>
@@ -497,16 +510,29 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
             </div>
           )}
 
-        {/* Identicon placeholder */}
+        {/* Avatar or identicon placeholder */}
         {showIdenticon && validationResult?.isValid && (
           <div className="absolute left-2 top-1/2 -translate-y-1/2 flex items-center justify-center">
-            <Identicon
-              value={inputValue}
-              size={26}
-              theme={
-                validationResult.type === "eth" ? "ethereum" : identiconTheme
-              }
-            />
+            {currentIdentity?.image ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={currentIdentity.image.toString()}
+                alt={
+                  currentIdentity.display
+                    ? String(currentIdentity.display)
+                    : inputValue
+                }
+                className="w-[26px] h-[26px] rounded-full"
+              />
+            ) : (
+              <Identicon
+                value={inputValue}
+                size={26}
+                theme={
+                  validationResult.type === "eth" ? "ethereum" : identiconTheme
+                }
+              />
+            )}
           </div>
         )}
 

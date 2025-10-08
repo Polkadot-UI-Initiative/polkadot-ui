@@ -5,6 +5,7 @@ import { hasPositiveIdentityJudgement } from "@/registry/polkadot-ui/lib/utils.d
 import { type PalletIdentityRegistration } from "@dedot/chaintypes/substrate";
 import { useQuery } from "@tanstack/react-query";
 import { AccountId32 } from "dedot/codecs";
+import { encodeAddress } from "dedot/utils";
 import {
   ClientConnectionStatus,
   type NetworkId,
@@ -76,7 +77,7 @@ export function useIdentitySearch(
             );
 
             // Extract address from key (convert to string)
-            const address = key.raw.toString();
+            const address = encodeAddress(key.raw, 0);
 
             if (hasPositiveJudgement) {
               matches.push({
@@ -87,6 +88,7 @@ export function useIdentitySearch(
                   legal: extractText(value.info?.legal),
                   twitter: extractText(value.info?.twitter),
                   web: extractText(value.info?.web),
+                  image: extractText(value.info?.image),
                   verified: true,
                 },
               });
