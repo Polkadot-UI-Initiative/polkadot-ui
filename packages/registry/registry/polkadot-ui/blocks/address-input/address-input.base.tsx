@@ -107,6 +107,10 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [selectedFromSearch, setSelectedFromSearch] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [failedAvatars, setFailedAvatars] = useState<Record<string, boolean>>(
+    {}
+  );
+  const [inputAvatarFailed, setInputAvatarFailed] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -160,7 +164,6 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
       : null,
     identityChain
   );
-
   // Validation on input change
   useEffect(() => {
     const result = validateAddress(inputValue, format);
@@ -186,6 +189,11 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
 
   // Combined identity data - use search result if available, otherwise polkadot identity
   const currentIdentity = searchResultIdentity || polkadotIdentity.data;
+
+  // Reset input avatar error when identity image changes
+  useEffect(() => {
+    setInputAvatarFailed(false);
+  }, [currentIdentity?.image]);
 
   // Notify parent element when identity is found
   useEffect(() => {
@@ -317,6 +325,23 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
     }
   };
 
+  // Sanitize image URLs coming from identity data
+  function sanitizeImageUrl(value: unknown): string | null {
+    if (!value) return null;
+    const raw = String(value);
+    try {
+      const url = new URL(raw);
+      if (url.protocol !== "http:" && url.protocol !== "https:") return null;
+      if (url.protocol === "http:") url.protocol = "https:";
+      return url.toString();
+    } catch {
+      return null;
+    }
+  }
+
+  const currentImageUrl = sanitizeImageUrl(currentIdentity?.image);
+  const showInputAvatar = !!currentImageUrl && !inputAvatarFailed;
+
   // Show dropdown when search is active or results are available
   useEffect(() => {
     if (
@@ -444,47 +469,72 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
                 !identitySearch.error &&
                 identitySearch.data &&
                 identitySearch.data.length > 0 &&
-                identitySearch.data.map((result, index) => (
-                  <button
-                    key={result.address}
-                    type="button"
-                    role="option"
-                    aria-selected={index === highlightedIndex}
-                    id={`address-option-${index}`}
-                    className={cn(
-                      "w-full text-left px-3 py-2 focus:outline-none transition-colors duration-150 ease-in-out flex items-center gap-3",
-                      index === highlightedIndex
-                        ? "bg-muted text-foreground"
-                        : "hover:bg-muted/50"
-                    )}
-                    onMouseDown={(e) => e.preventDefault()}
-                    onMouseEnter={() => setHighlightedIndex(index)}
-                    onClick={() =>
-                      handleSelectIdentity(
-                        result.address,
-                        result.identity.display || ""
-                      )
-                    }
-                  >
-                    <div className="flex items-center gap-2 flex-1 min-w-0">
-                      <Identicon
-                        value={result.address}
-                        size={24}
-                        theme={
-                          validateAddress(result.address, format).type === "eth"
-                            ? "ethereum"
-                            : identiconTheme
-                        }
-                      />
-                      <span className="text-sm font-medium truncate text-foreground">
-                        {result.identity.display}
+                identitySearch.data.map((result, index) => {
+                  const imageUrl = sanitizeImageUrl(result.identity?.image);
+                  const showAvatar =
+                    !!imageUrl && !failedAvatars[result.address];
+                  return (
+                    <button
+                      key={result.address}
+                      type="button"
+                      role="option"
+                      aria-selected={index === highlightedIndex}
+                      id={`address-option-${index}`}
+                      className={cn(
+                        "w-full text-left px-3 py-2 focus:outline-none transition-colors duration-150 ease-in-out flex items-center gap-3",
+                        index === highlightedIndex
+                          ? "bg-muted text-foreground"
+                          : "hover:bg-muted/50"
+                      )}
+                      onMouseDown={(e) => e.preventDefault()}
+                      onMouseEnter={() => setHighlightedIndex(index)}
+                      onClick={() =>
+                        handleSelectIdentity(
+                          result.address,
+                          result.identity.display || ""
+                        )
+                      }
+                    >
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        {showAvatar ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={imageUrl as string}
+                            alt={
+                              result.identity.display
+                                ? String(result.identity.display)
+                                : result.address
+                            }
+                            className="w-6 h-6 rounded-full"
+                            onError={() =>
+                              setFailedAvatars((prev) => ({
+                                ...prev,
+                                [result.address]: true,
+                              }))
+                            }
+                          />
+                        ) : (
+                          <Identicon
+                            value={result.address}
+                            size={24}
+                            theme={
+                              validateAddress(result.address, format).type ===
+                              "eth"
+                                ? "ethereum"
+                                : identiconTheme
+                            }
+                          />
+                        )}
+                        <span className="text-sm font-medium truncate text-foreground">
+                          {result.identity.display}
+                        </span>
+                      </div>
+                      <span className="text-xs text-muted-foreground truncate max-w-[120px] font-mono">
+                        {truncateAddress(result.address, 6)}
                       </span>
-                    </div>
-                    <span className="text-xs text-muted-foreground truncate max-w-[120px] font-mono">
-                      {truncateAddress(result.address, 6)}
-                    </span>
-                  </button>
-                ))}
+                    </button>
+                  );
+                })}
               {!isIdentitySearching &&
                 !identitySearch.error &&
                 identitySearch.data &&
@@ -497,16 +547,30 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
             </div>
           )}
 
-        {/* Identicon placeholder */}
+        {/* Avatar or identicon placeholder */}
         {showIdenticon && validationResult?.isValid && (
           <div className="absolute left-2 top-1/2 -translate-y-1/2 flex items-center justify-center">
-            <Identicon
-              value={inputValue}
-              size={26}
-              theme={
-                validationResult.type === "eth" ? "ethereum" : identiconTheme
-              }
-            />
+            {showInputAvatar ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={currentImageUrl as string}
+                alt={
+                  currentIdentity?.display
+                    ? String(currentIdentity.display)
+                    : inputValue
+                }
+                className="w-[26px] h-[26px] rounded-full"
+                onError={() => setInputAvatarFailed(true)}
+              />
+            ) : (
+              <Identicon
+                value={inputValue}
+                size={26}
+                theme={
+                  validationResult.type === "eth" ? "ethereum" : identiconTheme
+                }
+              />
+            )}
           </div>
         )}
 
