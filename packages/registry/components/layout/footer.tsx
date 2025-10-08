@@ -72,7 +72,7 @@ export function Footer() {
 }
 
 const SOCIAL_LINKS = {
-  x: "https://x.com/PolkadotUI",
+  x: "https://x.com/PolkadotUX",
   telegram: "https://t.me/polkadotui",
   email: "contact@polkadot-ui.com",
 };
