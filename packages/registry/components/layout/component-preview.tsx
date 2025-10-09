@@ -48,7 +48,7 @@ export function ComponentPreview({
   return (
     <Card
       key={componentInfo.name}
-      className="relative flex flex-col justify-between h-120 overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-border/90 hover:bg-accent/5"
+      className="relative flex flex-col justify-between h-120 overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-border/90 hover:bg-accent/5 hover:translate-y-[-2px]"
     >
       <CardHeader>
         <CardTitle className="text-lg flex items-center justify-between">

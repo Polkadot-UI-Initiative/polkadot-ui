@@ -1,6 +1,12 @@
 "use client";
 
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   ClientConnectionStatus,
   type IdentitySearchResult,
   type PolkadotIdentity,
@@ -581,20 +587,28 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
           inputValue &&
           !isIdentityLoading &&
           !isApiLoading && (
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={handleCopy}
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 h-7 w-7 rounded-sm"
-              title={isCopied ? "Copied!" : "Copy address"}
-            >
-              {isCopied ? (
-                <Check className="h-2 w-2" />
-              ) : (
-                <Copy className="h-2 w-2" />
-              )}
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleCopy}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 h-7 w-7 rounded-sm"
+                    aria-label={isCopied ? "Copied!" : "Copy address"}
+                  >
+                    {isCopied ? (
+                      <Check className="h-2 w-2" />
+                    ) : (
+                      <Copy className="h-2 w-2" />
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent sideOffset={6}>
+                  {isCopied ? "Copied!" : "Copy address"}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
 
         {/* Loading spinner */}
