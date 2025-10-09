@@ -67,7 +67,7 @@
         "@polkadot/react-identicon",
         "polkadot-api"
       ],
-      "registryDependencies": ["input", "label", "badge", "button"],
+      "registryDependencies": ["input", "label", "badge", "button", "tooltip"],
       "files": [
         {
           "path": "registry/polkadot-ui/blocks/address-input/address-input.papi.tsx",
