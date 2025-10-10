@@ -445,7 +445,7 @@ function HeaderWithCopy({
           <TooltipContent>{address}</TooltipContent>
         </Tooltip>
         <Tooltip delayDuration={400}>
-          <TooltipTrigger>
+          <TooltipTrigger asChild>
             <button
               type="button"
               aria-label="Copy address"
