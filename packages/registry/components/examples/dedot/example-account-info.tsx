@@ -11,7 +11,7 @@ export const accountInfoExample: ComponentExample = {
     <AccountInfo
       chainId={polkadotPeople.id}
       address={"1dsrQjL34njJ4Y8FXGyxeLnmunPZ6XAvid9jSQe9S4pTUh2"}
-      fields={["display", "legal", "email", "twitter", "verified", "image"]}
+      fields={["display", "twitter", "github", "verified", "image"]}
     />
   ),
   tsx: `import { AccountInfo } from "@/components/account-info.dedot";
