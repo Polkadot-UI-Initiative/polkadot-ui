@@ -10,7 +10,7 @@ export const accountInfoExample: ComponentExample = {
     <div className="flex items-center justify-center">
       {[
         "1dsrQjL34njJ4Y8FXGyxeLnmunPZ6XAvid9jSQe9S4pTUh2",
-        "1hFmn2CuqXqxHgKDqqs2xRBpsPkiRXzJfcLbfDgsW7qgmpA",
+        // "1hFmn2CuqXqxHgKDqqs2xRBpsPkiRXzJfcLbfDgsW7qgmpA",
       ].map((address) => (
         <AccountInfo
           key={address}
@@ -31,15 +31,9 @@ export const accountInfoExample: ComponentExample = {
   ),
   tsx: `import { AccountInfo } from "@/components/account-info.papi";
 
-<div className="flex items-center justify-center h-full flex-col gap-4">
-{[
-  "1dsrQjL34njJ4Y8FXGyxeLnmunPZ6XAvid9jSQe9S4pTUh2",
-  "1hFmn2CuqXqxHgKDqqs2xRBpsPkiRXzJfcLbfDgsW7qgmpA",
-].map((address) => (
   <AccountInfo
-    key={address}
     chainId="polkadotPeople"
-    address={address}
+    address={"1dsrQjL34njJ4Y8FXGyxeLnmunPZ6XAvid9jSQe9S4pTUh2"}
     fields={[
       "display",
       "twitter",

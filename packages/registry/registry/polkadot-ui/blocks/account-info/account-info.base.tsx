@@ -5,12 +5,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/registry/polkadot-ui/lib/utils";
 import { truncateAddress } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { Identicon } from "@polkadot/react-identicon";
 import { Check, CircleCheck, Copy } from "lucide-react";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import type { PolkadotIdentity } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import {
   Tooltip,
@@ -64,6 +63,11 @@ export function AccountInfoBase<TNetworkId extends string = string>({
 }: AccountInfoBaseProps<TNetworkId>) {
   const { identity, isLoading, error } = services;
 
+  const [imageLoaded, setImageLoaded] = useState(false);
+  useEffect(() => {
+    setImageLoaded(false);
+  }, [identity?.image]);
+
   const fieldsToShow =
     fields === "all"
       ? ([
@@ -78,9 +82,9 @@ export function AccountInfoBase<TNetworkId extends string = string>({
         ] as AccountInfoField[])
       : fields;
 
-  if (isLoading) {
-    return <AccountInfoSkeleton address={address} />;
-  }
+  // if (isLoading) {
+  //   return <AccountInfoSkeleton address={address} />;
+  // }
 
   const rawName = identity?.display ?? identity?.legal ?? "";
   const summaryAddress = truncate
@@ -90,7 +94,12 @@ export function AccountInfoBase<TNetworkId extends string = string>({
     rawName && rawName !== address ? rawName.toString() : summaryAddress;
 
   const trigger = (
-    <div className={cn("inline-flex items-center gap-2 p-2", className)}>
+    <div
+      className={cn(
+        "inline-flex items-center justify-start text-left gap-2 p-2",
+        className
+      )}
+    >
       {showIcon && !identity?.image && (
         <Identicon value={address} size={28} theme={iconTheme} />
       )}
@@ -99,7 +108,11 @@ export function AccountInfoBase<TNetworkId extends string = string>({
         <img
           src={identity.image.toString()}
           alt={name}
-          className="w-7 h-7 rounded-full"
+          className={cn(
+            "w-7 h-7 rounded-full transition-opacity duration-300",
+            imageLoaded ? "opacity-100" : "opacity-0"
+          )}
+          onLoad={() => setImageLoaded(true)}
         />
       )}
       <div className="flex flex-col leading-tight items-start text-left min-w-0 flex-1">
@@ -107,9 +120,7 @@ export function AccountInfoBase<TNetworkId extends string = string>({
           {identity?.verified && (
             <CircleCheck className="h-4 w-4 text-background fill-green-600 stroke-background" />
           )}
-          <span className="truncate">
-            {isLoading ? "Loading…" : name || summaryAddress}
-          </span>
+          <span className="truncate">{name || summaryAddress}</span>
         </span>
         <span className="text-xs text-muted-foreground font-mono truncate w-full">
           {summaryAddress}
@@ -146,11 +157,17 @@ export function AccountInfoBase<TNetworkId extends string = string>({
     return (
       <Popover>
         <PopoverTrigger asChild>
-          <button type="button" className="cursor-pointer">
+          <button
+            type="button"
+            className="cursor-pointer inline-flex items-start justify-start text-left bg-transparent border-0 p-0 m-0 min-w-0"
+          >
             {trigger}
           </button>
         </PopoverTrigger>
-        <PopoverContent align="center">
+        <PopoverContent
+          align="center"
+          onOpenAutoFocus={(e) => e.preventDefault()}
+        >
           <div className="flex items-center gap-2 mb-2">
             {showIcon && !identity?.image && (
               <Identicon value={address} size={28} theme={iconTheme} />
@@ -184,9 +201,12 @@ export function AccountInfoBase<TNetworkId extends string = string>({
   }
 
   return (
-    <HoverCard openDelay={200} closeDelay={0}>
+    <HoverCard openDelay={200} closeDelay={150}>
       <HoverCardTrigger asChild>
-        <button type="button" className="cursor-pointer">
+        <button
+          type="button"
+          className="cursor-pointer inline-flex items-start justify-start text-left bg-transparent border-0 p-0 m-0 min-w-0"
+        >
           {trigger}
         </button>
       </HoverCardTrigger>
@@ -200,7 +220,11 @@ export function AccountInfoBase<TNetworkId extends string = string>({
             <img
               src={identity.image.toString()}
               alt={name}
-              className="w-7 h-7 rounded-full"
+              className={cn(
+                "w-7 h-7 rounded-full transition-opacity duration-300",
+                imageLoaded ? "opacity-100" : "opacity-0"
+              )}
+              onLoad={() => setImageLoaded(true)}
             />
           )}
           <HeaderWithCopy
@@ -399,7 +423,6 @@ function HeaderWithCopy({
   isVerified: boolean;
 }) {
   const [copied, setCopied] = useState(false);
-  const [tooltipOpen, setTooltipOpen] = useState(false);
   async function onCopy() {
     try {
       await navigator.clipboard.writeText(address);
@@ -417,45 +440,56 @@ function HeaderWithCopy({
         {name}
       </span>
       <span className="text-xs text-muted-foreground font-mono inline-flex items-center gap-1">
-        <Tooltip open={tooltipOpen} delayDuration={400}>
-          <TooltipTrigger
-            onMouseEnter={() => setTooltipOpen(true)}
-            onMouseLeave={() => setTooltipOpen(false)}
-          >
-            {truncated}
-          </TooltipTrigger>
+        <Tooltip delayDuration={400}>
+          <TooltipTrigger>{truncated}</TooltipTrigger>
           <TooltipContent>{address}</TooltipContent>
         </Tooltip>
-        <button
-          type="button"
-          aria-label="Copy address"
-          onClick={onCopy}
-          className="ml-1 p-0.5 rounded-sm hover:bg-muted text-muted-foreground"
-        >
-          {copied ? (
-            <Check className="h-3 w-3" />
-          ) : (
-            <Copy className="h-3 w-3" />
-          )}
-        </button>
+        <Tooltip delayDuration={400}>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              aria-label="Copy address"
+              onClick={onCopy}
+              className="ml-1 p-0.5 rounded-sm hover:bg-muted text-muted-foreground"
+            >
+              {copied ? (
+                <Check className="h-3 w-3" />
+              ) : (
+                <Copy className="h-3 w-3" />
+              )}
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>Copy address</TooltipContent>
+        </Tooltip>
       </span>
     </div>
   );
 }
 
-export function AccountInfoSkeleton({ address }: { address?: string }) {
+export function AccountInfoSkeleton(
+  props: Omit<AccountInfoBaseProps, "services">
+) {
+  const truncLen = typeof props.truncate === "number" ? props.truncate : 6;
   return (
-    <div className="inline-flex items-center gap-2 p-2">
-      <div className="flex items-center justify-center">
-        <Identicon value={address ?? "0x"} size={28} theme="polkadot" />
-      </div>
-      <div className="flex-col leading-tight items-start text-left flex gap-1">
-        <span className="text-sm inline-flex items-center gap-1">
-          <Skeleton className="h-3 w-3 rounded-full" />
-          <Skeleton className="h-3 w-20" />
+    <div
+      className={cn(
+        "inline-flex items-center justify-start text-left gap-2 p-2",
+        props.className
+      )}
+    >
+      <Identicon
+        value={props.address}
+        size={28}
+        theme={props.iconTheme || "polkadot"}
+      />
+      <div className="flex flex-col leading-tight items-start text-left min-w-0 flex-1">
+        <span className="text-sm inline-flex items-center gap-1 min-w-0">
+          <span className="truncate">
+            {truncateAddress(props.address, truncLen)}
+          </span>
         </span>
-        <span className="text-xs text-muted-foreground font-mono">
-          {address ? truncateAddress(address, 6) : "5xxx…xxxx"}
+        <span className="text-xs text-muted-foreground font-mono truncate w-full">
+          {truncateAddress(props.address, truncLen)}
         </span>
       </div>
     </div>
