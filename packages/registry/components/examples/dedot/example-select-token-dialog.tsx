@@ -11,7 +11,7 @@ export const selectTokenDialogExample: ComponentExample = {
     <div className="w-[260px]">
       <SelectTokenDialog
         chainId={paseoAssetHub.id}
-        assetIds={[1984, 8, 27]}
+        assetIds={[1984, 1337, 7777]}
         className="w-full"
         withBalance
         withSearch
