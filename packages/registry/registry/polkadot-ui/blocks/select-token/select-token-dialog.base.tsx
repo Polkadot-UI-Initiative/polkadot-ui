@@ -184,13 +184,12 @@ export function SelectTokenDialogBase({
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Keep selectedToken in sync with props.value and available chainTokens
   useEffect(() => {
     if (!chainTokens || chainTokens.length === 0) {
       setSelectedToken(null);
       return;
     }
-    // If value is provided, prefer it
+
     if (value != null) {
       const next = chainTokens.find(
         (token) => Number(token.assetId) === (value as number)
@@ -198,7 +197,7 @@ export function SelectTokenDialogBase({
       setSelectedToken(next ?? null);
       return;
     }
-    // If selectedToken became invalid due to token list change, clear it
+
     if (selectedToken && !chainTokens.find((t) => t.id === selectedToken.id)) {
       setSelectedToken(null);
     }
@@ -235,7 +234,6 @@ export function SelectTokenDialogBase({
   const filteredTokens = useMemo(() => {
     return chainTokens?.filter(
       (token) =>
-        // Search by symbol or name
         token.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
         token.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -250,10 +248,10 @@ export function SelectTokenDialogBase({
           className={cn(
             compact ? "h-10 max-w-fit" : tokenSelectionStyles.trigger.base,
             !displayToken &&
-              !compact &&
-              tokenSelectionStyles.trigger.placeholder,
+            !compact &&
+            tokenSelectionStyles.trigger.placeholder,
             compact &&
-              "border-input bg-background hover:bg-accent hover:text-accent-foreground",
+            "border-input bg-background hover:bg-accent hover:text-accent-foreground",
             className
           )}
           {...props}
@@ -292,7 +290,7 @@ export function SelectTokenDialogBase({
                     />
                     <div className={tokenSelectionStyles.trigger.tokenInfo}>
                       <span className="font-medium">{displayToken.symbol}</span>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-xs text-muted-foreground -mt-0.5">
                         {displayToken.name}
                       </span>
                     </div>
