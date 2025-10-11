@@ -270,16 +270,10 @@ export function SelectTokenDialogBase({
                   {placeholder}
                 </span>
               )}
-              <ChevronDown
-                className={cn(
-                  "h-4 w-4 opacity-50 transition-transform duration-200 flex-shrink-0",
-                  isOpen && "rotate-180"
-                )}
-              />
             </>
           ) : (
             <>
-              <div className={tokenSelectionStyles.trigger.content}>
+              <div className={cn(tokenSelectionStyles.trigger.content, !displayToken && "mx-auto")}>
                 {displayToken ? (
                   <>
                     <TokenLogoWithNetwork
@@ -299,12 +293,6 @@ export function SelectTokenDialogBase({
                   <span>{placeholder}</span>
                 )}
               </div>
-              <ChevronDown
-                className={cn(
-                  tokenSelectionStyles.trigger.chevron,
-                  isOpen && tokenSelectionStyles.trigger.chevronOpen
-                )}
-              />
             </>
           )}
         </Button>
