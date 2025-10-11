@@ -85,7 +85,7 @@ export const tokenSelectionStyles = {
     price: "text-xs text-muted-foreground",
   },
   trigger: {
-    base: "justify-between min-w-[140px] font-normal py-5",
+    base: "justify-between min-w-[140px] font-normal py-6",
     placeholder: "text-muted-foreground",
     content: "flex items-center gap-2",
     tokenInfo: "flex flex-col items-start",
