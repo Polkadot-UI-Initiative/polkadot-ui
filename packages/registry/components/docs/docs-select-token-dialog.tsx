@@ -18,14 +18,14 @@ export const selectTokenDialogExamples: ComponentExample[] = [
         <SelectTokenDialog
           className="w-[200px]"
           chainId={paseoAssetHub.id}
-          assetIds={[1984, 8, 27]}
+          assetIds={[1984, 1337, 7777]}
           withBalance
           variant="secondary"
         />
         <SelectTokenDialog
           className="w-[200px]"
           chainId={paseoAssetHub.id}
-          assetIds={[1984, 8, 27]}
+          assetIds={[1984, 1337, 7777]}
           withBalance
           variant="outline"
         />
@@ -38,14 +38,14 @@ import { paseoAssetHub } from "typink";
   <SelectTokenDialog
     className="w-[200px]"
     chainId={paseoAssetHub.id}
-    assetIds={[1984, 8, 27]}
+    assetIds={[1984, 1337, 7777]}
     withBalance
     variant="secondary"
   />
   <SelectTokenDialog
     className="w-[200px]"
     chainId={paseoAssetHub.id}
-    assetIds={[1984, 8, 27]}
+    assetIds={[1984, 1337, 7777]}
     withBalance
     variant="outline"
   />
@@ -59,7 +59,7 @@ import { paseoAssetHub } from "typink";
       <SelectTokenDialog
         className="w-[260px]"
         chainId={paseoAssetHub.id}
-        assetIds={[1984, 8, 27]}
+        assetIds={[1984, 1337, 7777]}
         withBalance
       />
     ),
@@ -69,7 +69,7 @@ import { paseoAssetHub } from "typink";
 <SelectTokenDialog
   className="w-[260px]"
   chainId={paseoAssetHub.id}
-  assetIds={[1984, 8, 27]}
+  assetIds={[1984, 1337, 7777]}
   withBalance
   includeNative={false}
 />`,
@@ -82,7 +82,7 @@ import { paseoAssetHub } from "typink";
       <SelectTokenDialog
         className="w-[260px]"
         chainId={paseoAssetHub.id}
-        assetIds={[1984, 8, 27]}
+        assetIds={[1984, 1337, 7777]}
         withBalance
         balancePrecision={4}
       />
@@ -93,7 +93,7 @@ import { paseoAssetHub } from "typink";
 <SelectTokenDialog
   className="w-[260px]"
   chainId={paseoAssetHub.id}
-  assetIds={[1984, 8, 27]}
+  assetIds={[1984, 1337, 7777]}
   withBalance
   balancePrecision={4}
 />`,
@@ -107,7 +107,7 @@ import { paseoAssetHub } from "typink";
         <SelectTokenDialog
           className="w-fit"
           chainId={paseoAssetHub.id}
-          assetIds={[1984, 8, 27]}
+          assetIds={[1984, 1337, 7777]}
           withBalance
           compact={true}
         />
@@ -119,7 +119,7 @@ import { paseoAssetHub } from "typink";
 <SelectTokenDialog
   className="w-fit"
   chainId={paseoAssetHub.id}
-  assetIds={[1984, 8, 27]}
+  assetIds={[1984, 1337, 7777]}
   withBalance
   compact={true}
 />`,

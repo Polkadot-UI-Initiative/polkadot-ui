@@ -10,8 +10,7 @@ import { SelectTokenDialogDocs } from "@/components/docs/docs-select-token-dialo
 
 ## Introduction
 
-SelectTokenDialog is a comprehensive dialog component for selecting tokens from
-supported chains with real-time balance display and search functionality.
+`SelectTokenDialog` is a dialog component to help users select a token in the context of transaction, e.g. in a token swap interface. It supports token logo, name and symbol display,  and also showing real-time token balance, and search functionality to quickly find a token by name or symbol.
 
 ## Features
 
@@ -69,7 +68,7 @@ Specify which tokens to include using the `assetIds` prop:
 ```tsx
 <SelectTokenDialog
   chainId="paseoAssetHub"
-  assetIds={[1984, 8, 27]} // Only show these specific tokens
+  assetIds={[1984, 1337, 7777]} // Only show these specific tokens
   withBalance
 />
 ```
@@ -179,7 +178,7 @@ Control decimal places shown:
 The component handles various error states:
 
 - **Network disconnection**: Shows appropriate loading state
-- **Failed token fetching**: Graceful degradation
+- **Failed token fetching**: Graceful degradation with fallback UIs
 - **Invalid asset IDs**: Filters out non-existent tokens
 - **Balance fetch errors**: Shows tokens without balance info
 
