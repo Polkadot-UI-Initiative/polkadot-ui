@@ -128,6 +128,7 @@ import { paseoAssetHub } from "typink";
 
 export function SelectTokenDialogDocs() {
   return (
+    <div className="not-prose">
     <PolkadotProvider>
       <div className="flex flex-col gap-4">
         {selectTokenDialogExamples.map((example) => (
@@ -140,5 +141,6 @@ export function SelectTokenDialogDocs() {
         ))}
       </div>
     </PolkadotProvider>
+    </div>
   );
 }
