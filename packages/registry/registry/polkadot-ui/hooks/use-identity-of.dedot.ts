@@ -32,6 +32,12 @@ export function useIdentityOf({
           twitter: decodeText(result?.info?.twitter),
           matrix: decodeText(result?.info?.riot),
           image: decodeText(result?.info?.image),
+          discord: hasField(result?.info, "discord")
+            ? decodeText(result.info.discord)
+            : undefined,
+          github: hasField(result?.info, "github")
+            ? decodeText(result.info.github)
+            : undefined,
           verified: hasPositiveIdentityJudgement(result?.judgements),
         };
 
@@ -101,4 +107,11 @@ function decodeText(data: unknown): string | undefined {
     if (typeof str === "string" && str !== "[object Object]") return str;
   }
   return undefined;
+}
+
+function hasField<K extends string>(
+  obj: unknown,
+  key: K
+): obj is Record<K, unknown> {
+  return typeof obj === "object" && obj !== null && key in obj;
 }

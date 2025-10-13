@@ -65,7 +65,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@dedot/chaintypes": "^0.132.0",
+    "@dedot/chaintypes": "^0.163.0",
     "@eslint/eslintrc": "^3",
     "@eslint/plugin-kit": ">=0.3.4",
     "@tailwindcss/postcss": "^4",
