@@ -14,7 +14,7 @@
         "@reactive-dot/react",
         "@tanstack/react-query"
       ],
-      "registryDependencies": ["input"],
+      "registryDependencies": ["input", "input-group"],
       "files": [
         {
           "path": "registry/polkadot-ui/blocks/amount-input/components/amount-input.base.tsx",

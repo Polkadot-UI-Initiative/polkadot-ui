@@ -13,7 +13,6 @@ export const amountInputExample: ComponentExample = {
       chainId={polkadotAssetHub.id}
       assetId={NATIVE_TOKEN_KEY}
       className="w-full"
-      placeholder="Enter an amount"
     />
   ),
   tsx: `import { AmountInput } from "@/components/amount-input.dedot";
@@ -22,6 +21,5 @@ export const amountInputExample: ComponentExample = {
   chainId={polkadotAssetHub.id}
   assetId={NATIVE_TOKEN_KEY}
   className="w-full"
-  placeholder="Enter an amount"
 />`,
 };

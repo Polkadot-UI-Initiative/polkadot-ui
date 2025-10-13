@@ -49,8 +49,11 @@ export function AmountInputInner(props: AmountInputProps) {
   // prefer explicit assetId, otherwise if multiple provided, pick first for max context
   const hasAccount = Boolean(connectedAccount?.address);
   const rawBalance = tokenId != null ? (accountBalance.free ?? null) : null;
-  // Do not coerce to 0n when no account; base handles disabled via requiredBalance/disabled
-  const maxValue = hasAccount ? rawBalance : null;
+  // Effective max respects explicit prop first, then withMaxButton + account balance
+  const explicitMax: bigint | null = props.maxValue ?? null;
+  const accountMax: bigint | null = hasAccount ? rawBalance : null;
+  const effectiveMax: bigint | null =
+    explicitMax ?? (props.withMaxButton ? accountMax : null);
   const decimals =
     tokenId != null
       ? (metas.find((m) => m.assetId === String(tokenId))?.decimals ?? 12)
@@ -58,7 +61,9 @@ export function AmountInputInner(props: AmountInputProps) {
   const displayPrecision = Math.min(2, Math.max(0, decimals));
   const derivedStep =
     props.step ??
-    (displayPrecision > 0 ? `0.${"0".repeat(displayPrecision - 1)}1` : "1");
+    (displayPrecision > 0
+      ? `0.${"0".repeat(displayPrecision - 1)}1`
+      : "0.0001");
 
   const isConnected = status === ClientConnectionStatus.Connected;
   const requiresAccount = props.requiredAccount ?? false;
@@ -79,7 +84,7 @@ export function AmountInputInner(props: AmountInputProps) {
       onChange={props.onChange}
       placeholder={props.placeholder}
       decimals={decimals}
-      maxValue={maxValue ?? null}
+      maxValue={effectiveMax}
       withMaxButton={props.withMaxButton}
       disabled={disabled}
       requiredBalance={hasAccount}

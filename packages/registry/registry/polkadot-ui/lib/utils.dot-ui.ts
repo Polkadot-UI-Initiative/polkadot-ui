@@ -350,6 +350,82 @@ export function formatTokenPrice(
 }
 
 /**
+ * Parse a base-10 decimal string into a planck bigint using token decimals
+ * - Accepts strings like "123", "0.1", ".5"
+ * - Ignores thousands separators if provided (",")
+ * - Truncates or rounds extra fractional digits based on options.round
+ */
+export function parseDecimalToPlanck(
+  input: string | null | undefined,
+  decimals: number,
+  options?: { round?: boolean; decimalSeparator?: string }
+): bigint | null {
+  if (!input) return null;
+  const decimalSeparator = options?.decimalSeparator ?? ".";
+  const round = options?.round ?? false;
+
+  // Normalize input: remove spaces and thousands separators
+  let s = String(input).trim();
+  if (s.length === 0) return null;
+
+  // Replace localized decimal separator with '.' if needed
+  if (decimalSeparator !== ".") s = s.replaceAll(decimalSeparator, ".");
+
+  // Only digits and at most one dot
+  s = s.replace(/[^0-9.]/g, "");
+  const firstDot = s.indexOf(".");
+  if (firstDot !== -1)
+    s = s.slice(0, firstDot + 1) + s.slice(firstDot + 1).replace(/\./g, "");
+
+  if (s === ".") return 0n;
+  if (s === "") return null;
+
+  const [intPartRaw, fracPartRaw = ""] = s.split(".");
+  const intPart = intPartRaw.replace(/^0+(?=\d)/, "");
+  let fracPart = fracPartRaw.replace(/[^0-9]/g, "");
+
+  if (decimals <= 0) {
+    return BigInt(intPart.length ? intPart : "0");
+  }
+
+  if (fracPart.length > decimals) {
+    if (round) {
+      const head = fracPart.slice(0, decimals);
+      const nextDigit = fracPart.charCodeAt(decimals) - 48; // '0' -> 48
+      if (Number.isFinite(nextDigit) && nextDigit >= 5) {
+        // Round the fractional head and carry into integer if needed
+        const rounded = incrementDecimalString(head);
+        if (rounded.length > head.length) {
+          // carry to integer part
+          const carriedInt = incrementDecimalString(
+            intPart.length ? intPart : "0"
+          );
+          fracPart = "0".repeat(decimals);
+          const asStr = `${carriedInt}${fracPart}`;
+          return BigInt(asStr);
+        } else {
+          fracPart = rounded.padStart(decimals, "0");
+        }
+      } else {
+        fracPart = head;
+      }
+    } else {
+      fracPart = fracPart.slice(0, decimals);
+    }
+  }
+
+  if (fracPart.length < decimals) fracPart = fracPart.padEnd(decimals, "0");
+
+  const intStr = intPart.length ? intPart : "0";
+  const combined = `${intStr}${fracPart}`;
+  try {
+    return BigInt(combined);
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Create default chain tokens from asset metadata
  * This ensures we always have token data even when chaindata is incomplete
  */
