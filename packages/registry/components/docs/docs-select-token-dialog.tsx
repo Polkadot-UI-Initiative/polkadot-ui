@@ -14,16 +14,14 @@ export const selectTokenDialogExamples: ComponentExample[] = [
     code: "select-token-dialog",
     description: "Dialog with different button variants and styling",
     component: (
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-2 w-full">
         <SelectTokenDialog
-          className="w-[200px]"
           chainId={paseoAssetHub.id}
           assetIds={[1984, 1337, 7777]}
           withBalance
           variant="secondary"
         />
         <SelectTokenDialog
-          className="w-[200px]"
           chainId={paseoAssetHub.id}
           assetIds={[1984, 1337, 7777]}
           withBalance
@@ -34,16 +32,14 @@ export const selectTokenDialogExamples: ComponentExample[] = [
     tsx: `import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/select-token-dialog.dedot";
 import { paseoAssetHub } from "typink";
 
-<div className="flex gap-4">
+<div className="flex flex-col gap-2 w-full">
   <SelectTokenDialog
-    className="w-[200px]"
     chainId={paseoAssetHub.id}
     assetIds={[1984, 1337, 7777]}
     withBalance
     variant="secondary"
   />
   <SelectTokenDialog
-    className="w-[200px]"
     chainId={paseoAssetHub.id}
     assetIds={[1984, 1337, 7777]}
     withBalance
@@ -129,18 +125,18 @@ import { paseoAssetHub } from "typink";
 export function SelectTokenDialogDocs() {
   return (
     <div className="not-prose">
-    <PolkadotProvider>
-      <div className="flex flex-col gap-4">
-        {selectTokenDialogExamples.map((example) => (
-          <ComponentPreview
-            ComponentWrapper={<div className="w-[300px]"></div>}
-            key={example.name}
-            componentInfo={example}
-            withDocs={false}
-          />
-        ))}
-      </div>
-    </PolkadotProvider>
+      <PolkadotProvider>
+        <div className="flex flex-col gap-4">
+          {selectTokenDialogExamples.map((example) => (
+            <ComponentPreview
+              ComponentWrapper={<div className="w-[300px]"></div>}
+              key={example.name}
+              componentInfo={example}
+              withDocs={false}
+            />
+          ))}
+        </div>
+      </PolkadotProvider>
     </div>
   );
 }

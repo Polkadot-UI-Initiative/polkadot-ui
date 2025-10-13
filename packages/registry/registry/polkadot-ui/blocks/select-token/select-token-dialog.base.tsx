@@ -248,10 +248,10 @@ export function SelectTokenDialogBase({
           className={cn(
             compact ? "h-10 max-w-fit" : tokenSelectionStyles.trigger.base,
             !displayToken &&
-            !compact &&
-            tokenSelectionStyles.trigger.placeholder,
+              !compact &&
+              tokenSelectionStyles.trigger.placeholder,
             compact &&
-            "border-input bg-background hover:bg-accent hover:text-accent-foreground",
+              "border-input bg-background hover:bg-accent hover:text-accent-foreground",
             className
           )}
           {...props}
@@ -273,7 +273,12 @@ export function SelectTokenDialogBase({
             </>
           ) : (
             <>
-              <div className={cn(tokenSelectionStyles.trigger.content, !displayToken && "mx-auto")}>
+              <div
+                className={cn(
+                  tokenSelectionStyles.trigger.content,
+                  !displayToken && "mx-auto"
+                )}
+              >
                 {displayToken ? (
                   <>
                     <TokenLogoWithNetwork
@@ -281,16 +286,19 @@ export function SelectTokenDialogBase({
                       networkLogo={network?.logo}
                       tokenSymbol={displayToken.symbol}
                       size="sm"
+                      className="flex-shrink-0"
                     />
                     <div className={tokenSelectionStyles.trigger.tokenInfo}>
-                      <span className="font-medium">{displayToken.symbol}</span>
-                      <span className="text-xs text-muted-foreground -mt-0.5">
+                      <span className="font-medium truncate">
+                        {displayToken.symbol}
+                      </span>
+                      <span className="text-xs text-muted-foreground -mt-0.5 truncate">
                         {displayToken.name}
                       </span>
                     </div>
                   </>
                 ) : (
-                  <span>{placeholder}</span>
+                  <span className="truncate">{placeholder}</span>
                 )}
               </div>
             </>
