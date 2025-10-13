@@ -82,7 +82,7 @@ export function AnimatedCodeBlock() {
     const reg = (dedotRegistry as RegistryFile) ?? { items: [] };
     const names = (reg.items ?? [])
       .filter(
-        (i) => i?.type === "registry:component" && typeof i?.name === "string"
+        (i) => i?.type === "registry:block" && typeof i?.name === "string"
       )
       .map((i) => i.name as string);
     return Array.from(new Set(names));

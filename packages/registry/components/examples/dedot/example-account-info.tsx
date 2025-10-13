@@ -8,41 +8,23 @@ export const accountInfoExample: ComponentExample = {
   code: "account-info",
   description: "Display identity name and optional fields for an address",
   component: (
-    <div className="flex items-center justify-center h-full flex-col gap-4">
-      {[
-        "1dsrQjL34njJ4Y8FXGyxeLnmunPZ6XAvid9jSQe9S4pTUh2",
-        "1hFmn2CuqXqxHgKDqqs2xRBpsPkiRXzJfcLbfDgsW7qgmpA",
-      ].map((address) => (
-        <AccountInfo
-          key={address}
-          chainId={polkadotPeople.id}
-          address={address}
-          fields={["display", "legal", "email", "twitter", "verified", "image"]}
-        />
-      ))}
-    </div>
+    <AccountInfo
+      chainId={polkadotPeople.id}
+      address={"1dsrQjL34njJ4Y8FXGyxeLnmunPZ6XAvid9jSQe9S4pTUh2"}
+      fields={["twitter", "github"]}
+    />
   ),
   tsx: `import { AccountInfo } from "@/components/account-info.dedot";
 import { polkadotPeople } from "typink";
-
-<div className="flex items-center justify-center h-full flex-col gap-4">
-{[
-  "1dsrQjL34njJ4Y8FXGyxeLnmunPZ6XAvid9jSQe9S4pTUh2",
-  "1hFmn2CuqXqxHgKDqqs2xRBpsPkiRXzJfcLbfDgsW7qgmpA",
-].map((address) => (
+(
   <AccountInfo
-    key={address}
     chainId={polkadotPeople.id}
-    address={address}
+    address={"1dsrQjL34njJ4Y8FXGyxeLnmunPZ6XAvid9jSQe9S4pTUh2"}
     fields={[
-      "display",
       "twitter",
       "github",
-      "verified",
-      "image",
     ]}
   />
-))}
-</div>
+)
   `,
 };
