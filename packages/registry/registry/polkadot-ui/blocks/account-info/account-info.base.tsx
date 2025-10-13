@@ -63,8 +63,6 @@ export function AccountInfoBase<TNetworkId extends string = string>({
 }: AccountInfoBaseProps<TNetworkId>) {
   const { identity, isLoading, error } = services;
 
-  console.log("identity", identity);
-
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageFailed, setImageFailed] = useState(false);
   useEffect(() => {
