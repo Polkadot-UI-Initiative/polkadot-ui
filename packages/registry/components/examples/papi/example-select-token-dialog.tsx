@@ -9,8 +9,8 @@ export const selectTokenDialogExample: ComponentExample = {
   component: (
     <div className="w-[260px]">
       <SelectTokenDialog
-        chainId="paseoAssetHub"
-        assetIds={[1984, 1337, 7777]}
+        chainId="polkadotAssetHub"
+        assetIds={[-1, 1984, 1337]}
         className="w-full"
         withBalance
         withSearch

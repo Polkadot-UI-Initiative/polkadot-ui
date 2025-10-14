@@ -1,6 +1,5 @@
 "use client";
 
-import { selectTokenDialogExample } from "@/components/examples/dedot/example-select-token-dialog";
 import type { ComponentExample } from "@/components/examples/types.examples";
 import { ComponentPreview } from "@/components/layout/component-preview";
 import { SelectTokenDialog } from "@/registry/polkadot-ui/blocks/select-token/select-token-dialog.dedot";
@@ -8,7 +7,6 @@ import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.d
 import { polkadotAssetHub } from "typink";
 
 export const selectTokenDialogExamples: ComponentExample[] = [
-  selectTokenDialogExample,
   {
     name: "Select Token Dialog - Custom Variants",
     code: "select-token-dialog",
