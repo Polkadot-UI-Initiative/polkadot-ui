@@ -77,10 +77,17 @@ export function useAssetMetadata({
     [sortedIds]
   );
 
-  const { chains } = useChaindata();
+  const {
+    chains,
+    isLoading: isChaindataLoading,
+    error: chaindataError,
+  } = useChaindata();
   const nativeMeta: TokenMetadata | null = useMemo(() => {
     if (!includesNative) return null;
-    const network = chains.find((c) => c.id === chainIdToKebabCase(chainId));
+    const kebabId = chainIdToKebabCase(chainId);
+    const network = chains.find(
+      (c) => c.id === kebabId || c.id === (chainId as string)
+    );
     const native = network?.nativeCurrency;
     if (!native) return null;
     return {
@@ -156,8 +163,10 @@ export function useAssetMetadata({
 
   return {
     assets,
-    isLoading: queryResult.isLoading,
-    error: queryResult.error as Error | null,
+    isLoading: queryResult.isLoading || (includesNative && isChaindataLoading),
+    error:
+      queryResult.error ??
+      (includesNative && chaindataError ? new Error(chaindataError) : null),
   } as const;
 }
 
