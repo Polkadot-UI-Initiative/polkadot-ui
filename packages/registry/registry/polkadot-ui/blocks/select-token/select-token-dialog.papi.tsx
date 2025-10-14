@@ -121,9 +121,7 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
         tokensLoading ||
         tokenBalancesLoading ||
         nativeBalanceLoading,
-      connectedAccount: effectiveAddress
-        ? { address: effectiveAddress }
-        : selectedAccount,
+      connectedAccount: effectiveAddress ? { address: effectiveAddress } : null,
       isDisabled:
         status !== ClientConnectionStatus.Connected ||
         !client ||
@@ -138,7 +136,6 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
     tokensLoading,
     tokenBalancesLoading,
     nativeBalanceLoading,
-    selectedAccount,
     effectiveAddress,
     client,
     chainId,

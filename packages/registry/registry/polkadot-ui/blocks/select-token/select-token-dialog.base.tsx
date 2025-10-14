@@ -332,9 +332,7 @@ export function SelectTokenDialogBase({
                   withBalance={withBalance}
                   balance={getTokenBalance(
                     balances,
-                    effectiveAddress
-                      ? { address: effectiveAddress }
-                      : connectedAccount,
+                    effectiveAddress ? { address: effectiveAddress } : null,
                     token.assetId
                   )}
                   tokenLogo={token.logo}
