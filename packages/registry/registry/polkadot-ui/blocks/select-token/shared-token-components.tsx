@@ -26,14 +26,14 @@ export function TokenLogoWithNetwork({
   return (
     <div className={cn("relative flex-shrink-0", className)}>
       {/* Main token logo */}
-      <div className={cn(main)}>
+      <div className={cn(main, "rounded-full overflow-hidden")}>
         {tokenLogo ? (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={tokenLogo}
               alt={tokenSymbol || "Token"}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover rounded-full"
             />
           </>
         ) : (
@@ -49,14 +49,17 @@ export function TokenLogoWithNetwork({
       {/* Network logo overlay */}
       {networkLogo && (
         <div
-          className={cn(network, "absolute -bottom-1 -right-1 rounded-full")}
+          className={cn(
+            network,
+            "absolute -bottom-1 -right-1 rounded-full overflow-hidden"
+          )}
         >
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={networkLogo}
               alt="Network"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover rounded-full"
             />
           </>
         </div>
