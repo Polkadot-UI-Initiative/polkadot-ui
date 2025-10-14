@@ -37,9 +37,17 @@ export type SelectTokenDialogProps = Omit<
   React.ComponentProps<typeof Button>;
 
 export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
-  const { chainId, assetIds, showAll = true, ...otherProps } = props;
+  const {
+    chainId,
+    assetIds,
+    showAll = true,
+    connectedAddress,
+    ...otherProps
+  } = props;
   const { connectedAccount, supportedNetworks } = useTypink();
   const { client, status } = usePolkadotClient(chainId ?? paseoAssetHub.id);
+
+  const effectiveAddress = connectedAddress || connectedAccount?.address;
 
   const { assets, isLoading } = useAssetMetadata({
     chainId: chainId ?? paseoAssetHub.id,
@@ -49,13 +57,13 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
   const { isLoading: tokenBalancesLoading, balances } = useAssetBalances({
     chainId: chainId ?? paseoAssetHub.id,
     assetIds: assetIds,
-    address: connectedAccount?.address ?? "",
+    address: effectiveAddress ?? "",
   });
 
   const { free: nativeBalance, isLoading: nativeBalanceLoading } =
     useNativeBalance({
       chainId: chainId ?? paseoAssetHub.id,
-      address: connectedAccount?.address ?? "",
+      address: effectiveAddress ?? "",
     });
 
   const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
@@ -99,7 +107,9 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
         tokensLoading ||
         tokenBalancesLoading ||
         nativeBalanceLoading,
-      connectedAccount,
+      connectedAccount: effectiveAddress
+        ? { address: effectiveAddress }
+        : connectedAccount,
       isDisabled:
         status !== ClientConnectionStatus.Connected ||
         !client ||
@@ -115,6 +125,7 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
     tokenBalancesLoading,
     nativeBalanceLoading,
     connectedAccount,
+    effectiveAddress,
     client,
     chainId,
     chainTokens,

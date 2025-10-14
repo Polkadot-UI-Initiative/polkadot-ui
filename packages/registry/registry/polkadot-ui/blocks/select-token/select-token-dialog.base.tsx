@@ -2,7 +2,6 @@ import type React from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Input } from "@/registry/polkadot-ui/ui/input";
-import { ChevronDown } from "lucide-react";
 import {
   formatTokenBalance,
   formatTokenPrice,
@@ -50,6 +49,7 @@ export interface SelectTokenDialogBaseProps {
   className?: string;
   placeholder?: string;
   compact?: boolean;
+  connectedAddress?: string;
 }
 
 export interface SelectTokenDialogProviderProps {
@@ -63,7 +63,6 @@ interface TokenDialogItemProps {
   balance?: bigint | null;
   tokenLogo?: string;
   network?: NetworkInfoLike;
-  connectedAccount?: { address?: string } | null;
   className?: string;
   logoSize?: "sm" | "md" | "lg";
   balancePrecision?: number;
@@ -77,11 +76,11 @@ function TokenDialogItem({
   balance,
   tokenLogo,
   network,
-  connectedAccount,
   className,
   logoSize = "md",
   balancePrecision = 2,
-}: TokenDialogItemProps) {
+  effectiveAddress,
+}: TokenDialogItemProps & { effectiveAddress?: string }) {
   const styles = tokenSelectionStyles.tokenItem;
   const contentStyles = tokenSelectionStyles.tokenContent;
 
@@ -103,7 +102,7 @@ function TokenDialogItem({
       <div className={contentStyles.container}>
         <div className={contentStyles.primaryRow}>
           <div className={contentStyles.symbol}>{token.symbol}</div>
-          {connectedAccount?.address && withBalance && (
+          {effectiveAddress && withBalance && (
             <span className={contentStyles.balance}>
               {formatTokenBalance(
                 balance ?? null,
@@ -115,7 +114,7 @@ function TokenDialogItem({
         </div>
         <div className={contentStyles.secondaryRow}>
           <span className={contentStyles.name}>{token.name}</span>
-          {connectedAccount?.address && withBalance && (
+          {effectiveAddress && withBalance && (
             <span className={contentStyles.price}>
               ≈ ${formatTokenPrice(balance ?? null, token.decimals)}
             </span>
@@ -166,6 +165,7 @@ export function SelectTokenDialogBase({
   variant,
   disabled,
   balancePrecision = 2,
+  connectedAddress,
   ...props
 }: Omit<SelectTokenDialogBaseProps, "assetIds" | "chainId"> &
   Omit<React.ComponentProps<typeof Button>, "onChange">) {
@@ -178,6 +178,8 @@ export function SelectTokenDialogBase({
     network,
     balances,
   } = services;
+
+  const effectiveAddress = connectedAddress || connectedAccount?.address;
 
   const [isOpen, setIsOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState<TokenInfo | null>(null);
@@ -330,14 +332,16 @@ export function SelectTokenDialogBase({
                   withBalance={withBalance}
                   balance={getTokenBalance(
                     balances,
-                    connectedAccount,
+                    effectiveAddress
+                      ? { address: effectiveAddress }
+                      : connectedAccount,
                     token.assetId
                   )}
                   tokenLogo={token.logo}
                   network={network}
-                  connectedAccount={connectedAccount}
                   logoSize="md"
                   balancePrecision={balancePrecision}
+                  effectiveAddress={effectiveAddress}
                 />
               );
             })
