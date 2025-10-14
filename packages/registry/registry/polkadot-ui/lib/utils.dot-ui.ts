@@ -315,7 +315,7 @@ export function formatTokenBalance(
   thousandsSeparator: string = ",",
   decimalSeparator: string = "."
 ): string {
-  if (balance === null || balance === 0n) return "0";
+  if (balance === null) return "0";
 
   return formatPlanck(balance, decimals, {
     fractionDigits: precision,
