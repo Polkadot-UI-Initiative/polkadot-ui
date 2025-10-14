@@ -88,7 +88,7 @@ export const config = defineConfig({
       explorerUrl: "https://assethub-polkadot.subscan.io",
       symbol: "DOT",
       decimals: 10,
-      logo: "https://raw.githubusercontent.com/Koniverse/SubWallet-ChainList/refs/heads/master/packages/chain-list-assets/public/assets/chains/polkadot_assethub.png",
+      logo: "https://raw.githubusercontent.com/Koniverse/SubWallet-ChainList/refs/heads/master/packages/chain-list/src/logo/polkadot-asset-hub.png",
     },
   },
   wallets: [new InjectedWalletProvider()],

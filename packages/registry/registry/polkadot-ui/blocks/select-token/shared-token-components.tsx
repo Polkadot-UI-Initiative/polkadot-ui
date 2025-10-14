@@ -26,7 +26,7 @@ export function TokenLogoWithNetwork({
   return (
     <div className={cn("relative flex-shrink-0", className)}>
       {/* Main token logo */}
-      <div className={cn(main, "rounded-full")}>
+      <div className={cn(main)}>
         {tokenLogo ? (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -38,7 +38,7 @@ export function TokenLogoWithNetwork({
           </>
         ) : (
           // Fallback gradient with symbol
-          <div className="w-full h-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center">
+          <div className="w-full h-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center rounded-full">
             <span className={cn("font-bold text-white", text)}>
               {tokenSymbol?.[0] || "?"}
             </span>
