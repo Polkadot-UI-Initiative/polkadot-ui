@@ -42,6 +42,7 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
     chainId: propChainId,
     assetIds,
     showAll = true,
+    connectedAddress,
     ...otherProps
   } = props;
 
@@ -49,6 +50,8 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
   const { status } = useConnectionStatus({ chainId });
   const client = useClient({ chainId });
   const { selectedAccount } = useSelectedAccount();
+
+  const effectiveAddress = connectedAddress || selectedAccount?.address;
 
   const { assets, isLoading } = useAssetMetadata({
     chainId,
@@ -58,13 +61,13 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
   const { isLoading: tokenBalancesLoading, balances } = useAssetBalances({
     chainId,
     assetIds: assetIds,
-    address: selectedAccount?.address ?? "",
+    address: effectiveAddress ?? "",
   });
 
   const { free: nativeBalance, isLoading: nativeBalanceLoading } =
     useNativeBalance({
       chainId,
-      address: selectedAccount?.address ?? "",
+      address: effectiveAddress ?? "",
     });
 
   const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
@@ -118,7 +121,7 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
         tokensLoading ||
         tokenBalancesLoading ||
         nativeBalanceLoading,
-      connectedAccount: selectedAccount,
+      connectedAccount: effectiveAddress ? { address: effectiveAddress } : null,
       isDisabled:
         status !== ClientConnectionStatus.Connected ||
         !client ||
@@ -133,7 +136,7 @@ export function SelectTokenDialogInner(props: SelectTokenDialogProps) {
     tokensLoading,
     tokenBalancesLoading,
     nativeBalanceLoading,
-    selectedAccount,
+    effectiveAddress,
     client,
     chainId,
     chainTokens,
@@ -152,7 +155,7 @@ function SelectTokenDialogFallback(props: SelectTokenDialogProps) {
       variant="outline"
       disabled
       className={cn(
-        "justify-between min-w-[140px] font-normal py-5 text-muted-foreground",
+        "justify-between min-w-[160px] font-normal py-6 px-4 text-muted-foreground",
         props.className
       )}
     >

@@ -76,17 +76,19 @@ export const addressInputExamples: ComponentExample[] = [
 
 export function AddressInputDocs() {
   return (
-    <PolkadotProvider>
-      <div className="flex flex-col gap-4">
-        {addressInputExamples.map((example) => (
-          <ComponentPreview
-            ComponentWrapper={<div className="md:w-[400px]"></div>}
-            key={example.name}
-            componentInfo={example}
-            withDocs={false}
-          />
-        ))}
-      </div>
-    </PolkadotProvider>
+    <div className="not-prose">
+      <PolkadotProvider>
+        <div className="flex flex-col gap-4">
+          {addressInputExamples.map((example) => (
+            <ComponentPreview
+              ComponentWrapper={<div className="md:w-[400px]"></div>}
+              key={example.name}
+              componentInfo={example}
+              withDocs={false}
+            />
+          ))}
+        </div>
+      </PolkadotProvider>
+    </div>
   );
 }

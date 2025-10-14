@@ -33,12 +33,12 @@ export function TokenLogoWithNetwork({
             <img
               src={tokenLogo}
               alt={tokenSymbol || "Token"}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover rounded-full"
             />
           </>
         ) : (
           // Fallback gradient with symbol
-          <div className="w-full h-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center">
+          <div className="w-full h-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center rounded-full">
             <span className={cn("font-bold text-white", text)}>
               {tokenSymbol?.[0] || "?"}
             </span>
@@ -59,7 +59,7 @@ export function TokenLogoWithNetwork({
             <img
               src={networkLogo}
               alt="Network"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover rounded-full"
             />
           </>
         </div>
@@ -85,7 +85,7 @@ export const tokenSelectionStyles = {
     price: "text-xs text-muted-foreground",
   },
   trigger: {
-    base: "justify-between min-w-[140px] font-normal py-5",
+    base: "justify-between min-w-[140px] font-normal py-6",
     placeholder: "text-muted-foreground",
     content: "flex items-center gap-2",
     tokenInfo: "flex flex-col items-start",

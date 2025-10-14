@@ -83,16 +83,18 @@ export const accountInfoExamples: ComponentExample[] = [
 
 export function AccountInfoDocs() {
   return (
-    <PolkadotProvider>
-      <div className="flex flex-col gap-4">
-        {accountInfoExamples.map((example) => (
-          <ComponentPreview
-            key={example.name}
-            componentInfo={example}
-            withDocs={false}
-          />
-        ))}
-      </div>
-    </PolkadotProvider>
+    <div className="not-prose">
+      <PolkadotProvider>
+        <div className="flex flex-col gap-4">
+          {accountInfoExamples.map((example) => (
+            <ComponentPreview
+              key={example.name}
+              componentInfo={example}
+              withDocs={false}
+            />
+          ))}
+        </div>
+      </PolkadotProvider>
+    </div>
   );
 }

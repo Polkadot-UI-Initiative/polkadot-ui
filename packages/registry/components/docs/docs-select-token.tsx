@@ -111,17 +111,19 @@ import { paseoAssetHub } from "typink";
 
 export function SelectTokenDocs() {
   return (
-    <PolkadotProvider>
-      <div className="flex flex-col gap-4">
-        {selectTokenExamples.map((example) => (
-          <ComponentPreview
-            ComponentWrapper={<div className="w-[300px]"></div>}
-            key={example.name}
-            componentInfo={example}
-            withDocs={false}
-          />
-        ))}
-      </div>
-    </PolkadotProvider>
+    <div className="not-prose">
+      <PolkadotProvider>
+        <div className="flex flex-col gap-4">
+          {selectTokenExamples.map((example) => (
+            <ComponentPreview
+              ComponentWrapper={<div className="w-[300px]"></div>}
+              key={example.name}
+              componentInfo={example}
+              withDocs={false}
+            />
+          ))}
+        </div>
+      </PolkadotProvider>
+    </div>
   );
 }
