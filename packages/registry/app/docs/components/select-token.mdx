@@ -10,17 +10,18 @@ import { SelectTokenDocs } from "@/components/docs/docs-select-token";
 
 ## Introduction
 
-SelectToken is a comprehensive dropdown component for selecting tokens from
-supported chains with real-time balance display and asset metadata integration.
+`SelectToken` is a dropdown component to help users select a token in the
+context of transaction, e.g. in a token swap interface or transfer form. It
+supports token logo, name and symbol display, real-time balance information for
+connected accounts, and automatic network detection with seamless integration
+with Substrate-based chains.
 
 ## Features
 
 - **Asset IDs Definition**: Define which tokens to include by specific asset IDs
-- **Token Selection**: Dropdown interface for selecting from available tokens
-- **Balance Display**: Real-time balance information for connected accounts
-- **Network Integration**: Automatic network detection and logo display
-- **Native Token Support**: Optional inclusion of native chain tokens
-- **Loading States**: Visual feedback during data fetching
+- **Balance Display**: Show real-time token balances for connected accounts
+- **Multi-Chain Support**: Works with different Substrate-based chains
+- **Native Token Support**: Optionally include native chain tokens
 - **TypeScript**: Full type safety with comprehensive interfaces
 - **Customizable**: Flexible styling and configuration options
 
@@ -31,6 +32,12 @@ npx polkadot-ui@latest add select-token
 ```
 
 ## Usage
+
+All of the examples below are using a hardcoded address for the connected
+account, which is the Polkadot Treasury address on Asset Hub
+(`connectedAddress="14xmwinmCEz6oRrFdczHKqHgWNMiCysE2KrA4jXXAAM1Eogk"`). In
+reality, you might want to use the connected account instead from the
+`ConnectWallet` component.
 
 <SelectTokenDocs />
 
@@ -48,86 +55,136 @@ npx polkadot-ui@latest add select-token
 | `disabled`      | `boolean`                   | `false`          | Disable the component                 |
 | `className`     | `string`                    | -                | Additional CSS classes                |
 
-## Component States
+## Connection States
 
-The component shows different visual states:
+The component shows different states based on wallet connection:
 
-- **Loading**: Spinner while fetching token data
-- **Connected**: Full functionality with balance display
+- **Connected**: Shows available tokens with balances
 - **Disconnected**: Limited functionality without wallet connection
-- **Empty**: No tokens available message
+- **Loading**: Shows spinner while fetching token data
+- **No Tokens**: Shows empty state when no tokens match filters
 
-## Token Display
+## Token Information
 
-When tokens are loaded, each option shows:
+Each token includes:
 
-1. **Token Logo**: Asset logo with network overlay
-2. **Token Symbol**: Primary token identifier
-3. **Balance**: User's balance (when `withBalance` is enabled and wallet
-   connected)
-4. **Token Name**: Full token name for additional context
+- **Symbol**: Token ticker (e.g., "USDT", "DOT")
+- **Name**: Full token name
+- **Decimals**: Token precision
+- **Logo**: Token icon (when available)
+- **Balance**: User's current balance (when `withBalance` is enabled)
+- **Asset ID**: On-chain asset identifier
 
-## Asset Filtering
+## Token Filtering
 
-The `assetIds` prop allows you to restrict which tokens appear:
+### Asset IDs
+
+Specify which tokens to include using the `assetIds` prop:
 
 ```tsx
-// Show only specific tokens
 <SelectToken
   chainId="paseoAssetHub"
-  assetIds={[1984, 1337, 7777]}
+  assetIds={[1984, 1337, 7777]} // Only show these specific tokens
   withBalance
 />
 ```
 
-## Native Token Handling
+### Native Token Inclusion
 
-By default, native chain tokens are included in the selection. Control this with
-`includeNative`:
+Control whether to include the chain's native token:
 
 ```tsx
-// Include native token (default)
 <SelectToken
   chainId="paseoAssetHub"
-  assetIds={[1, 2, 3]}
-  includeNative={true}
-  withBalance
-/>
-
-// Exclude native token
-<SelectToken
-  chainId="paseoAssetHub"
-  assetIds={[1, 2, 3]}
-  includeNative={false}
+  assetIds={[1984, 8]}
+  includeNative={true} // Include native token, default is true
   withBalance
 />
 ```
 
-## Balance Integration
+## Balance Display
 
-When `withBalance` is enabled and a wallet is connected:
+When `withBalance` is enabled:
 
-- Displays formatted token balances
-- Updates in real-time as balances change
-- Shows loading states during balance fetching
-- Handles both native and asset token balances
+- Shows formatted token balances for connected accounts
+- Balances update automatically when account changes
+- Handles loading states gracefully
 
-## Network Support
+```tsx
+<SelectToken
+  chainId="paseoAssetHub"
+  assetIds={[1984, 8, 27]}
+  withBalance
+/>
+```
 
-The component automatically detects and displays:
+## Multi-Chain Support
 
-- **Network Logos**: Chain-specific branding
-- **Token Metadata**: Names, symbols, and decimals from chain data
-- **Asset Information**: Integration with Talisman's chaindata
+The component supports different Asset Hub chains:
+
+- **`paseoAssetHub`**: Paseo Asset Hub (testnet)
+- **`kusamaAssetHub`**: Kusama Asset Hub
+- **`polkadotAssetHub`**: Polkadot Asset Hub
+
+```tsx
+<SelectToken
+  chainId="kusamaAssetHub"
+  assetIds={[1000, 2000]}
+  withBalance
+/>
+```
+
+## Styling Options
+
+### Custom Classes
+
+Use the `className` prop to customize the component appearance:
+
+```tsx
+<SelectToken
+  chainId="paseoAssetHub"
+  assetIds={[1984, 8]}
+  className="w-[200px]"
+  withBalance
+/>
+```
 
 ## Error Handling
 
-The component gracefully handles:
+The component handles various error states:
 
-- **Connection Issues**: Shows appropriate loading/disconnected states
-- **Missing Data**: Fallback displays when token data unavailable
-- **Invalid Assets**: Filters out non-existent or invalid asset IDs
-- **Network Errors**: Retry mechanisms for failed requests
+- **Network disconnection**: Shows appropriate loading state
+- **Failed token fetching**: Graceful degradation with fallback UIs
+- **Invalid asset IDs**: Filters out non-existent tokens
+- **Balance fetch errors**: Shows tokens without balance info
+
+## Provider Requirements
+
+The component requires a PolkadotProvider wrapper:
+
+```tsx
+import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
+
+<PolkadotProvider>
+  <SelectToken
+    chainId="paseoAssetHub"
+    assetIds={[1984, 8, 27]}
+    withBalance
+  />
+</PolkadotProvider>;
+```
+
+Alternatively, use the component with provider included:
+
+```tsx
+import { SelectTokenWithProvider } from "@/registry/polkadot-ui/blocks/select-token/select-token.dedot";
+
+<SelectTokenWithProvider
+  chainId="paseoAssetHub"
+  assetIds={[1984, 8, 27]}
+  withBalance
+/>;
+```
 
 ## Accessibility
 

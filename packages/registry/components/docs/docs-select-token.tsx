@@ -1,84 +1,82 @@
 "use client";
 
-import { selectTokenExample } from "@/components/examples/dedot/example-select-token";
 import type { ComponentExample } from "@/components/examples/types.examples";
 import { ComponentPreview } from "@/components/layout/component-preview";
 import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/select-token.dedot";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
-import { paseoAssetHub } from "typink";
+import { polkadotAssetHub } from "typink";
 
 const handleTokenChange = (assetId: number) => {
   console.log("Selected token:", assetId);
 };
 
 export const selectTokenExamples: ComponentExample[] = [
-  selectTokenExample,
   {
     name: "Select Token - Without Balance",
     code: "select-token",
-    description: "Token selection without balance information",
+    description:
+      "Dropdown without balance information, useful for token selection in basic contexts",
     component: (
       <SelectToken
         className="w-[260px]"
-        chainId={paseoAssetHub.id}
-        assetIds={[1984, 1337, 7777]}
+        chainId={polkadotAssetHub.id}
+        assetIds={[-1, 1984, 1337]} // -1 for native token
         withBalance={false}
       />
     ),
     tsx: `import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/select-token.dedot";
-import { paseoAssetHub } from "typink";
+import { polkadotAssetHub } from "typink";
 
 <SelectToken
   className="w-[260px]"
-  chainId={paseoAssetHub.id}
-  assetIds={[1984, 1337, 7777]}
+  chainId={polkadotAssetHub.id}
+  assetIds={[-1, 1984, 1337]}
   withBalance={false}
 />`,
   },
   {
     name: "Select Token - Exclude Native Token",
     code: "select-token",
-    description: "Token selection excluding the native chain token",
+    description: "Dropdown excluding the native chain token",
     component: (
       <SelectToken
         className="w-[260px]"
-        chainId={paseoAssetHub.id}
-        assetIds={[1984, 1337, 7777]}
+        chainId={polkadotAssetHub.id}
+        assetIds={[1984, 1337]} // -1 assetId isn't included
         withBalance={true}
-        includeNative={false}
       />
     ),
     tsx: `import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/select-token.dedot";
-import { paseoAssetHub } from "typink";
+import { polkadotAssetHub } from "typink";
 
 <SelectToken
   className="w-[260px]"
-  chainId={paseoAssetHub.id}
-  assetIds={[1984, 1337, 7777]}
+  chainId={polkadotAssetHub.id}
+  assetIds={[1984, 1337]}
   withBalance={true}
-  includeNative={false}
 />`,
   },
   {
     name: "Select Token - onChange Callback",
     code: "select-token",
-    description: "Trigger a callback when token selection changes",
+    description:
+      "Dropdown with onChange callback to handle token selection events",
     component: (
       <SelectToken
         className="w-[260px]"
-        chainId={paseoAssetHub.id}
-        assetIds={[1984, 1337, 7777]}
+        chainId={polkadotAssetHub.id}
+        assetIds={[-1, 1984, 1337]}
         withBalance={true}
         onChange={handleTokenChange}
       />
     ),
     tsx: `import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/select-token.dedot";
-import { paseoAssetHub } from "typink";
+import { polkadotAssetHub } from "typink";
 
 <SelectToken
   className="w-[260px]"
-  chainId={paseoAssetHub.id}
-  assetIds={[1984, 1337, 7777]}
+  chainId={polkadotAssetHub.id}
+  assetIds={[-1, 1984, 1337]}
   withBalance={true}
   onChange={(assetId) => console.log("Selected:", assetId)}
 />`,
@@ -86,23 +84,24 @@ import { paseoAssetHub } from "typink";
   {
     name: "Select Token - Custom Balance Precision",
     code: "select-token",
-    description: "Token selection with custom balance precision formatting",
+    description:
+      "Dropdown with custom balance precision formatting (4 decimal places)",
     component: (
       <SelectToken
         className="w-[260px]"
-        chainId={paseoAssetHub.id}
-        assetIds={[1984, 1337, 7777]}
+        chainId={polkadotAssetHub.id}
+        assetIds={[1984, 1337]}
         withBalance={true}
         balancePrecision={4}
       />
     ),
     tsx: `import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/select-token.dedot";
-import { paseoAssetHub } from "typink";
+import { polkadotAssetHub } from "typink";
 
 <SelectToken
   className="w-[260px]"
-  chainId={paseoAssetHub.id}
-  assetIds={[1984, 1337, 7777]}
+  chainId={polkadotAssetHub.id}
+  assetIds={[1984, 1337]}
   withBalance={true}
   balancePrecision={4}
 />`,
