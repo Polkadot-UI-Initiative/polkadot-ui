@@ -6,10 +6,6 @@ import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/select-t
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { polkadotAssetHub } from "typink";
 
-const handleTokenChange = (assetId: number) => {
-  console.log("Selected token:", assetId);
-};
-
 export const selectTokenExamples: ComponentExample[] = [
   {
     name: "Select Token - Without Balance",
@@ -22,6 +18,7 @@ export const selectTokenExamples: ComponentExample[] = [
         chainId={polkadotAssetHub.id}
         assetIds={[-1, 1984, 1337]} // -1 for native token
         withBalance={false}
+        connectedAddress="14xmwinmCEz6oRrFdczHKqHgWNMiCysE2KrA4jXXAAM1Eogk"
       />
     ),
     tsx: `import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/select-token.dedot";
@@ -44,6 +41,7 @@ import { polkadotAssetHub } from "typink";
         chainId={polkadotAssetHub.id}
         assetIds={[1984, 1337]} // -1 assetId isn't included
         withBalance={true}
+        connectedAddress="14xmwinmCEz6oRrFdczHKqHgWNMiCysE2KrA4jXXAAM1Eogk"
       />
     ),
     tsx: `import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/select-token.dedot";
@@ -57,31 +55,6 @@ import { polkadotAssetHub } from "typink";
 />`,
   },
   {
-    name: "Select Token - onChange Callback",
-    code: "select-token",
-    description:
-      "Dropdown with onChange callback to handle token selection events",
-    component: (
-      <SelectToken
-        className="w-[260px]"
-        chainId={polkadotAssetHub.id}
-        assetIds={[-1, 1984, 1337]}
-        withBalance={true}
-        onChange={handleTokenChange}
-      />
-    ),
-    tsx: `import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/select-token.dedot";
-import { polkadotAssetHub } from "typink";
-
-<SelectToken
-  className="w-[260px]"
-  chainId={polkadotAssetHub.id}
-  assetIds={[-1, 1984, 1337]}
-  withBalance={true}
-  onChange={(assetId) => console.log("Selected:", assetId)}
-/>`,
-  },
-  {
     name: "Select Token - Custom Balance Precision",
     code: "select-token",
     description:
@@ -90,9 +63,10 @@ import { polkadotAssetHub } from "typink";
       <SelectToken
         className="w-[260px]"
         chainId={polkadotAssetHub.id}
-        assetIds={[1984, 1337]}
+        assetIds={[-1, 1984, 1337]}
         withBalance={true}
         balancePrecision={4}
+        connectedAddress="14xmwinmCEz6oRrFdczHKqHgWNMiCysE2KrA4jXXAAM1Eogk"
       />
     ),
     tsx: `import { SelectToken } from "@/registry/polkadot-ui/blocks/select-token/select-token.dedot";

@@ -22,16 +22,29 @@ import {
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
 
-export type SelectTokenProps = Omit<SelectTokenBaseProps, "services"> &
-  React.ComponentProps<typeof Select>;
+export type SelectTokenProps = Omit<
+  SelectTokenBaseProps,
+  "services" | "withBalance"
+> &
+  React.ComponentProps<typeof Select> & {
+    withBalance?: boolean;
+    connectedAddress?: string;
+  };
 
 export function SelectTokenInner(props: SelectTokenProps) {
   // by default, add native token to the list of tokens with includeNative
-  const { includeNative = true, showAll = true, ...restProps } = props;
+  const {
+    includeNative = true,
+    showAll = true,
+    connectedAddress,
+    ...restProps
+  } = props;
   const { client, status } = usePolkadotClient(
     restProps.chainId ?? paseoAssetHub.id
   );
   const { connectedAccount, supportedNetworks } = useTypink();
+
+  const effectiveAddress = connectedAddress || connectedAccount?.address;
 
   const { assets, isLoading } = useAssetMetadata({
     chainId: restProps.chainId,
@@ -43,7 +56,7 @@ export function SelectTokenInner(props: SelectTokenProps) {
     assetIds: includeNative
       ? [...restProps.assetIds, NATIVE_TOKEN_KEY]
       : restProps.assetIds,
-    address: connectedAccount?.address ?? "",
+    address: effectiveAddress ?? "",
   });
 
   const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
@@ -77,7 +90,7 @@ export function SelectTokenInner(props: SelectTokenProps) {
       isConnected: status === ClientConnectionStatus.Connected,
       isLoading: isLoading || tokensLoading || tokenBalancesLoading,
       items: assets ?? [],
-      connectedAccount,
+      connectedAccount: effectiveAddress ? { address: effectiveAddress } : null,
       isDisabled:
         (restProps.disabled ?? false) ||
         status !== ClientConnectionStatus.Connected ||
@@ -94,6 +107,7 @@ export function SelectTokenInner(props: SelectTokenProps) {
     tokenBalancesLoading,
     assets,
     connectedAccount,
+    effectiveAddress,
     restProps.disabled,
     restProps.chainId,
     client,
@@ -104,7 +118,13 @@ export function SelectTokenInner(props: SelectTokenProps) {
     // includeNative is handled before calling hooks and not needed here
   ]);
 
-  return <SelectTokenBase {...restProps} services={services} />;
+  return (
+    <SelectTokenBase
+      {...restProps}
+      services={services}
+      connectedAddress={connectedAddress}
+    />
+  );
 }
 
 function SelectTokenFallback(props: SelectTokenProps) {
