@@ -373,7 +373,7 @@
           "type": "registry:component"
         },
         {
-          "path": "registry/polkadot-ui/blocks/select-token/client-only.tsx",
+          "path": "registry/polkadot-ui/blocks/client-only.tsx",
           "type": "registry:component"
         },
         {
