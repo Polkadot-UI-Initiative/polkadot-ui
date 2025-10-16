@@ -8,6 +8,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
   formatTokenBalance,
   getTokenBalance,
@@ -41,6 +42,7 @@ export interface SelectTokenBaseProps<TChainId extends string = string> {
   onChange?: (assetId: number) => void;
   placeholder?: string;
   className?: string;
+  connectedAddress?: string;
 }
 
 export function SelectTokenBase<TChainId extends string = string>({
@@ -51,6 +53,7 @@ export function SelectTokenBase<TChainId extends string = string>({
   withBalance,
   services,
   balancePrecision = 2,
+  connectedAddress,
   ...props
 }: SelectTokenBaseProps<TChainId> & React.ComponentProps<typeof Select>) {
   const {
@@ -62,6 +65,8 @@ export function SelectTokenBase<TChainId extends string = string>({
     balances,
     network,
   } = services;
+
+  const effectiveAddress = connectedAddress || connectedAccount?.address;
 
   // Memoize filtered tokens based on optional assetIds to avoid work on each render
   const tokenOptions = useMemo(() => {
@@ -95,7 +100,7 @@ export function SelectTokenBase<TChainId extends string = string>({
       onValueChange={handleValueChange}
       disabled={isDisabled || isLoading}
     >
-      <SelectTrigger className={className}>
+      <SelectTrigger className={cn("dark:bg-background", className)}>
         <div className="flex items-center flex-row gap-2">
           <SelectValue placeholder={placeholder} />
           {(isLoading || !isConnected) && (
@@ -109,10 +114,14 @@ export function SelectTokenBase<TChainId extends string = string>({
             key={token.id}
             token={token}
             network={network}
-            balance={getTokenBalance(balances, connectedAccount, token.assetId)}
+            balance={getTokenBalance(
+              balances,
+              effectiveAddress ? { address: effectiveAddress } : null,
+              token.assetId
+            )}
             tokenLogo={token.logo}
             withBalance={withBalance}
-            connectedAccount={connectedAccount}
+            effectiveAddress={effectiveAddress}
             balancePrecision={balancePrecision}
           />
         ))}
@@ -129,7 +138,7 @@ function TokenSelectItem({
   balance,
   network,
   tokenLogo,
-  connectedAccount,
+  effectiveAddress,
   balancePrecision = 2,
 }: {
   token: TokenInfo;
@@ -137,7 +146,7 @@ function TokenSelectItem({
   balance: bigint | null;
   network?: NetworkInfoLike;
   tokenLogo?: string;
-  connectedAccount?: { address?: string } | null;
+  effectiveAddress?: string;
   balancePrecision?: number;
 }) {
   return (
@@ -153,7 +162,7 @@ function TokenSelectItem({
           size="sm"
         />
         <span className="font-medium">
-          {connectedAccount?.address &&
+          {effectiveAddress &&
             withBalance &&
             formatTokenBalance(balance, token.decimals, balancePrecision)}{" "}
           {token.symbol}

@@ -22,46 +22,63 @@ import {
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
 
-export type SelectTokenProps = Omit<SelectTokenBaseProps, "services"> &
-  React.ComponentProps<typeof Select>;
+export type SelectTokenProps = Omit<
+  SelectTokenBaseProps,
+  "services" | "withBalance"
+> &
+  React.ComponentProps<typeof Select> & {
+    withBalance?: boolean;
+    connectedAddress?: string;
+  };
 
 export function SelectTokenInner(props: SelectTokenProps) {
   // by default, add native token to the list of tokens with includeNative
-  const { includeNative = true, showAll = true, ...restProps } = props;
-  const { client, status } = usePolkadotClient(
-    restProps.chainId ?? paseoAssetHub.id
-  );
+  const {
+    includeNative = true,
+    showAll = true,
+    connectedAddress,
+    chainId,
+    assetIds,
+    withBalance = false,
+    balancePrecision,
+    value,
+    onChange,
+    placeholder,
+    className,
+    disabled,
+    fallback,
+    ...restProps
+  } = props;
+  const { client, status } = usePolkadotClient(chainId ?? paseoAssetHub.id);
   const { connectedAccount, supportedNetworks } = useTypink();
 
+  const effectiveAddress = connectedAddress || connectedAccount?.address;
+
   const { assets, isLoading } = useAssetMetadata({
-    chainId: restProps.chainId,
-    assetIds: restProps.assetIds,
+    chainId: chainId,
+    assetIds: assetIds,
   });
 
   const { isLoading: tokenBalancesLoading, balances } = useAssetBalances({
-    chainId: restProps.chainId ?? paseoAssetHub.id,
-    assetIds: includeNative
-      ? [...restProps.assetIds, NATIVE_TOKEN_KEY]
-      : restProps.assetIds,
-    address: connectedAccount?.address ?? "",
+    chainId: chainId ?? paseoAssetHub.id,
+    assetIds: includeNative ? [...assetIds, NATIVE_TOKEN_KEY] : assetIds,
+    address: effectiveAddress ?? "",
   });
 
   const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
-    restProps.chainId ?? paseoAssetHub.id,
-    includeNative
-      ? [...restProps.assetIds, NATIVE_TOKEN_KEY]
-      : restProps.assetIds,
+    chainId ?? paseoAssetHub.id,
+    includeNative ? [...assetIds, NATIVE_TOKEN_KEY] : assetIds,
     {
       showAll,
     }
   );
 
   const network = supportedNetworks.find(
-    (n) => n.id === (restProps.chainId ?? paseoAssetHub.id)
+    (n) => n.id === (chainId ?? paseoAssetHub.id)
   );
 
   const services = useMemo(() => {
-    const chainIdForTokens = restProps.chainId ?? paseoAssetHub.id;
+    const chainIdForTokens = chainId ?? paseoAssetHub.id;
     const defaultTokens = createDefaultChainTokens(
       assets ?? [],
       chainIdForTokens
@@ -77,12 +94,12 @@ export function SelectTokenInner(props: SelectTokenProps) {
       isConnected: status === ClientConnectionStatus.Connected,
       isLoading: isLoading || tokensLoading || tokenBalancesLoading,
       items: assets ?? [],
-      connectedAccount,
+      connectedAccount: effectiveAddress ? { address: effectiveAddress } : null,
       isDisabled:
-        (restProps.disabled ?? false) ||
+        (disabled ?? false) ||
         status !== ClientConnectionStatus.Connected ||
         !client ||
-        restProps.assetIds.length === 0,
+        assetIds.length === 0,
       chainTokens: finalTokens,
       balances: combinedBalances,
       network,
@@ -94,17 +111,32 @@ export function SelectTokenInner(props: SelectTokenProps) {
     tokenBalancesLoading,
     assets,
     connectedAccount,
-    restProps.disabled,
-    restProps.chainId,
+    effectiveAddress,
+    disabled,
+    chainId,
     client,
-    restProps.assetIds,
+    assetIds,
     chainTokens,
     balances,
     network,
     // includeNative is handled before calling hooks and not needed here
   ]);
 
-  return <SelectTokenBase {...restProps} services={services} />;
+  return (
+    <SelectTokenBase
+      {...restProps}
+      chainId={chainId}
+      assetIds={assetIds}
+      withBalance={withBalance}
+      services={services}
+      balancePrecision={balancePrecision}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      className={className}
+      connectedAddress={connectedAddress}
+    />
+  );
 }
 
 function SelectTokenFallback(props: SelectTokenProps) {

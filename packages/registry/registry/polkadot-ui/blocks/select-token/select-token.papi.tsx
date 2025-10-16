@@ -31,38 +31,61 @@ import {
   SelectTokenBase,
 } from "./select-token.base";
 
-export type SelectTokenProps = Omit<SelectTokenBaseProps, "services"> &
-  React.ComponentProps<typeof Select>;
+export type SelectTokenProps = Omit<
+  SelectTokenBaseProps,
+  "services" | "withBalance"
+> &
+  React.ComponentProps<typeof Select> & {
+    withBalance?: boolean;
+    connectedAddress?: string;
+  };
 
 export function SelectTokenInner(props: SelectTokenProps) {
   // by default, add native token to the list of tokens with includeNative
-  const { includeNative = true, showAll = true, ...restProps } = props;
-  const chainId = (restProps.chainId ?? "paseoAssetHub") as ChainId;
+  const {
+    includeNative = true,
+    showAll = true,
+    connectedAddress,
+    chainId: propChainId,
+    assetIds,
+    withBalance = false,
+    balancePrecision,
+    value,
+    onChange,
+    placeholder,
+    className,
+    disabled,
+    fallback,
+    ...restProps
+  } = props;
+  const chainId = (propChainId ?? "paseoAssetHub") as ChainId;
 
   const { selectedAccount } = useSelectedAccount();
   const client = useClient({ chainId });
   const { status } = useConnectionStatus({ chainId });
 
+  const effectiveAddress = connectedAddress || selectedAccount?.address;
+
   const { assets, isLoading } = useAssetMetadata({
     chainId,
-    assetIds: restProps.assetIds,
+    assetIds: assetIds,
   });
 
   const { isLoading: tokenBalancesLoading, balances } = useAssetBalances({
     chainId,
-    assetIds: restProps.assetIds,
-    address: selectedAccount?.address ?? "",
+    assetIds: assetIds,
+    address: effectiveAddress ?? "",
   });
 
   const { free: nativeBalance, isLoading: nativeBalanceLoading } =
     useNativeBalance({
       chainId,
-      address: selectedAccount?.address ?? "",
+      address: effectiveAddress ?? "",
     });
 
   const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
     chainId,
-    restProps.assetIds,
+    assetIds,
     {
       showAll,
     }
@@ -122,12 +145,12 @@ export function SelectTokenInner(props: SelectTokenProps) {
         tokenBalancesLoading ||
         nativeBalanceLoading,
       items: assets ?? [],
-      connectedAccount: selectedAccount,
+      connectedAccount: effectiveAddress ? { address: effectiveAddress } : null,
       isDisabled:
-        (restProps.disabled ?? false) ||
+        (disabled ?? false) ||
         status !== ClientConnectionStatus.Connected ||
         !client ||
-        restProps.assetIds.length === 0,
+        assetIds.length === 0,
       chainTokens: finalTokens,
       balances: combinedBalances,
       network,
@@ -140,10 +163,11 @@ export function SelectTokenInner(props: SelectTokenProps) {
     nativeBalanceLoading,
     assets,
     selectedAccount,
-    restProps.disabled,
+    effectiveAddress,
+    disabled,
     chainId,
     client,
-    restProps.assetIds,
+    assetIds,
     chainTokens,
     balances,
     nativeBalance,
@@ -151,7 +175,21 @@ export function SelectTokenInner(props: SelectTokenProps) {
     includeNative,
   ]);
 
-  return <SelectTokenBase {...restProps} services={services} />;
+  return (
+    <SelectTokenBase
+      {...restProps}
+      chainId={chainId}
+      assetIds={assetIds}
+      withBalance={withBalance}
+      services={services}
+      balancePrecision={balancePrecision}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      className={className}
+      connectedAddress={connectedAddress}
+    />
+  );
 }
 
 function SelectTokenFallback(props: SelectTokenProps) {
