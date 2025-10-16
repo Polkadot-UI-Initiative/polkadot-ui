@@ -8,6 +8,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
   formatTokenBalance,
   getTokenBalance,
@@ -99,7 +100,7 @@ export function SelectTokenBase<TChainId extends string = string>({
       onValueChange={handleValueChange}
       disabled={isDisabled || isLoading}
     >
-      <SelectTrigger className={className}>
+      <SelectTrigger className={cn("dark:bg-background", className)}>
         <div className="flex items-center flex-row gap-2">
           <SelectValue placeholder={placeholder} />
           {(isLoading || !isConnected) && (
