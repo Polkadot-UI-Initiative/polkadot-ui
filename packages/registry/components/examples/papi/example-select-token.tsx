@@ -10,7 +10,7 @@ export const selectTokenExample: ComponentExample = {
     <div className="w-[260px]">
       <SelectToken
         chainId="paseoAssetHub"
-        assetIds={[1984, 1337]}
+        assetIds={[-1, 1984, 1337]}
         className="w-full"
         withBalance
       />
