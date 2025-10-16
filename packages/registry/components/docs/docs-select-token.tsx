@@ -29,6 +29,7 @@ import { polkadotAssetHub } from "typink";
   chainId={polkadotAssetHub.id}
   assetIds={[-1, 1984, 1337]}
   withBalance={false}
+  connectedAddress="14xmwinmCEz6oRrFdczHKqHgWNMiCysE2KrA4jXXAAM1Eogk"
 />`,
   },
   {
@@ -52,6 +53,7 @@ import { polkadotAssetHub } from "typink";
   chainId={polkadotAssetHub.id}
   assetIds={[1984, 1337]}
   withBalance={true}
+  connectedAddress="14xmwinmCEz6oRrFdczHKqHgWNMiCysE2KrA4jXXAAM1Eogk"
 />`,
   },
   {
@@ -75,9 +77,10 @@ import { polkadotAssetHub } from "typink";
 <SelectToken
   className="w-[260px]"
   chainId={polkadotAssetHub.id}
-  assetIds={[1984, 1337]}
+  assetIds={[-1, 1984, 1337]}
   withBalance={true}
   balancePrecision={4}
+  connectedAddress="14xmwinmCEz6oRrFdczHKqHgWNMiCysE2KrA4jXXAAM1Eogk"
 />`,
   },
 ];
