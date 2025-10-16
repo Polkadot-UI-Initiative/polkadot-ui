@@ -37,44 +37,48 @@ export function SelectTokenInner(props: SelectTokenProps) {
     includeNative = true,
     showAll = true,
     connectedAddress,
+    chainId,
+    assetIds,
+    withBalance = false,
+    balancePrecision,
+    value,
+    onChange,
+    placeholder,
+    className,
+    disabled,
+    fallback,
     ...restProps
   } = props;
-  const { client, status } = usePolkadotClient(
-    restProps.chainId ?? paseoAssetHub.id
-  );
+  const { client, status } = usePolkadotClient(chainId ?? paseoAssetHub.id);
   const { connectedAccount, supportedNetworks } = useTypink();
 
   const effectiveAddress = connectedAddress || connectedAccount?.address;
 
   const { assets, isLoading } = useAssetMetadata({
-    chainId: restProps.chainId,
-    assetIds: restProps.assetIds,
+    chainId: chainId,
+    assetIds: assetIds,
   });
 
   const { isLoading: tokenBalancesLoading, balances } = useAssetBalances({
-    chainId: restProps.chainId ?? paseoAssetHub.id,
-    assetIds: includeNative
-      ? [...restProps.assetIds, NATIVE_TOKEN_KEY]
-      : restProps.assetIds,
+    chainId: chainId ?? paseoAssetHub.id,
+    assetIds: includeNative ? [...assetIds, NATIVE_TOKEN_KEY] : assetIds,
     address: effectiveAddress ?? "",
   });
 
   const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
-    restProps.chainId ?? paseoAssetHub.id,
-    includeNative
-      ? [...restProps.assetIds, NATIVE_TOKEN_KEY]
-      : restProps.assetIds,
+    chainId ?? paseoAssetHub.id,
+    includeNative ? [...assetIds, NATIVE_TOKEN_KEY] : assetIds,
     {
       showAll,
     }
   );
 
   const network = supportedNetworks.find(
-    (n) => n.id === (restProps.chainId ?? paseoAssetHub.id)
+    (n) => n.id === (chainId ?? paseoAssetHub.id)
   );
 
   const services = useMemo(() => {
-    const chainIdForTokens = restProps.chainId ?? paseoAssetHub.id;
+    const chainIdForTokens = chainId ?? paseoAssetHub.id;
     const defaultTokens = createDefaultChainTokens(
       assets ?? [],
       chainIdForTokens
@@ -92,10 +96,10 @@ export function SelectTokenInner(props: SelectTokenProps) {
       items: assets ?? [],
       connectedAccount: effectiveAddress ? { address: effectiveAddress } : null,
       isDisabled:
-        (restProps.disabled ?? false) ||
+        (disabled ?? false) ||
         status !== ClientConnectionStatus.Connected ||
         !client ||
-        restProps.assetIds.length === 0,
+        assetIds.length === 0,
       chainTokens: finalTokens,
       balances: combinedBalances,
       network,
@@ -108,10 +112,10 @@ export function SelectTokenInner(props: SelectTokenProps) {
     assets,
     connectedAccount,
     effectiveAddress,
-    restProps.disabled,
-    restProps.chainId,
+    disabled,
+    chainId,
     client,
-    restProps.assetIds,
+    assetIds,
     chainTokens,
     balances,
     network,
@@ -121,7 +125,15 @@ export function SelectTokenInner(props: SelectTokenProps) {
   return (
     <SelectTokenBase
       {...restProps}
+      chainId={chainId}
+      assetIds={assetIds}
+      withBalance={withBalance}
       services={services}
+      balancePrecision={balancePrecision}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      className={className}
       connectedAddress={connectedAddress}
     />
   );

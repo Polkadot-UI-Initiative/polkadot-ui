@@ -46,9 +46,19 @@ export function SelectTokenInner(props: SelectTokenProps) {
     includeNative = true,
     showAll = true,
     connectedAddress,
+    chainId: propChainId,
+    assetIds,
+    withBalance = false,
+    balancePrecision,
+    value,
+    onChange,
+    placeholder,
+    className,
+    disabled,
+    fallback,
     ...restProps
   } = props;
-  const chainId = (restProps.chainId ?? "paseoAssetHub") as ChainId;
+  const chainId = (propChainId ?? "paseoAssetHub") as ChainId;
 
   const { selectedAccount } = useSelectedAccount();
   const client = useClient({ chainId });
@@ -58,12 +68,12 @@ export function SelectTokenInner(props: SelectTokenProps) {
 
   const { assets, isLoading } = useAssetMetadata({
     chainId,
-    assetIds: restProps.assetIds,
+    assetIds: assetIds,
   });
 
   const { isLoading: tokenBalancesLoading, balances } = useAssetBalances({
     chainId,
-    assetIds: restProps.assetIds,
+    assetIds: assetIds,
     address: effectiveAddress ?? "",
   });
 
@@ -75,7 +85,7 @@ export function SelectTokenInner(props: SelectTokenProps) {
 
   const { tokens: chainTokens, isLoading: tokensLoading } = useTokensByAssetIds(
     chainId,
-    restProps.assetIds,
+    assetIds,
     {
       showAll,
     }
@@ -137,10 +147,10 @@ export function SelectTokenInner(props: SelectTokenProps) {
       items: assets ?? [],
       connectedAccount: effectiveAddress ? { address: effectiveAddress } : null,
       isDisabled:
-        (restProps.disabled ?? false) ||
+        (disabled ?? false) ||
         status !== ClientConnectionStatus.Connected ||
         !client ||
-        restProps.assetIds.length === 0,
+        assetIds.length === 0,
       chainTokens: finalTokens,
       balances: combinedBalances,
       network,
@@ -154,10 +164,10 @@ export function SelectTokenInner(props: SelectTokenProps) {
     assets,
     selectedAccount,
     effectiveAddress,
-    restProps.disabled,
+    disabled,
     chainId,
     client,
-    restProps.assetIds,
+    assetIds,
     chainTokens,
     balances,
     nativeBalance,
@@ -168,7 +178,15 @@ export function SelectTokenInner(props: SelectTokenProps) {
   return (
     <SelectTokenBase
       {...restProps}
+      chainId={chainId}
+      assetIds={assetIds}
+      withBalance={withBalance}
       services={services}
+      balancePrecision={balancePrecision}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      className={className}
       connectedAddress={connectedAddress}
     />
   );

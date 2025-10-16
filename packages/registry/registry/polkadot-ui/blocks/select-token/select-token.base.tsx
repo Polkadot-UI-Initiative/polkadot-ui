@@ -90,24 +90,11 @@ export function SelectTokenBase<TChainId extends string = string>({
     onChange?.(Number(v));
   };
 
-  const {
-    chainId: _chainId,
-    assetIds: _assetIds,
-    withBalance: _withBalance,
-    services: _services,
-    includeNative: _includeNative,
-    showAll: _showAll,
-    fallback: _fallback,
-    balancePrecision: _balancePrecision,
-    connectedAddress: _connectedAddress,
-    ...selectProps
-  } = props;
-
   return (
     <Select
-      {...selectProps}
+      {...props}
       value={
-        value != null ? String(value) : (selectProps as { value?: string }).value
+        value != null ? String(value) : (props as { value?: string }).value
       }
       onValueChange={handleValueChange}
       disabled={isDisabled || isLoading}
