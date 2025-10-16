@@ -64,8 +64,10 @@ export function AccountInfoBase<TNetworkId extends string = string>({
   const { identity, isLoading, error } = services;
 
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageFailed, setImageFailed] = useState(false);
   useEffect(() => {
     setImageLoaded(false);
+    setImageFailed(false);
   }, [identity?.image]);
 
   const fieldsToShow =
@@ -100,19 +102,20 @@ export function AccountInfoBase<TNetworkId extends string = string>({
         className
       )}
     >
-      {showIcon && !identity?.image && (
+      {showIcon && (!identity?.image || imageFailed) && (
         <Identicon value={address} size={28} theme={iconTheme} />
       )}
-      {showIcon && identity?.image && (
+      {showIcon && identity?.image && !imageFailed && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={identity.image.toString()}
           alt={name}
           className={cn(
-            "w-7 h-7 rounded-full transition-opacity duration-300",
+            "w-7 h-7 !my-0 rounded-full transition-opacity duration-300",
             imageLoaded ? "opacity-100" : "opacity-0"
           )}
           onLoad={() => setImageLoaded(true)}
+          onError={() => setImageFailed(true)}
         />
       )}
       <div className="flex flex-col leading-tight items-start text-left min-w-0 flex-1">
@@ -169,15 +172,16 @@ export function AccountInfoBase<TNetworkId extends string = string>({
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
           <div className="flex items-center gap-2 mb-2">
-            {showIcon && !identity?.image && (
+            {showIcon && (!identity?.image || imageFailed) && (
               <Identicon value={address} size={28} theme={iconTheme} />
             )}
-            {showIcon && identity?.image && (
+            {showIcon && identity?.image && !imageFailed && (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={identity.image.toString()}
                 alt={name}
-                className="w-7 h-7 rounded-full"
+                className="w-7 h-7 !my-0 rounded-full"
+                onError={() => setImageFailed(true)}
               />
             )}
             <HeaderWithCopy
@@ -212,19 +216,20 @@ export function AccountInfoBase<TNetworkId extends string = string>({
       </HoverCardTrigger>
       <HoverCardContent align="center" className="bg-background">
         <div className="flex items-center gap-2 mb-2">
-          {showIcon && !identity?.image && (
+          {showIcon && (!identity?.image || imageFailed) && (
             <Identicon value={address} size={28} theme={iconTheme} />
           )}
-          {showIcon && identity?.image && (
+          {showIcon && identity?.image && !imageFailed && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={identity.image.toString()}
               alt={name}
               className={cn(
-                "w-7 h-7 rounded-full transition-opacity duration-300",
+                "w-7 h-7 !my-0 rounded-full transition-opacity duration-300",
                 imageLoaded ? "opacity-100" : "opacity-0"
               )}
               onLoad={() => setImageLoaded(true)}
+              onError={() => setImageFailed(true)}
             />
           )}
           <HeaderWithCopy

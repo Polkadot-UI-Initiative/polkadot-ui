@@ -596,7 +596,6 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
                 <TooltipTrigger asChild>
                   <Button
                     variant="ghost"
-                    type="button"
                     size="icon"
                     onClick={handleCopy}
                     className="absolute right-2 top-1/2 -translate-y-1/2 p-2 h-7 w-7 rounded-sm"

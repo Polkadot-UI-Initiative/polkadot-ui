@@ -174,19 +174,21 @@ export function ControlledAmountInput() {
 
 export function AmountInputDocs() {
   return (
-    <PolkadotProvider>
-      <ConnectWallet className="mb-4" />
-      <div className="flex flex-col gap-4">
-        {amountInputExamples.map((example) => (
-          <ComponentPreview
-            ComponentWrapper={<div className="md:w-[400px]"></div>}
-            key={example.name}
-            componentInfo={example}
-            withDocs={false}
-          />
-        ))}
-      </div>
-    </PolkadotProvider>
+    <div className="not-prose">
+      <PolkadotProvider>
+        <ConnectWallet className="mb-4" />
+        <div className="flex flex-col gap-4">
+          {amountInputExamples.map((example) => (
+            <ComponentPreview
+              ComponentWrapper={<div className="md:w-[400px]"></div>}
+              key={example.name}
+              componentInfo={example}
+              withDocs={false}
+            />
+          ))}
+        </div>
+      </PolkadotProvider>
+    </div>
   );
 }
 

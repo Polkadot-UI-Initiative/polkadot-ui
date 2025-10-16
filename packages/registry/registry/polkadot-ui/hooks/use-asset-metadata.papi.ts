@@ -9,6 +9,11 @@ import { useClient } from "@reactive-dot/react";
 import { useConnectionStatus } from "../lib/polkadot-provider.papi";
 
 import { type TokenMetadata } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import { useChaindata } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
+import {
+  NATIVE_TOKEN_KEY,
+  chainIdToKebabCase,
+} from "@/registry/polkadot-ui/lib/utils.dot-ui";
 
 type ExtractAssetMetadataValue<A> = A extends {
   query: {
@@ -62,12 +67,42 @@ export function useAssetMetadata({
       .map((id) =>
         typeof id === "number" && Number.isFinite(id) ? Math.floor(id) : NaN
       )
-      .filter((id) => Number.isInteger(id) && id >= 0) as number[];
+      .filter((id) => Number.isInteger(id) && id >= -1) as number[];
     return [...new Set(sanitized)].sort((a, b) => a - b);
   }, [assetIds]);
 
+  const includesNative = sortedIds.includes(NATIVE_TOKEN_KEY);
+  const palletAssetIds = useMemo(
+    () => sortedIds.filter((id) => id >= 0),
+    [sortedIds]
+  );
+
+  const {
+    chains,
+    isLoading: isChaindataLoading,
+    error: chaindataError,
+  } = useChaindata();
+  const nativeMeta: TokenMetadata | null = useMemo(() => {
+    if (!includesNative) return null;
+    const kebabId = chainIdToKebabCase(chainId);
+    const network = chains.find(
+      (c) => c.id === kebabId || c.id === (chainId as string)
+    );
+    const native = network?.nativeCurrency;
+    if (!native) return null;
+    return {
+      assetId: NATIVE_TOKEN_KEY,
+      name: native.name || "Native",
+      symbol: native.symbol || "UNIT",
+      decimals:
+        typeof native.decimals === "number"
+          ? native.decimals
+          : Number(native.decimals ?? 12),
+    } as TokenMetadata;
+  }, [includesNative, chains, chainId]);
+
   const queryResult = useQuery({
-    queryKey: ["papi-assets-metadata", String(chainId), sortedIds],
+    queryKey: ["papi-assets-metadata", String(chainId), palletAssetIds],
     queryFn: async (): Promise<TokenMetadata[]> => {
       const typedApiUnknown = client!.getTypedApi(
         config.chains[chainId].descriptor
@@ -76,7 +111,7 @@ export function useAssetMetadata({
       const assetApi = typedApiUnknown;
 
       const results = await Promise.all(
-        sortedIds.map(async (assetId) => {
+        palletAssetIds.map(async (assetId) => {
           try {
             type AssetMetadataValue = ExtractAssetMetadataValue<
               typeof assetApi
@@ -116,16 +151,22 @@ export function useAssetMetadata({
 
       return results;
     },
-    enabled: isConnected && !!client && sortedIds.length > 0,
+    enabled: isConnected && !!client && palletAssetIds.length > 0,
     staleTime: 5 * 60 * 1000,
   });
 
-  const assets = useMemo(() => queryResult.data ?? [], [queryResult.data]);
+  const assets = useMemo(() => {
+    const list = queryResult.data ?? [];
+    if (nativeMeta) return [nativeMeta, ...list];
+    return list;
+  }, [queryResult.data, nativeMeta]);
 
   return {
     assets,
-    isLoading: queryResult.isLoading,
-    error: queryResult.error as Error | null,
+    isLoading: queryResult.isLoading || (includesNative && isChaindataLoading),
+    error:
+      queryResult.error ??
+      (includesNative && chaindataError ? new Error(chaindataError) : null),
   } as const;
 }
 

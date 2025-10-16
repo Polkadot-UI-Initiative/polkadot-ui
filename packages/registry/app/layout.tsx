@@ -1,4 +1,3 @@
-import { FeedbackToast } from "@/components/feedback-toast";
 import { Navigation } from "@/components/layout/navigation";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -67,7 +66,6 @@ export default async function RootLayout({
               closeButton
               className="bg-background flex flex-row items-center gap-3"
             />
-            <FeedbackToast />
             <Banner
               buttonText="Report Issue on GitHub"
               buttonUrl="https://github.com/Polkadot-UI-Initiative/polkadot-ui/issues"

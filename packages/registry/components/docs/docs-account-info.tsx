@@ -10,19 +10,20 @@ export const accountInfoExamples: ComponentExample[] = [
   accountInfoExample,
   {
     name: "Account Info - Select Fields",
-    description: "Select which fields to display in the popover and by default",
+    description:
+      "Select which fields to display in the popover and by default. You can also change the order of the fields.",
     code: "account-info",
     component: (
       <AccountInfo
         address={"5CwW67PPdZQQCcdWJVaRJCepSQSrtKUumDAGa7UZbBKwd9R2"}
-        fields={["email", "twitter"]}
+        fields={["email", "twitter", "discord", "github", "matrix"]}
       />
     ),
     tsx: `import { AccountInfo } from "@/components/account-info.dedot"
 
 <AccountInfo
     address={"1hFmn2CuqXqxHgKDqqs2xRBpsPkiRXzJfcLbfDgsW7qgmpA"}
-    fields={["github","twitter"]}
+    fields={["email", "twitter", "discord", "github", "matrix"]}
 />`,
   },
   {
@@ -82,16 +83,18 @@ export const accountInfoExamples: ComponentExample[] = [
 
 export function AccountInfoDocs() {
   return (
-    <PolkadotProvider>
-      <div className="flex flex-col gap-4">
-        {accountInfoExamples.map((example) => (
-          <ComponentPreview
-            key={example.name}
-            componentInfo={example}
-            withDocs={false}
-          />
-        ))}
-      </div>
-    </PolkadotProvider>
+    <div className="not-prose">
+      <PolkadotProvider>
+        <div className="flex flex-col gap-4">
+          {accountInfoExamples.map((example) => (
+            <ComponentPreview
+              key={example.name}
+              componentInfo={example}
+              withDocs={false}
+            />
+          ))}
+        </div>
+      </PolkadotProvider>
+    </div>
   );
 }

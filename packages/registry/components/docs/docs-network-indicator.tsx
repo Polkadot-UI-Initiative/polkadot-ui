@@ -68,16 +68,18 @@ import { paseo } from "typink";
 
 export function NetworkIndicatorDocs() {
   return (
-    <PolkadotProvider>
-      <div className="flex flex-col gap-4">
-        {networkIndicatorExamples.map((example) => (
-          <ComponentPreview
-            key={example.name}
-            componentInfo={example}
-            withDocs={false}
-          />
-        ))}
-      </div>
-    </PolkadotProvider>
+    <div className="not-prose">
+      <PolkadotProvider>
+        <div className="flex flex-col gap-4">
+          {networkIndicatorExamples.map((example) => (
+            <ComponentPreview
+              key={example.name}
+              componentInfo={example}
+              withDocs={false}
+            />
+          ))}
+        </div>
+      </PolkadotProvider>
+    </div>
   );
 }

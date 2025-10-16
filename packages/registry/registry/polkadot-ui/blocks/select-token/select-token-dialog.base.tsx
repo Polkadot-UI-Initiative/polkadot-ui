@@ -2,7 +2,6 @@ import type React from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Input } from "@/registry/polkadot-ui/ui/input";
-import { ChevronDown } from "lucide-react";
 import {
   formatTokenBalance,
   formatTokenPrice,
@@ -50,6 +49,7 @@ export interface SelectTokenDialogBaseProps {
   className?: string;
   placeholder?: string;
   compact?: boolean;
+  connectedAddress?: string;
 }
 
 export interface SelectTokenDialogProviderProps {
@@ -63,7 +63,6 @@ interface TokenDialogItemProps {
   balance?: bigint | null;
   tokenLogo?: string;
   network?: NetworkInfoLike;
-  connectedAccount?: { address?: string } | null;
   className?: string;
   logoSize?: "sm" | "md" | "lg";
   balancePrecision?: number;
@@ -77,11 +76,11 @@ function TokenDialogItem({
   balance,
   tokenLogo,
   network,
-  connectedAccount,
   className,
   logoSize = "md",
   balancePrecision = 2,
-}: TokenDialogItemProps) {
+  effectiveAddress,
+}: TokenDialogItemProps & { effectiveAddress?: string }) {
   const styles = tokenSelectionStyles.tokenItem;
   const contentStyles = tokenSelectionStyles.tokenContent;
 
@@ -103,7 +102,7 @@ function TokenDialogItem({
       <div className={contentStyles.container}>
         <div className={contentStyles.primaryRow}>
           <div className={contentStyles.symbol}>{token.symbol}</div>
-          {connectedAccount?.address && withBalance && (
+          {effectiveAddress && withBalance && (
             <span className={contentStyles.balance}>
               {formatTokenBalance(
                 balance ?? null,
@@ -115,7 +114,7 @@ function TokenDialogItem({
         </div>
         <div className={contentStyles.secondaryRow}>
           <span className={contentStyles.name}>{token.name}</span>
-          {connectedAccount?.address && withBalance && (
+          {effectiveAddress && withBalance && (
             <span className={contentStyles.price}>
               ≈ ${formatTokenPrice(balance ?? null, token.decimals)}
             </span>
@@ -166,6 +165,7 @@ export function SelectTokenDialogBase({
   variant,
   disabled,
   balancePrecision = 2,
+  connectedAddress,
   ...props
 }: Omit<SelectTokenDialogBaseProps, "assetIds" | "chainId"> &
   Omit<React.ComponentProps<typeof Button>, "onChange">) {
@@ -179,18 +179,19 @@ export function SelectTokenDialogBase({
     balances,
   } = services;
 
+  const effectiveAddress = connectedAddress || connectedAccount?.address;
+
   const [isOpen, setIsOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState<TokenInfo | null>(null);
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Keep selectedToken in sync with props.value and available chainTokens
   useEffect(() => {
     if (!chainTokens || chainTokens.length === 0) {
       setSelectedToken(null);
       return;
     }
-    // If value is provided, prefer it
+
     if (value != null) {
       const next = chainTokens.find(
         (token) => Number(token.assetId) === (value as number)
@@ -198,7 +199,7 @@ export function SelectTokenDialogBase({
       setSelectedToken(next ?? null);
       return;
     }
-    // If selectedToken became invalid due to token list change, clear it
+
     if (selectedToken && !chainTokens.find((t) => t.id === selectedToken.id)) {
       setSelectedToken(null);
     }
@@ -235,7 +236,6 @@ export function SelectTokenDialogBase({
   const filteredTokens = useMemo(() => {
     return chainTokens?.filter(
       (token) =>
-        // Search by symbol or name
         token.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
         token.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -272,16 +272,15 @@ export function SelectTokenDialogBase({
                   {placeholder}
                 </span>
               )}
-              <ChevronDown
-                className={cn(
-                  "h-4 w-4 opacity-50 transition-transform duration-200 flex-shrink-0",
-                  isOpen && "rotate-180"
-                )}
-              />
             </>
           ) : (
             <>
-              <div className={tokenSelectionStyles.trigger.content}>
+              <div
+                className={cn(
+                  tokenSelectionStyles.trigger.content,
+                  !displayToken && "mx-auto"
+                )}
+              >
                 {displayToken ? (
                   <>
                     <TokenLogoWithNetwork
@@ -289,24 +288,21 @@ export function SelectTokenDialogBase({
                       networkLogo={network?.logo}
                       tokenSymbol={displayToken.symbol}
                       size="sm"
+                      className="flex-shrink-0"
                     />
                     <div className={tokenSelectionStyles.trigger.tokenInfo}>
-                      <span className="font-medium">{displayToken.symbol}</span>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="font-medium truncate">
+                        {displayToken.symbol}
+                      </span>
+                      <span className="text-xs text-muted-foreground -mt-0.5 truncate">
                         {displayToken.name}
                       </span>
                     </div>
                   </>
                 ) : (
-                  <span>{placeholder}</span>
+                  <span className="truncate">{placeholder}</span>
                 )}
               </div>
-              <ChevronDown
-                className={cn(
-                  tokenSelectionStyles.trigger.chevron,
-                  isOpen && tokenSelectionStyles.trigger.chevronOpen
-                )}
-              />
             </>
           )}
         </Button>
@@ -336,14 +332,14 @@ export function SelectTokenDialogBase({
                   withBalance={withBalance}
                   balance={getTokenBalance(
                     balances,
-                    connectedAccount,
+                    effectiveAddress ? { address: effectiveAddress } : null,
                     token.assetId
                   )}
                   tokenLogo={token.logo}
                   network={network}
-                  connectedAccount={connectedAccount}
                   logoSize="md"
                   balancePrecision={balancePrecision}
+                  effectiveAddress={effectiveAddress}
                 />
               );
             })
