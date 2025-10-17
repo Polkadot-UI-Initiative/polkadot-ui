@@ -45,7 +45,7 @@ export function AmountInputInner(props: AmountInputProps) {
     address: selectedAccount?.address,
   });
 
-  const { tokens: metas } = useTokensByAssetIds(chainId, [tokenId]);
+  const { tokens: metas } = useTokensByAssetIds(String(chainId), [tokenId]);
 
   // prefer explicit assetId, otherwise if multiple provided, pick first for max context
   const hasAccount = Boolean(selectedAccount?.address);
