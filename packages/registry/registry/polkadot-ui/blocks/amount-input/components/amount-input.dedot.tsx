@@ -21,6 +21,7 @@ export interface AmountInputProps extends AmountInputBaseProps {
   assetId?: number;
   withMaxButton?: boolean;
   requiredAccount?: boolean;
+  tokenConversionRate?: number;
 }
 
 export function AmountInput(props: AmountInputProps) {
@@ -49,6 +50,7 @@ export function AmountInputInner(props: AmountInputProps) {
   // prefer explicit assetId, otherwise if multiple provided, pick first for max context
   const hasAccount = Boolean(connectedAccount?.address);
   const rawBalance = tokenId != null ? (accountBalance.free ?? null) : null;
+
   // Do not coerce to 0n when no account; base handles disabled via requiredBalance/disabled
   const maxValue = hasAccount ? rawBalance : null;
   const decimals =
@@ -58,7 +60,7 @@ export function AmountInputInner(props: AmountInputProps) {
   const displayPrecision = Math.min(2, Math.max(0, decimals));
   const derivedStep =
     props.step ??
-    (displayPrecision > 0 ? `0.${"0".repeat(displayPrecision - 1)}1` : "1");
+    (displayPrecision > 0 ? `0.${"0".repeat(displayPrecision - 1)}1` : "0.01");
 
   const isConnected = status === ClientConnectionStatus.Connected;
   const requiresAccount = props.requiredAccount ?? false;
@@ -87,6 +89,7 @@ export function AmountInputInner(props: AmountInputProps) {
       step={derivedStep}
       leftIconUrl={leftIconUrl}
       leftIconAlt={leftIconAlt}
+      tokenConversionRate={props.tokenConversionRate}
     />
   );
 }

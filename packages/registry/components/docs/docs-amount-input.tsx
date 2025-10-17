@@ -4,6 +4,7 @@ import { amountInputExample } from "@/components/examples/dedot/example-amount-i
 import type { ComponentExample } from "@/components/examples/types.examples";
 import { ComponentPreview } from "@/components/layout/component-preview";
 import { AmountInput } from "@/registry/polkadot-ui/blocks/amount-input/components/amount-input.dedot";
+import { AmountInputBase } from "@/registry/polkadot-ui/blocks/amount-input/components/amount-input.base";
 import { ConnectWallet } from "@/registry/polkadot-ui/blocks/connect-wallet/connect-wallet.dedot";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { NATIVE_TOKEN_KEY } from "@/registry/polkadot-ui/lib/utils.dot-ui";
@@ -103,12 +104,13 @@ function ControlledAmountInput() {
     name: "Amount Input - With custom step",
     href: "/docs/components/amount-input",
     code: "amount-input",
-    description: "This Amount Input has the step set to 0.00001",
+    description: "This Amount Input has the step set to 0.05",
     component: (
       <AmountInput
         chainId={paseoAssetHub.id}
+        assetId={NATIVE_TOKEN_KEY}
         withMaxButton={false}
-        step={0.00001}
+        step={0.05}
       />
     ),
     tsx: `import { AmountInput } from "@/components/amount-input.dedot";
@@ -119,20 +121,54 @@ function ControlledAmountInput() {
   step={0.00001}
 />`,
   },
+  {
+    name: "Amount Input Base - Manual values",
+    href: "/docs/components/amount-input",
+    code: "amount-input",
+    description:
+      "Using the base component directly with manual decimals, max, and icon.",
+    component: (
+      <AmountInputBase
+        decimals={8}
+        maxValue={123456789n}
+        withMaxButton
+        leftIconUrl={paseoAssetHub.logo}
+        leftIconAlt={paseoAssetHub.name}
+        placeholder="Enter amount"
+        className="w-full"
+      />
+    ),
+    tsx: `import { AmountInputBase } from "@/components/amount-input.base";
+import { paseoAssetHub } from "typink";
+
+<AmountInputBase
+  decimals={8}
+  maxValue={123456789n}
+  withMaxButton
+  leftIconUrl={paseoAssetHub.logo}
+  leftIconAlt={paseoAssetHub.name}
+  placeholder="Enter amount"
+  className="w-full"
+/>`,
+  },
+  // BigInt controlled example is covered by ControlledAmountInput
 ];
 
 export function ControlledAmountInput() {
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState<bigint | null>(null);
   return (
-    <AmountInput
-      chainId={paseoAssetHub.id}
-      withMaxButton={false}
-      value={value}
-      onChange={(value) => {
-        console.log("Value changed:", value);
-        setValue(value);
-      }}
-    />
+    <>
+      <AmountInput
+        chainId={paseoAssetHub.id}
+        withMaxButton={false}
+        value={value}
+        onChange={(value) => {
+          console.log("Value changed:", value);
+          setValue(value);
+        }}
+      />
+      <p>Value: {String(value ?? "null")}</p>
+    </>
   );
 }
 
@@ -155,3 +191,5 @@ export function AmountInputDocs() {
     </div>
   );
 }
+
+// Removed separate PlanckExample; base AmountInput handles bigint now

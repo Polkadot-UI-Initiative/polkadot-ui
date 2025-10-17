@@ -72,6 +72,9 @@ importers:
 
   packages/registry:
     dependencies:
+      '@hookform/resolvers':
+        specifier: ^5.2.2
+        version: 5.2.2(react-hook-form@7.65.0(react@19.1.0))
       '@modelcontextprotocol/sdk':
         specifier: ^1.15.1
         version: 1.15.1
@@ -128,10 +131,10 @@ importers:
         version: 1.2.8(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@reactive-dot/core':
         specifier: ^0.51.1
-        version: 0.51.1(polkadot-api@1.19.0(bufferutil@4.0.9)(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(zod@3.25.76)
+        version: 0.51.1(polkadot-api@1.19.0(bufferutil@4.0.9)(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(zod@4.0.5)
       '@reactive-dot/react':
         specifier: ^0.51.1
-        version: 0.51.2(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@19.1.2)(polkadot-api@1.19.0(bufferutil@4.0.9)(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3)(utf-8-validate@5.0.10))(react@19.1.0)(typescript@5.8.3)(zod@3.25.76)
+        version: 0.51.2(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@19.1.2)(polkadot-api@1.19.0(bufferutil@4.0.9)(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3)(utf-8-validate@5.0.10))(react@19.1.0)(typescript@5.8.3)(zod@4.0.5)
       '@styleglide/theme-editor':
         specifier: ^0.0.15
         version: 0.0.15
@@ -152,7 +155,7 @@ importers:
         version: 2.1.1
       dedot:
         specifier: ^0.18.2
-        version: 0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76)
+        version: 0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@4.0.5)
       ethers:
         specifier: ^6.15.0
         version: 6.15.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -192,6 +195,9 @@ importers:
       react-dom:
         specifier: 19.1.0
         version: 19.1.0(react@19.1.0)
+      react-hook-form:
+        specifier: ^7.65.0
+        version: 7.65.0(react@19.1.0)
       react-shiki:
         specifier: ^0.8.0
         version: 0.8.0(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -206,14 +212,14 @@ importers:
         version: 1.3.5
       typink:
         specifier: ^0.5.0
-        version: 0.5.1(@babel/core@7.28.0)(@babel/template@7.27.2)(@dedot/chaintypes@0.163.0(dedot@0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76)))(@types/react@19.1.2)(dedot@0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76))(react@19.1.0)(sonner@2.0.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0))
+        version: 0.5.1(@babel/core@7.28.0)(@babel/template@7.27.2)(@dedot/chaintypes@0.163.0(dedot@0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@4.0.5)))(@types/react@19.1.2)(dedot@0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@4.0.5))(react@19.1.0)(sonner@2.0.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0))
       zod:
-        specifier: ^3.25.76
-        version: 3.25.76
+        specifier: ^4.0.5
+        version: 4.0.5
     devDependencies:
       '@dedot/chaintypes':
         specifier: ^0.163.0
-        version: 0.163.0(dedot@0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76))
+        version: 0.163.0(dedot@0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@4.0.5))
       '@eslint/eslintrc':
         specifier: ^3
         version: 3.3.1
@@ -844,6 +850,11 @@ packages:
 
   '@formatjs/intl-localematcher@0.6.1':
     resolution: {integrity: sha512-ePEgLgVCqi2BBFnTMWPfIghu6FkbZnnBVhO2sSxvLfrdFw7wCHAHiDoM2h4NRgjbaY7+B7HgOLZGkK187pZTZg==}
+
+  '@hookform/resolvers@5.2.2':
+    resolution: {integrity: sha512-A/IxlMLShx3KjV/HeTcTfaMxdwy690+L/ZADoeaTltLx+CVuzkeVIPuybK3jrRfw7YZnmdKsVVHAlEPIAEUNlA==}
+    peerDependencies:
+      react-hook-form: ^7.55.0
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -2277,6 +2288,9 @@ packages:
 
   '@standard-schema/spec@1.0.0':
     resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
+
+  '@standard-schema/utils@0.3.0':
+    resolution: {integrity: sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==}
 
   '@styleglide/theme-editor@0.0.15':
     resolution: {integrity: sha512-NMgdPL1R1z6JaVHIGAmJupPa+NXDzTYbAZwIPReK652zQkrcAaKnJ1i/4WlRNzlWPmAFnxEfrmeMsz33c6rzrA==}
@@ -5554,6 +5568,12 @@ packages:
     peerDependencies:
       react: ^19.1.0
 
+  react-hook-form@7.65.0:
+    resolution: {integrity: sha512-xtOzDz063WcXvGWaHgLNrNzlsdFgtUWcb32E6WFaGTd7kPZG3EeDusjdZfUsPwKCKVXy1ZlntifaHZ4l8pAsmw==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18 || ^19
+
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -6995,15 +7015,15 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@dedot/chaintypes@0.163.0(dedot@0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76))':
+  '@dedot/chaintypes@0.163.0(dedot@0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@4.0.5))':
     dependencies:
-      dedot: 0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76)
+      dedot: 0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@4.0.5)
 
-  '@dedot/cli@0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76)':
+  '@dedot/cli@0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@4.0.5)':
     dependencies:
       '@dedot/api': 0.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       '@dedot/codecs': 0.18.3
-      '@dedot/codegen': 0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76)
+      '@dedot/codegen': 0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@4.0.5)
       '@polkadot-api/wasm-executor': 0.1.2
       '@polkadot/types-support': 16.4.6
       ora: 8.2.0
@@ -7019,11 +7039,11 @@ snapshots:
       '@dedot/shape': 0.18.3
       '@dedot/utils': 0.18.3
 
-  '@dedot/codegen@0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76)':
+  '@dedot/codegen@0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@4.0.5)':
     dependencies:
       '@dedot/api': 0.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       '@dedot/codecs': 0.18.3
-      '@dedot/contracts': 0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76)
+      '@dedot/contracts': 0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@4.0.5)
       '@dedot/providers': 0.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       '@dedot/runtime-specs': 0.18.3
       '@dedot/shape': 0.18.3
@@ -7037,13 +7057,13 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@dedot/contracts@0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76)':
+  '@dedot/contracts@0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@4.0.5)':
     dependencies:
       '@dedot/api': 0.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       '@dedot/codecs': 0.18.3
       '@dedot/types': 0.18.3
       '@dedot/utils': 0.18.3
-      viem: 2.38.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76)
+      viem: 2.38.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@4.0.5)
     transitivePeerDependencies:
       - bufferutil
       - typescript
@@ -7282,6 +7302,11 @@ snapshots:
   '@formatjs/intl-localematcher@0.6.1':
     dependencies:
       tslib: 2.8.1
+
+  '@hookform/resolvers@5.2.2(react-hook-form@7.65.0(react@19.1.0))':
+    dependencies:
+      '@standard-schema/utils': 0.3.0
+      react-hook-form: 7.65.0(react@19.1.0)
 
   '@humanfs/core@0.19.1': {}
 
@@ -8749,21 +8774,21 @@ snapshots:
 
   '@radix-ui/rect@1.1.1': {}
 
-  '@reactive-dot/core@0.51.1(polkadot-api@1.19.0(bufferutil@4.0.9)(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(zod@3.25.76)':
+  '@reactive-dot/core@0.51.1(polkadot-api@1.19.0(bufferutil@4.0.9)(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(zod@4.0.5)':
     dependencies:
       '@noble/hashes': 2.0.1
       '@reactive-dot/utils': 0.10.1
       '@substrate/smoldot-discovery': 2.0.2
-      abitype: 1.1.1(typescript@5.8.3)(zod@3.25.76)
-      ox: 0.9.8(typescript@5.8.3)(zod@3.25.76)
+      abitype: 1.1.1(typescript@5.8.3)(zod@4.0.5)
+      ox: 0.9.8(typescript@5.8.3)(zod@4.0.5)
       polkadot-api: 1.19.0(bufferutil@4.0.9)(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
       - typescript
       - zod
 
-  '@reactive-dot/react@0.51.2(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@19.1.2)(polkadot-api@1.19.0(bufferutil@4.0.9)(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3)(utf-8-validate@5.0.10))(react@19.1.0)(typescript@5.8.3)(zod@3.25.76)':
+  '@reactive-dot/react@0.51.2(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@19.1.2)(polkadot-api@1.19.0(bufferutil@4.0.9)(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3)(utf-8-validate@5.0.10))(react@19.1.0)(typescript@5.8.3)(zod@4.0.5)':
     dependencies:
-      '@reactive-dot/core': 0.51.1(polkadot-api@1.19.0(bufferutil@4.0.9)(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(zod@3.25.76)
+      '@reactive-dot/core': 0.51.1(polkadot-api@1.19.0(bufferutil@4.0.9)(jiti@2.4.2)(postcss@8.5.6)(rxjs@7.8.2)(tsx@4.20.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(zod@4.0.5)
       jotai: 2.15.0(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@19.1.2)(react@19.1.0)
       jotai-eager: 0.2.3(jotai@2.15.0(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@19.1.2)(react@19.1.0))
       jotai-effect: 2.1.2(jotai@2.15.0(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@19.1.2)(react@19.1.0))
@@ -8995,6 +9020,8 @@ snapshots:
       '@sinonjs/commons': 3.0.1
 
   '@standard-schema/spec@1.0.0': {}
+
+  '@standard-schema/utils@0.3.0': {}
 
   '@styleglide/theme-editor@0.0.15': {}
 
@@ -9424,15 +9451,15 @@ snapshots:
       next: 15.5.4(@babel/core@7.28.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react: 19.1.0
 
-  abitype@1.1.0(typescript@5.8.3)(zod@3.25.76):
+  abitype@1.1.0(typescript@5.8.3)(zod@4.0.5):
     optionalDependencies:
       typescript: 5.8.3
-      zod: 3.25.76
+      zod: 4.0.5
 
-  abitype@1.1.1(typescript@5.8.3)(zod@3.25.76):
+  abitype@1.1.1(typescript@5.8.3)(zod@4.0.5):
     optionalDependencies:
       typescript: 5.8.3
-      zod: 3.25.76
+      zod: 4.0.5
 
   accepts@2.0.0:
     dependencies:
@@ -9994,12 +10021,12 @@ snapshots:
 
   dedent@1.6.0: {}
 
-  dedot@0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76):
+  dedot@0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@4.0.5):
     dependencies:
       '@dedot/api': 0.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      '@dedot/cli': 0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76)
+      '@dedot/cli': 0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@4.0.5)
       '@dedot/codecs': 0.18.3
-      '@dedot/contracts': 0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76)
+      '@dedot/contracts': 0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@4.0.5)
       '@dedot/merkleized-metadata': 0.18.3
       '@dedot/providers': 0.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       '@dedot/runtime-specs': 0.18.3
@@ -12768,7 +12795,7 @@ snapshots:
       object-keys: 1.1.1
       safe-push-apply: 1.0.0
 
-  ox@0.9.6(typescript@5.8.3)(zod@3.25.76):
+  ox@0.9.6(typescript@5.8.3)(zod@4.0.5):
     dependencies:
       '@adraffy/ens-normalize': 1.11.1
       '@noble/ciphers': 1.3.0
@@ -12776,14 +12803,14 @@ snapshots:
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
-      abitype: 1.1.1(typescript@5.8.3)(zod@3.25.76)
+      abitype: 1.1.1(typescript@5.8.3)(zod@4.0.5)
       eventemitter3: 5.0.1
     optionalDependencies:
       typescript: 5.8.3
     transitivePeerDependencies:
       - zod
 
-  ox@0.9.8(typescript@5.8.3)(zod@3.25.76):
+  ox@0.9.8(typescript@5.8.3)(zod@4.0.5):
     dependencies:
       '@adraffy/ens-normalize': 1.11.1
       '@noble/ciphers': 1.3.0
@@ -12791,7 +12818,7 @@ snapshots:
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
-      abitype: 1.1.1(typescript@5.8.3)(zod@3.25.76)
+      abitype: 1.1.1(typescript@5.8.3)(zod@4.0.5)
       eventemitter3: 5.0.1
     optionalDependencies:
       typescript: 5.8.3
@@ -13067,6 +13094,10 @@ snapshots:
     dependencies:
       react: 19.1.0
       scheduler: 0.26.0
+
+  react-hook-form@7.65.0(react@19.1.0):
+    dependencies:
+      react: 19.1.0
 
   react-is@16.13.1: {}
 
@@ -14078,11 +14109,11 @@ snapshots:
 
   typescript@5.9.2: {}
 
-  typink@0.5.1(@babel/core@7.28.0)(@babel/template@7.27.2)(@dedot/chaintypes@0.163.0(dedot@0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76)))(@types/react@19.1.2)(dedot@0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76))(react@19.1.0)(sonner@2.0.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)):
+  typink@0.5.1(@babel/core@7.28.0)(@babel/template@7.27.2)(@dedot/chaintypes@0.163.0(dedot@0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@4.0.5)))(@types/react@19.1.2)(dedot@0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@4.0.5))(react@19.1.0)(sonner@2.0.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)):
     dependencies:
-      '@dedot/chaintypes': 0.163.0(dedot@0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76))
+      '@dedot/chaintypes': 0.163.0(dedot@0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@4.0.5))
       '@substrate/connect-known-chains': 1.10.3
-      dedot: 0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76)
+      dedot: 0.18.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@4.0.5)
       fast-deep-equal: 3.1.3
       jotai: 2.15.0(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@19.1.2)(react@19.1.0)
       react: 19.1.0
@@ -14244,15 +14275,15 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.2
 
-  viem@2.38.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76):
+  viem@2.38.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@4.0.5):
     dependencies:
       '@noble/curves': 1.9.1
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
-      abitype: 1.1.0(typescript@5.8.3)(zod@3.25.76)
+      abitype: 1.1.0(typescript@5.8.3)(zod@4.0.5)
       isows: 1.0.7(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-      ox: 0.9.6(typescript@5.8.3)(zod@3.25.76)
+      ox: 0.9.6(typescript@5.8.3)(zod@4.0.5)
       ws: 8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
     optionalDependencies:
       typescript: 5.8.3

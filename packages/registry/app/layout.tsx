@@ -29,6 +29,7 @@ export const metadata: Metadata = {
   title: "Polkadot UI - Polkadot React Components",
   description:
     "Beautiful, accessible components for the Polkadot ecosystem. Type-safe, customizable, and built with modern React patterns.",
+  metadataBase: new URL("https://polkadot-ui.com"),
 };
 
 export default async function RootLayout({

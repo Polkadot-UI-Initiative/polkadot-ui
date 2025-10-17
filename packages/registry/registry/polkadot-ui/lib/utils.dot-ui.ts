@@ -97,12 +97,28 @@ export function hasPositiveIdentityJudgement(
     return false;
   }
 
-  return judgements.some((judgement: [number, unknown]) => {
-    // Judgement types: Unknown, FeePaid, Reasonable, KnownGood, OutOfDate, LowQuality, Erroneous
-    // More info: https://wiki.polkadot.network/learn/learn-identity/#judgements
-    const judgementType =
-      (judgement[1] as { type?: string })?.type || judgement[1];
-    return judgementType === "Reasonable" || judgementType === "KnownGood";
+  return judgements.some(([, raw]): boolean => {
+    // Accept multiple shapes across APIs:
+    // - PAPI: { type: "KnownGood" | "Reasonable" | ... }
+    // - Dedot: { KnownGood: null } or { Reasonable: null }
+    // - String: "KnownGood" | "Reasonable"
+    const j = raw as unknown;
+
+    // PAPI-style discriminated object
+    const t = (j as { type?: unknown })?.type;
+    if (typeof t === "string") return t === "Reasonable" || t === "KnownGood";
+
+    // Dedot-style variant object with a single key
+    if (j && typeof j === "object") {
+      const keys = Object.keys(j as Record<string, unknown>);
+      if (keys.includes("KnownGood") || keys.includes("Reasonable"))
+        return true;
+    }
+
+    // String fallback
+    if (typeof j === "string") return j === "Reasonable" || j === "KnownGood";
+
+    return false;
   });
 }
 
@@ -347,6 +363,82 @@ export function formatTokenPrice(
   });
 
   return (Number(formattedBalance) * conversionRate).toFixed(2);
+}
+
+/**
+ * Parse a base-10 decimal string into a planck bigint using token decimals
+ * - Accepts strings like "123", "0.1", ".5"
+ * - Ignores thousands separators if provided (",")
+ * - Truncates or rounds extra fractional digits based on options.round
+ */
+export function parseDecimalToPlanck(
+  input: string | null | undefined,
+  decimals: number,
+  options?: { round?: boolean; decimalSeparator?: string }
+): bigint | null {
+  if (!input) return null;
+  const decimalSeparator = options?.decimalSeparator ?? ".";
+  const round = options?.round ?? false;
+
+  // Normalize input: remove spaces and thousands separators
+  let s = String(input).trim();
+  if (s.length === 0) return null;
+
+  // Replace localized decimal separator with '.' if needed
+  if (decimalSeparator !== ".") s = s.replaceAll(decimalSeparator, ".");
+
+  // Only digits and at most one dot
+  s = s.replace(/[^0-9.]/g, "");
+  const firstDot = s.indexOf(".");
+  if (firstDot !== -1)
+    s = s.slice(0, firstDot + 1) + s.slice(firstDot + 1).replace(/\./g, "");
+
+  if (s === ".") return 0n;
+  if (s === "") return null;
+
+  const [intPartRaw, fracPartRaw = ""] = s.split(".");
+  const intPart = intPartRaw.replace(/^0+(?=\d)/, "");
+  let fracPart = fracPartRaw.replace(/[^0-9]/g, "");
+
+  if (decimals <= 0) {
+    return BigInt(intPart.length ? intPart : "0");
+  }
+
+  if (fracPart.length > decimals) {
+    if (round) {
+      const head = fracPart.slice(0, decimals);
+      const nextDigit = fracPart.charCodeAt(decimals) - 48; // '0' -> 48
+      if (Number.isFinite(nextDigit) && nextDigit >= 5) {
+        // Round the fractional head and carry into integer if needed
+        const rounded = incrementDecimalString(head);
+        if (rounded.length > head.length) {
+          // carry to integer part
+          const carriedInt = incrementDecimalString(
+            intPart.length ? intPart : "0"
+          );
+          fracPart = "0".repeat(decimals);
+          const asStr = `${carriedInt}${fracPart}`;
+          return BigInt(asStr);
+        } else {
+          fracPart = rounded.padStart(decimals, "0");
+        }
+      } else {
+        fracPart = head;
+      }
+    } else {
+      fracPart = fracPart.slice(0, decimals);
+    }
+  }
+
+  if (fracPart.length < decimals) fracPart = fracPart.padEnd(decimals, "0");
+
+  const intStr = intPart.length ? intPart : "0";
+  const combined = `${intStr}${fracPart}`;
+  try {
+    return BigInt(combined);
+  } catch {
+    return null;
+  }
 }
 
 /**
