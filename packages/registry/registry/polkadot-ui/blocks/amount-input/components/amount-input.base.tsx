@@ -25,6 +25,9 @@ export interface AmountInputBaseProps
   requiredBalance?: boolean;
   onValidationChange?: (validation: AmountValidation) => void;
   clampOnMax?: boolean;
+  /** USD conversion rate for the token (1 token -> X USD). When provided,
+   *  an estimated USD value is shown below the input. */
+  tokenConversionRate?: number;
 }
 
 export interface AmountValidation {
@@ -50,6 +53,7 @@ export function AmountInputBase(props: AmountInputBaseProps) {
     requiredBalance = true,
     onValidationChange,
     clampOnMax = true,
+    tokenConversionRate,
     ...inputProps
   } = props;
 
@@ -89,6 +93,30 @@ export function AmountInputBase(props: AmountInputBaseProps) {
         : undefined,
     [maxValue, decimals]
   );
+
+  // USD estimate based on current sanitized input and conversion rate
+  const usdEstimate = useMemo(() => {
+    if (tokenConversionRate == null) return null;
+    const parsed = parseDecimalToPlanck(inputAmount, decimals, {
+      round: false,
+    });
+    if (parsed == null) return null;
+    const divisor = 10 ** Math.max(0, decimals);
+    const tokenAmount = Number(parsed) / divisor;
+    if (!Number.isFinite(tokenAmount)) return null;
+    const usd = tokenAmount * tokenConversionRate;
+    return Number.isFinite(usd) ? usd : null;
+  }, [inputAmount, decimals, tokenConversionRate]);
+
+  const usdLabel = useMemo(() => {
+    if (usdEstimate == null) return null;
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(usdEstimate);
+  }, [usdEstimate]);
 
   /**
    * Normalize raw user input into a parser-friendly decimal string.
@@ -215,71 +243,79 @@ export function AmountInputBase(props: AmountInputBaseProps) {
     (requiredBalance === true && maxValue === 0n);
 
   return (
-    <InputGroup>
-      <InputGroupAddon>
-        {showLeftIcon && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={leftIconUrl}
-            alt={leftIconAlt ?? "token"}
-            className="size-5 rounded"
-            aria-hidden={!leftIconAlt}
-          />
-        )}
-      </InputGroupAddon>
-      <InputGroupInput
-        id={id}
-        type="number"
-        disabled={finalDisabled}
-        value={inputAmount}
-        onChange={handleInputChange}
-        onKeyDown={(e) => {
-          if (["e", "E", "+", "-", " "].includes(e.key)) e.preventDefault();
-        }}
-        onBeforeInput={(e) => {
-          const ev = e as unknown as InputEvent;
-          const data =
-            (ev && "data" in ev ? (ev as InputEvent).data : "") || "";
-          if (!data) return;
-          if (!/^[0-9.]$/.test(data)) {
-            e.preventDefault();
-            return;
-          }
-          if (data === "." && inputAmount.includes(".")) e.preventDefault();
-        }}
-        onPaste={(e) => {
-          e.preventDefault();
-          const text = e.clipboardData.getData("text");
-          // Reuse input change logic by faking a target
-          const fakeEvent = {
-            target: { value: text },
-          } as unknown as React.ChangeEvent<HTMLInputElement>;
-          handleInputChange(fakeEvent);
-        }}
-        onDrop={(e) => e.preventDefault()}
-        placeholder={placeholder}
-        autoComplete="off"
-        min="0"
-        max={inputProps.max ?? (clampOnMax ? formattedMax : undefined)}
-        inputMode="decimal"
-        pattern={inputProps.pattern ?? "[0-9]*\\.?[0-9]*"}
-        className={cn("bg-background", className)}
-        {...inputProps}
-      />
-      {showMax && (
-        <InputGroupAddon align="inline-end">
-          <InputGroupButton
-            onClick={handleMaxClick}
-            className="text-xs"
-            aria-label="Set max amount"
-            variant="outline"
-            size="xs"
-            disabled={maxValue == null || maxValue === 0n}
-          >
-            Max
-          </InputGroupButton>
+    <div className="basis-full flex flex-col gap-0.5">
+      <InputGroup>
+        <InputGroupAddon>
+          {showLeftIcon && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={leftIconUrl}
+              alt={leftIconAlt ?? "token"}
+              className="size-5 rounded"
+              aria-hidden={!leftIconAlt}
+            />
+          )}
+          {leftIconAlt}
         </InputGroupAddon>
+        <InputGroupInput
+          id={id}
+          type="number"
+          disabled={finalDisabled}
+          value={inputAmount}
+          onChange={handleInputChange}
+          onKeyDown={(e) => {
+            if (["e", "E", "+", "-", " "].includes(e.key)) e.preventDefault();
+          }}
+          onBeforeInput={(e) => {
+            const ev = e as unknown as InputEvent;
+            const data =
+              (ev && "data" in ev ? (ev as InputEvent).data : "") || "";
+            if (!data) return;
+            if (!/^[0-9.]$/.test(data)) {
+              e.preventDefault();
+              return;
+            }
+            if (data === "." && inputAmount.includes(".")) e.preventDefault();
+          }}
+          onPaste={(e) => {
+            e.preventDefault();
+            const text = e.clipboardData.getData("text");
+            // Reuse input change logic by faking a target
+            const fakeEvent = {
+              target: { value: text },
+            } as unknown as React.ChangeEvent<HTMLInputElement>;
+            handleInputChange(fakeEvent);
+          }}
+          onDrop={(e) => e.preventDefault()}
+          placeholder={placeholder}
+          autoComplete="off"
+          min="0"
+          max={inputProps.max ?? (clampOnMax ? formattedMax : undefined)}
+          inputMode="decimal"
+          pattern={inputProps.pattern ?? "[0-9]*\\.?[0-9]*"}
+          className={cn("bg-background", className)}
+          {...inputProps}
+        />
+        {showMax && (
+          <InputGroupAddon align="inline-end">
+            <InputGroupButton
+              onClick={handleMaxClick}
+              className="text-xs"
+              aria-label="Set max amount"
+              variant="outline"
+              size="xs"
+              disabled={maxValue == null || maxValue === 0n}
+            >
+              Max
+            </InputGroupButton>
+          </InputGroupAddon>
+        )}
+      </InputGroup>
+      {usdLabel && (
+        <div className="text-xs text-muted-foreground mt-1">
+          ~ {usdLabel} USD
+        </div>
       )}
-    </InputGroup>
+    </div>
   );
 }

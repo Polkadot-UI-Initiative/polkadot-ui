@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -57,8 +57,6 @@ export default function Page() {
     });
   }
 
-  const chainId = useMemo(() => polkadotPeople.id, []);
-
   return (
     <PolkadotProvider>
       <div className="flex items-center justify-center w-full text-center">
@@ -84,11 +82,10 @@ export default function Page() {
                   identityChain={polkadotPeople.id}
                   className="w-full"
                   truncate={8}
-                  format="both"
                   required={false}
                   placeholder="Enter an address or search for an identity"
                   value={field.value}
-                  // onChange={(addr) => field.onChange(addr)}
+                  onChange={(addr) => field.onChange(addr)}
                 />
               )}
             />
