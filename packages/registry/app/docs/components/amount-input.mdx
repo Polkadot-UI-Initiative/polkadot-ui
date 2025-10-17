@@ -17,6 +17,7 @@ import { AmountInputDocs } from "@/components/docs/docs-amount-input";
 - **Token-aware UX**: Derives step and icon from token metadata via chaindata
 - **Wallet-aware states**: Enable/disable behavior based on connection and balance
 - **Shadcn Input compatible**: Accepts and forwards all shadcn `Input` props
+ - **USD estimate (optional)**: Pass `tokenConversionRate` to show an inline “~ $X.XX USD” hint below the input
 
 ## Installation
 
@@ -44,6 +45,7 @@ Some usages of the AmountInput component depend on having a wallet connected and
 | `disabled`        | `boolean`                 | no       | `false`             | Force disable the input |
 | `className`       | `string`                  | no       | -                   | Extra classes for the input |
 | `step`            | `number or string`        | no       | derived (see below) | Numeric step; defaults to `10^-p` where `p = min(2, tokenDecimals)` |
+| `tokenConversionRate` | `number`              | no       | -                   | USD per 1 token. When provided, shows an estimate like `~ $24.12 USD` below the input |
 
 Notes:
 
