@@ -25,10 +25,20 @@ export const amountInputExample: ComponentExample = {
   description: "Input component for entering amounts",
   component: <DedotAmountInputWithPrice />,
   tsx: `import { AmountInput } from "@/components/amount-input.dedot";
+import { polkadot } from "typink";
+import { NATIVE_TOKEN_KEY } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 
-<AmountInput
-  chainId={polkadotAssetHub.id}
-  assetId={NATIVE_TOKEN_KEY}
-  className="w-full"
-/>`,
+function DedotAmountInputWithPrice() {
+  const { data: price } = useSubscanDotPrice();
+  return (
+    <AmountInput
+      chainId={polkadot.id}
+      assetId={NATIVE_TOKEN_KEY}
+      className="w-full"
+      tokenConversionRate={price ?? undefined}
+    />
+  );
+}
+
+<DedotAmountInputWithPrice />`,
 };
