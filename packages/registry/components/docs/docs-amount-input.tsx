@@ -136,7 +136,6 @@ function ControlledAmountInput() {
         leftIconAlt={paseoAssetHub.name}
         placeholder="Enter amount"
         className="w-full"
-        tokenConversionRate={4.07}
       />
     ),
     tsx: `import { AmountInputBase } from "@/components/amount-input.base";
@@ -150,7 +149,6 @@ import { paseoAssetHub } from "typink";
   leftIconAlt={paseoAssetHub.name}
   placeholder="Enter amount"
   className="w-full"
-  tokenConversionRate={4.07}
 />`,
   },
   // BigInt controlled example is covered by ControlledAmountInput
