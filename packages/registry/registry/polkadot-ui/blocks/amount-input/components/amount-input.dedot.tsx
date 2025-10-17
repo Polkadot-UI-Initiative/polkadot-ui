@@ -49,6 +49,7 @@ export function AmountInputInner(props: AmountInputProps) {
   // prefer explicit assetId, otherwise if multiple provided, pick first for max context
   const hasAccount = Boolean(connectedAccount?.address);
   const rawBalance = tokenId != null ? (accountBalance.free ?? null) : null;
+
   // Effective max respects explicit prop first, then withMaxButton + account balance
   const explicitMax: bigint | null = props.maxValue ?? null;
   const accountMax: bigint | null = hasAccount ? rawBalance : null;

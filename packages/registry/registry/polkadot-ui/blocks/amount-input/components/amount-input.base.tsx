@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/registry/polkadot-ui/lib/utils";
 import {
   formatPlanck,
@@ -76,81 +76,135 @@ export function AmountInputBase(props: AmountInputBaseProps) {
           });
     setInputAmount(next);
   }, [value, decimals]);
-  const formattedMax =
-    maxValue != null
-      ? formatPlanck(maxValue, decimals, {
-          thousandsSeparator: "",
-          decimalSeparator: ".",
-          trimTrailingZeros: true,
-        })
-      : undefined;
+
+  const formattedMax = useMemo(
+    () =>
+      maxValue != null
+        ? formatPlanck(maxValue, decimals, {
+            thousandsSeparator: "",
+            decimalSeparator: ".",
+            trimTrailingZeros: true,
+            round: false,
+          })
+        : undefined,
+    [maxValue, decimals]
+  );
+
+  /**
+   * Normalize raw user input into a parser-friendly decimal string.
+   * - Keeps digits and one dot
+   * - Drops extra dots/invalid chars
+   * - Prefixes standalone dot with a leading zero
+   */
+  function sanitize(raw: string): string {
+    let s = raw.replace(/[^0-9.]/g, "");
+    const firstDot = s.indexOf(".");
+    if (firstDot !== -1)
+      s = s.slice(0, firstDot + 1) + s.slice(firstDot + 1).replace(/\./g, "");
+    if (s.startsWith(".")) s = "0" + s;
+    return s;
+  }
+
+  /**
+   * Parse sanitized decimal into planck, detect max overflow, and clamp
+   * to max when clampOnMax is enabled. Returns the effective string/value
+   * and whether overflow occurred.
+   */
+  function validateAndClamp(s: string): {
+    sanitized: string;
+    parsed: bigint | null;
+    exceeds: boolean;
+  } {
+    if (s === "") return { sanitized: s, parsed: null, exceeds: false };
+    const parsed = parseDecimalToPlanck(s, decimals, { round: false });
+    const exceeds = parsed != null && maxValue != null && parsed > maxValue;
+    if (exceeds && clampOnMax)
+      return {
+        sanitized: formattedMax ?? s,
+        parsed: maxValue ?? parsed,
+        exceeds,
+      };
+    return { sanitized: s, parsed, exceeds };
+  }
+
+  /**
+   * Emit structured validation to consumers when provided, covering
+   * empty/invalid/exceeds cases in a consistent shape.
+   */
+  function emitValidation(
+    sanitized: string,
+    parsed: bigint | null,
+    exceeds: boolean
+  ) {
+    if (!onValidationChange) return;
+    if (sanitized === "") {
+      onValidationChange({
+        isValid: false,
+        reason: "empty",
+        error: undefined,
+        valuePlanck: null,
+        maxPlanck: maxValue ?? null,
+      });
+      return;
+    }
+    if (exceeds && !clampOnMax) {
+      onValidationChange({
+        isValid: false,
+        reason: "exceedsMax",
+        error: "That amount exceeds your wallet's funds",
+        valuePlanck: parsed,
+        maxPlanck: maxValue ?? null,
+      });
+      return;
+    }
+    onValidationChange({
+      isValid: parsed != null,
+      reason: parsed != null ? undefined : "invalid",
+      error: parsed != null ? undefined : "Invalid amount",
+      valuePlanck: parsed,
+      maxPlanck: maxValue ?? null,
+    });
+  }
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const raw = e.target.value;
-    // Allow only digits and a single dot
-    let sanitized = raw.replace(/[^0-9.]/g, "");
-    const firstDot = sanitized.indexOf(".");
-    if (firstDot !== -1)
-      sanitized =
-        sanitized.slice(0, firstDot + 1) +
-        sanitized.slice(firstDot + 1).replace(/\./g, "");
-
-    // if the first character is a dot, add a 0 in front
-    if (sanitized.startsWith(".")) {
-      sanitized = "0" + sanitized;
-    }
-
-    // Parse and clamp
-    let parsed: bigint | null = null;
-    if (sanitized !== "") {
-      parsed = parseDecimalToPlanck(sanitized, decimals, { round: false });
-      const exceeds = parsed != null && maxValue != null && parsed > maxValue;
-      if (exceeds && clampOnMax) {
-        sanitized = formattedMax ?? sanitized;
-        parsed = maxValue;
-      }
-      if (onValidationChange) {
-        if (sanitized === "") {
-          onValidationChange({
-            isValid: false,
-            reason: "empty",
-            error: undefined,
-            valuePlanck: null,
-            maxPlanck: maxValue ?? null,
-          });
-        } else if (exceeds && !clampOnMax) {
-          onValidationChange({
-            isValid: false,
-            reason: "exceedsMax",
-            error: "That amount exceeds your wallet's funds",
-            valuePlanck: parsed,
-            maxPlanck: maxValue ?? null,
-          });
-        } else {
-          onValidationChange({
-            isValid: parsed != null,
-            reason: parsed != null ? undefined : "invalid",
-            error: parsed != null ? undefined : "Invalid amount",
-            valuePlanck: parsed,
-            maxPlanck: maxValue ?? null,
-          });
-        }
-      }
-    }
-
-    setInputAmount(sanitized);
-    onChange?.(sanitized === "" ? null : parsed);
+    const sanitized = sanitize(raw);
+    const {
+      sanitized: nextSanitized,
+      parsed,
+      exceeds,
+    } = validateAndClamp(sanitized);
+    emitValidation(nextSanitized, parsed, exceeds);
+    setInputAmount(nextSanitized);
+    onChange?.(nextSanitized === "" ? null : parsed);
   }
 
   function handleMaxClick() {
     if (maxValue == null || maxValue === 0n) return;
-    const maxStr = formatPlanck(maxValue, decimals, {
+    // If a step is provided, floor max to the nearest step multiple to satisfy
+    // native <input type="number"> validation constraints.
+    let steppedMax: bigint = maxValue;
+    const stepProp = (inputProps as { step?: number | string })?.step;
+    if (stepProp != null && stepProp !== "any") {
+      const stepStr =
+        typeof stepProp === "number" ? String(stepProp) : String(stepProp);
+      const stepPlanckMaybe = parseDecimalToPlanck(stepStr, decimals, {
+        round: false,
+      });
+      if (typeof stepPlanckMaybe === "bigint" && stepPlanckMaybe > 0n) {
+        const stepPlanck = stepPlanckMaybe;
+        steppedMax = (maxValue / stepPlanck) * stepPlanck; // floor to step
+      }
+    }
+
+    const maxStr = formatPlanck(steppedMax, decimals, {
       thousandsSeparator: "",
       decimalSeparator: ".",
       trimTrailingZeros: true,
+      round: false,
     });
     setInputAmount(maxStr);
-    onChange?.(maxValue);
+    onChange?.(steppedMax);
   }
 
   const showMax = Boolean(withMaxButton);
@@ -194,58 +248,13 @@ export function AmountInputBase(props: AmountInputBaseProps) {
           if (data === "." && inputAmount.includes(".")) e.preventDefault();
         }}
         onPaste={(e) => {
-          const text = e.clipboardData.getData("text");
-          let sanitized = text.replace(/[^0-9.]/g, "");
-          const firstDot = sanitized.indexOf(".");
-          if (firstDot !== -1)
-            sanitized =
-              sanitized.slice(0, firstDot + 1) +
-              sanitized.slice(firstDot + 1).replace(/\./g, "");
-          if (sanitized.startsWith(".")) sanitized = "0" + sanitized;
-
-          // Clamp against maxValue on paste as well
-          let parsed: bigint | null = null;
-          if (sanitized !== "") {
-            parsed = parseDecimalToPlanck(sanitized, decimals, {
-              round: false,
-            });
-            const exceeds =
-              parsed != null && maxValue != null && parsed > maxValue;
-            if (exceeds && clampOnMax) {
-              sanitized = formattedMax ?? sanitized;
-              parsed = maxValue;
-            }
-            if (onValidationChange) {
-              if (sanitized === "") {
-                onValidationChange({
-                  isValid: false,
-                  reason: "empty",
-                  error: undefined,
-                  valuePlanck: null,
-                  maxPlanck: maxValue ?? null,
-                });
-              } else if (exceeds && !clampOnMax) {
-                onValidationChange({
-                  isValid: false,
-                  reason: "exceedsMax",
-                  error: "That amount exceeds your wallet's funds",
-                  valuePlanck: parsed,
-                  maxPlanck: maxValue ?? null,
-                });
-              } else {
-                onValidationChange({
-                  isValid: parsed != null,
-                  reason: parsed != null ? undefined : "invalid",
-                  error: parsed != null ? undefined : "Invalid amount",
-                  valuePlanck: parsed,
-                  maxPlanck: maxValue ?? null,
-                });
-              }
-            }
-          }
           e.preventDefault();
-          setInputAmount(sanitized);
-          onChange?.(sanitized === "" ? null : parsed);
+          const text = e.clipboardData.getData("text");
+          // Reuse input change logic by faking a target
+          const fakeEvent = {
+            target: { value: text },
+          } as unknown as React.ChangeEvent<HTMLInputElement>;
+          handleInputChange(fakeEvent);
         }}
         onDrop={(e) => e.preventDefault()}
         placeholder={placeholder}
@@ -255,7 +264,6 @@ export function AmountInputBase(props: AmountInputBaseProps) {
         inputMode="decimal"
         pattern={inputProps.pattern ?? "[0-9]*\\.?[0-9]*"}
         className={cn("bg-background", className)}
-        // className={cn(showMax && "pr-14", showLeftIcon && "pl-10", className)}
         {...inputProps}
       />
       {showMax && (

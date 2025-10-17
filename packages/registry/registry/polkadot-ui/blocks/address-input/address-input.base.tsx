@@ -19,7 +19,7 @@ import {
 import { Button } from "@/registry/polkadot-ui/ui/button";
 import { Input } from "@/registry/polkadot-ui/ui/input";
 import { Label } from "@/registry/polkadot-ui/ui/label";
-import { decodeAddress, encodeAddress } from "@polkadot/keyring";
+import { decodeAddress } from "@polkadot/keyring";
 import { Identicon } from "@polkadot/react-identicon";
 import { type IconTheme } from "@polkadot/react-identicon/types";
 import type { UseQueryResult } from "@tanstack/react-query";
@@ -597,6 +597,7 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
                   <Button
                     variant="ghost"
                     size="icon"
+                    type="button"
                     onClick={handleCopy}
                     className="absolute right-2 top-1/2 -translate-y-1/2 p-2 h-7 w-7 rounded-sm"
                     aria-label={isCopied ? "Copied!" : "Copy address"}
@@ -624,7 +625,7 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
       </div>
 
       {/* Fixed height when status messages are shown to prevent layout shift */}
-      <div className="min-h-[60px] space-y-1">
+      <div className="space-y-1">
         {/* Connection status */}
         {validationResult?.type === "ss58" &&
           clientStatus !== ClientConnectionStatus.Connected && (
@@ -713,8 +714,7 @@ AddressInputBase.displayName = "AddressInputBase";
 
 export function validateAddress(
   address: string,
-  format: "eth" | "ss58" | "both",
-  ss58Prefix: number = 42
+  format: "eth" | "ss58" | "both"
 ): ValidationResult {
   if (!address.trim()) {
     return { isValid: false, type: "unknown", error: "Address is required" };
@@ -730,11 +730,13 @@ export function validateAddress(
         throw new Error("Invalid address length");
       }
 
-      const encoded = encodeAddress(decoded, ss58Prefix);
+      // Preserve the user's original SS58 prefix to avoid breaking
+      // downstream identity lookups (different chains use different prefixes).
+      // We still decode to validate structure, but we don't re-encode to a fixed prefix.
       return {
         isValid: true,
         type: "ss58",
-        normalizedAddress: encoded,
+        normalizedAddress: address,
       };
     } catch {
       if (format === "ss58") {
@@ -789,7 +791,7 @@ export function AddressInputSkeleton({
           disabled
         />
       </div>
-      <div className="min-h-[60px] space-y-1">
+      <div className="space-y-1">
         <div className="flex items-center gap-1 text-sm text-muted-foreground"></div>
       </div>
     </div>

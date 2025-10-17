@@ -97,12 +97,28 @@ export function hasPositiveIdentityJudgement(
     return false;
   }
 
-  return judgements.some((judgement: [number, unknown]) => {
-    // Judgement types: Unknown, FeePaid, Reasonable, KnownGood, OutOfDate, LowQuality, Erroneous
-    // More info: https://wiki.polkadot.network/learn/learn-identity/#judgements
-    const judgementType =
-      (judgement[1] as { type?: string })?.type || judgement[1];
-    return judgementType === "Reasonable" || judgementType === "KnownGood";
+  return judgements.some(([, raw]): boolean => {
+    // Accept multiple shapes across APIs:
+    // - PAPI: { type: "KnownGood" | "Reasonable" | ... }
+    // - Dedot: { KnownGood: null } or { Reasonable: null }
+    // - String: "KnownGood" | "Reasonable"
+    const j = raw as unknown;
+
+    // PAPI-style discriminated object
+    const t = (j as { type?: unknown })?.type;
+    if (typeof t === "string") return t === "Reasonable" || t === "KnownGood";
+
+    // Dedot-style variant object with a single key
+    if (j && typeof j === "object") {
+      const keys = Object.keys(j as Record<string, unknown>);
+      if (keys.includes("KnownGood") || keys.includes("Reasonable"))
+        return true;
+    }
+
+    // String fallback
+    if (typeof j === "string") return j === "Reasonable" || j === "KnownGood";
+
+    return false;
   });
 }
 

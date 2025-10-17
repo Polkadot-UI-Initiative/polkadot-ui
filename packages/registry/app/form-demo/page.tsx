@@ -9,9 +9,10 @@ import { AmountInput } from "@/registry/polkadot-ui/blocks/amount-input/componen
 import { ConnectWallet } from "@/registry/polkadot-ui/blocks/connect-wallet/connect-wallet.dedot";
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { NATIVE_TOKEN_KEY } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { polkadotPeople } from "typink";
+import { polkadotPeople, polkadotAssetHub } from "typink";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Label } from "@/registry/polkadot-ui/ui/label";
 
 interface FormValues {
   to: string;
@@ -60,13 +61,15 @@ export default function Page() {
 
   return (
     <PolkadotProvider>
-      <div className="max-w-xl mx-auto p-4 space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-lg font-semibold">Send Demo</h1>
-          <ConnectWallet />
-        </div>
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <div className="flex items-center justify-center w-full text-center">
+        <h1 className="text-lg font-semibold text-center my-12">Send Demo</h1>
+      </div>
+      <div className="mx-auto p-4 space-y-6 w-full flex flex-row gap-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 w-1/2">
+          <div className="space-y-2 flex flex-col gap-2">
+            <Label className="text-sm font-medium">Connect Wallet</Label>
+            <ConnectWallet />
+          </div>
           <div className="space-y-2">
             <label className="text-sm font-medium">Recipient</label>
             <Controller
@@ -85,7 +88,7 @@ export default function Page() {
                   required={false}
                   placeholder="Enter an address or search for an identity"
                   value={field.value}
-                  onChange={(addr) => field.onChange(addr)}
+                  // onChange={(addr) => field.onChange(addr)}
                 />
               )}
             />
@@ -101,7 +104,7 @@ export default function Page() {
               name="amount"
               render={({ field }) => (
                 <AmountInput
-                  chainId={chainId}
+                  chainId={polkadotAssetHub.id}
                   assetId={NATIVE_TOKEN_KEY}
                   value={field.value}
                   onChange={(val) => field.onChange(val)}
@@ -122,7 +125,7 @@ export default function Page() {
           </div>
         </form>
 
-        <div className="rounded-md border p-3 text-xs">
+        <div className="rounded-md border p-3 text-xs w-1/2">
           <div className="font-medium mb-1">Form State</div>
           <pre>
             {JSON.stringify(
