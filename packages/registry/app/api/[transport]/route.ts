@@ -65,13 +65,8 @@ async function loadRegistry(
     const filename = getRegistryFilename(registryType);
     let registryContent: string;
 
-    if (dev) {
-      // Development: Read from filesystem
-      const basePath = getRegistryBasePath();
-      const registryPath = path.join(basePath, filename);
-      registryContent = await fs.readFile(registryPath, "utf-8");
-    } else {
-      // Production: Fetch from static URL (Vercel serves these from root)
+    // Helper to fetch from deployed/static URL (works in Vercel/serverless)
+    const fetchFromUrl = async (): Promise<string> => {
       const registryUrl = process.env.VERCEL_URL
         ? `https://${process.env.VERCEL_URL}/${filename}`
         : `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/${filename}`;
@@ -82,7 +77,26 @@ async function loadRegistry(
           `Failed to fetch registry: ${response.status} ${response.statusText}`
         );
       }
-      registryContent = await response.text();
+      return await response.text();
+    };
+
+    if (dev) {
+      // Development: Prefer filesystem locally, but gracefully fall back to URL in serverless
+      try {
+        const basePath = getRegistryBasePath();
+        const registryPath = path.join(basePath, filename);
+        registryContent = await fs.readFile(registryPath, "utf-8");
+      } catch (fsError) {
+        // Fallback for environments where local files aren't packaged (e.g., Vercel)
+        console.warn(
+          `Dev registry file not found at filesystem, falling back to URL for ${filename}:`,
+          fsError
+        );
+        registryContent = await fetchFromUrl();
+      }
+    } else {
+      // Production: Fetch from static URL (Vercel serves these from root)
+      registryContent = await fetchFromUrl();
     }
 
     return JSON.parse(registryContent) as Registry;
