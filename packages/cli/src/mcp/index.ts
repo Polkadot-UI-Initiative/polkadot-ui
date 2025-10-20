@@ -60,13 +60,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
     tools: [
       {
         name: "add_component",
-        description: "Add a Polkadot UI component to your project",
+        description:
+          "Add a Polkadot UI component to your project. Specify registryType to choose the Polkadot library (default: papi). If unsure, ask the user before proceeding.",
         inputSchema: {
           type: "object",
           properties: {
             component: {
               type: "string",
               description: "The component name to add",
+            },
+            registryType: {
+              type: "string",
+              enum: ["papi", "dedot", "default"],
+              description:
+                "Registry type (library) to use: 'papi' (default) or 'dedot'. If omitted, defaults to papi.",
             },
             dev: {
               type: "boolean",
@@ -232,6 +239,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           "```bash",
           `npx polkadot-ui add ${component}${dev ? " --dev" : ""}${force ? " --force" : ""}`,
           "```",
+          "",
+          "## Library Selection",
+          "- Default library: papi",
+          "- To target dedot registry via MCP, set input field `registryType` to `dedot`",
+          "- The CLI will prompt for the library when none is detected, before installing files",
           "",
           "## Manual Installation",
           "You can also manually copy the files from the registry to your project.",
