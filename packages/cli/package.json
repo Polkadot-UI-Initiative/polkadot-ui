@@ -1,6 +1,6 @@
 {
   "name": "polkadot-ui",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CLI for installing Polkadot UI components with automatic API setup",
   "type": "module",
   "main": "dist/index.js",

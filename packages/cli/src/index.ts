@@ -21,10 +21,17 @@ program
   .option("--dev", "Use development registry (localhost:3000)")
   .option("--verbose", "Show detailed output")
   .option("--force", "Force installation even if files exist")
-  .option(
-    "--interactive",
-    "Show detailed prompts for create-next-app and shadcn configuration"
-  );
+  // Both flags supported: --interactive and --no-interactive
+  // If neither provided, we auto-detect based on TTY/CI
+  .option("--interactive", "Force interactive prompts")
+  .option("--no-interactive", "Disable interactive prompts");
+
+function resolveInteractive(cmd: Command): boolean {
+  const opts = cmd.opts();
+  if (typeof opts.interactive === "boolean") return opts.interactive;
+  // Auto-detect: interactive when TTY and not CI
+  return Boolean(process.stdout.isTTY && !process.env.CI);
+}
 
 program
   .command("add")
@@ -35,7 +42,7 @@ program
       dev: program.opts().dev,
       verbose: program.opts().verbose,
       force: program.opts().force,
-      interactive: program.opts().interactive,
+      interactive: resolveInteractive(program),
     };
 
     const addCommand = new AddCommand(options);
@@ -55,7 +62,7 @@ program
       dev: program.opts().dev,
       verbose: program.opts().verbose,
       force: program.opts().force,
-      interactive: program.opts().interactive,
+      interactive: resolveInteractive(program),
     };
 
     const initCommand = new InitCommand(options);
@@ -75,7 +82,7 @@ program
       dev: program.opts().dev,
       verbose: program.opts().verbose,
       force: program.opts().force,
-      interactive: program.opts().interactive,
+      interactive: resolveInteractive(program),
     };
 
     const listCommand = new ListCommand(options);
@@ -96,7 +103,7 @@ program
       dev: program.opts().dev,
       verbose: program.opts().verbose,
       force: program.opts().force,
-      interactive: program.opts().interactive,
+      interactive: resolveInteractive(program),
     };
 
     const telemetryCommand = new TelemetryCommand(options);
@@ -107,12 +114,12 @@ program
     }
   });
 
-program
-  .command("mcp")
-  .description("Start the MCP server for Cursor integration")
-  .action(async () => {
-    const { default: mcpServer } = await import("./mcp/index.js");
-  });
+// program
+//   .command("mcp")
+//   .description("Start the MCP server for Cursor integration")
+//   .action(async () => {
+//     const { default: mcpServer } = await import("./mcp/index.js");
+//   });
 
 program
   .command("help")

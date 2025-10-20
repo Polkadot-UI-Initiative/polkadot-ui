@@ -130,7 +130,7 @@ const handler = createMcpHandler(
         registryType = "papi",
         dev = false,
         force = false,
-        interactive = false,
+        interactive,
       }) => {
         try {
           // Get component details
@@ -157,6 +157,13 @@ const handler = createMcpHandler(
           }
 
           // Return installation instructions
+          const interactiveFlag =
+            typeof interactive === "boolean"
+              ? interactive
+                ? " --interactive"
+                : " --no-interactive"
+              : "";
+
           const installInstructions = [
             `# Installing ${componentDetails.title}`,
             "",
@@ -175,8 +182,10 @@ const handler = createMcpHandler(
             "",
             "## Installation Command",
             "```bash",
-            `npx polkadot-ui@latest add ${component}${dev ? " --dev" : ""}${force ? " --force" : ""}${!interactive ? " --no-interactive" : ""}`,
+            `npx polkadot-ui@latest add ${component}${dev ? " --dev" : ""}${force ? " --force" : ""}${interactiveFlag}`,
             "```",
+            "",
+            "Note: The CLI auto-detects interactivity (TTY/CI). Use --interactive or --no-interactive only to override.",
             "",
             "## Manual Installation",
             "You can also manually copy the files from the registry to your project.",
@@ -295,10 +304,17 @@ const handler = createMcpHandler(
         registryType = "dedot",
         dev = false,
         force = false,
-        interactive = false,
+        interactive,
       }) => {
         try {
           const registry = await loadRegistry(registryType, dev);
+
+          const interactiveFlag =
+            typeof interactive === "boolean"
+              ? interactive
+                ? " --interactive"
+                : " --no-interactive"
+              : "";
 
           const initInstructions = [
             "# Initialize Polkadot UI Project",
@@ -306,8 +322,10 @@ const handler = createMcpHandler(
             "To initialize a new project with Polkadot UI components, run:",
             "",
             "```bash",
-            `npx polkadot-ui@latest init${dev ? " --dev" : ""}${force ? " --force" : ""}${!interactive ? " --no-interactive" : ""}`,
+            `npx polkadot-ui@latest init${dev ? " --dev" : ""}${force ? " --force" : ""}${interactiveFlag}`,
             "```",
+            "",
+            "Note: The CLI auto-detects interactivity (TTY/CI). Use --interactive or --no-interactive only to override.",
             "",
             "## What this does:",
             "- Creates a new project structure",
