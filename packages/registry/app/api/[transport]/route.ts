@@ -446,10 +446,10 @@ const handler = createMcpHandler(
 
     // Add resources for registry data
     server.resource(
-      "Component Registry",
-      "polkadot://registry/components",
+      "Dedot Component Registry",
+      "polkadot://registry/components/dedot",
       {
-        description: "Available Polkadot UI components",
+        description: "Available Polkadot UI components for dedot",
         mimeType: "application/json",
       },
       async () => {
@@ -457,7 +457,7 @@ const handler = createMcpHandler(
         return {
           contents: [
             {
-              uri: "polkadot://registry/components",
+              uri: "polkadot://registry/components/dedot",
               mimeType: "application/json",
               text: JSON.stringify(registry, null, 2),
             },
@@ -467,18 +467,18 @@ const handler = createMcpHandler(
     );
 
     server.resource(
-      "Development Component Registry",
-      "polkadot://registry/components/dev",
+      "Papi Component Registry",
+      "polkadot://registry/components/papi",
       {
-        description: "Available Polkadot UI components (development)",
+        description: "Available Polkadot UI components for papi",
         mimeType: "application/json",
       },
       async () => {
-        const registry = await loadRegistry("papi", true);
+        const registry = await loadRegistry("papi", false);
         return {
           contents: [
             {
-              uri: "polkadot://registry/components/dev",
+              uri: "polkadot://registry/components/papi",
               mimeType: "application/json",
               text: JSON.stringify(registry, null, 2),
             },
