@@ -1,9 +1,8 @@
-import { createMcpHandler } from "mcp-handler";
-import { z } from "zod";
 import fs from "fs/promises";
-import path from "path";
+import { createMcpHandler } from "mcp-handler";
+import path, { dirname } from "path";
 import { fileURLToPath } from "url";
-import { dirname } from "path";
+import { z } from "zod";
 
 interface RegistryComponent {
   name: string;
@@ -121,7 +120,7 @@ const handler = createMcpHandler(
     // Add Component Tool
     server.tool(
       "add_component",
-      "Add a Polkadot UI component to your project. This tool will add the component to your project and install the required dependencies. To make it work, the component needs to be wrapped in a PolkadotProvider or the component with provider must be used.",
+      "Add a Polkadot UI component to your project. Specify registryType to choose the Polkadot library (default: papi). The CLI will prompt for the library when none is detected, before installing.",
       {
         component: z.string().describe("The component name to add"),
         registryType: z
@@ -139,13 +138,7 @@ const handler = createMcpHandler(
           .optional()
           .describe("Show detailed prompts for configuration"),
       },
-      async ({
-        component,
-        registryType = "papi",
-        dev = false,
-        force = false,
-        interactive,
-      }) => {
+      async ({ component, registryType = "papi", dev = false }) => {
         try {
           // Get component details
           const componentDetails = await getComponentDetails(
@@ -170,14 +163,6 @@ const handler = createMcpHandler(
             };
           }
 
-          // Return installation instructions
-          const interactiveFlag =
-            typeof interactive === "boolean"
-              ? interactive
-                ? " --interactive"
-                : " --no-interactive"
-              : "";
-
           const installInstructions = [
             `# Installing ${componentDetails.title}`,
             "",
@@ -196,10 +181,15 @@ const handler = createMcpHandler(
             "",
             "## Installation Command",
             "```bash",
-            `npx polkadot-ui@latest add ${component}${dev ? " --dev" : ""}${force ? " --force" : ""}${interactiveFlag}`,
+            `npx polkadot-ui@latest add ${component}`,
             "```",
             "",
-            "Note: The CLI auto-detects interactivity (TTY/CI). Use --interactive or --no-interactive only to override.",
+            "## Library Selection",
+            "- Default library: papi",
+            "- To target dedot via MCP, set input field `registryType` to `dedot`",
+            "- The CLI will ask you to choose a library if none is detected, before installing",
+            "",
+            "Note: Run the CLI command without extra flags; it will guide you interactively if needed.",
             "",
             "## Manual Installation",
             "You can also manually copy the files from the registry to your project.",
@@ -229,7 +219,7 @@ const handler = createMcpHandler(
     // List Components Tool
     server.tool(
       "list_components",
-      "List all available Polkadot UI components",
+      "List all available Polkadot UI components. Specify registryType to choose the Polkadot library (default: papi).",
       {
         registryType: z
           .enum(["papi", "dedot", "default"])
@@ -269,6 +259,11 @@ const handler = createMcpHandler(
             "npx polkadot-ui@latest add <component-name>",
             "```",
             "",
+            "## Library Selection",
+            "- Default library: papi",
+            "- To list components for a specific library via MCP, set input field `registryType` to `papi` or `dedot`",
+            "- Agents should ask which library to use when uncertain",
+            "",
             `**Registry Source:** ${dev ? "Development" : "Production"}`,
             `**Homepage:** ${registry.homepage}`,
           ].join("\n");
@@ -297,7 +292,7 @@ const handler = createMcpHandler(
     // Init Project Tool
     server.tool(
       "init_project",
-      "Initialize a new project with Polkadot UI components",
+      "Initialize a new project with Polkadot UI components. Specify registryType to choose the Polkadot library (default: papi).",
       {
         registryType: z
           .enum(["papi", "dedot", "default"])
@@ -347,6 +342,11 @@ const handler = createMcpHandler(
             "- Sets up Polkadot API configuration",
             "- Adds base UI components",
             "- Configures TypeScript and styling",
+            "",
+            "## Library Selection",
+            "- Default library: papi",
+            "- To prefer dedot via MCP, set input field `registryType` to `dedot`",
+            "- The CLI will ask for your library choice when none is detected, before installing",
             "",
             `## Available Components (${registry.items.length} total):`,
             ...registry.items.map(
@@ -497,4 +497,4 @@ const handler = createMcpHandler(
   }
 );
 
-export { handler as GET, handler as POST, handler as DELETE };
+export { handler as DELETE, handler as GET, handler as POST };

@@ -15,7 +15,6 @@
   ],
   "scripts": {
     "dev": "tsx src/index.ts",
-    "dev:mcp": "tsx src/mcp/index.ts",
     "build": "tsc",
     "clean": "rm -rf dist",
     "test": "jest",
