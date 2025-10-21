@@ -3,7 +3,6 @@ import {
   useNativeBalance,
 } from "@/registry/polkadot-ui/hooks/use-asset-balance.papi";
 import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
-import { type ChainIdsWithPalletAssets } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import { NATIVE_TOKEN_KEY } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import {
   BalanceDisplayBase,
@@ -11,12 +10,13 @@ import {
   type BalanceDisplayBaseProps,
 } from "./balance-display.base";
 import { Suspense } from "react";
+import type { ChainId } from "@reactive-dot/core";
 
 export type BalanceDisplayProps = Omit<
   BalanceDisplayBaseProps,
   "token" | "balance" | "compareToken"
 > & {
-  networkId: ChainIdsWithPalletAssets;
+  networkId: ChainId;
   tokenId: number;
   compareTokenId?: number;
   accountAddress: string;
@@ -80,20 +80,21 @@ export function BalanceDisplayInner(props: BalanceDisplayProps) {
   const findByAssetId = (id: number) =>
     tokens.tokens.find((t) => t.assetId === String(id));
 
+  // Resolve main token. For native tokens, do not fallback to a placeholder token list entry.
+  // If not found, return null so the base renderer avoids skeletons and simply omits the symbol.
   const token = isTokenNative
-    ? nativeToken
+    ? (nativeToken ?? null)
     : typeof tokenId === "number"
-      ? (findByAssetId(tokenId) ?? tokens.tokens[0])
-      : tokens.tokens[0];
+      ? (findByAssetId(tokenId) ?? null)
+      : null;
 
+  // Resolve compare token similarly: only show when explicitly requested and resolvable.
   const compareToken = isCompareNative
-    ? nativeToken
+    ? (nativeToken ?? null)
     : compareTokenId === undefined
       ? null
       : typeof compareTokenId === "number"
-        ? (findByAssetId(compareTokenId) ??
-          tokens.tokens[1] ??
-          tokens.tokens[0])
+        ? (findByAssetId(compareTokenId) ?? null)
         : null;
 
   return (
