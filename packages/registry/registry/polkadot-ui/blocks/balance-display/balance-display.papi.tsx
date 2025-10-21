@@ -5,12 +5,12 @@ import {
 import { useTokensByAssetIds } from "@/registry/polkadot-ui/hooks/use-chaindata-json";
 import { type ChainIdsWithPalletAssets } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import { NATIVE_TOKEN_KEY } from "@/registry/polkadot-ui/lib/utils.dot-ui";
-import { ClientOnly } from "../client-only";
 import {
   BalanceDisplayBase,
   BalanceDisplaySkeletonBase,
   type BalanceDisplayBaseProps,
 } from "./balance-display.base";
+import { Suspense } from "react";
 
 export type BalanceDisplayProps = Omit<
   BalanceDisplayBaseProps,
@@ -26,7 +26,7 @@ export type BalanceDisplayProps = Omit<
 
 export function BalanceDisplay(props: BalanceDisplayProps) {
   return (
-    <ClientOnly
+    <Suspense
       fallback={
         <BalanceDisplaySkeletonBase
           showCompare={props.compareTokenId !== undefined}
@@ -34,7 +34,7 @@ export function BalanceDisplay(props: BalanceDisplayProps) {
       }
     >
       <BalanceDisplayInner {...props} />
-    </ClientOnly>
+    </Suspense>
   );
 }
 

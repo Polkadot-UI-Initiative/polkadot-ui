@@ -47,6 +47,7 @@ export interface CliOptions {
   force?: boolean;
   verbose?: boolean;
   interactive?: boolean;
+  noOverride?: boolean;
 }
 
 export interface ProjectSetupConfig {
