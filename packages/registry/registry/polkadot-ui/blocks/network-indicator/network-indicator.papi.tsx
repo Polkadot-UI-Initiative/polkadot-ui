@@ -8,7 +8,7 @@ import {
   NetworkIndicatorSkeleton,
   type NetworkIndicatorBaseProps,
 } from "./network-indicator.base";
-import { useConnectionStatus } from "../../lib/polkadot-provider.papi";
+import { useConnectionStatus } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
 import { useBlock } from "@reactive-dot/react";
 
 export type NetworkIndicatorProps<TNetworkId extends string> = Omit<
