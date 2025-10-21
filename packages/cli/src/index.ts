@@ -21,7 +21,10 @@ program
   .option("--dev", "Use development registry (localhost:3000)")
   .option("--verbose", "Show detailed output")
   .option("--force", "Force installation even if files exist")
-  .option("--no-override", "Do not override existing files/configs when adding components")
+  .option(
+    "--no-override",
+    "Do not override existing files/configs when adding components"
+  )
   // Both flags supported: --interactive and --no-interactive
   // If neither provided, we auto-detect based on TTY/CI
   .option("--interactive", "Force interactive prompts")
