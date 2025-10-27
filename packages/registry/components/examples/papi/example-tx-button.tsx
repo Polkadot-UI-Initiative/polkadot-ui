@@ -20,6 +20,18 @@ export const txButtonExample: ComponentExample = {
       <DemoTxButton />
     </Suspense>
   ),
+  tsx: `
+  import { TxButton } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.papi";
+
+  function RemarkTxButton() {
+    const networkId = "polkadot";
+    const client = useClient({ chainId: networkId });
+    const transaction = client?.getTypedApi(networkId)?.tx.System.remark({
+      remark: Binary.fromText("Hello World from polkadot-ui"),
+    });
+    return <TxButton transaction={transaction} networkId={networkId} />;
+  }
+  `,
 };
 
 export function DemoTxButton() {
