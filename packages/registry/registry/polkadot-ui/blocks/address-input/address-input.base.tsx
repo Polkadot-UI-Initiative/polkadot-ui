@@ -440,7 +440,6 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
               : undefined
           }
           className={cn(
-            "mb-2",
             showIdenticon && validationResult?.isValid && "pl-10",
             inputValue.trim() &&
               validationResult?.isValid === false &&
@@ -673,24 +672,11 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
         {currentIdentity?.verified && (
           <div className="flex items-center gap-1 text-sm">
             <CircleCheck className="h-5 w-5 text-background fill-green-600 stroke-background" />
-            {services.explorerUrl ? (
-              <a
-                href={`${services.explorerUrl}account/${inputValue}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:underline hover:after:content-['_↗']"
-              >
-                {currentIdentity.display
-                  ? `${currentIdentity.display}`
-                  : "No identity defined"}
-              </a>
-            ) : (
-              <span>
-                {currentIdentity.display
-                  ? `${currentIdentity.display}`
-                  : "No identity defined"}
-              </span>
-            )}
+            <span>
+              {currentIdentity.display
+                ? `${currentIdentity.display}`
+                : "No identity defined"}
+            </span>
           </div>
         )}
 
@@ -787,7 +773,6 @@ export function AddressInputSkeleton({
         <Input
           onChange={() => {}}
           placeholder={placeholder || "Enter address"}
-          className="mb-2"
           disabled
         />
       </div>

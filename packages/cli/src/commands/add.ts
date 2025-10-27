@@ -115,25 +115,25 @@ export class AddCommand {
       logger.info("Usage: polkadot-ui add <component-name>");
       logger.newline();
       logger.subsection("Examples:");
-      logger.detail("polkadot-ui add block-number", true);
-      logger.detail("polkadot-ui add wallet-select", true);
+      logger.detail("npx polkadot-ui add tx-button", true);
+      logger.detail("npx polkadot-ui add connect-wallet", true);
       return false;
     }
 
     if (!isValidComponentName(componentName)) {
       logger.error(`Invalid component name: ${componentName}`);
       logger.info(
-        "Component names should be kebab-case (e.g., block-number, user-profile)"
+        "Component names should be kebab-case (e.g., tx-button, connect-wallet"
       );
       logger.newline();
       logger.subsection("Valid examples:");
-      logger.detail("✓ block-number", true);
-      logger.detail("✓ wallet-select", true);
+      logger.detail("✓ network-indicator", true);
+      logger.detail("✓ connect-wallet", true);
       logger.newline();
       logger.subsection("Invalid examples:");
-      logger.detail("✗ blockNumber (camelCase)", true);
-      logger.detail("✗ BlockNumber (PascalCase)", true);
-      logger.detail("✗ block_number (snake_case)", true);
+      logger.detail("✗ networkIndicator (camelCase)", true);
+      logger.detail("✗ NetworkIndicator (PascalCase)", true);
+      logger.detail("✗ network_indicator (snake_case)", true);
       return false;
     }
 

@@ -12,7 +12,7 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { BlockInfo } from "polkadot-api";
 import type { ReactNode } from "react";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 
 const queryClient = new QueryClient();
 
@@ -61,28 +61,31 @@ export function SelectedAccountProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [selectedAccount, setSelectedAccountState] =
-    useState<WalletAccount | null>(null);
+  const [selectedAddress, setSelectedAddress] = useState<string | null>(() => {
+    try {
+      return localStorage.getItem(SELECTED_ACCOUNT_KEY);
+    } catch {
+      return null;
+    }
+  });
 
   const accounts = useAccounts({ defer: true });
 
-  // Load selected account from localStorage on mount,
-  useEffect(() => {
-    const stored = localStorage.getItem(SELECTED_ACCOUNT_KEY);
-    if (stored) {
-      setSelectedAccountState(
-        accounts?.find((account) => account.address === stored) || null
-      );
-    }
-  }, [accounts]);
+  const selectedAccount = useMemo(() => {
+    return (
+      accounts?.find((account) => account.address === selectedAddress) ?? null
+    );
+  }, [accounts, selectedAddress]);
 
   const setSelectedAccount = (account: WalletAccount | null) => {
-    setSelectedAccountState(account);
     if (account) {
       localStorage.setItem(SELECTED_ACCOUNT_KEY, account.address);
-    } else {
-      localStorage.removeItem(SELECTED_ACCOUNT_KEY);
+      setSelectedAddress(account.address);
+      return;
     }
+
+    localStorage.removeItem(SELECTED_ACCOUNT_KEY);
+    setSelectedAddress(null);
   };
 
   return (
