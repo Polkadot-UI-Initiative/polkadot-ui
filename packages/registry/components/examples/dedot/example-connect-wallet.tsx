@@ -23,7 +23,7 @@ export const connectWalletExample: ComponentExample = {
   ),
   component: (
     <div className="flex flex-col gap-2">
-      <ConnectWallet variant="default" placeholder="Select a wallet" />
+      <ConnectWallet variant="default" placeholder="Connect Wallet" />
     </div>
   ),
   tsx: `import { ConnectWallet } from "@/components/connect-wallet.dedot";
