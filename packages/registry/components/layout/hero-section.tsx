@@ -18,7 +18,7 @@ export function HeroSection() {
           Ship <span className="text-gradient">better</span> Polkadot <br />{" "}
           Apps <span className="text-gradient italic">faster</span>
         </h1>
-        <span className="max-w-[750px] text-center text-lg text-muted-foreground sm:text-lg my-8">
+        <span className="max-w-[750px] text-center text-lg text-muted-foreground sm:text-lg my-8 text-balance">
           Deliver great UX with ready-made, typesafe Polkadot components. Fully
           customizable. Fully open source. Powered by{" "}
           <Link href="https://papi.how" className="underline text-foreground">
