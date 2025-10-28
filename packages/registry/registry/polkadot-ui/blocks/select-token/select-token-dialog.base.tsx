@@ -4,7 +4,6 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/registry/polkadot-ui/ui/input";
 import {
   formatTokenBalance,
-  formatTokenPrice,
   getTokenBalance,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import {
@@ -50,6 +49,7 @@ export interface SelectTokenDialogBaseProps {
   placeholder?: string;
   compact?: boolean;
   connectedAddress?: string;
+  tokenConversionRate?: number;
 }
 
 export interface SelectTokenDialogProviderProps {
@@ -66,6 +66,7 @@ interface TokenDialogItemProps {
   className?: string;
   logoSize?: "sm" | "md" | "lg";
   balancePrecision?: number;
+  tokenConversionRate?: number;
 }
 
 function TokenDialogItem({
@@ -80,9 +81,30 @@ function TokenDialogItem({
   logoSize = "md",
   balancePrecision = 2,
   effectiveAddress,
+  tokenConversionRate,
 }: TokenDialogItemProps & { effectiveAddress?: string }) {
   const styles = tokenSelectionStyles.tokenItem;
   const contentStyles = tokenSelectionStyles.tokenContent;
+
+  // Calculate USD estimate from balance and conversion rate
+  const usdEstimate = useMemo(() => {
+    if (!balance || tokenConversionRate == null) return null;
+    const divisor = 10 ** Math.max(0, token.decimals);
+    const tokenAmount = Number(balance) / divisor;
+    if (!Number.isFinite(tokenAmount)) return null;
+    const usd = tokenAmount * tokenConversionRate;
+    return Number.isFinite(usd) ? usd : null;
+  }, [balance, token.decimals, tokenConversionRate]);
+
+  const usdLabel = useMemo(() => {
+    if (usdEstimate == null) return null;
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(usdEstimate);
+  }, [usdEstimate]);
 
   return (
     <div
@@ -114,10 +136,8 @@ function TokenDialogItem({
         </div>
         <div className={contentStyles.secondaryRow}>
           <span className={contentStyles.name}>{token.name}</span>
-          {effectiveAddress && withBalance && (
-            <span className={contentStyles.price}>
-              ≈ ${formatTokenPrice(balance ?? null, token.decimals)}
-            </span>
+          {effectiveAddress && withBalance && usdLabel && (
+            <span className={contentStyles.price}>{usdLabel}</span>
           )}
         </div>
       </div>
@@ -166,6 +186,7 @@ export function SelectTokenDialogBase({
   disabled,
   balancePrecision = 2,
   connectedAddress,
+  tokenConversionRate,
   ...props
 }: Omit<SelectTokenDialogBaseProps, "assetIds" | "chainId"> &
   Omit<React.ComponentProps<typeof Button>, "onChange">) {
@@ -340,6 +361,7 @@ export function SelectTokenDialogBase({
                   logoSize="md"
                   balancePrecision={balancePrecision}
                   effectiveAddress={effectiveAddress}
+                  tokenConversionRate={tokenConversionRate}
                 />
               );
             })
