@@ -79,13 +79,27 @@ export function SelectedAccountProvider({
 
   const setSelectedAccount = (account: WalletAccount | null) => {
     if (account) {
-      localStorage.setItem(SELECTED_ACCOUNT_KEY, account.address);
-      setSelectedAddress(account.address);
+      try {
+        localStorage.setItem(SELECTED_ACCOUNT_KEY, account.address);
+        setSelectedAddress(account.address);
+      } catch (error) {
+        console.error(
+          "Failed to save selected account to localStorage:",
+          error
+        );
+      }
       return;
     }
 
-    localStorage.removeItem(SELECTED_ACCOUNT_KEY);
-    setSelectedAddress(null);
+    try {
+      localStorage.removeItem(SELECTED_ACCOUNT_KEY);
+      setSelectedAddress(null);
+    } catch (error) {
+      console.error(
+        "Failed to remove selected account from localStorage:",
+        error
+      );
+    }
   };
 
   return (
