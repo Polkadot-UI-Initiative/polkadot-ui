@@ -6,7 +6,7 @@ import { AmountInputBase } from "@/registry/polkadot-ui/blocks/amount-input/comp
 
 describe("AmountInputBase", () => {
   it("renders simple input enabled by default", () => {
-    render(<AmountInputBase value="" />);
+    render(<AmountInputBase value={null} className="bg-background" />);
     const input = screen.getByRole("spinbutton");
     expect(input).toBeEnabled();
   });

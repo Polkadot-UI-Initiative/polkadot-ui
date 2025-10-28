@@ -17,7 +17,9 @@ export const txButtonExample: ComponentExample = {
 import { paseo } from "typink";
 
 export function RemarkTxButton() {
-  const tx = useTx((tx) => tx.system.remark);
+  const tx = useTx((tx) => tx.system.remark, {
+    networkId: paseo.id
+  });
 
   return (
     <TxButton

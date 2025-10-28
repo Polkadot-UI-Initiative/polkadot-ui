@@ -38,11 +38,38 @@ import { Toaster } from "sonner";
 
 ```tsx
 import { useTx } from "typink"
-import { TxButtonBase } from "@/registry/polkadot-ui/blocks/tx-button/components/tx-button.base"
+import { TxButton } from "@/components/tx-button.dedot";
 
-function RemarkExample() { const tx = useTx((tx) => tx.system.remark) return (
-<TxButtonBase tx={tx} args={["hello"]} networkId="paseo"> Write a message on
-chain </TxButtonBase> ) }
+function RemarkExample() { 
+  const tx = useTx((tx) => tx.system.remark, {
+    networkId: "paseo"
+  })
+  return (
+    <TxButton tx={tx} args={["hello"]} networkId="paseo">
+      Write a message on chain
+    </TxButton>
+  );
+}
+```
+
+### Usage with papi
+
+With papi, you need to pass the transaction directly to the component.
+
+```tsx
+import { TxButton } from "@/components/tx-button.papi";
+
+function RemarkTxButton() {
+  const networkId = "polkadot";
+  const client = useClient({ chainId: networkId });
+  const transaction = client?.getTypedApi(networkId)?.tx.System.remark({
+    remark: Binary.fromText("Hello World from polkadot-ui"),
+  });
+
+  return <TxButton transaction={transaction} networkId={networkId} />;
+}
+
+```
 
 ## Behavior
 

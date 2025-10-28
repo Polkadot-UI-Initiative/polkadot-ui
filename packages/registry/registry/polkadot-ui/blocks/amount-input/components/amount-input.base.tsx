@@ -293,7 +293,7 @@ export function AmountInputBase(props: AmountInputBaseProps) {
           max={inputProps.max ?? (clampOnMax ? formattedMax : undefined)}
           inputMode="decimal"
           pattern={inputProps.pattern ?? "[0-9]*\\.?[0-9]*"}
-          className={cn("bg-background", className)}
+          className={className}
           {...inputProps}
         />
         {showMax && (
