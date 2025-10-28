@@ -39,7 +39,7 @@ export interface SelectTokenBaseProps<TChainId extends string = string> {
   fallback?: React.ReactNode;
   balancePrecision?: number;
   value?: number;
-  onChange?: (assetId: number) => void;
+  onChange?: (assetId: number | undefined) => void;
   placeholder?: string;
   className?: string;
   connectedAddress?: string;
@@ -88,7 +88,11 @@ export function SelectTokenBase<TChainId extends string = string>({
 
   const handleValueChange = (v: string) => {
     props.onValueChange?.(v);
-    onChange?.(Number(v));
+    if (v === "select-token") {
+      onChange?.(undefined);
+    } else {
+      onChange?.(Number(v));
+    }
   };
 
   return (
@@ -99,6 +103,7 @@ export function SelectTokenBase<TChainId extends string = string>({
       }
       onValueChange={handleValueChange}
       disabled={isDisabled || isLoading}
+      defaultValue="select-token"
     >
       <SelectTrigger className={cn("dark:bg-background", className)}>
         <div className="flex items-center flex-row gap-2">
@@ -109,6 +114,7 @@ export function SelectTokenBase<TChainId extends string = string>({
         </div>
       </SelectTrigger>
       <SelectContent>
+        <SelectItem value="select-token">Select Token</SelectItem>
         {tokenOptions?.map((token) => (
           <TokenSelectItem
             key={token.id}

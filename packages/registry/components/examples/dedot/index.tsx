@@ -7,7 +7,7 @@ import { requireConnectionExample } from "./example-require-connection";
 import { selectTokenExample } from "./example-select-token";
 import { selectTokenDialogExample } from "./example-select-token-dialog";
 import { txButtonExample } from "./example-tx-button";
-import { connectWalletExample } from "./examlpe-connect-wallet";
+import { connectWalletExample } from "./example-connect-wallet";
 import { accountInfoExample } from "./example-account-info";
 import { balanceDisplayExample } from "./example-balance-display";
 // import { transactionDetailsExample } from "./example-transaction-details";
