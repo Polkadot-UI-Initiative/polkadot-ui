@@ -27,7 +27,7 @@ export function ConnectWallet(props: ConnectWalletProps) {
   );
 }
 
-function ConnectWalletInner() {
+function ConnectWalletInner(props: ConnectWalletProps) {
   const wallets = useWallets();
   const accounts = useAccounts();
   const connectedWallets = useConnectedWallets();
@@ -128,7 +128,7 @@ function ConnectWalletInner() {
     ]
   );
 
-  return <ConnectWalletBase services={services} />;
+  return <ConnectWalletBase services={services} {...props} />;
 }
 
 export function ConnectWalletWithProvider(props: ConnectWalletProps) {

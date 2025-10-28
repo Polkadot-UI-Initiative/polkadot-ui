@@ -13,12 +13,17 @@ export const connectWalletExample: ComponentExample = {
       WalletConnect, try{" "}
       <Link href="https://dotconnect.dev/" className="underline">
         dotConnect
-      </Link>
+      </Link>{" "}
+      (papi) or{" "}
+      <Link href="https://www.lunolab.xyz/" className="underline">
+        LunoKit
+      </Link>{" "}
+      (dedot)
     </>
   ),
   component: (
     <div className="flex flex-col gap-2">
-      <ConnectWallet />
+      <ConnectWallet variant="default" placeholder="Select a wallet" />
     </div>
   ),
   tsx: `import { ConnectWallet } from "@/components/connect-wallet.papi";
