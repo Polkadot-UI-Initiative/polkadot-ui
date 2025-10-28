@@ -9,7 +9,7 @@ function DedotSelectTokenDialogWithPrice() {
     <div className="w-[260px]">
       <SelectTokenDialog
         chainId={polkadot.id}
-        assetIds={[-1]} // -1 for native token
+        assetIds={[-1, 1984, 1337]} // -1 for native token
         className="w-full"
         withBalance
         withSearch
