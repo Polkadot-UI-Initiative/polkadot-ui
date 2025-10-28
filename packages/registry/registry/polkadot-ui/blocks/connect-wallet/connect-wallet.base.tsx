@@ -112,11 +112,11 @@ export function ConnectWalletBase({
           )}
           {...buttonProps}
         >
-          <WalletIcon className="w-4 h-4" /> {placeholder}
-          {connectedAccount?.name && (
-            <span className="hidden sm:block max-w-[100px] truncate">
-              {connectedAccount?.name}
-            </span>
+          {!connectedAccount && (
+            <>
+              <WalletIcon className="w-4 h-4" />{" "}
+              {placeholder || "Connect Wallet"}
+            </>
           )}
           {connectedAccount?.address && (
             <Identicon
@@ -125,6 +125,11 @@ export function ConnectWalletBase({
               theme="polkadot"
               className="[&>svg>circle:first-child]:fill-none"
             />
+          )}
+          {connectedAccount?.name && (
+            <span className="hidden sm:block max-w-[100px] truncate">
+              {connectedAccount?.name}
+            </span>
           )}
         </Button>
       </DialogTrigger>
