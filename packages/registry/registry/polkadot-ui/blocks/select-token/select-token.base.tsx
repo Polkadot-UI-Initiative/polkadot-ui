@@ -39,7 +39,7 @@ export interface SelectTokenBaseProps<TChainId extends string = string> {
   fallback?: React.ReactNode;
   balancePrecision?: number;
   value?: number;
-  onChange?: (assetId: number) => void;
+  onChange?: (assetId: number | undefined) => void;
   placeholder?: string;
   className?: string;
   connectedAddress?: string;
