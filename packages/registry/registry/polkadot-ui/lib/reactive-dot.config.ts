@@ -21,7 +21,7 @@ const polkadotPeopleProvider: WsJsonRpcProvider | null = getWsProvider(
   "wss://sys.ibp.network/people-polkadot"
 );
 const paseoProvider: WsJsonRpcProvider | null = getWsProvider(
-  "wss://sys.ibp.network/paseo"
+  "wss://pas-rpc.stakeworld.io"
 );
 const paseoAssetHubProvider: WsJsonRpcProvider | null = getWsProvider(
   "wss://sys.ibp.network/asset-hub-paseo"
