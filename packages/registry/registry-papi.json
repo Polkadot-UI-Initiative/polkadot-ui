@@ -65,7 +65,9 @@
         "ethers",
         "@tanstack/react-query",
         "@polkadot/react-identicon",
-        "polkadot-api"
+        "polkadot-api",
+        "@reactive-dot/core",
+        "@reactive-dot/react"
       ],
       "registryDependencies": ["input", "label", "badge", "button", "tooltip"],
       "files": [
