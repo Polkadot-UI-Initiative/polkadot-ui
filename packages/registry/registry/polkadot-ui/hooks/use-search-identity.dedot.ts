@@ -1,5 +1,6 @@
 "use client";
 
+import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import { type IdentitySearchResult } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { hasPositiveIdentityJudgement } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { type PalletIdentityRegistration } from "@dedot/chaintypes/substrate";
@@ -13,6 +14,16 @@ import {
   usePolkadotClient,
   useTypink,
 } from "typink";
+
+// Network ID to config chain key mapping
+const NETWORK_TO_CONFIG_KEY: Record<string, string> = {
+  paseo: "paseo",
+  "paseo-asset-hub": "paseoAssetHub",
+  "paseo-people": "paseoPeople",
+  polkadot: "polkadot",
+  "polkadot-asset-hub": "polkadotAssetHub",
+  "polkadot-people": "polkadotPeople",
+};
 
 export function useIdentitySearch(
   displayName: string | null | undefined,
@@ -76,8 +87,11 @@ export function useIdentitySearch(
               value.judgements
             );
 
-            // Extract address from key (convert to string)
-            const address = encodeAddress(key.raw, 0);
+            // Extract address from key using chain-specific SS58 prefix
+            const configKey = NETWORK_TO_CONFIG_KEY[identityChain];
+            const chainConfig = configKey ? config.chains[configKey as keyof typeof config.chains] : undefined;
+            const ss58Prefix = chainConfig?.ss58Prefix ?? 42;
+            const address = encodeAddress(key.raw, ss58Prefix);
 
             if (hasPositiveJudgement) {
               matches.push({
