@@ -13,6 +13,7 @@ import {
 import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import { useConnectionStatus } from "../lib/polkadot-provider.papi";
 import { useClient } from "@reactive-dot/react";
+import { encodeAddress } from "@polkadot/keyring";
 
 export function useIdentitySearch(
   displayName: string | null | undefined,
@@ -64,7 +65,7 @@ export function useIdentitySearch(
             // Remove this if block if we want to show all identities
             if (hasPositiveJudgement) {
               matches.push({
-                address: keyArgs[0] as string,
+                address: encodeAddress(keyArgs[0] as string),
                 identity: {
                   display,
                   email: extractText(value.info?.email?.value),
