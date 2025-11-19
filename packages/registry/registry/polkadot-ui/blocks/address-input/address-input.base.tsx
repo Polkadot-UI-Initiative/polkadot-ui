@@ -25,7 +25,7 @@ import { type IconTheme } from "@polkadot/react-identicon/types";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { ethers } from "ethers";
 
-import { Check, CircleCheck, Copy, Loader2 } from "lucide-react";
+import { Check, CircleCheck, Copy, Loader2, X } from "lucide-react";
 import { forwardRef, type ReactNode, useEffect, useRef, useState } from "react";
 
 // Services interface for dependency injection
@@ -581,6 +581,34 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
               />
             )}
           </div>
+        )}
+        
+        {/* Clear button - shown when valid address is present */}
+        {validationResult?.isValid && inputValue && !isEditing && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  type="button"
+                  onClick={() => {
+                    setInputValue("");
+                    setSelectedFromSearch(false);
+                    if (onChange) {
+                      onChange("");
+                    }
+                    inputRef.current?.focus();
+                  }}
+                  className="absolute right-10 top-1/2 -translate-y-1/2 p-2 h-7 w-7 rounded-sm"
+                  aria-label="Clear address"
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent sideOffset={6}>Clear address</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         )}
 
         {/* Copy button - shown when not editing and has valid address and not loading */}
