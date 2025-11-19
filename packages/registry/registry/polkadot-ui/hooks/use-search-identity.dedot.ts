@@ -16,7 +16,7 @@ import {
 } from "typink";
 
 // Network ID to config chain key mapping
-const NETWORK_TO_CONFIG_KEY: Record<string, string> = {
+const NETWORK_TO_CONFIG_KEY: Record<string, keyof typeof config.chains> = {
   paseo: "paseo",
   "paseo-asset-hub": "paseoAssetHub",
   "paseo-people": "paseoPeople",
@@ -58,6 +58,11 @@ export function useIdentitySearch(
         const MAX_RESULTS = 10;
         const matches: IdentitySearchResult[] = [];
 
+        // Get SS58 prefix from chain configuration (computed once for all entries)
+        const configKey = NETWORK_TO_CONFIG_KEY[identityChain];
+        const chainConfig = configKey ? config.chains[configKey] : undefined;
+        const ss58Prefix = chainConfig?.ss58Prefix ?? 42;
+
         // Extract text from Dedot's data structure
         const extractText = (data: unknown): string | undefined => {
           if (!data) return undefined;
@@ -87,10 +92,6 @@ export function useIdentitySearch(
               value.judgements
             );
 
-            // Extract address from key using chain-specific SS58 prefix
-            const configKey = NETWORK_TO_CONFIG_KEY[identityChain];
-            const chainConfig = configKey ? config.chains[configKey as keyof typeof config.chains] : undefined;
-            const ss58Prefix = chainConfig?.ss58Prefix ?? 42;
             const address = encodeAddress(key.raw, ss58Prefix);
 
             if (hasPositiveJudgement) {
