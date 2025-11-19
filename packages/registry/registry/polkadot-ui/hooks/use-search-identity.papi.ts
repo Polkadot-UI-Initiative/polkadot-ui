@@ -64,11 +64,11 @@ export function useIdentitySearch(
             // Only include verified identities in search results
             // Remove this if block if we want to show all identities
             if (hasPositiveJudgement) {
-              // Determine SS prefix based on identity chain
-              // Polkadot People uses prefix 0, Paseo People uses prefix 42
-              const ss58Prefix = identityChain === "paseoPeople" ? 42 : 0;
-               matches.push({
-                address: encodeAddress(keyArgs[0] as string, ss58Prefix),
+              // Get SS58 prefix from chain configuration
+              const ss58Prefix = config.chains[identityChain]?.ss58Prefix ?? 42;
+
+              matches.push({
+                address: encodeAddress(keyArgs[0], ss58Prefix),
                 identity: {
                   display,
                   email: extractText(value.info?.email?.value),
