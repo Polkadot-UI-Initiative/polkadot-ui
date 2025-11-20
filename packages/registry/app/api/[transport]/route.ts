@@ -115,6 +115,33 @@ async function getComponentDetails(
   return registry.items.find((item) => item.name === componentName) || null;
 }
 
+// Helper function to format polkadot-ui CLI command (similar to shadcn's npxShadcn)
+async function npxPolkadotUi(command: string): Promise<string> {
+  return `npx polkadot-ui@latest ${command}`;
+}
+
+// Helper function to search components (fuzzy matching)
+function searchComponents(
+  components: RegistryComponent[],
+  query: string,
+  limit?: number,
+  offset?: number
+): RegistryComponent[] {
+  const lowercaseQuery = query.toLowerCase();
+
+  const matches = components.filter(
+    (component) =>
+      component.name.toLowerCase().includes(lowercaseQuery) ||
+      component.title.toLowerCase().includes(lowercaseQuery) ||
+      component.description.toLowerCase().includes(lowercaseQuery)
+  );
+
+  const start = offset || 0;
+  const end = limit ? start + limit : undefined;
+
+  return matches.slice(start, end);
+}
+
 const handler = createMcpHandler(
   (server) => {
     // Add Component Tool
@@ -163,51 +190,11 @@ const handler = createMcpHandler(
             };
           }
 
-          const installInstructions = [
-            `# Installing ${componentDetails.title}`,
-            "",
-            componentDetails.description,
-            "",
-            "## Dependencies",
-            ...componentDetails.dependencies.map((dep) => `- ${dep}`),
-            "",
-            "## Registry Dependencies",
-            ...componentDetails.registryDependencies.map((dep) => `- ${dep}`),
-            "",
-            "## Files",
-            ...componentDetails.files.map(
-              (file) => `- ${file.path} (${file.type})`
-            ),
-            "",
-            "## Installation Command",
-            "```bash",
-            `npx polkadot-ui@latest add ${component}`,
-            "```",
-            "or",
-            "```bash",
-            `pnpm dlx polkadot-ui@latest add ${component}`,
-            "```",
-            "or",
-            "```bash",
-            `bunx polkadot-ui@latest add ${component}`,
-            "```",
-            "",
-            "## Library Selection",
-            "- Default library: papi",
-            "- To target dedot via MCP, set input field `registryType` to `dedot`",
-            "- The CLI will ask you to choose a library if none is detected, before installing",
-            "",
-            "Note: Run the CLI command without extra flags; it will guide you interactively if needed.",
-            "",
-            "## Manual Installation",
-            "You can also manually copy the files from the registry to your project.",
-          ].join("\n");
-
           return {
             content: [
               {
                 type: "text",
-                text: installInstructions,
+                text: await npxPolkadotUi(`add ${component}`),
               },
             ],
           };
@@ -298,6 +285,175 @@ const handler = createMcpHandler(
               {
                 type: "text",
                 text: `❌ Error loading components: ${error instanceof Error ? error.message : "Unknown error occurred"}`,
+              },
+            ],
+          };
+        }
+      }
+    );
+
+    // Search Components Tool
+    server.tool(
+      "search_components",
+      "Search for Polkadot UI components using fuzzy matching. Specify registryType to choose the Polkadot library (default: papi).",
+      {
+        query: z
+          .string()
+          .min(1)
+          .describe(
+            "Search query string for fuzzy matching against component names and descriptions"
+          ),
+        registryType: z
+          .enum(["papi", "dedot", "default"])
+          .optional()
+          .describe("Registry type to use (papi, dedot, or default)"),
+        dev: z.boolean().optional().describe("Use development registry"),
+        limit: z
+          .number()
+          .int()
+          .nonnegative()
+          .max(1000)
+          .optional()
+          .describe("Maximum number of items to return"),
+        offset: z
+          .number()
+          .int()
+          .nonnegative()
+          .optional()
+          .describe("Number of items to skip for pagination"),
+      },
+      async ({ query, registryType = "papi", dev = false, limit, offset }) => {
+        try {
+          const registry = await loadRegistry(registryType, dev);
+
+          // Compute validated start and end values (coerce to integers and clamp to bounds)
+          const start = Math.max(0, Math.floor(offset ?? 0));
+          const end =
+            limit != null ? start + Math.max(0, Math.floor(limit)) : undefined;
+
+          const results = searchComponents(
+            registry.items,
+            query,
+            end != null ? end - start : undefined,
+            start
+          );
+
+          if (results.length === 0) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: `No components found matching "${query}" in ${registryType} registry. Try searching with a different query or use list_components to see all available components.`,
+                },
+              ],
+            };
+          }
+
+          const resultText = [
+            `# Search Results for "${query}" (${results.length} found)`,
+            "",
+            ...results.map((item) => `• **${item.name}**: ${item.description}`),
+            "",
+            `To add a component, use: ${await npxPolkadotUi("add <component-name>")}`,
+          ].join("\n");
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: resultText,
+              },
+            ],
+          };
+        } catch (error) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: `❌ Error searching components: ${error instanceof Error ? error.message : "Unknown error occurred"}`,
+              },
+            ],
+          };
+        }
+      }
+    );
+
+    // View Component Details Tool
+    server.tool(
+      "view_component",
+      "View detailed information about a specific Polkadot UI component including name, description, dependencies, and files.",
+      {
+        component: z
+          .string()
+          .describe("The component name to view details for"),
+        registryType: z
+          .enum(["papi", "dedot", "default"])
+          .optional()
+          .describe("Registry type to use (papi, dedot, or default)"),
+        dev: z.boolean().optional().describe("Use development registry"),
+      },
+      async ({ component, registryType = "papi", dev = false }) => {
+        try {
+          const componentDetails = await getComponentDetails(
+            component,
+            registryType,
+            dev
+          );
+
+          if (!componentDetails) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: `Component "${component}" not found in ${registryType} registry. Use search_components or list_components to find available components.`,
+                },
+              ],
+            };
+          }
+
+          const detailsText = [
+            `# ${componentDetails.title}`,
+            "",
+            `**Name:** ${componentDetails.name}`,
+            `**Description:** ${componentDetails.description}`,
+            "",
+            "## Dependencies",
+            componentDetails.dependencies.length > 0
+              ? componentDetails.dependencies
+                  .map((dep) => `- ${dep}`)
+                  .join("\n")
+              : "- None",
+            "",
+            "## Registry Dependencies",
+            componentDetails.registryDependencies.length > 0
+              ? componentDetails.registryDependencies
+                  .map((dep) => `- ${dep}`)
+                  .join("\n")
+              : "- None",
+            "",
+            "## Files",
+            componentDetails.files
+              .map((file) => `- ${file.path} (${file.type})`)
+              .join("\n"),
+            "",
+            `## Installation`,
+            `Run: ${await npxPolkadotUi(`add ${component}`)}`,
+          ].join("\n");
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: detailsText,
+              },
+            ],
+          };
+        } catch (error) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: `❌ Error viewing component: ${error instanceof Error ? error.message : "Unknown error occurred"}`,
               },
             ],
           };
@@ -397,6 +553,34 @@ const handler = createMcpHandler(
             ],
           };
         }
+      }
+    );
+
+    // Audit Checklist Tool
+    server.tool(
+      "get_audit_checklist",
+      "After creating new components or generating new code files, use this tool for a quick checklist to verify that everything is working as expected. Make sure to run the tool after all required steps have been completed.",
+      {},
+      async () => {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `## Component Audit Checklist
+
+After adding or generating components, check the following common issues:
+
+- [ ] Ensure imports are correct i.e named vs default imports
+- [ ] If using next/image, ensure images.remotePatterns in next.config.js is configured correctly
+- [ ] Ensure all dependencies are installed
+- [ ] Check for linting errors or warnings
+- [ ] Check for TypeScript errors
+- [ ] Verify Polkadot API provider is properly configured
+- [ ] Ensure component is wrapped in PolkadotProvider if required
+- [ ] Test component functionality in the application`,
+            },
+          ],
+        };
       }
     );
 
