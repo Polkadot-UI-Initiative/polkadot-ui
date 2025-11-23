@@ -16,6 +16,12 @@ import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import { useConnectionStatus } from "../lib/polkadot-provider.papi";
 import { useClient } from "@reactive-dot/react";
 
+// Constants for identity search configuration
+const MIN_SEARCH_LENGTH = 3;
+const MAX_RESULTS = 10;
+const STALE_TIME_MS = 5 * 60 * 1000; // 5 minutes - identities don't change often
+const GC_TIME_MS = 10 * 60 * 1000; // 10 minutes - keep cached longer for search
+
 export function useIdentitySearch(
   displayName: string | null | undefined,
   identityChain: keyof typeof config.chains = "paseoPeople"
@@ -35,7 +41,7 @@ export function useIdentitySearch(
       if (
         !hasIdentityPallet(peopleApi) ||
         !displayName ||
-        displayName.length < 3 ||
+        displayName.length < MIN_SEARCH_LENGTH ||
         isLoading ||
         !isConnected
       ) {
@@ -46,7 +52,6 @@ export function useIdentitySearch(
         // Get all identity entries
         const entries = await peopleApi.query.Identity.IdentityOf.getEntries();
 
-        const MAX_RESULTS = 10;
         const matches: IdentitySearchResult[] = [];
 
         for (const { keyArgs, value } of entries) {
@@ -101,9 +106,9 @@ export function useIdentitySearch(
     enabled:
       hasIdentityPallet(peopleApi) &&
       !!displayName &&
-      displayName.length >= 3 &&
+      displayName.length >= MIN_SEARCH_LENGTH &&
       isConnected,
-    staleTime: 5 * 60 * 1000, // 5 minutes - identities don't change often
-    gcTime: 10 * 60 * 1000, // 10 minutes - keep cached longer for search
+    staleTime: STALE_TIME_MS,
+    gcTime: GC_TIME_MS,
   });
 }

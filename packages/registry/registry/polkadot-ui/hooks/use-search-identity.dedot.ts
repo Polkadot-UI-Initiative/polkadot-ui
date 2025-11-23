@@ -13,6 +13,12 @@ import {
   useTypink,
 } from "typink";
 
+// Constants for identity search configuration
+const MIN_SEARCH_LENGTH = 3;
+const MAX_RESULTS = 10;
+const STALE_TIME_MS = 5 * 60 * 1000; // 5 minutes - identities don't change often
+const GC_TIME_MS = 10 * 60 * 1000; // 10 minutes - keep cached longer for search
+
 export function useIdentitySearch(
   displayName: string | null | undefined,
   identityChain: NetworkId = paseoPeople.id
@@ -29,7 +35,7 @@ export function useIdentitySearch(
       if (
         !peopleClient ||
         !displayName ||
-        displayName.length < 1 ||
+        displayName.length < MIN_SEARCH_LENGTH ||
         peopleStatus !== ClientConnectionStatus.Connected
       ) {
         return [];
@@ -43,7 +49,6 @@ export function useIdentitySearch(
         };
         const entries = await storageQuery.entries();
 
-        const MAX_RESULTS = 10;
         const matches: IdentitySearchResult[] = [];
 
         // Extract text from Dedot's data structure
@@ -86,6 +91,7 @@ export function useIdentitySearch(
                   display,
                   email: extractText(value.info?.email),
                   legal: extractText(value.info?.legal),
+                  // Note: matrix field not available in PalletIdentityLegacyIdentityInfo type
                   twitter: extractText(value.info?.twitter),
                   web: extractText(value.info?.web),
                   image: extractText(value.info?.image),
@@ -111,10 +117,11 @@ export function useIdentitySearch(
     enabled:
       !!peopleClient &&
       !!displayName &&
-      displayName.trim().length >= 1 &&
+      displayName.trim().length >= MIN_SEARCH_LENGTH &&
       peopleStatus === ClientConnectionStatus.Connected,
-    staleTime: 5 * 60 * 1000, // 5 minutes - identities don't change often
-    retry: 3, // Increased retry count
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+    staleTime: STALE_TIME_MS,
+    gcTime: GC_TIME_MS,
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 }
