@@ -308,14 +308,13 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
   };
 
   const handleSelectIdentity = (address: string, display: string | number) => {
-    const encodedAddress = encodeForDisplay(address, ss58Prefix);
     setSelectedFromSearch(true);
-    setInputValue(encodedAddress);
+    setInputValue(address);
     setShowDropdown(false);
     setHighlightedIndex(-1);
 
     if (onChange) {
-      onChange(encodedAddress);
+      onChange(address);
     }
     inputRef.current?.blur();
 
@@ -338,7 +337,10 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
     if (!inputValue) return;
 
     try {
-      await navigator.clipboard.writeText(inputValue);
+      const addressToCopy = validationResult?.isValid
+        ? encodeForDisplay(inputValue, ss58Prefix)
+        : inputValue;
+      await navigator.clipboard.writeText(addressToCopy);
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     } catch (error) {
@@ -393,10 +395,15 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
     };
   }, []);
 
+  // Encode hex addresses for display, preserving SS58 addresses as-is
+  const encodedForDisplay = validationResult?.isValid
+    ? encodeForDisplay(inputValue, ss58Prefix)
+    : inputValue;
+
   const displayValue =
     truncate && validationResult?.isValid && !isEditing
-      ? truncateAddress(inputValue, truncate)
-      : inputValue;
+      ? truncateAddress(encodedForDisplay, truncate)
+      : isEditing ? inputValue : encodedForDisplay;
 
   const placeholder =
     format === "eth"
@@ -611,7 +618,10 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
                     }
                     inputRef.current?.focus();
                   }}
-                  className="absolute right-10 top-1/2 -translate-y-1/2 p-2 h-7 w-7 rounded-sm"
+                  className={cn(
+                    "absolute top-1/2 -translate-y-1/2 p-2 h-7 w-7 rounded-sm",
+                    withCopyButton ? "right-10" : "right-2"
+                  )}
                   aria-label="Clear address"
                 >
                   <X className="h-3 w-3" />

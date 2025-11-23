@@ -3,6 +3,7 @@ import type {
   TokenMetadata,
 } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { decodeAddress, encodeAddress } from "@polkadot/keyring";
+import { u8aToHex } from "@polkadot/util";
 import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 
 // the key for the native token in the balances object, if -1 is used somewhere as assetId, the
@@ -54,7 +55,7 @@ export const normalizeToHex = (address: string): string => {
     return address.toLowerCase();
   }
   try {
-    return `0x${Buffer.from(decodeAddress(address)).toString("hex")}`;
+    return u8aToHex(decodeAddress(address)).toLowerCase();
   } catch {
     return address.toLowerCase();
   }
