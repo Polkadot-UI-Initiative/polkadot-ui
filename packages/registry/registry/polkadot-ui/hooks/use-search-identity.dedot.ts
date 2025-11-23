@@ -1,12 +1,10 @@
 "use client";
 
-import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import { type IdentitySearchResult } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { hasPositiveIdentityJudgement } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { type PalletIdentityRegistration } from "@dedot/chaintypes/substrate";
 import { useQuery } from "@tanstack/react-query";
 import { AccountId32 } from "dedot/codecs";
-import { encodeAddress } from "dedot/utils";
 import {
   ClientConnectionStatus,
   type NetworkId,
@@ -14,16 +12,6 @@ import {
   usePolkadotClient,
   useTypink,
 } from "typink";
-
-// Network ID to config chain key mapping
-const NETWORK_TO_CONFIG_KEY: Record<string, keyof typeof config.chains> = {
-  paseo: "paseo",
-  "paseo-asset-hub": "paseoAssetHub",
-  "paseo-people": "paseoPeople",
-  polkadot: "polkadot",
-  "polkadot-asset-hub": "polkadotAssetHub",
-  "polkadot-people": "polkadotPeople",
-};
 
 export function useIdentitySearch(
   displayName: string | null | undefined,
@@ -58,11 +46,6 @@ export function useIdentitySearch(
         const MAX_RESULTS = 10;
         const matches: IdentitySearchResult[] = [];
 
-        // Get SS58 prefix from chain configuration (computed once for all entries)
-        const configKey = NETWORK_TO_CONFIG_KEY[identityChain];
-        const chainConfig = configKey ? config.chains[configKey] : undefined;
-        const ss58Prefix = chainConfig?.ss58Prefix ?? 42;
-
         // Extract text from Dedot's data structure
         const extractText = (data: unknown): string | undefined => {
           if (!data) return undefined;
@@ -92,7 +75,9 @@ export function useIdentitySearch(
               value.judgements
             );
 
-            const address = encodeAddress(key.raw, ss58Prefix);
+            // Return raw hex address - encoding happens at display layer
+            // key.raw is already a hex string in dedot
+            const address = key.raw;
 
             if (hasPositiveJudgement) {
               matches.push({

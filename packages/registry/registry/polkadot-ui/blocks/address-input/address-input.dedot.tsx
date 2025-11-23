@@ -10,6 +10,8 @@ import {
 import { PolkadotProvider } from "@/registry/polkadot-ui/lib/polkadot-provider.dedot";
 import { useIdentityOf } from "@/registry/polkadot-ui/hooks/use-identity-of.dedot";
 import { useIdentitySearch } from "@/registry/polkadot-ui/hooks/use-search-identity.dedot";
+import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
+import { NETWORK_TO_CONFIG_KEY } from "@/registry/polkadot-ui/lib/utils.dot-ui";
 import { type NetworkId, paseoPeople, usePolkadotClient } from "typink";
 import { Input } from "@/registry/polkadot-ui/ui/input";
 
@@ -29,6 +31,12 @@ export function AddressInput(props: AddressInputProps) {
 function AddressInputInner(props: AddressInputProps) {
   const { status } = usePolkadotClient(props.identityChain ?? paseoPeople.id);
 
+  // Get SS58 prefix from chain config
+  const chainId = props.identityChain ?? paseoPeople.id;
+  const configKey = NETWORK_TO_CONFIG_KEY[chainId];
+  const chainConfig = configKey ? config.chains[configKey] : undefined;
+  const ss58Prefix = chainConfig?.ss58Prefix ?? 42;
+
   const services = useMemo(
     () => ({
       useIdentityOf: (address: string, identityChain?: NetworkId) =>
@@ -36,8 +44,9 @@ function AddressInputInner(props: AddressInputProps) {
       useIdentitySearch,
       clientStatus: status,
       explorerUrl: "",
+      ss58Prefix,
     }),
-    [status]
+    [status, ss58Prefix]
   );
 
   return (

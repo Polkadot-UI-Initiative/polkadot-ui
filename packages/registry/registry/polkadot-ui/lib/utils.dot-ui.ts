@@ -2,9 +2,63 @@ import type {
   TokenInfo,
   TokenMetadata,
 } from "@/registry/polkadot-ui/lib/types.dot-ui";
+import { decodeAddress, encodeAddress } from "@polkadot/keyring";
+import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 
 // the key for the native token in the balances object, if -1 is used somewhere as assetId, the
 export const NATIVE_TOKEN_KEY = -1;
+
+// Network ID to config chain key mapping (for dedot/typink NetworkId -> reactive-dot config key)
+// Typink uses underscores (polkadot_people), some contexts use hyphens (polkadot-people)
+export const NETWORK_TO_CONFIG_KEY: Record<string, keyof typeof config.chains> = {
+  paseo: "paseo",
+  "paseo-asset-hub": "paseoAssetHub",
+  "paseo_asset_hub": "paseoAssetHub",
+  "paseo-people": "paseoPeople",
+  "paseo_people": "paseoPeople",
+  polkadot: "polkadot",
+  "polkadot-asset-hub": "polkadotAssetHub",
+  "polkadot_asset_hub": "polkadotAssetHub",
+  "polkadot-people": "polkadotPeople",
+  "polkadot_people": "polkadotPeople",
+};
+
+/**
+ * Encode a hex address to SS58 format for display
+ * @param address - Address in hex (0x...) or SS58 format
+ * @param ss58Prefix - SS58 prefix for the chain (default: 42 for generic substrate)
+ * @returns Encoded SS58 address or original if encoding fails
+ */
+export const encodeForDisplay = (
+  address: string,
+  ss58Prefix: number = 42
+): string => {
+  if (address.startsWith("0x")) {
+    try {
+      return encodeAddress(address, ss58Prefix);
+    } catch (error) {
+      console.error("encodeForDisplay failed:", { address, ss58Prefix, error });
+      return address;
+    }
+  }
+  return address;
+};
+
+/**
+ * Normalize an address to lowercase hex format for comparison
+ * @param address - Address in hex (0x...) or SS58 format
+ * @returns Lowercase hex address (0x...)
+ */
+export const normalizeToHex = (address: string): string => {
+  if (address.startsWith("0x")) {
+    return address.toLowerCase();
+  }
+  try {
+    return `0x${Buffer.from(decodeAddress(address)).toString("hex")}`;
+  } catch {
+    return address.toLowerCase();
+  }
+};
 export const NATIVE_TOKEN_ID = "substrate-native";
 
 // Default decimals for DOT-like tokens (Planck precision)

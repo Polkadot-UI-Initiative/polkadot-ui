@@ -17,8 +17,7 @@ import {
   PolkadotProvider,
   useConnectionStatus,
 } from "@/registry/polkadot-ui/lib/polkadot-provider.papi";
-import type { ChainIdWithIdentity } from "@/registry/polkadot-ui/lib/reactive-dot.config";
-// import { config } from "@/registry/polkadot-ui/reactive-dot.config";
+import { config, type ChainIdWithIdentity } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 
 // Props type - removes services prop since we inject it
 export type AddressInputProps = Omit<
@@ -42,6 +41,10 @@ function AddressInputInner(props: AddressInputProps) {
   const isLoading = status === ClientConnectionStatus.Connecting;
   const isConnected = status === ClientConnectionStatus.Connected;
 
+  // Get SS58 prefix from chain config
+  const chainId = props.identityChain ?? "paseoPeople";
+  const ss58Prefix = config.chains[chainId]?.ss58Prefix ?? 42;
+
   // Simple services object with type-compatible wrappers
   const services = useMemo<AddressInputServices<ChainIdWithIdentity>>(
     () => ({
@@ -63,8 +66,9 @@ function AddressInputInner(props: AddressInputProps) {
         ? ClientConnectionStatus.Connecting
         : ClientConnectionStatus.Connected,
       explorerUrl: "",
+      ss58Prefix,
     }),
-    [isLoading, isConnected]
+    [isLoading, isConnected, ss58Prefix]
   );
 
   const AddressInputBasePapi = AddressInputBase as unknown as (

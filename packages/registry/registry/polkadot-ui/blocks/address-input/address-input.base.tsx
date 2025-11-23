@@ -13,6 +13,8 @@ import {
 } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { cn } from "@/registry/polkadot-ui/lib/utils";
 import {
+  encodeForDisplay,
+  normalizeToHex,
   truncateAddress,
   type ValidationResult,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
@@ -43,6 +45,8 @@ export interface AddressInputServices<TNetworkId> {
   ) => UseQueryResult<IdentitySearchResult[], Error>;
   clientStatus: ClientConnectionStatus;
   explorerUrl: string;
+  // SS58 prefix for encoding addresses (from chain config)
+  ss58Prefix?: number;
 }
 
 export interface AddressInputBaseProps<TNetworkId = string> {
@@ -101,7 +105,7 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
   }: AddressInputBaseProps<TNetworkId>,
   _ref: React.ForwardedRef<HTMLInputElement>
 ) {
-  const { useIdentityOf, useIdentitySearch, clientStatus } = services;
+  const { useIdentityOf, useIdentitySearch, clientStatus, ss58Prefix = 42 } = services;
 
   const [inputValue, setInputValue] = useState(value);
   const [validationResult, setValidationResult] = useState<ValidationResult>();
@@ -191,10 +195,16 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
   }, [value]);
 
   // Get identity data from search results when selected from search
+  // Compare decoded addresses since search results are hex and inputValue may be encoded
   const searchResultIdentity =
     selectedFromSearch && validationResult?.isValid
-      ? identitySearch.data?.find((result) => result.address === inputValue)
-          ?.identity
+      ? identitySearch.data?.find((result) => {
+          try {
+            return normalizeToHex(result.address) === normalizeToHex(inputValue);
+          } catch {
+            return false;
+          }
+        })?.identity
       : null;
 
   // Combined identity data - use search result if available, otherwise polkadot identity
@@ -298,13 +308,14 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
   };
 
   const handleSelectIdentity = (address: string, display: string | number) => {
+    const encodedAddress = encodeForDisplay(address, ss58Prefix);
     setSelectedFromSearch(true);
-    setInputValue(address);
+    setInputValue(encodedAddress);
     setShowDropdown(false);
     setHighlightedIndex(-1);
 
     if (onChange) {
-      onChange(address);
+      onChange(encodedAddress);
     }
     inputRef.current?.blur();
 
@@ -524,10 +535,10 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
                           />
                         ) : (
                           <Identicon
-                            value={result.address}
+                            value={encodeForDisplay(result.address, ss58Prefix)}
                             size={24}
                             theme={
-                              validateAddress(result.address, format).type ===
+                              validateAddress(encodeForDisplay(result.address, ss58Prefix), format).type ===
                               "eth"
                                 ? "ethereum"
                                 : identiconTheme
@@ -539,7 +550,7 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
                         </span>
                       </div>
                       <span className="text-xs text-muted-foreground truncate max-w-[120px] font-mono">
-                        {truncateAddress(result.address, 6)}
+                        {truncateAddress(encodeForDisplay(result.address, ss58Prefix), 6)}
                       </span>
                     </button>
                   );

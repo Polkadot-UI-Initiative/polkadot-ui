@@ -6,6 +6,8 @@ import {
   extractText,
   hasPositiveIdentityJudgement,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
+import { u8aToHex } from "@polkadot/util";
+import { decodeAddress } from "@polkadot/keyring";
 import {
   ClientConnectionStatus,
   type IdentitySearchResult,
@@ -13,7 +15,6 @@ import {
 import { config } from "@/registry/polkadot-ui/lib/reactive-dot.config";
 import { useConnectionStatus } from "../lib/polkadot-provider.papi";
 import { useClient } from "@reactive-dot/react";
-import { encodeAddress } from "@polkadot/keyring";
 
 export function useIdentitySearch(
   displayName: string | null | undefined,
@@ -64,11 +65,12 @@ export function useIdentitySearch(
             // Only include verified identities in search results
             // Remove this if block if we want to show all identities
             if (hasPositiveJudgement) {
-              // Get SS58 prefix from chain configuration
-              const ss58Prefix = config.chains[identityChain]?.ss58Prefix ?? 42;
+              // Return raw hex address - encoding happens at display layer
+              // keyArgs[0] is SS58String in PAPI, decode to get raw bytes
+              const address = u8aToHex(decodeAddress(keyArgs[0]));
 
               matches.push({
-                address: encodeAddress(keyArgs[0], ss58Prefix),
+                address,
                 identity: {
                   display,
                   email: extractText(value.info?.email?.value),
