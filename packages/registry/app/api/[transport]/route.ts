@@ -317,6 +317,7 @@ const handler = createMcpHandler(
           .describe("Maximum number of items to return"),
         offset: z
           .number()
+
           .int()
           .nonnegative()
           .optional()
