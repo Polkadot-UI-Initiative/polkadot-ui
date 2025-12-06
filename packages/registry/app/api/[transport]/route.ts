@@ -299,6 +299,7 @@ const handler = createMcpHandler(
       {
         query: z
           .string()
+          .min(1)
           .describe(
             "Search query string for fuzzy matching against component names and descriptions"
           ),
@@ -309,21 +310,33 @@ const handler = createMcpHandler(
         dev: z.boolean().optional().describe("Use development registry"),
         limit: z
           .number()
+          .int()
+          .nonnegative()
+          .max(1000)
           .optional()
           .describe("Maximum number of items to return"),
         offset: z
           .number()
+
+          .int()
+          .nonnegative()
           .optional()
           .describe("Number of items to skip for pagination"),
       },
       async ({ query, registryType = "papi", dev = false, limit, offset }) => {
         try {
           const registry = await loadRegistry(registryType, dev);
+
+          // Compute validated start and end values (coerce to integers and clamp to bounds)
+          const start = Math.max(0, Math.floor(offset ?? 0));
+          const end =
+            limit != null ? start + Math.max(0, Math.floor(limit)) : undefined;
+
           const results = searchComponents(
             registry.items,
             query,
-            limit,
-            offset
+            end != null ? end - start : undefined,
+            start
           );
 
           if (results.length === 0) {
