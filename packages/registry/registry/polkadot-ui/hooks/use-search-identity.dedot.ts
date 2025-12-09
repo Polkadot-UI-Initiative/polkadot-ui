@@ -5,7 +5,6 @@ import { hasPositiveIdentityJudgement } from "@/registry/polkadot-ui/lib/utils.d
 import { type PalletIdentityRegistration } from "@dedot/chaintypes/substrate";
 import { useQuery } from "@tanstack/react-query";
 import { AccountId32 } from "dedot/codecs";
-import { encodeAddress } from "dedot/utils";
 import {
   ClientConnectionStatus,
   type NetworkId,
@@ -13,6 +12,12 @@ import {
   usePolkadotClient,
   useTypink,
 } from "typink";
+
+// Constants for identity search configuration
+const MIN_SEARCH_LENGTH = 3;
+const MAX_RESULTS = 10;
+const STALE_TIME_MS = 5 * 60 * 1000; // 5 minutes - identities don't change often
+const GC_TIME_MS = 10 * 60 * 1000; // 10 minutes - keep cached longer for search
 
 export function useIdentitySearch(
   displayName: string | null | undefined,
@@ -30,7 +35,7 @@ export function useIdentitySearch(
       if (
         !peopleClient ||
         !displayName ||
-        displayName.length < 1 ||
+        displayName.length < MIN_SEARCH_LENGTH ||
         peopleStatus !== ClientConnectionStatus.Connected
       ) {
         return [];
@@ -44,7 +49,6 @@ export function useIdentitySearch(
         };
         const entries = await storageQuery.entries();
 
-        const MAX_RESULTS = 10;
         const matches: IdentitySearchResult[] = [];
 
         // Extract text from Dedot's data structure
@@ -76,8 +80,9 @@ export function useIdentitySearch(
               value.judgements
             );
 
-            // Extract address from key (convert to string)
-            const address = encodeAddress(key.raw, 0);
+            // Return raw hex address - encoding happens at display layer
+            // key.raw is already a hex string in dedot
+            const address = key.raw;
 
             if (hasPositiveJudgement) {
               matches.push({
@@ -86,6 +91,7 @@ export function useIdentitySearch(
                   display,
                   email: extractText(value.info?.email),
                   legal: extractText(value.info?.legal),
+                  // Note: matrix field not available in PalletIdentityLegacyIdentityInfo type
                   twitter: extractText(value.info?.twitter),
                   web: extractText(value.info?.web),
                   image: extractText(value.info?.image),
@@ -111,10 +117,11 @@ export function useIdentitySearch(
     enabled:
       !!peopleClient &&
       !!displayName &&
-      displayName.trim().length >= 1 &&
+      displayName.trim().length >= MIN_SEARCH_LENGTH &&
       peopleStatus === ClientConnectionStatus.Connected,
-    staleTime: 5 * 60 * 1000, // 5 minutes - identities don't change often
-    retry: 3, // Increased retry count
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+    staleTime: STALE_TIME_MS,
+    gcTime: GC_TIME_MS,
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 }

@@ -43,6 +43,7 @@ export const config = defineConfig({
       explorerUrl: "https://paseo.subscan.io",
       symbol: "PAS",
       decimals: 10,
+      ss58Prefix: 42,
       logo: "https://raw.githubusercontent.com/Koniverse/SubWallet-ChainList/refs/heads/master/packages/chain-list-assets/public/assets/chain-assets/paseotest-native-pas.png",
     },
     paseoPeople: {
@@ -52,6 +53,7 @@ export const config = defineConfig({
       explorerUrl: "https://people-paseo.subscan.io",
       symbol: "PAS",
       decimals: 10,
+      ss58Prefix: 42,
       logo: "https://people-paseo.subscan.io/_next/image?url=%2Fchains%2Fpeople-paseo%2Flogo-mini.png&w=256&q=75",
     },
     paseoAssetHub: {
@@ -61,6 +63,7 @@ export const config = defineConfig({
       explorerUrl: "https://assethub-paseo.subscan.io",
       symbol: "PAS",
       decimals: 10,
+      ss58Prefix: 42,
       logo: "https://raw.githubusercontent.com/Koniverse/SubWallet-ChainList/refs/heads/master/packages/chain-list-assets/public/assets/chains/paseo_assethub.png",
     },
     polkadot: {
@@ -70,6 +73,7 @@ export const config = defineConfig({
       explorerUrl: "https://polkadot.subscan.io",
       symbol: "DOT",
       decimals: 10,
+      ss58Prefix: 0,
       logo: "https://raw.githubusercontent.com/Koniverse/SubWallet-ChainList/refs/heads/master/packages/chain-list-assets/public/assets/chains/polkadot.png",
     },
     polkadotPeople: {
@@ -79,6 +83,7 @@ export const config = defineConfig({
       explorerUrl: "https://people-polkadot.subscan.io",
       symbol: "DOT",
       decimals: 10,
+      ss58Prefix: 0,
       logo: "https://raw.githubusercontent.com/Koniverse/SubWallet-ChainList/refs/heads/master/packages/chain-list-assets/public/assets/chains/polkadot_people.png",
     },
     polkadotAssetHub: {
@@ -88,6 +93,7 @@ export const config = defineConfig({
       explorerUrl: "https://assethub-polkadot.subscan.io",
       symbol: "DOT",
       decimals: 10,
+      ss58Prefix: 0,
       logo: "https://raw.githubusercontent.com/Koniverse/SubWallet-ChainList/refs/heads/master/packages/chain-list/src/logo/polkadot-asset-hub.png",
     },
   },

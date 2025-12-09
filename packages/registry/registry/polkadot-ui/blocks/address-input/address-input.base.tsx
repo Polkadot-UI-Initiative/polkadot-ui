@@ -13,6 +13,8 @@ import {
 } from "@/registry/polkadot-ui/lib/types.dot-ui";
 import { cn } from "@/registry/polkadot-ui/lib/utils";
 import {
+  encodeForDisplay,
+  normalizeToHex,
   truncateAddress,
   type ValidationResult,
 } from "@/registry/polkadot-ui/lib/utils.dot-ui";
@@ -25,7 +27,7 @@ import { type IconTheme } from "@polkadot/react-identicon/types";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { ethers } from "ethers";
 
-import { Check, CircleCheck, Copy, Loader2 } from "lucide-react";
+import { Check, CircleCheck, Copy, Loader2, X } from "lucide-react";
 import { forwardRef, type ReactNode, useEffect, useRef, useState } from "react";
 
 // Services interface for dependency injection
@@ -43,6 +45,8 @@ export interface AddressInputServices<TNetworkId> {
   ) => UseQueryResult<IdentitySearchResult[], Error>;
   clientStatus: ClientConnectionStatus;
   explorerUrl: string;
+  // SS58 prefix for encoding addresses (from chain config)
+  ss58Prefix?: number;
 }
 
 export interface AddressInputBaseProps<TNetworkId = string> {
@@ -101,7 +105,7 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
   }: AddressInputBaseProps<TNetworkId>,
   _ref: React.ForwardedRef<HTMLInputElement>
 ) {
-  const { useIdentityOf, useIdentitySearch, clientStatus } = services;
+  const { useIdentityOf, useIdentitySearch, clientStatus, ss58Prefix = 42 } = services;
 
   const [inputValue, setInputValue] = useState(value);
   const [validationResult, setValidationResult] = useState<ValidationResult>();
@@ -191,10 +195,16 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
   }, [value]);
 
   // Get identity data from search results when selected from search
+  // Compare decoded addresses since search results are hex and inputValue may be encoded
   const searchResultIdentity =
     selectedFromSearch && validationResult?.isValid
-      ? identitySearch.data?.find((result) => result.address === inputValue)
-          ?.identity
+      ? identitySearch.data?.find((result) => {
+          try {
+            return normalizeToHex(result.address) === normalizeToHex(inputValue);
+          } catch {
+            return false;
+          }
+        })?.identity
       : null;
 
   // Combined identity data - use search result if available, otherwise polkadot identity
@@ -327,7 +337,10 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
     if (!inputValue) return;
 
     try {
-      await navigator.clipboard.writeText(inputValue);
+      const addressToCopy = validationResult?.isValid
+        ? encodeForDisplay(inputValue, ss58Prefix)
+        : inputValue;
+      await navigator.clipboard.writeText(addressToCopy);
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     } catch (error) {
@@ -382,10 +395,15 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
     };
   }, []);
 
+  // Encode hex addresses for display, preserving SS58 addresses as-is
+  const encodedForDisplay = validationResult?.isValid
+    ? encodeForDisplay(inputValue, ss58Prefix)
+    : inputValue;
+
   const displayValue =
     truncate && validationResult?.isValid && !isEditing
-      ? truncateAddress(inputValue, truncate)
-      : inputValue;
+      ? truncateAddress(encodedForDisplay, truncate)
+      : isEditing ? inputValue : encodedForDisplay;
 
   const placeholder =
     format === "eth"
@@ -524,10 +542,10 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
                           />
                         ) : (
                           <Identicon
-                            value={result.address}
+                            value={encodeForDisplay(result.address, ss58Prefix)}
                             size={24}
                             theme={
-                              validateAddress(result.address, format).type ===
+                              validateAddress(encodeForDisplay(result.address, ss58Prefix), format).type ===
                               "eth"
                                 ? "ethereum"
                                 : identiconTheme
@@ -539,7 +557,7 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
                         </span>
                       </div>
                       <span className="text-xs text-muted-foreground truncate max-w-[120px] font-mono">
-                        {truncateAddress(result.address, 6)}
+                        {truncateAddress(encodeForDisplay(result.address, ss58Prefix), 6)}
                       </span>
                     </button>
                   );
@@ -581,6 +599,37 @@ export const AddressInputBase = forwardRef(function AddressInputBase<
               />
             )}
           </div>
+        )}
+        
+        {/* Clear button - shown when valid address is present */}
+        {validationResult?.isValid && inputValue && !isEditing && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  type="button"
+                  onClick={() => {
+                    setInputValue("");
+                    setSelectedFromSearch(false);
+                    if (onChange) {
+                      onChange("");
+                    }
+                    inputRef.current?.focus();
+                  }}
+                  className={cn(
+                    "absolute top-1/2 -translate-y-1/2 p-2 h-7 w-7 rounded-sm",
+                    withCopyButton ? "right-10" : "right-2"
+                  )}
+                  aria-label="Clear address"
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent sideOffset={6}>Clear address</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         )}
 
         {/* Copy button - shown when not editing and has valid address and not loading */}
